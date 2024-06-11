@@ -7,16 +7,17 @@ namespace LUIECompiler
     {
         static void Main(string[] args)
         {    
+            string input = "qubit c; x q; qubit q; x q;";
+                
             try
             {
-                string input = "qubit c; x q; qubit q;";
-                
                 AntlrInputStream inputStream = new AntlrInputStream(input.ToString());
                 LuieLexer luieLexer = new LuieLexer(inputStream);
                 CommonTokenStream commonTokenStream = new CommonTokenStream(luieLexer);
                 LuieParser luieParser = new LuieParser(commonTokenStream);
 
                 LuieParser.ParseContext parseContext = luieParser.parse();
+                
                 LuieParser.BlockContext blockContext = parseContext.block();
                 
                 Console.WriteLine("Statements:");
