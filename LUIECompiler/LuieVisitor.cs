@@ -56,6 +56,12 @@ public interface ILuieVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitStatement([NotNull] LuieParser.StatementContext context);
 	/// <summary>
+	/// Visit a parse tree produced by <see cref="LuieParser.gateapplication"/>.
+	/// </summary>
+	/// <param name="context">The parse tree.</param>
+	/// <return>The visitor result.</return>
+	Result VisitGateapplication([NotNull] LuieParser.GateapplicationContext context);
+	/// <summary>
 	/// Visit a parse tree produced by <see cref="LuieParser.qifStatement"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>

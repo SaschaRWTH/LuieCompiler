@@ -27,7 +27,7 @@ namespace LUIECompiler.SemanticAnalysis
             string identifier = id.GetText();
             if(table.IsDefined(identifier))
             {
-                Console.WriteLine($"Error! Identifier '{identifier}' was already defined.");
+                Console.WriteLine($"Error! Identifier '{identifier}' was already declared.");
                 // Add error
             }
             else
@@ -37,6 +37,31 @@ namespace LUIECompiler.SemanticAnalysis
             }
 
             base.ExitDeclaration(context);
+        }
+
+        public override void ExitStatement([NotNull] LuieParser.StatementContext context)
+        {
+            base.ExitStatement(context);
+        }
+
+        public override void ExitGateapplication([NotNull] LuieParser.GateapplicationContext context)
+        {
+            var node = context.IDENTIFIER();
+            string identifier = node.GetText();
+            if(!table.IsDefined(identifier))
+            {
+                Console.WriteLine($"Error! Identifier '{identifier}' was not declared");
+            }
+        }
+
+        public override void ExitIfStat([NotNull] LuieParser.IfStatContext context)
+        {
+            var node = context.IDENTIFIER();
+            string identifier = node.GetText();
+            if(!table.IsDefined(identifier))
+            {
+                Console.WriteLine($"Error! Identifier '{identifier}' was not declared");
+            }
         }
 
     }

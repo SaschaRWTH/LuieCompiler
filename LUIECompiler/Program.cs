@@ -9,7 +9,7 @@ namespace LUIECompiler
     {
         static void Main(string[] args)
         {    
-            string input = "qubit c; qubit c;";
+            string input = "qubit c; qubit b; x y; qif y do skip; end";
                 
             try
             {

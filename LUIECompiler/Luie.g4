@@ -13,8 +13,13 @@ declaration
  ;
 
 statement
- : GATE IDENTIFIER ';'
+ : gateapplication
  | qifStatement 
+ | SKIPSTAT ';'
+ ;
+
+gateapplication
+ : GATE IDENTIFIER ';'
  ;
 
 qifStatement
@@ -35,14 +40,16 @@ GATE
  | HGATE
  ;
 
-XGATE : 'x';
-ZGATE : 'z';
-HGATE : 'h';
+fragment XGATE : 'x';
+fragment ZGATE : 'z';
+fragment HGATE : 'h';
 
 IF       : 'qif';
 ELSE     : 'else';
 DO       : 'do';
 END       : 'end';
+
+SKIPSTAT     : 'skip';
 
 IDENTIFIER 
  : [a-zA-Z_] [a-zA-Z_0-9]*
