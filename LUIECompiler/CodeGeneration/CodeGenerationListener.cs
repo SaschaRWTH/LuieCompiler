@@ -17,6 +17,14 @@ namespace LUIECompiler.CodeGeneration
         {
             base.ExitBlock(context);
         }
+
+        public override void ExitDeclaration([NotNull] LuieParser.DeclarationContext context)
+        {
+            ITerminalNode id = context.IDENTIFIER();
+            string identifier = id.GetText();
+            base.ExitDeclaration(context);
+        }
+
     }
 
 }

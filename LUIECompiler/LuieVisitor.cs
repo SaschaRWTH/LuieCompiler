@@ -44,11 +44,11 @@ public interface ILuieVisitor<Result> : IParseTreeVisitor<Result> {
 	/// <return>The visitor result.</return>
 	Result VisitBlock([NotNull] LuieParser.BlockContext context);
 	/// <summary>
-	/// Visit a parse tree produced by <see cref="LuieParser.definition"/>.
+	/// Visit a parse tree produced by <see cref="LuieParser.declaration"/>.
 	/// </summary>
 	/// <param name="context">The parse tree.</param>
 	/// <return>The visitor result.</return>
-	Result VisitDefinition([NotNull] LuieParser.DefinitionContext context);
+	Result VisitDeclaration([NotNull] LuieParser.DeclarationContext context);
 	/// <summary>
 	/// Visit a parse tree produced by <see cref="LuieParser.statement"/>.
 	/// </summary>

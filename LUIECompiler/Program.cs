@@ -1,5 +1,7 @@
 ﻿using System;
 using Antlr4.Runtime;
+using Antlr4.Runtime.Tree;
+using LUIECompiler.SemanticAnalysis;
 
 namespace LUIECompiler
 {
@@ -7,7 +9,7 @@ namespace LUIECompiler
     {
         static void Main(string[] args)
         {    
-            string input = "qubit c; x q; qubit q; x q;";
+            string input = "qubit c; qubit c;";
                 
             try
             {
@@ -16,18 +18,8 @@ namespace LUIECompiler
                 CommonTokenStream commonTokenStream = new CommonTokenStream(luieLexer);
                 LuieParser luieParser = new LuieParser(commonTokenStream);
 
-                LuieParser.ParseContext parseContext = luieParser.parse();
-                
-                LuieParser.BlockContext blockContext = parseContext.block();
-                
-                Console.WriteLine("Statements:");
-                foreach(var statement in blockContext.statement()){
-                    Console.WriteLine(statement);
-                }
-                Console.WriteLine("definitions:");
-                foreach(var def in blockContext.definition()){
-                    Console.WriteLine(def);
-                }
+                ParseTreeWalker walker = new();
+                walker.Walk(new DeclarationAnalysisListener(), luieParser.parse());
                 
             }
             catch (Exception ex)

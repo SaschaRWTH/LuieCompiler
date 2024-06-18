@@ -5,10 +5,10 @@ parse
  ;
 
 block
- : (definition | statement)*
+ : (declaration | statement)*
  ;
 
-definition
+declaration
  : 'qubit' IDENTIFIER ';'
  ;
 
