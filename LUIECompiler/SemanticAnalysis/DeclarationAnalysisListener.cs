@@ -27,7 +27,8 @@ namespace LUIECompiler.SemanticAnalysis
             string identifier = id.GetText();
             if(table.IsDefined(identifier))
             {
-                Console.WriteLine($"Error! Identifier '{identifier}' was already declared.");
+                
+                Console.WriteLine($"Error! Identifier '{identifier}' in line {context.Start.Line} was already declared.");
                 // Add error
             }
             else
@@ -50,7 +51,7 @@ namespace LUIECompiler.SemanticAnalysis
             string identifier = node.GetText();
             if(!table.IsDefined(identifier))
             {
-                Console.WriteLine($"Error! Identifier '{identifier}' was not declared");
+                Console.WriteLine($"Error! Identifier '{identifier}' in line {context.Start.Line} was not declared");
             }
         }
 
@@ -60,7 +61,7 @@ namespace LUIECompiler.SemanticAnalysis
             string identifier = node.GetText();
             if(!table.IsDefined(identifier))
             {
-                Console.WriteLine($"Error! Identifier '{identifier}' was not declared");
+                Console.WriteLine($"Error! Identifier '{identifier}' in line {context.Start.Line} was not declared");
             }
         }
 
