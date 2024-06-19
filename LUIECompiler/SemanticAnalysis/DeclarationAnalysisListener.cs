@@ -54,20 +54,30 @@ namespace LUIECompiler.SemanticAnalysis
         {
             var node = context.IDENTIFIER();
             string identifier = node.GetText();
-            if (!table.IsDefined(identifier))
-            {
-                Error.Report(new UndefinedError(context.Start.Line, identifier));
-            }
+            CheckDefinedness(identifier, context);
+            // Could check type here, or create new TypeCheckListener
         }
 
         public override void ExitIfStat([NotNull] LuieParser.IfStatContext context)
         {
             var node = context.IDENTIFIER();
             string identifier = node.GetText();
-            if (!table.IsDefined(identifier))
+            CheckDefinedness(identifier, context);
+        }
+
+        /// <summary>
+        /// Checks whether a given <paramref name="identifier"/> is defined in the current context.
+        /// </summary>
+        /// <param name="identifier"></param>
+        /// <param name="context"></param>
+        private void CheckDefinedness(string identifier, ParserRuleContext context)
+        {
+            if (table.IsDefined(identifier))
             {
-                Error.Report(new UndefinedError(context.Start.Line, identifier));
+                return;
             }
+            
+            Error.Report(new UndefinedError(context.Start.Line, identifier));
         }
 
     }
