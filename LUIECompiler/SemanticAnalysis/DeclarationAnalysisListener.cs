@@ -3,6 +3,8 @@ using System.Diagnostics;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Tree;
+using LUIECompiler.Common;
+using LUIECompiler.Common.Errors;
 
 namespace LUIECompiler.SemanticAnalysis
 {
@@ -10,9 +12,14 @@ namespace LUIECompiler.SemanticAnalysis
     {
         private readonly SymbolTable table = new();
 
+        /// <summary>
+        /// Error handler of the listener.
+        /// </summary>
+        public ErrorHandler Error { get; init; } = new();
+
         public override void EnterBlock([NotNull] LuieParser.BlockContext context)
         {
-            
+
             base.EnterBlock(context);
         }
 
@@ -25,11 +32,9 @@ namespace LUIECompiler.SemanticAnalysis
         {
             ITerminalNode id = context.IDENTIFIER();
             string identifier = id.GetText();
-            if(table.IsDefined(identifier))
+            if (table.IsDefined(identifier))
             {
-                
-                Console.WriteLine($"Error! Identifier '{identifier}' in line {context.Start.Line} was already declared.");
-                // Add error
+                Error.Report(new RedefineError(context.Start.Line, identifier));
             }
             else
             {
@@ -49,9 +54,9 @@ namespace LUIECompiler.SemanticAnalysis
         {
             var node = context.IDENTIFIER();
             string identifier = node.GetText();
-            if(!table.IsDefined(identifier))
+            if (!table.IsDefined(identifier))
             {
-                Console.WriteLine($"Error! Identifier '{identifier}' in line {context.Start.Line} was not declared");
+                Error.Report(new UndefinedError(context.Start.Line, identifier));
             }
         }
 
@@ -59,45 +64,12 @@ namespace LUIECompiler.SemanticAnalysis
         {
             var node = context.IDENTIFIER();
             string identifier = node.GetText();
-            if(!table.IsDefined(identifier))
+            if (!table.IsDefined(identifier))
             {
-                Console.WriteLine($"Error! Identifier '{identifier}' in line {context.Start.Line} was not declared");
+                Error.Report(new UndefinedError(context.Start.Line, identifier));
             }
         }
 
-    }
-
-    public class SymbolTable 
-    {
-        // Needs to be expanded by scope
-
-        public readonly Dictionary<string, SymbolInfo> identifierDictionary = new();
-
-        public bool IsDefined(string identifier)
-        {
-            return identifierDictionary.ContainsKey(identifier);
-        }
-
-        public void AddSymbol(SymbolInfo symbolInfo)
-        {
-            Debug.Assert(!identifierDictionary.ContainsKey(symbolInfo.Identifier));
-            identifierDictionary.Add(symbolInfo.Identifier, symbolInfo);
-        }
-    }
-
-    public class RegisterInfo : SymbolInfo
-    {
-        public RegisterInfo(string identifier) : base(identifier) {}
-    }
-
-    public class SymbolInfo 
-    {
-        public readonly string Identifier;
-
-        public SymbolInfo(string identifier)
-        {
-            Identifier = identifier;
-        } 
     }
 
 }
