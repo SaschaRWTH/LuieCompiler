@@ -8,6 +8,8 @@ namespace LUIECompiler.CodeGeneration
     public class CodeGenerationHandler
     {
         public SymbolTable Table { get; set; } = new();
+        public Dictionary<RegisterInfo, AbstractDefinition> DefinitionDictionary { get; } = [];
+
         public List<AbstractDefinition> Definitions { get; } = [];
         public Stack<CodeBlock> CodeBlocks { get; } = [];
 

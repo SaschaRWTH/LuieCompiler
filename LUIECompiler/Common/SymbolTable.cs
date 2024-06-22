@@ -18,6 +18,16 @@ namespace LUIECompiler.Common
             Debug.Assert(!identifierDictionary.ContainsKey(symbolInfo.Identifier));
             identifierDictionary.Add(symbolInfo.Identifier, symbolInfo);
         }
+
+        public SymbolInfo GetSymbolInfo(string identifier){
+
+            if(!identifierDictionary.TryGetValue(identifier, out var info)){
+                // Error handling, undefined identifier!
+                throw new Exception();
+            }
+
+            return info;
+        }
     }
 
     public class RegisterInfo : SymbolInfo

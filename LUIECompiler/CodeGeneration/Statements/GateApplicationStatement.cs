@@ -4,10 +4,12 @@ using LUIECompiler.Common;
 
 namespace LUIECompiler.CodeGeneration.Statements
 {
-    public abstract class GateApplicationStatement : AbstractStatement
+    public class GateApplicationStatement : AbstractStatement
     {
         public required Gate Gate { get; init; }
         public required RegisterInfo Register { get; init; }
+
+        public GateApplicationStatement() {}
 
         public GateApplicationStatement(Gate gate, RegisterInfo register) 
         {

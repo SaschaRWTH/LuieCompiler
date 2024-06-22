@@ -15,6 +15,18 @@ namespace LUIECompiler.CodeGeneration
     {
         public GateType Type { get; init; }
 
+        public Gate(LuieParser.GateapplicationContext context)
+        {
+            string gate = context.GATE().GetText();
+            Type = gate switch 
+            {
+                "x" => GateType.X,
+                "z" => GateType.X,
+                "h" => GateType.X,
+                _ => throw new NotImplementedException()
+            };
+        }
+
         public QASMCode ToQASM()
         {
             return Type switch
