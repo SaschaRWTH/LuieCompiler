@@ -9,6 +9,8 @@ namespace LUIECompiler.CodeGeneration.Statements
 
         public required CodeBlock Block { get; init; }
 
+        public QuantumIfStatment() {}
+
         public QuantumIfStatment(RegisterInfo register, CodeBlock block)
         {
             Guard = register;
