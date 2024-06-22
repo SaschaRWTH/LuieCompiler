@@ -3,15 +3,15 @@ using LUIECompiler.Common;
 
 namespace LUIECompiler.CodeGeneration.Statements
 {
-    public class QuantumIfStatment : AbstractStatement
+    public class QuantumIfStatement : AbstractStatement
     {
         public required RegisterInfo Guard { get; init; }
 
         public required CodeBlock Block { get; init; }
 
-        public QuantumIfStatment() {}
+        public QuantumIfStatement() {}
 
-        public QuantumIfStatment(RegisterInfo register, CodeBlock block)
+        public QuantumIfStatement(RegisterInfo register, CodeBlock block)
         {
             Guard = register;
             Block = block;

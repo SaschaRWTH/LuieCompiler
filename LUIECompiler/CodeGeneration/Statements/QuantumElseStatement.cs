@@ -3,12 +3,12 @@ using LUIECompiler.Common;
 
 namespace LUIECompiler.CodeGeneration.Statements
 {
-    public class QuantumElseStatment : QuantumIfStatment
+    public class QuantumElseStatement : QuantumIfStatement
     {
 
-        public QuantumElseStatment() {}
-        
-        public QuantumElseStatment(RegisterInfo register, CodeBlock block) : base(register, block)
+        public QuantumElseStatement() {}
+
+        public QuantumElseStatement(RegisterInfo register, CodeBlock block) : base(register, block)
         {
         }
 
