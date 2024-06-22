@@ -12,6 +12,11 @@ namespace LUIECompiler.CodeGeneration.Definitions
         {
             Identifier = identifier;
         }
+
+        public override QASMCode ToQASM()
+        {
+            throw new NotImplementedException();
+        }
     }
 
 }

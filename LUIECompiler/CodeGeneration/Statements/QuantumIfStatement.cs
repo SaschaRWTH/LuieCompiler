@@ -15,7 +15,7 @@ namespace LUIECompiler.CodeGeneration.Statements
             Block = block;
         }
 
-        public override string ToQASM()
+        public override QASMCode ToQASM()
         {
             throw new NotImplementedException();
         }

@@ -7,7 +7,7 @@ namespace LUIECompiler.CodeGeneration.Definitions
     {
         public required string Identifier { get; init; }
 
-        public abstract string ToQASM();
+        public abstract QASMCode ToQASM();
     }
 
 }

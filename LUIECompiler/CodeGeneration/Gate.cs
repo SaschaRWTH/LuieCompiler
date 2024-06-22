@@ -1,6 +1,5 @@
-using System.Security.Cryptography;
 
-namespace LUIECompiler.Common 
+namespace LUIECompiler.CodeGeneration 
 {
     public enum GateType
     {
@@ -16,14 +15,14 @@ namespace LUIECompiler.Common
     {
         public GateType Type { get; init; }
 
-        public string ToQASM()
+        public QASMCode ToQASM()
         {
             return Type switch
             {
-                GateType.X => "x",
-                GateType.Z => "z",
-                GateType.Y => "y",
-                GateType.H => "h",
+                GateType.X => new("x"),
+                GateType.Z => new("z"),
+                GateType.Y => new("y"),
+                GateType.H => new("h"),
                 _ => throw new NotImplementedException(),
             };
         }

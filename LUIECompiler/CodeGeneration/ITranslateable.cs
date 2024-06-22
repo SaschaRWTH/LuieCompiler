@@ -1,4 +1,4 @@
-namespace LUIECompiler.Common
+namespace LUIECompiler.CodeGeneration
 {
     public interface ITranslateable
     {
@@ -6,6 +6,6 @@ namespace LUIECompiler.Common
         ///  Returns the QASM code for the statement.
         /// </summary>
         /// <returns></returns>
-        public abstract string ToQASM();
+        public abstract QASMCode ToQASM();
     }
 }

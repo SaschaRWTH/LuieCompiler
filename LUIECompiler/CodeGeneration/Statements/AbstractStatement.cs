@@ -11,7 +11,7 @@ namespace LUIECompiler.CodeGeneration.Statements
         /// Maps any <see cref="RegisterInfo"/> to the corresponding <see cref="AbstractDefinition"/>.
         /// </summary>
         public required Dictionary<RegisterInfo, AbstractDefinition> DefinitionDictionary;
-        public abstract string ToQASM();
+        public abstract QASMCode ToQASM();
 
         /// <summary>
         /// Returns the QASM identifier of a given <paramref name="register"/>.
