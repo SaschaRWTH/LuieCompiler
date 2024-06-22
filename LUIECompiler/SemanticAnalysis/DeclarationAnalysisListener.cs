@@ -17,17 +17,6 @@ namespace LUIECompiler.SemanticAnalysis
         /// </summary>
         public ErrorHandler Error { get; init; } = new();
 
-        public override void EnterBlock([NotNull] LuieParser.BlockContext context)
-        {
-
-            base.EnterBlock(context);
-        }
-
-        public override void ExitBlock([NotNull] LuieParser.BlockContext context)
-        {
-            base.ExitBlock(context);
-        }
-
         public override void ExitDeclaration([NotNull] LuieParser.DeclarationContext context)
         {
             ITerminalNode id = context.IDENTIFIER();
@@ -58,7 +47,7 @@ namespace LUIECompiler.SemanticAnalysis
             // Could check type here, or create new TypeCheckListener
         }
 
-        public override void ExitIfStat([NotNull] LuieParser.IfStatContext context)
+        public override void EnterQifStatement([NotNull] LuieParser.QifStatementContext context)
         {
             var node = context.IDENTIFIER();
             string identifier = node.GetText();
