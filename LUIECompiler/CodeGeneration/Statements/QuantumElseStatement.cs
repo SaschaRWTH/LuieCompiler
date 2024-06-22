@@ -14,7 +14,7 @@ namespace LUIECompiler.CodeGeneration.Statements
 
         public override QASMCode ToQASM()
         {
-            throw new NotImplementedException();
+            return Block.ToQASM().AddControl(identifier: GetIdentifier(Guard), negated: true);
         }
     }
 

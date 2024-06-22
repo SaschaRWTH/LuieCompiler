@@ -3,14 +3,26 @@ using LUIECompiler.CodeGeneration.Statements;
 namespace LUIECompiler.CodeGeneration
 {
 
-    public class CodeBlock
+    public class CodeBlock : ITranslateable
     {
-        public List<AbstractStatement> Definitions { get; } = [];
+        public List<AbstractStatement> Statements { get; } = [];
 
 
         public void AddStatement(AbstractStatement statement)
         {
-            Definitions.Add(statement);
+            Statements.Add(statement);
+        }
+
+        public QASMCode ToQASM()
+        {
+            QASMCode code = new();
+            
+            foreach(var statement in Statements)
+            {
+                code += statement.ToQASM();
+            }
+
+            return code;
         }
     }
 
