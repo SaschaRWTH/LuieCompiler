@@ -27,6 +27,19 @@ namespace LUIECompiler.CodeGeneration
             CodeGen.AddStatement(statement);
         }
 
+        public override void EnterQifStatement([NotNull] LuieParser.QifStatementContext context)
+        {            
+            string identifier = context.IDENTIFIER().GetText();
+            RegisterInfo? info = CodeGen.Table.GetSymbolInfo(identifier) as RegisterInfo ?? throw new Exception("identifier has wrong type!");
+
+            CodeGen.PushGuard(info);
+        }
+
+        public override void ExitQifStatement([NotNull] LuieParser.QifStatementContext context)
+        {
+            CodeGen.PopGuard();
+        }
+
         public override void EnterIfStat([NotNull] LuieParser.IfStatContext context)
         {
             CodeGen.PushCodeBlock();
@@ -35,16 +48,11 @@ namespace LUIECompiler.CodeGeneration
         public override void ExitIfStat([NotNull] LuieParser.IfStatContext context)
         {
             CodeBlock block = CodeGen.PopCodeBlock();
-            
-            string identifier = context.IDENTIFIER().GetText();
-            
-            // TODO: Improve error handling
-            RegisterInfo? info = CodeGen.Table.GetSymbolInfo(identifier) as RegisterInfo ?? throw new Exception("identifier has wrong type!");
 
             QuantumIfStatement statement = new()
             {
                 Block = block,
-                Guard = info,
+                Guard = CodeGen.CurrentGuard,
                 DefinitionDictionary = CodeGen.DefinitionDictionary,
             };
             
@@ -59,20 +67,11 @@ namespace LUIECompiler.CodeGeneration
         public override void ExitElseStat([NotNull] LuieParser.ElseStatContext context)
         {            
             CodeBlock block = CodeGen.PopCodeBlock();
-            
-            // TODO: add guard stack or similar, could streamline grammar for both to use guard stack e.g. 
-            // qifStatement: IF IDENTIFIER ifStat elseStat? END 
-            // ifState : DO block
-            string identifier = "";
-            // string identifier = context.IDENTIFIER().GetText();
-            
-            // TODO: Improve error handling
-            RegisterInfo? info = CodeGen.Table.GetSymbolInfo(identifier) as RegisterInfo ?? throw new Exception("identifier has wrong type!");
 
             QuantumIfStatement statement = new()
             {
                 Block = block,
-                Guard = info,
+                Guard = CodeGen.CurrentGuard,
                 DefinitionDictionary = CodeGen.DefinitionDictionary,
             };
             

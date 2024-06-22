@@ -23,11 +23,11 @@ gateapplication
  ;
 
 qifStatement
- : ifStat elseStat? END
+ : IF IDENTIFIER ifStat elseStat? END
  ;
  
 ifStat
- : IF IDENTIFIER DO block
+ : DO block
  ;
 
 elseStat
