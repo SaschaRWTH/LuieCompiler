@@ -6,16 +6,18 @@ namespace LUIECompiler.CodeGeneration.Statements
 {
     public abstract class GateApplicationStatement : AbstractStatement
     {
-        public Gate Gate { get; init; }
+        public required Gate Gate { get; init; }
+        public required RegisterInfo Register { get; init; }
 
-        public GateApplicationStatement(Gate gate) 
+        public GateApplicationStatement(Gate gate, RegisterInfo register) 
         {
             Gate = gate;
+            Register = register;
         }
 
         public override string ToQASM()
         {
-            throw new NotImplementedException();
+            return $"{Gate.ToQASM()} {GetIdentifier(Register)};";
         }
     }
 

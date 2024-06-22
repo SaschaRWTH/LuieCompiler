@@ -5,9 +5,9 @@ namespace LUIECompiler.CodeGeneration.Statements
 {
     public abstract class QuantumIfStatment : AbstractStatement
     {
-        public RegisterInfo Guard { get; init; }
+        public required RegisterInfo Guard { get; init; }
 
-        public List<AbstractStatement> Block { get; init; }
+        public required List<AbstractStatement> Block { get; init; }
 
         public QuantumIfStatment(RegisterInfo register, List<AbstractStatement> block)
         {
