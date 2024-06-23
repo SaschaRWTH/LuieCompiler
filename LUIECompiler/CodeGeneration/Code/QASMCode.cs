@@ -50,9 +50,20 @@ namespace LUIECompiler.CodeGeneration.Code
                 {
                     continue;
                 }
+
+                GateGuard guard = new GateGuard()
+                {
+                    Identifier = identifier,
+                    Negated = negated,
+                };
+
                 code.Code.Add(new GateCode()
                 {
-                    Guards = [identifier, .. gate.Guards],
+                    Guards =
+                    [
+                        guard,
+                         .. gate.Guards
+                    ],
                     Gate = gate.Gate,
                     Register = gate.Register,
                 });
