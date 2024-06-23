@@ -4,7 +4,6 @@ namespace LUIECompiler.CodeGeneration
 {
     public class QASMCode 
     {
-
         public List<string> Code { get; init; } = [];
 
         public QASMCode() {}        
@@ -50,5 +49,14 @@ namespace LUIECompiler.CodeGeneration
             return code;
         }
 
+        public override string ToString()
+        {
+            string code = "";
+            foreach(string line in Code)
+            {
+                code += $"{line}\n";
+            }
+            return code;
+        }
     }
 }

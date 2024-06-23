@@ -10,7 +10,7 @@ namespace LUIECompiler.CodeGeneration.Definitions
 
         public override QASMCode ToQASM()
         {
-            throw new NotImplementedException();
+            return new($"qubit {Identifier};");
         }
     }
 
