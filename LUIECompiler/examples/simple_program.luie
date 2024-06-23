@@ -1,0 +1,9 @@
+qubit c;
+qubit y;
+x y;
+qif y do
+    qubit t;
+    x c;
+    h c;
+    h t;
+end
