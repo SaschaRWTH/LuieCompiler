@@ -11,7 +11,7 @@ namespace LUIECompiler.CodeGeneration
     }
 
 
-    public class Gate : ITranslateable
+    public class Gate
     {
         public GateType Type { get; init; }
 
@@ -27,14 +27,14 @@ namespace LUIECompiler.CodeGeneration
             };
         }
 
-        public QASMCode ToQASM()
+        public override string ToString()
         {
             return Type switch
             {
-                GateType.X => new("x"),
-                GateType.Z => new("z"),
-                GateType.Y => new("y"),
-                GateType.H => new("h"),
+                GateType.X => "x",
+                GateType.Z => "z",
+                GateType.Y => "y",
+                GateType.H => "h",
                 _ => throw new NotImplementedException(),
             };
         }

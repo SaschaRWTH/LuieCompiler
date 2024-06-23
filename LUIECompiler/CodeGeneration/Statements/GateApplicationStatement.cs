@@ -19,7 +19,7 @@ namespace LUIECompiler.CodeGeneration.Statements
 
         public override QASMCode ToQASM()
         {
-            return new($"{Gate.ToQASM()} {GetIdentifier(Register)};");
+            return new($"{Gate} {GetIdentifier(Register)};");
         }
     }
 
