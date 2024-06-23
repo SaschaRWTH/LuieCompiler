@@ -9,7 +9,7 @@ namespace LUIECompiler.CodeGeneration.Code
 
         public override string ToCode()
         {
-            throw new NotImplementedException();
+            return $"qubit {Register.Identifier};";
         } 
     }
 }

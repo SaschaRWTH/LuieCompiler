@@ -12,7 +12,11 @@ namespace LUIECompiler.CodeGeneration.Code
 
         public override string ToCode()
         {
-            throw new NotImplementedException();
+            if(Guards.Count == 0){
+                return $"{Gate} {Register.Identifier};";
+            }
+
+            return $"ctrl({Guards.Count}) @ {Gate} {string.Join(", ", Guards)}, {Register.Identifier};";
         } 
     }
 }

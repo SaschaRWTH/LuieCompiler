@@ -66,7 +66,7 @@ namespace LUIECompiler.CodeGeneration.Code
             string code = "";
             foreach (AbstractCode line in Code)
             {
-                code += line.ToCode();
+                code += $"{line.ToCode()}\n";
             }
             return code;
         }
