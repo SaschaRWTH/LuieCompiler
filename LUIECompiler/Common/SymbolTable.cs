@@ -4,26 +4,48 @@ namespace LUIECompiler.Common
 {
     public class SymbolTable
     {
+
+        private int _uniqueId = 0;
+
+        /// <summary>
+        /// Gets a unique identifier.
+        /// </summary>
+        public string UniqueIdenifier
+        {
+            get 
+            {
+                string id = $"id{_uniqueId}";
+                _uniqueId++;
+                return id;
+            }
+        }
+
         // Needs to be expanded by scope
 
-        public Dictionary<string, SymbolInfo> identifierDictionary { get; init; } = new();
+        public Dictionary<string, SymbolInfo> IdentifierDictionary { get; init; } = new();
 
         public bool IsDefined(string identifier)
         {
-            return identifierDictionary.ContainsKey(identifier);
+            return IdentifierDictionary.ContainsKey(identifier);
         }
 
-        public void AddSymbol(SymbolInfo symbolInfo)
+        /// <summary>
+        /// Adds a symbol to the table and return a unique identifier for it.
+        /// </summary>
+        /// <param name="symbolInfo"></param>
+        /// <returns></returns>
+        public string AddSymbol(SymbolInfo symbolInfo)
         {
-            Debug.Assert(!identifierDictionary.ContainsKey(symbolInfo.Identifier));
-            identifierDictionary.Add(symbolInfo.Identifier, symbolInfo);
+            Debug.Assert(!IdentifierDictionary.ContainsKey(symbolInfo.Identifier));
+            IdentifierDictionary.Add(symbolInfo.Identifier, symbolInfo);
+            return UniqueIdenifier;
         }
 
         public SymbolInfo GetSymbolInfo(string identifier){
 
-            if(!identifierDictionary.TryGetValue(identifier, out var info)){
+            if(!IdentifierDictionary.TryGetValue(identifier, out var info)){
                 // Error handling, undefined identifier!
-                throw new Exception();
+                throw new Exception("Undefined identifier");
             }
 
             return info;

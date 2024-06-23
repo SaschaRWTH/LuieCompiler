@@ -1,5 +1,6 @@
 
 using Antlr4.Runtime.Misc;
+using Antlr4.Runtime.Tree;
 using LUIECompiler.CodeGeneration.Statements;
 using LUIECompiler.Common;
 
@@ -9,14 +10,22 @@ namespace LUIECompiler.CodeGeneration
     {
         public CodeGenerationHandler CodeGen { get; } = new();
 
+        public override void ExitDeclaration([NotNull] LuieParser.DeclarationContext context)
+        {
+            ITerminalNode id = context.IDENTIFIER();
+            string identifier = id.GetText();
+
+            CodeGen.AddRegister(identifier);
+        }
+
+
         public override void ExitGateapplication([NotNull] LuieParser.GateapplicationContext context)
         {
-            Gate gate = new(context);
             string identifier = context.IDENTIFIER().GetText();
-            
-            // TODO: Improve error handling
-            RegisterInfo? info = CodeGen.Table.GetSymbolInfo(identifier) as RegisterInfo ?? throw new Exception("identifier has wrong type!");
+            RegisterInfo? info = CodeGen.Table.GetSymbolInfo(identifier) as RegisterInfo 
+                                    ?? throw new Exception("identifier has wrong type!");
 
+            Gate gate = new(context);
             GateApplicationStatement statement = new()
             {
                 Gate = gate,
@@ -30,7 +39,8 @@ namespace LUIECompiler.CodeGeneration
         public override void EnterQifStatement([NotNull] LuieParser.QifStatementContext context)
         {            
             string identifier = context.IDENTIFIER().GetText();
-            RegisterInfo? info = CodeGen.Table.GetSymbolInfo(identifier) as RegisterInfo ?? throw new Exception("identifier has wrong type!");
+            RegisterInfo? info = CodeGen.Table.GetSymbolInfo(identifier) as RegisterInfo 
+                                    ?? throw new Exception("identifier has wrong type!");
 
             CodeGen.PushGuard(info);
         }

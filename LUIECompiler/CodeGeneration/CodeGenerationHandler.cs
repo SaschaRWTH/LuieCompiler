@@ -87,6 +87,49 @@ namespace LUIECompiler.CodeGeneration
         {
             return GuardStack.Pop();
         }
+
+        /// <summary>
+        /// Adds a register to the code generation handler. This includes adding it to the symbol table,
+        /// creating a definition with a unique id, and adding the definition the the definition dictionary.
+        /// </summary>
+        /// <param name="identifier"></param>
+        /// <exception cref="Exception"></exception>
+        public void AddRegister(string identifier)
+        {
+            if (Table.IsDefined(identifier))
+            {
+                throw new Exception("identifier already definined in context");
+            }
+
+            RegisterInfo info = new(identifier);
+            string id = Table.AddSymbol(info);
+
+            RegisterDefinition definition = new()
+            {
+                Identifier = id,
+            };
+
+            Definitions.Add(definition);
+
+            DefinitionDictionary.Add(info, definition);
+        }
+
+        /// <summary>
+        /// Generates the entier QASM program for the code generation handler.
+        /// </summary>
+        /// <returns></returns>
+        public QASMCode GenerateCode()
+        {
+            QASMCode code = new();
+            foreach(AbstractDefinition definition in Definitions)
+            {
+                code += definition.ToQASM();
+            }
+
+            code += MainBlock.ToQASM();
+
+            return code;
+        }
     }
 
 }
