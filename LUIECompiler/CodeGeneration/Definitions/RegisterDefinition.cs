@@ -11,7 +11,9 @@ namespace LUIECompiler.CodeGeneration.Definitions
 
         public override QASMCode ToQASM()
         {
-            return new($"qubit {Identifier};");
+            return new(new DefinitionCode(){
+                Register = this,
+            });
         }
     }
 

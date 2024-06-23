@@ -28,6 +28,16 @@ namespace LUIECompiler.CodeGeneration.Statements
             }
             return definition.Identifier;
         }
+
+        protected AbstractDefinition GetDefinition([NotNull] RegisterInfo register)
+        {
+            if (!DefinitionDictionary.TryGetValue(register, out var definition))
+            {
+                // TODO: improve error handling
+                throw new Exception();
+            }
+            return definition;
+        }
     }
 
 }

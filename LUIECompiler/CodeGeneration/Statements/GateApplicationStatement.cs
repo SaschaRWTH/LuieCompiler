@@ -2,6 +2,7 @@
 using System.Diagnostics.CodeAnalysis;
 using LUIECompiler.Common;
 using LUIECompiler.CodeGeneration.Code;
+using LUIECompiler.CodeGeneration.Definitions;
 
 namespace LUIECompiler.CodeGeneration.Statements
 {
@@ -20,7 +21,11 @@ namespace LUIECompiler.CodeGeneration.Statements
 
         public override QASMCode ToQASM()
         {
-            return new($"{Gate} {GetIdentifier(Register)};");
+            return new(new GateCode(){
+                Gate = Gate,
+                Guards = [],
+                Register = GetDefinition(Register) as RegisterDefinition ?? throw new Exception("Type error"),
+            });
         }
     }
 

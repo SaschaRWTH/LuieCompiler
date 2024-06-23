@@ -2,25 +2,29 @@ using LUIECompiler.Common;
 
 namespace LUIECompiler.CodeGeneration.Code
 {
-    public class QASMCode 
+    public class QASMCode
     {
-        public List<string> Code { get; init; } = [];
+        public List<AbstractCode> Code { get; init; } = [];
 
-        public QASMCode() {}        
+        public QASMCode() { }
 
-        public QASMCode(string command){
+        public QASMCode(AbstractCode command)
+        {
             Code.Add(command);
         }
 
-        public QASMCode(params string[] commands){
+        public QASMCode(params AbstractCode[] commands)
+        {
             Code.AddRange(commands);
         }
 
-        public QASMCode(List<string> commands){
+        public QASMCode(List<AbstractCode> commands)
+        {
             Code.AddRange(commands);
         }
 
-        public static QASMCode operator +(QASMCode first, QASMCode second){
+        public static QASMCode operator +(QASMCode first, QASMCode second)
+        {
             return new()
             {
                 Code = [.. first.Code, .. second.Code],
@@ -40,10 +44,18 @@ namespace LUIECompiler.CodeGeneration.Code
             string control = negated ? "negctrl" : "ctrl";
 
 
-            foreach(string line in Code)
+            foreach (AbstractCode line in Code)
             {
-                // WARNING: This is not correct and needs to be adjusted, only placeholder
-                code.Code.Add($"{control} @ ${identifier} {line}");
+                if (line is not GateCode gate)
+                {
+                    continue;
+                }
+                code.Code.Add(new GateCode()
+                {
+                    Guards = [identifier, .. gate.Guards],
+                    Gate = gate.Gate,
+                    Register = gate.Register,
+                });
             }
 
             return code;
@@ -52,9 +64,9 @@ namespace LUIECompiler.CodeGeneration.Code
         public override string ToString()
         {
             string code = "";
-            foreach(string line in Code)
+            foreach (AbstractCode line in Code)
             {
-                code += $"{line}\n";
+                code += line.ToCode();
             }
             return code;
         }
