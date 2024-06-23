@@ -21,8 +21,8 @@ namespace LUIECompiler.CodeGeneration
             Type = gate switch 
             {
                 "x" => GateType.X,
-                "z" => GateType.X,
-                "h" => GateType.X,
+                "z" => GateType.Z,
+                "h" => GateType.H,
                 _ => throw new NotImplementedException()
             };
         }

@@ -16,8 +16,10 @@ namespace LUIECompiler
             "qubit y;\n" +
             "x y;\n" +
             "qif y do\n" +
+            "qubit t;" +
             "x c;\n" +
             "h c;\n" +
+            "h t;\n" +
             "end";
 
             try
