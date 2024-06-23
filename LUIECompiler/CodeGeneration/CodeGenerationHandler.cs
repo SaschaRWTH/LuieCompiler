@@ -2,6 +2,7 @@
 using System.Diagnostics.CodeAnalysis;
 using LUIECompiler.CodeGeneration.Definitions;
 using LUIECompiler.CodeGeneration.Statements;
+using LUIECompiler.CodeGeneration.Code;
 using LUIECompiler.Common;
 
 namespace LUIECompiler.CodeGeneration

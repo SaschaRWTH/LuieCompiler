@@ -1,3 +1,4 @@
+using LUIECompiler.CodeGeneration.Code;
 namespace LUIECompiler.CodeGeneration
 {
     public interface ITranslateable

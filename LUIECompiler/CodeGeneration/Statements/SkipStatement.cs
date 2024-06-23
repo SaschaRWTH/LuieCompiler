@@ -1,4 +1,5 @@
 
+using LUIECompiler.CodeGeneration.Code;
 namespace LUIECompiler.CodeGeneration.Statements
 {
     public class SkipStatement : AbstractStatement

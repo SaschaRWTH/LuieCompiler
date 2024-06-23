@@ -1,6 +1,6 @@
 using LUIECompiler.Common;
 
-namespace LUIECompiler.CodeGeneration
+namespace LUIECompiler.CodeGeneration.Code
 {
     public class QASMCode 
     {
