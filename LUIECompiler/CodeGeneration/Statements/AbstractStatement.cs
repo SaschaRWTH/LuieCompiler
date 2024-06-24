@@ -2,16 +2,16 @@
 using System.Diagnostics.CodeAnalysis;
 using LUIECompiler.CodeGeneration.Definitions;
 using LUIECompiler.Common;
-using LUIECompiler.CodeGeneration.Code;
+using LUIECompiler.CodeGeneration.Codes;
 
 namespace LUIECompiler.CodeGeneration.Statements
 {
-    public abstract class AbstractStatement : ITranslateable
+    public abstract class Statement : ITranslateable
     {
         /// <summary>
-        /// Maps any <see cref="RegisterInfo"/> to the corresponding <see cref="AbstractDefinition"/>.
+        /// Maps any <see cref="RegisterInfo"/> to the corresponding <see cref="Definition"/>.
         /// </summary>
-        public required Dictionary<RegisterInfo, AbstractDefinition> DefinitionDictionary;
+        public required Dictionary<RegisterInfo, Definition> DefinitionDictionary;
         public abstract QASMCode ToQASM();
 
         /// <summary>
@@ -29,7 +29,7 @@ namespace LUIECompiler.CodeGeneration.Statements
             return definition.Identifier;
         }
 
-        protected AbstractDefinition GetDefinition([NotNull] RegisterInfo register)
+        protected Definition GetDefinition([NotNull] RegisterInfo register)
         {
             if (!DefinitionDictionary.TryGetValue(register, out var definition))
             {

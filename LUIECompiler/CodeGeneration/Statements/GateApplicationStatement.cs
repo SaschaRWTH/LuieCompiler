@@ -1,12 +1,12 @@
 
 using System.Diagnostics.CodeAnalysis;
 using LUIECompiler.Common;
-using LUIECompiler.CodeGeneration.Code;
+using LUIECompiler.CodeGeneration.Codes;
 using LUIECompiler.CodeGeneration.Definitions;
 
 namespace LUIECompiler.CodeGeneration.Statements
 {
-    public class GateApplicationStatement : AbstractStatement
+    public class GateApplicationStatement : Statement
     {
         public required Gate Gate { get; init; }
         public required RegisterInfo Register { get; init; }

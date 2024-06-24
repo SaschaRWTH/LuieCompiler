@@ -1,7 +1,7 @@
 using LUIECompiler.CodeGeneration.Definitions;
 using LUIECompiler.Common;
 
-namespace LUIECompiler.CodeGeneration.Code
+namespace LUIECompiler.CodeGeneration.Codes
 {
     public class GateGuard
     {

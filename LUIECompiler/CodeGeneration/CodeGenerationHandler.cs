@@ -2,7 +2,7 @@
 using System.Diagnostics.CodeAnalysis;
 using LUIECompiler.CodeGeneration.Definitions;
 using LUIECompiler.CodeGeneration.Statements;
-using LUIECompiler.CodeGeneration.Code;
+using LUIECompiler.CodeGeneration.Codes;
 using LUIECompiler.Common;
 
 namespace LUIECompiler.CodeGeneration
@@ -10,9 +10,9 @@ namespace LUIECompiler.CodeGeneration
     public class CodeGenerationHandler
     {
         public SymbolTable Table { get; set; } = new();
-        public Dictionary<RegisterInfo, AbstractDefinition> DefinitionDictionary { get; } = [];
+        public Dictionary<RegisterInfo, Definition> DefinitionDictionary { get; } = [];
 
-        public List<AbstractDefinition> Definitions { get; } = [];
+        public List<Definition> Definitions { get; } = [];
         public Stack<CodeBlock> CodeBlocks { get; } = [];
 
         /// <summary>
@@ -66,7 +66,7 @@ namespace LUIECompiler.CodeGeneration
         /// Adds the <paramref name="statement"/> to the current <see cref="CodeBlock"/>.
         /// </summary>
         /// <param name="statement"></param>
-        public void AddStatement([NotNull] AbstractStatement statement)
+        public void AddStatement([NotNull] Statement statement)
         {
             CurrentBlock.AddStatement(statement);
         }
@@ -122,7 +122,7 @@ namespace LUIECompiler.CodeGeneration
         public QASMCode GenerateCode()
         {
             QASMCode code = new();
-            foreach(AbstractDefinition definition in Definitions)
+            foreach(Definition definition in Definitions)
             {
                 code += definition.ToQASM();
             }

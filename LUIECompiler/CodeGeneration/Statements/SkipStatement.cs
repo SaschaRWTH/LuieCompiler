@@ -1,8 +1,8 @@
 
-using LUIECompiler.CodeGeneration.Code;
+using LUIECompiler.CodeGeneration.Codes;
 namespace LUIECompiler.CodeGeneration.Statements
 {
-    public class SkipStatement : AbstractStatement
+    public class SkipStatement : Statement
     {
         public override QASMCode ToQASM()
         {

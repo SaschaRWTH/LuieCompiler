@@ -1,8 +1,8 @@
 using LUIECompiler.CodeGeneration.Definitions;
 
-namespace LUIECompiler.CodeGeneration.Code
+namespace LUIECompiler.CodeGeneration.Codes
 {
-    public class DefinitionCode : AbstractCode 
+    public class DefinitionCode : Code 
     {
         // TODO: extend by size
         public required RegisterDefinition Register { get; init; }  

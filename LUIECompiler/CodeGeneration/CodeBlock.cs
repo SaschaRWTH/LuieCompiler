@@ -1,15 +1,15 @@
 using LUIECompiler.CodeGeneration.Statements;
-using LUIECompiler.CodeGeneration.Code;
+using LUIECompiler.CodeGeneration.Codes;
 
 namespace LUIECompiler.CodeGeneration
 {
 
     public class CodeBlock : ITranslateable
     {
-        public List<AbstractStatement> Statements { get; } = [];
+        public List<Statement> Statements { get; } = [];
 
 
-        public void AddStatement(AbstractStatement statement)
+        public void AddStatement(Statement statement)
         {
             Statements.Add(statement);
         }

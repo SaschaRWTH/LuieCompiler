@@ -1,24 +1,24 @@
 using LUIECompiler.Common;
 
-namespace LUIECompiler.CodeGeneration.Code
+namespace LUIECompiler.CodeGeneration.Codes
 {
     public class QASMCode
     {
-        public List<AbstractCode> Code { get; init; } = [];
+        public List<Code> Code { get; init; } = [];
 
         public QASMCode() { }
 
-        public QASMCode(AbstractCode command)
+        public QASMCode(Code command)
         {
             Code.Add(command);
         }
 
-        public QASMCode(params AbstractCode[] commands)
+        public QASMCode(params Code[] commands)
         {
             Code.AddRange(commands);
         }
 
-        public QASMCode(List<AbstractCode> commands)
+        public QASMCode(List<Code> commands)
         {
             Code.AddRange(commands);
         }
@@ -44,7 +44,7 @@ namespace LUIECompiler.CodeGeneration.Code
             string control = negated ? "negctrl" : "ctrl";
 
 
-            foreach (AbstractCode line in Code)
+            foreach (Code line in Code)
             {
                 if (line is not GateCode gate)
                 {
@@ -75,7 +75,7 @@ namespace LUIECompiler.CodeGeneration.Code
         public override string ToString()
         {
             string code = "";
-            foreach (AbstractCode line in Code)
+            foreach (Code line in Code)
             {
                 code += $"{line.ToCode()}\n";
             }

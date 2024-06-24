@@ -1,9 +1,9 @@
 using LUIECompiler.CodeGeneration.Definitions;
 using LUIECompiler.Common;
 
-namespace LUIECompiler.CodeGeneration.Code
+namespace LUIECompiler.CodeGeneration.Codes
 {
-    public class GateCode : AbstractCode
+    public class GateCode : Code
     {
         public required List<GateGuard> Guards { get; init; }
         public List<GateGuard> PositiveGuards { get => Guards.Where(g => !g.Negated).ToList(); }

@@ -1,10 +1,10 @@
 
 using LUIECompiler.Common;
-using LUIECompiler.CodeGeneration.Code;
+using LUIECompiler.CodeGeneration.Codes;
 
 namespace LUIECompiler.CodeGeneration.Statements
 {
-    public class QuantumIfStatement : AbstractStatement
+    public class QuantumIfStatement : Statement
     {
         public required RegisterInfo Guard { get; init; }
 

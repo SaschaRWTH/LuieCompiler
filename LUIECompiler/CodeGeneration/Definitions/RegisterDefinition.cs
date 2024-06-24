@@ -1,10 +1,10 @@
 using LUIECompiler.Common;
-using LUIECompiler.CodeGeneration.Code;
+using LUIECompiler.CodeGeneration.Codes;
 
 namespace LUIECompiler.CodeGeneration.Definitions
 {
 
-    public class RegisterDefinition : AbstractDefinition
+    public class RegisterDefinition : Definition
     {
         // Not yet in grammar 
         // public required int Size { get; init; }

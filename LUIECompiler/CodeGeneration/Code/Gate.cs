@@ -1,5 +1,5 @@
 
-namespace LUIECompiler.CodeGeneration.Code
+namespace LUIECompiler.CodeGeneration.Codes
 {
     public enum GateType
     {
