@@ -3,6 +3,7 @@ using System.Diagnostics.CodeAnalysis;
 using LUIECompiler.CodeGeneration.Definitions;
 using LUIECompiler.Common;
 using LUIECompiler.CodeGeneration.Codes;
+using LUIECompiler.Common.Errors;
 
 namespace LUIECompiler.CodeGeneration.Statements
 {
@@ -11,7 +12,8 @@ namespace LUIECompiler.CodeGeneration.Statements
         /// <summary>
         /// Maps any <see cref="RegisterInfo"/> to the corresponding <see cref="Definition"/>.
         /// </summary>
-        public required Dictionary<RegisterInfo, Definition> DefinitionDictionary;
+        public required Dictionary<RegisterInfo, Definition> DefinitionDictionary { get; init; }
+        public required int Line { get; init; }
         public abstract QASMCode ToQASM();
 
         /// <summary>
@@ -23,8 +25,10 @@ namespace LUIECompiler.CodeGeneration.Statements
         {
             if (!DefinitionDictionary.TryGetValue(register, out var definition))
             {
-                // TODO: improve error handling
-                return "error";
+                throw new CodeGenerationException()
+                {
+                    Error = new UndefinedError(Line, register.Identifier),
+                };
             }
             return definition.Identifier;
         }
@@ -33,8 +37,10 @@ namespace LUIECompiler.CodeGeneration.Statements
         {
             if (!DefinitionDictionary.TryGetValue(register, out var definition))
             {
-                // TODO: improve error handling
-                throw new Exception();
+                throw new CodeGenerationException()
+                {
+                    Error = new UndefinedError(Line, register.Identifier),
+                };
             }
             return definition;
         }

@@ -5,6 +5,7 @@ using Antlr4.Runtime.Tree;
 using LUIECompiler.CodeGeneration.Codes;
 using LUIECompiler.CodeGeneration.Statements;
 using LUIECompiler.Common;
+using LUIECompiler.Common.Errors;
 
 namespace LUIECompiler.CodeGeneration
 {
@@ -17,7 +18,7 @@ namespace LUIECompiler.CodeGeneration
             ITerminalNode id = context.IDENTIFIER();
             string identifier = id.GetText();
 
-            CodeGen.AddRegister(identifier);
+            CodeGen.AddRegister(identifier, context.Start.Line);
         }
 
 
@@ -25,14 +26,18 @@ namespace LUIECompiler.CodeGeneration
         {
             string identifier = context.IDENTIFIER().GetText();
             RegisterInfo? info = CodeGen.Table.GetSymbolInfo(identifier) as RegisterInfo 
-                                    ?? throw new Exception("identifier has wrong type!");
+                                    ?? throw new CodeGenerationException(){
+                                        Error = new TypeError(context.Start.Line, identifier),
+                                    };
 
             Gate gate = new(context);
+            int line = context.Start.Line;
             GateApplicationStatement statement = new()
             {
                 Gate = gate,
                 Register = info,
                 DefinitionDictionary = CodeGen.DefinitionDictionary,
+                Line = line,
             };
 
             CodeGen.AddStatement(statement);
@@ -42,7 +47,9 @@ namespace LUIECompiler.CodeGeneration
         {            
             string identifier = context.IDENTIFIER().GetText();
             RegisterInfo? info = CodeGen.Table.GetSymbolInfo(identifier) as RegisterInfo 
-                                    ?? throw new Exception("identifier has wrong type!");
+                                    ?? throw new CodeGenerationException(){
+                                        Error = new TypeError(context.Start.Line, identifier),
+                                    };
 
             CodeGen.PushGuard(info);
         }
@@ -61,11 +68,13 @@ namespace LUIECompiler.CodeGeneration
         {
             CodeBlock block = CodeGen.PopCodeBlock();
 
+            int line = context.Start.Line;
             QuantumIfStatement statement = new()
             {
                 Block = block,
                 Guard = CodeGen.CurrentGuard,
                 DefinitionDictionary = CodeGen.DefinitionDictionary,
+                Line = line,
             };
             
             CodeGen.AddStatement(statement);
@@ -80,11 +89,13 @@ namespace LUIECompiler.CodeGeneration
         {            
             CodeBlock block = CodeGen.PopCodeBlock();
 
+            int line = context.Start.Line;
             QuantumIfStatement statement = new()
             {
                 Block = block,
                 Guard = CodeGen.CurrentGuard,
                 DefinitionDictionary = CodeGen.DefinitionDictionary,
+                Line = line,
             };
             
             CodeGen.AddStatement(statement);

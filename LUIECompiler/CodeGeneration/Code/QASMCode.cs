@@ -41,9 +41,6 @@ namespace LUIECompiler.CodeGeneration.Codes
         {
             QASMCode code = new();
 
-            string control = negated ? "negctrl" : "ctrl";
-
-
             foreach (Code line in Code)
             {
                 if (line is not GateCode gate)

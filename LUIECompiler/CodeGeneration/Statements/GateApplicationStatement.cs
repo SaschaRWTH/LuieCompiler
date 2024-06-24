@@ -1,8 +1,7 @@
-
-using System.Diagnostics.CodeAnalysis;
 using LUIECompiler.Common;
 using LUIECompiler.CodeGeneration.Codes;
 using LUIECompiler.CodeGeneration.Definitions;
+using LUIECompiler.Common.Errors;
 
 namespace LUIECompiler.CodeGeneration.Statements
 {
@@ -24,7 +23,11 @@ namespace LUIECompiler.CodeGeneration.Statements
             return new(new GateCode(){
                 Gate = Gate,
                 Guards = [],
-                Register = GetDefinition(Register) as RegisterDefinition ?? throw new Exception("Type error"),
+                Register = GetDefinition(Register) as RegisterDefinition 
+                        ?? throw new CodeGenerationException()
+                        {
+                            Error = new TypeError(Line, Register.Identifier),
+                        },
             });
         }
     }

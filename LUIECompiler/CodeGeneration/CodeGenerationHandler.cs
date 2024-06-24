@@ -4,6 +4,7 @@ using LUIECompiler.CodeGeneration.Definitions;
 using LUIECompiler.CodeGeneration.Statements;
 using LUIECompiler.CodeGeneration.Codes;
 using LUIECompiler.Common;
+using LUIECompiler.Common.Errors;
 
 namespace LUIECompiler.CodeGeneration
 {
@@ -28,12 +29,26 @@ namespace LUIECompiler.CodeGeneration
         /// <summary>
         /// Gets the current code block.
         /// </summary>
-        public CodeBlock CurrentBlock { get => CodeBlocks.Peek() ?? throw new Exception("No current bock"); }
+        public CodeBlock CurrentBlock 
+        { 
+            get => CodeBlocks.Peek() 
+                ?? throw new InternalException()
+                {
+                    Reason = "Tried to peek empty code block stack.",
+                }; 
+        }
 
         /// <summary>
         /// Gets guard of the current if statement.
         /// </summary>
-        public RegisterInfo CurrentGuard { get => GuardStack.Peek() ?? throw new Exception("Not in if clause."); }
+        public RegisterInfo CurrentGuard 
+        { 
+            get => GuardStack.Peek() 
+                ?? throw new InternalException()
+                {
+                    Reason = "Tried to peek empty guard stack.",
+                }; 
+        }
 
         public CodeGenerationHandler()
         {
@@ -56,7 +71,10 @@ namespace LUIECompiler.CodeGeneration
         {
             if (CodeBlocks.Count <= 1)
             {
-                // TODO: Error Handling
+                throw new InternalException()
+                {
+                    Reason = "Tried to pop empty code block stack.",
+                }; 
             }
 
             return CodeBlocks.Pop();
@@ -95,11 +113,14 @@ namespace LUIECompiler.CodeGeneration
         /// </summary>
         /// <param name="identifier"></param>
         /// <exception cref="Exception"></exception>
-        public void AddRegister(string identifier)
+        public void AddRegister(string identifier, int line)
         {
             if (Table.IsDefined(identifier))
             {
-                throw new Exception("identifier already definined in context");
+                throw new CodeGenerationException()
+                {
+                    Error = new RedefineError(line, identifier),
+                };
             }
 
             RegisterInfo info = new(identifier);
