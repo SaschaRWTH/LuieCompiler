@@ -1,4 +1,4 @@
-namespace LUIECompiler
+namespace LUIECompiler.CodeGeneration.Exceptions
 { 
     /// <summary>
     /// An exception of internal error not caused by invalid source programs.

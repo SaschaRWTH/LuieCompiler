@@ -4,6 +4,7 @@ using LUIECompiler.CodeGeneration.Definitions;
 using LUIECompiler.Common;
 using LUIECompiler.CodeGeneration.Codes;
 using LUIECompiler.Common.Errors;
+using LUIECompiler.CodeGeneration.Exceptions;
 
 namespace LUIECompiler.CodeGeneration.Statements
 {

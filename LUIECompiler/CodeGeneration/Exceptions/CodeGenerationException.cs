@@ -1,7 +1,7 @@
 
 using LUIECompiler.Common.Errors;
 
-namespace LUIECompiler
+namespace LUIECompiler.CodeGeneration.Exceptions
 {
     /// <summary>
     /// Code generation exception that is cause be invalid source code. 
