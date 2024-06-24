@@ -5,6 +5,9 @@ namespace LUIECompiler.Common.Errors
 {
     public class RedefineError : CompilationError
     {
+        /// <summary>
+        /// Identifier that is already defined.
+        /// </summary>
         public string Identifier { get; init; }
 
         public RedefineError(int line, string identifier)

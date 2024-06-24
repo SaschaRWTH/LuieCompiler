@@ -9,7 +9,7 @@ namespace LUIECompiler.CodeGeneration.Definitions
         // Not yet in grammar 
         // public required int Size { get; init; }
 
-        public override QASMCode ToQASM()
+        public override QASMProgram ToQASM()
         {
             return new(new DefinitionCode(){
                 Register = this,

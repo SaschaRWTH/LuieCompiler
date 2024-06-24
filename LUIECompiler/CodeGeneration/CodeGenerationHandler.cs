@@ -10,10 +10,24 @@ namespace LUIECompiler.CodeGeneration
 {
     public class CodeGenerationHandler
     {
+        /// <summary>
+        /// The symbol table of the program.
+        /// </summary>
         public SymbolTable Table { get; set; } = new();
+
+        /// <summary>
+        /// Dictionary mapping all registers to a definition.
+        /// </summary>
         public Dictionary<RegisterInfo, Definition> DefinitionDictionary { get; } = [];
 
+        /// <summary>
+        /// List of all definitions. 
+        /// </summary>
         public List<Definition> Definitions { get; } = [];
+
+        /// <summary>
+        /// Stack of currently nested code blocks.
+        /// </summary>
         public Stack<CodeBlock> CodeBlocks { get; } = [];
 
         /// <summary>
@@ -29,27 +43,30 @@ namespace LUIECompiler.CodeGeneration
         /// <summary>
         /// Gets the current code block.
         /// </summary>
-        public CodeBlock CurrentBlock 
-        { 
-            get => CodeBlocks.Peek() 
+        public CodeBlock CurrentBlock
+        {
+            get => CodeBlocks.Peek()
                 ?? throw new InternalException()
                 {
                     Reason = "Tried to peek empty code block stack.",
-                }; 
+                };
         }
 
         /// <summary>
         /// Gets guard of the current if statement.
         /// </summary>
-        public RegisterInfo CurrentGuard 
-        { 
-            get => GuardStack.Peek() 
+        public RegisterInfo CurrentGuard
+        {
+            get => GuardStack.Peek()
                 ?? throw new InternalException()
                 {
                     Reason = "Tried to peek empty guard stack.",
-                }; 
+                };
         }
 
+        /// <summary>
+        /// Creates a code generation handler and pushes a main code block onto the code stack.
+        /// </summary>
         public CodeGenerationHandler()
         {
             CodeBlocks.Push(MainBlock);
@@ -67,6 +84,7 @@ namespace LUIECompiler.CodeGeneration
         /// Pops the current code block.
         /// </summary>
         /// <returns></returns>
+        /// <exception cref="InternalException"></exception>
         public CodeBlock PopCodeBlock()
         {
             if (CodeBlocks.Count <= 1)
@@ -74,7 +92,7 @@ namespace LUIECompiler.CodeGeneration
                 throw new InternalException()
                 {
                     Reason = "Tried to pop empty code block stack.",
-                }; 
+                };
             }
 
             return CodeBlocks.Pop();
@@ -112,7 +130,7 @@ namespace LUIECompiler.CodeGeneration
         /// creating a definition with a unique id, and adding the definition the the definition dictionary.
         /// </summary>
         /// <param name="identifier"></param>
-        /// <exception cref="Exception"></exception>
+        /// <exception cref="RedefineError"></exception>
         public void AddRegister(string identifier, int line)
         {
             if (Table.IsDefined(identifier))
@@ -140,10 +158,10 @@ namespace LUIECompiler.CodeGeneration
         /// Generates the entier QASM program for the code generation handler.
         /// </summary>
         /// <returns></returns>
-        public QASMCode GenerateCode()
+        public QASMProgram GenerateCode()
         {
-            QASMCode code = new();
-            foreach(Definition definition in Definitions)
+            QASMProgram code = new();
+            foreach (Definition definition in Definitions)
             {
                 code += definition.ToQASM();
             }
@@ -151,6 +169,28 @@ namespace LUIECompiler.CodeGeneration
             code += MainBlock.ToQASM();
 
             return code;
+        }
+
+
+        /// <summary>
+        /// Gets the symbol information based on an identifier.
+        /// </summary>
+        /// <param name="identifier"></param>
+        /// <returns></returns>
+        /// <exception cref="Exception"></exception>
+        public SymbolInfo GetSymbolInfo(string identifier, int line)
+        {
+
+            if (!Table.IdentifierDictionary.TryGetValue(identifier, out var info))
+            {
+                // Error handling, undefined identifier!
+                throw new CodeGenerationException()
+                {
+                    Error = new UndefinedError(line, identifier)
+                };
+            }
+
+            return info;
         }
     }
 

@@ -25,8 +25,9 @@ namespace LUIECompiler.CodeGeneration
         public override void ExitGateapplication([NotNull] LuieParser.GateapplicationContext context)
         {
             string identifier = context.IDENTIFIER().GetText();
-            RegisterInfo? info = CodeGen.Table.GetSymbolInfo(identifier) as RegisterInfo 
-                                    ?? throw new CodeGenerationException(){
+            RegisterInfo? info = CodeGen.GetSymbolInfo(identifier, context.Start.Line) as RegisterInfo
+                                    ?? throw new CodeGenerationException()
+                                    {
                                         Error = new TypeError(context.Start.Line, identifier),
                                     };
 
@@ -44,10 +45,11 @@ namespace LUIECompiler.CodeGeneration
         }
 
         public override void EnterQifStatement([NotNull] LuieParser.QifStatementContext context)
-        {            
+        {
             string identifier = context.IDENTIFIER().GetText();
-            RegisterInfo? info = CodeGen.Table.GetSymbolInfo(identifier) as RegisterInfo 
-                                    ?? throw new CodeGenerationException(){
+            RegisterInfo? info = CodeGen.GetSymbolInfo(identifier, context.Start.Line) as RegisterInfo
+                                    ?? throw new CodeGenerationException()
+                                    {
                                         Error = new TypeError(context.Start.Line, identifier),
                                     };
 
@@ -76,7 +78,7 @@ namespace LUIECompiler.CodeGeneration
                 DefinitionDictionary = CodeGen.DefinitionDictionary,
                 Line = line,
             };
-            
+
             CodeGen.AddStatement(statement);
         }
 
@@ -86,7 +88,7 @@ namespace LUIECompiler.CodeGeneration
         }
 
         public override void ExitElseStat([NotNull] LuieParser.ElseStatContext context)
-        {            
+        {
             CodeBlock block = CodeGen.PopCodeBlock();
 
             int line = context.Start.Line;
@@ -97,7 +99,7 @@ namespace LUIECompiler.CodeGeneration
                 DefinitionDictionary = CodeGen.DefinitionDictionary,
                 Line = line,
             };
-            
+
             CodeGen.AddStatement(statement);
         }
 

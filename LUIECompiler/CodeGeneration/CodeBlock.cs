@@ -6,19 +6,25 @@ namespace LUIECompiler.CodeGeneration
 
     public class CodeBlock : ITranslateable
     {
+        /// <summary>
+        /// List of statements in the code block.
+        /// </summary>
         public List<Statement> Statements { get; } = [];
 
-
+        /// <summary>
+        /// Adds a statement to the code block.
+        /// </summary>
+        /// <param name="statement"></param>
         public void AddStatement(Statement statement)
         {
             Statements.Add(statement);
         }
 
-        public QASMCode ToQASM()
+        public QASMProgram ToQASM()
         {
-            QASMCode code = new();
-            
-            foreach(var statement in Statements)
+            QASMProgram code = new();
+
+            foreach (var statement in Statements)
             {
                 code += statement.ToQASM();
             }

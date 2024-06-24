@@ -13,8 +13,16 @@ namespace LUIECompiler.CodeGeneration.Codes
 
     public class Gate
     {
+        /// <summary>
+        /// Type of the gate.
+        /// </summary>
         public GateType Type { get; init; }
 
+        /// <summary>
+        /// Create a gate from the <paramref name="context"/>.
+        /// </summary>
+        /// <param name="context"></param>
+        /// <exception cref="NotImplementedException"></exception>
         public Gate(LuieParser.GateapplicationContext context)
         {
             string gate = context.GATE().GetText();

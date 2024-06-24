@@ -7,6 +7,6 @@ namespace LUIECompiler.CodeGeneration
         ///  Returns the QASM code for the statement.
         /// </summary>
         /// <returns></returns>
-        public abstract QASMCode ToQASM();
+        public abstract QASMProgram ToQASM();
     }
 }

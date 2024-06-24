@@ -13,14 +13,19 @@ namespace LUIECompiler.CodeGeneration.Statements
         /// Maps any <see cref="RegisterInfo"/> to the corresponding <see cref="Definition"/>.
         /// </summary>
         public required Dictionary<RegisterInfo, Definition> DefinitionDictionary { get; init; }
+
+        /// <summary>
+        /// Source code line of the statement.
+        /// </summary>
         public required int Line { get; init; }
-        public abstract QASMCode ToQASM();
+        public abstract QASMProgram ToQASM();
 
         /// <summary>
         /// Returns the QASM identifier of a given <paramref name="register"/>.
         /// </summary>
         /// <param name="register"></param>
         /// <returns></returns>
+        /// <exception cref="CodeGenerationException"></exception>
         protected string GetIdentifier([NotNull] RegisterInfo register)
         {
             if (!DefinitionDictionary.TryGetValue(register, out var definition))
@@ -33,6 +38,12 @@ namespace LUIECompiler.CodeGeneration.Statements
             return definition.Identifier;
         }
 
+        /// <summary>
+        /// Returns the <see cref="Definition"/> of a given <paramref name="register"/>
+        /// </summary>
+        /// <param name="register"></param>
+        /// <returns></returns>
+        /// <exception cref="CodeGenerationException"></exception>
         protected Definition GetDefinition([NotNull] RegisterInfo register)
         {
             if (!DefinitionDictionary.TryGetValue(register, out var definition))

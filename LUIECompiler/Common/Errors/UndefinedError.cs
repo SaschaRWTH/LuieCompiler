@@ -5,6 +5,9 @@ namespace LUIECompiler.Common.Errors
 {
     public class UndefinedError : CompilationError
     {
+        /// <summary>
+        /// Identifier that is undefined.
+        /// </summary>
         public string Identifier { get; init; }
 
         public UndefinedError(int line, string identifier)

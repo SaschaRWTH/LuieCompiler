@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using LUIECompiler.Common.Errors;
 
 namespace LUIECompiler.Common
 {
@@ -12,7 +13,7 @@ namespace LUIECompiler.Common
         /// </summary>
         public string UniqueIdenifier
         {
-            get 
+            get
             {
                 string id = $"id{_uniqueId}";
                 _uniqueId++;
@@ -22,6 +23,9 @@ namespace LUIECompiler.Common
 
         // Needs to be expanded by scope
 
+        /// <summary>
+        /// Dictionary that maps the identifier to its symbol information.
+        /// </summary>
         public Dictionary<string, SymbolInfo> IdentifierDictionary { get; init; } = new();
 
         public bool IsDefined(string identifier)
@@ -39,16 +43,6 @@ namespace LUIECompiler.Common
             Debug.Assert(!IdentifierDictionary.ContainsKey(symbolInfo.Identifier));
             IdentifierDictionary.Add(symbolInfo.Identifier, symbolInfo);
             return UniqueIdenifier;
-        }
-
-        public SymbolInfo GetSymbolInfo(string identifier){
-
-            if(!IdentifierDictionary.TryGetValue(identifier, out var info)){
-                // Error handling, undefined identifier!
-                throw new Exception("Undefined identifier");
-            }
-
-            return info;
         }
     }
 

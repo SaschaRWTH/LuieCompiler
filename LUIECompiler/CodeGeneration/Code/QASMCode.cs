@@ -2,28 +2,37 @@ using LUIECompiler.Common;
 
 namespace LUIECompiler.CodeGeneration.Codes
 {
-    public class QASMCode
+    public class QASMProgram
     {
+        /// <summary>
+        /// List of all code lines/entries in the program. 
+        /// </summary>
         public List<Code> Code { get; init; } = [];
 
-        public QASMCode() { }
+        public QASMProgram() { }
 
-        public QASMCode(Code command)
+        public QASMProgram(Code command)
         {
             Code.Add(command);
         }
 
-        public QASMCode(params Code[] commands)
+        public QASMProgram(params Code[] commands)
         {
             Code.AddRange(commands);
         }
 
-        public QASMCode(List<Code> commands)
+        public QASMProgram(List<Code> commands)
         {
             Code.AddRange(commands);
         }
 
-        public static QASMCode operator +(QASMCode first, QASMCode second)
+        /// <summary>
+        /// Adds together two programs by appending the <paramref name="second"/> to the <paramref name="first"/>.
+        /// </summary>
+        /// <param name="first"></param>
+        /// <param name="second"></param>
+        /// <returns></returns>
+        public static QASMProgram operator +(QASMProgram first, QASMProgram second)
         {
             return new()
             {
@@ -32,14 +41,14 @@ namespace LUIECompiler.CodeGeneration.Codes
         }
 
         /// <summary>
-        /// Returns a control version of the given <see cref="QASMCode"/>.
+        /// Returns a control version of the given <see cref="QASMProgram"/>.
         /// </summary>
         /// <param name="identifier"></param>
         /// <param name="negated"></param>
         /// <returns></returns>
-        public QASMCode AddControl(string identifier, bool negated = false)
+        public QASMProgram AddControl(string identifier, bool negated = false)
         {
-            QASMCode code = new();
+            QASMProgram code = new();
 
             foreach (Code line in Code)
             {
