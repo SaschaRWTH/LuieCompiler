@@ -5,15 +5,16 @@ using LUIECompiler.Common;
 using LUIECompiler.CodeGeneration.Codes;
 using LUIECompiler.Common.Errors;
 using LUIECompiler.CodeGeneration.Exceptions;
+using LUIECompiler.Common.Symbols;
 
 namespace LUIECompiler.CodeGeneration.Statements
 {
     public abstract class Statement : ITranslateable
     {
         /// <summary>
-        /// Maps any <see cref="RegisterInfo"/> to the corresponding <see cref="Definition"/>.
+        /// Maps any <see cref="Register"/> to the corresponding <see cref="Definition"/>.
         /// </summary>
-        public required Dictionary<RegisterInfo, Definition> DefinitionDictionary { get; init; }
+        public required Dictionary<Register, Definition> DefinitionDictionary { get; init; }
 
         /// <summary>
         /// Source code line of the statement.
@@ -27,7 +28,7 @@ namespace LUIECompiler.CodeGeneration.Statements
         /// <param name="register"></param>
         /// <returns></returns>
         /// <exception cref="CodeGenerationException"></exception>
-        protected string GetIdentifier([NotNull] RegisterInfo register)
+        protected string GetIdentifier([NotNull] Register register)
         {
             if (!DefinitionDictionary.TryGetValue(register, out var definition))
             {
@@ -45,7 +46,7 @@ namespace LUIECompiler.CodeGeneration.Statements
         /// <param name="register"></param>
         /// <returns></returns>
         /// <exception cref="CodeGenerationException"></exception>
-        protected Definition GetDefinition([NotNull] RegisterInfo register)
+        protected Definition GetDefinition([NotNull] Register register)
         {
             if (!DefinitionDictionary.TryGetValue(register, out var definition))
             {

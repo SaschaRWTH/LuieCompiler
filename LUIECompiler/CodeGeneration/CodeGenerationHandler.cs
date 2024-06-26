@@ -6,6 +6,7 @@ using LUIECompiler.CodeGeneration.Codes;
 using LUIECompiler.Common;
 using LUIECompiler.Common.Errors;
 using LUIECompiler.CodeGeneration.Exceptions;
+using LUIECompiler.Common.Symbols;
 
 namespace LUIECompiler.CodeGeneration
 {
@@ -19,7 +20,7 @@ namespace LUIECompiler.CodeGeneration
         /// <summary>
         /// Dictionary mapping all registers to a definition.
         /// </summary>
-        public Dictionary<RegisterInfo, Definition> DefinitionDictionary { get; } = [];
+        public Dictionary<Register, Definition> DefinitionDictionary { get; } = [];
 
         /// <summary>
         /// List of all definitions. 
@@ -34,7 +35,7 @@ namespace LUIECompiler.CodeGeneration
         /// <summary>
         /// Stack of the registers guarding the if-clauses.
         /// </summary>
-        public Stack<RegisterInfo> GuardStack { get; } = [];
+        public Stack<Register> GuardStack { get; } = [];
 
         /// <summary>
         ///  Main code block of the program.
@@ -56,7 +57,7 @@ namespace LUIECompiler.CodeGeneration
         /// <summary>
         /// Gets guard of the current if statement.
         /// </summary>
-        public RegisterInfo CurrentGuard
+        public Register CurrentGuard
         {
             get => GuardStack.Peek()
                 ?? throw new InternalException()
@@ -112,7 +113,7 @@ namespace LUIECompiler.CodeGeneration
         /// Pushes a given <paramref name="info"/> onto the guard stack.
         /// </summary>
         /// <param name="info"></param>
-        public void PushGuard([NotNull] RegisterInfo info)
+        public void PushGuard([NotNull] Register info)
         {
             GuardStack.Push(info);
         }
@@ -121,7 +122,7 @@ namespace LUIECompiler.CodeGeneration
         /// Pops the current guard stack.
         /// </summary>
         /// <returns></returns>
-        public RegisterInfo PopGuard()
+        public Register PopGuard()
         {
             return GuardStack.Pop();
         }
@@ -142,7 +143,7 @@ namespace LUIECompiler.CodeGeneration
                 };
             }
 
-            RegisterInfo info = new(identifier);
+            Register info = new(identifier);
             string id = Table.AddSymbol(info);
 
             RegisterDefinition definition = new()
@@ -179,19 +180,13 @@ namespace LUIECompiler.CodeGeneration
         /// <param name="identifier"></param>
         /// <returns></returns>
         /// <exception cref="Exception"></exception>
-        public SymbolInfo GetSymbolInfo(string identifier, int line)
+        public Symbol GetSymbolInfo(string identifier, int line)
         {
-
-            if (!Table.IdentifierDictionary.TryGetValue(identifier, out var info))
+            return Table.GetSymbolInfo(identifier) ?? throw new CodeGenerationException()
             {
-                // Error handling, undefined identifier!
-                throw new CodeGenerationException()
-                {
-                    Error = new UndefinedError(line, identifier)
-                };
-            }
+                Error = new UndefinedError(line, identifier)
+            };
 
-            return info;
         }
     }
 

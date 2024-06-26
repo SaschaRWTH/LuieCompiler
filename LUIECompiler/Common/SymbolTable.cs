@@ -1,5 +1,7 @@
 using System.Diagnostics;
+using LUIECompiler.CodeGeneration.Exceptions;
 using LUIECompiler.Common.Errors;
+using LUIECompiler.Common.Symbols;
 
 namespace LUIECompiler.Common
 {
@@ -21,16 +23,48 @@ namespace LUIECompiler.Common
             }
         }
 
-        // Needs to be expanded by scope
+        // TODO: Needs to be expanded by scope
+
+        public Stack<Dictionary<string, Symbol>> ScopeStack { get; init; } = new();
 
         /// <summary>
         /// Dictionary that maps the identifier to its symbol information.
         /// </summary>
-        public Dictionary<string, SymbolInfo> IdentifierDictionary { get; init; } = new();
+        public Dictionary<string, Symbol> CurrentIdentifierDictionary
+        {
+            get => ScopeStack.Peek() ?? throw new InternalException() { Reason = "Tried peeking an empty scope stack." };
+        }
 
+        public SymbolTable()
+        {
+            ScopeStack.Push([]);
+        }
+        
+        /// <summary>
+        /// Checks whether a given <paramref name="identifier"/> is definined.
+        /// </summary>
+        /// <param name="identifier"></param>
+        /// <returns></returns>
         public bool IsDefined(string identifier)
         {
-            return IdentifierDictionary.ContainsKey(identifier);
+            foreach (var dict in ScopeStack)
+            {
+                if (dict.ContainsKey(identifier))
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Checks whether a given <paramref name="identifier"/> is definined in the current scope.
+        /// </summary>
+        /// <param name="identifier"></param>
+        /// <returns></returns>
+        public bool IsDefinedInCurrentScop(string identifier)
+        {
+            return CurrentIdentifierDictionary.ContainsKey(identifier);
         }
 
         /// <summary>
@@ -38,26 +72,46 @@ namespace LUIECompiler.Common
         /// </summary>
         /// <param name="symbolInfo"></param>
         /// <returns></returns>
-        public string AddSymbol(SymbolInfo symbolInfo)
+        public string AddSymbol(Symbol symbolInfo)
         {
-            Debug.Assert(!IdentifierDictionary.ContainsKey(symbolInfo.Identifier));
-            IdentifierDictionary.Add(symbolInfo.Identifier, symbolInfo);
+            Debug.Assert(!CurrentIdentifierDictionary.ContainsKey(symbolInfo.Identifier));
+            CurrentIdentifierDictionary.Add(symbolInfo.Identifier, symbolInfo);
             return UniqueIdenifier;
         }
-    }
 
-    public class RegisterInfo : SymbolInfo
-    {
-        public RegisterInfo(string identifier) : base(identifier) { }
-    }
-
-    public class SymbolInfo
-    {
-        public string Identifier { get; init; }
-
-        public SymbolInfo(string identifier)
+        /// <summary>
+        /// Pushes a new scope onto the scope stack.
+        /// </summary>
+        public void PushScope()
         {
-            Identifier = identifier;
+            ScopeStack.Push([]);
+        }
+
+        
+        /// <summary>
+        /// Pops the current scope.
+        /// </summary>
+        /// <returns></returns>
+        public Dictionary<string, Symbol> PopScope()
+        {
+            return ScopeStack.Pop();
+        }
+
+        /// <summary>
+        /// Gets the 
+        /// </summary>
+        /// <param name="identifier"></param>
+        /// <returns></returns>
+        public Symbol? GetSymbolInfo(string identifier)
+        {
+            foreach (var dict in ScopeStack)
+            {
+                if (dict.TryGetValue(identifier, out var info))
+                {
+                    return info;
+                }
+            }
+            return null;
         }
     }
 

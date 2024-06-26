@@ -7,6 +7,7 @@ using LUIECompiler.CodeGeneration.Exceptions;
 using LUIECompiler.CodeGeneration.Statements;
 using LUIECompiler.Common;
 using LUIECompiler.Common.Errors;
+using LUIECompiler.Common.Symbols;
 
 namespace LUIECompiler.CodeGeneration
 {
@@ -26,7 +27,7 @@ namespace LUIECompiler.CodeGeneration
         public override void ExitGateapplication([NotNull] LuieParser.GateapplicationContext context)
         {
             string identifier = context.IDENTIFIER().GetText();
-            RegisterInfo? info = CodeGen.GetSymbolInfo(identifier, context.Start.Line) as RegisterInfo
+            Register? info = CodeGen.GetSymbolInfo(identifier, context.Start.Line) as Register
                                     ?? throw new CodeGenerationException()
                                     {
                                         Error = new TypeError(context.Start.Line, identifier),
@@ -48,7 +49,7 @@ namespace LUIECompiler.CodeGeneration
         public override void EnterQifStatement([NotNull] LuieParser.QifStatementContext context)
         {
             string identifier = context.IDENTIFIER().GetText();
-            RegisterInfo? info = CodeGen.GetSymbolInfo(identifier, context.Start.Line) as RegisterInfo
+            Register? info = CodeGen.GetSymbolInfo(identifier, context.Start.Line) as Register
                                     ?? throw new CodeGenerationException()
                                     {
                                         Error = new TypeError(context.Start.Line, identifier),

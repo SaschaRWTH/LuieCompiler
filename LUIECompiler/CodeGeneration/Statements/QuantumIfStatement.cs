@@ -1,6 +1,7 @@
 
 using LUIECompiler.Common;
 using LUIECompiler.CodeGeneration.Codes;
+using LUIECompiler.Common.Symbols;
 
 namespace LUIECompiler.CodeGeneration.Statements
 {
@@ -9,7 +10,7 @@ namespace LUIECompiler.CodeGeneration.Statements
         /// <summary>
         /// Guard of the <see cref="Block"/>.
         /// </summary>
-        public required RegisterInfo Guard { get; init; }
+        public required Register Guard { get; init; }
 
         /// <summary>
         /// Nexted block of the if statement.
