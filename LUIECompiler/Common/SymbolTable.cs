@@ -1,13 +1,14 @@
 using System.Diagnostics;
 using LUIECompiler.CodeGeneration.Exceptions;
-using LUIECompiler.Common.Errors;
 using LUIECompiler.Common.Symbols;
 
 namespace LUIECompiler.Common
 {
     public class SymbolTable
     {
-
+        /// <summary>
+        /// A unique id for each identifier in the symbol table.
+        /// </summary>
         private int _uniqueId = 0;
 
         /// <summary>
@@ -23,8 +24,9 @@ namespace LUIECompiler.Common
             }
         }
 
-        // TODO: Needs to be expanded by scope
-
+        /// <summary>
+        /// Stack of scopes mapping an identifier to the corrisponding <see cref="Symbol"/>. 
+        /// </summary>
         public Stack<Dictionary<string, Symbol>> ScopeStack { get; init; } = new();
 
         /// <summary>

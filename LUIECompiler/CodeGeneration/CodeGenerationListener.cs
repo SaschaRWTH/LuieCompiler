@@ -1,11 +1,9 @@
 
-using System.Diagnostics;
 using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Tree;
 using LUIECompiler.CodeGeneration.Codes;
 using LUIECompiler.CodeGeneration.Exceptions;
 using LUIECompiler.CodeGeneration.Statements;
-using LUIECompiler.Common;
 using LUIECompiler.Common.Errors;
 using LUIECompiler.Common.Symbols;
 
@@ -13,6 +11,9 @@ namespace LUIECompiler.CodeGeneration
 {
     public class CodeGenerationListener : LuieBaseListener
     {
+        /// <summary>
+        /// Code generations handler for the code generation listerner.
+        /// </summary>
         public CodeGenerationHandler CodeGen { get; } = new();
 
         public override void ExitDeclaration([NotNull] LuieParser.DeclarationContext context)

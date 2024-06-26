@@ -48,12 +48,21 @@ public class SemanticAnalysisTest
         "end\n" +
         "end";
 
+    /// <summary>
+    /// Gets a walker.
+    /// </summary>
+    /// <returns></returns>
     public ParseTreeWalker GetWalker()
     {
         ParseTreeWalker walker = new();
         return walker;
     }
 
+    /// <summary>
+    /// Creates a parser for the <paramref name="input"/>.
+    /// </summary>
+    /// <param name="input"></param>
+    /// <returns></returns>
     public LuieParser GetParser(string input)
     {
         AntlrInputStream inputStream = new AntlrInputStream(input.ToString());
@@ -63,6 +72,9 @@ public class SemanticAnalysisTest
         return luieParser;
     }
 
+    /// <summary>
+    /// Test that already defined identifiers are correctly reported.
+    /// </summary>
     [TestMethod]
     public void RedefineErrorTest()
     {
@@ -77,6 +89,9 @@ public class SemanticAnalysisTest
         Assert.IsTrue(error.Errors.Any(e => e is RedefineError && e.Line == 4));
     }
 
+    /// <summary>
+    /// Tests that undefined identifiers are correctly reported.
+    /// </summary>
     [TestMethod]
     public void UndefinedErrorTest()
     {
@@ -92,6 +107,9 @@ public class SemanticAnalysisTest
         Assert.IsTrue(error.Errors.Any(e => e is UndefinedError && e.Line == 5));
     }
 
+    /// <summary>
+    /// Test that in a simple, correct program with scopes there are no errors reported. 
+    /// </summary>
     [TestMethod]
     public void ScopeCorrectTest()
     {
@@ -104,6 +122,9 @@ public class SemanticAnalysisTest
         Assert.IsTrue(!error.ContainsCriticalError);
     }
 
+    /// <summary>
+    /// Test that redefinitions in correctly reported in scopes.
+    /// </summary>
     [TestMethod]
     public void ScopeIncorrectTest()
     {
@@ -117,6 +138,9 @@ public class SemanticAnalysisTest
         Assert.IsTrue(error.Errors.Any(e => e is RedefineError && e.Line == 6));
     }
 
+    /// <summary>
+    /// Tests that there are no errors reported when using an identifier defined in an outer scope.
+    /// </summary>
     [TestMethod]
     public void ScopeUseOfOuterScopeTest()
     {
@@ -129,6 +153,9 @@ public class SemanticAnalysisTest
         Assert.IsTrue(!error.ContainsCriticalError);
     }
 
+    /// <summary>
+    /// Tests whether the correct symbol is returned when using the same identifier in different scopes.
+    /// </summary>
     [TestMethod]
     public void CorrectInfoTest()
     {
