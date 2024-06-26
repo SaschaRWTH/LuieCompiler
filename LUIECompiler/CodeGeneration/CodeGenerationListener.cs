@@ -63,14 +63,19 @@ namespace LUIECompiler.CodeGeneration
             CodeGen.PopGuard();
         }
 
-        public override void EnterIfStat([NotNull] LuieParser.IfStatContext context)
+        public override void EnterBlock([NotNull] LuieParser.BlockContext context)
         {
             CodeGen.PushCodeBlock();
         }
 
+        public override void ExitBlock([NotNull] LuieParser.BlockContext context)
+        {
+            CodeGen.PopCodeBlock();
+        }
+
         public override void ExitIfStat([NotNull] LuieParser.IfStatContext context)
         {
-            CodeBlock block = CodeGen.PopCodeBlock();
+            CodeBlock block = CodeGen.CurrentBlock;
 
             int line = context.Start.Line;
             QuantumIfStatement statement = new()
@@ -84,14 +89,9 @@ namespace LUIECompiler.CodeGeneration
             CodeGen.AddStatement(statement);
         }
 
-        public override void EnterElseStat([NotNull] LuieParser.ElseStatContext context)
-        {
-            CodeGen.PushCodeBlock();
-        }
-
         public override void ExitElseStat([NotNull] LuieParser.ElseStatContext context)
         {
-            CodeBlock block = CodeGen.PopCodeBlock();
+            CodeBlock block = CodeGen.CurrentBlock;
 
             int line = context.Start.Line;
             QuantumIfStatement statement = new()

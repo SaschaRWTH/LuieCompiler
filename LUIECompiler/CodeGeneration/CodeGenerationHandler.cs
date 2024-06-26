@@ -40,7 +40,7 @@ namespace LUIECompiler.CodeGeneration
         /// <summary>
         ///  Main code block of the program.
         /// </summary>
-        public CodeBlock MainBlock { get; } = new();
+        public CodeBlock MainBlock { get => CodeBlocks.Last(); }
 
         /// <summary>
         /// Gets the current code block.
@@ -64,14 +64,6 @@ namespace LUIECompiler.CodeGeneration
                 {
                     Reason = "Tried to peek empty guard stack.",
                 };
-        }
-
-        /// <summary>
-        /// Creates a code generation handler and pushes a main code block onto the code stack.
-        /// </summary>
-        public CodeGenerationHandler()
-        {
-            CodeBlocks.Push(MainBlock);
         }
 
         /// <summary>

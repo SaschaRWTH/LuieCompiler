@@ -35,11 +35,6 @@ namespace LUIECompiler.Common
             get => ScopeStack.Peek() ?? throw new InternalException() { Reason = "Tried peeking an empty scope stack." };
         }
 
-        public SymbolTable()
-        {
-            ScopeStack.Push([]);
-        }
-        
         /// <summary>
         /// Checks whether a given <paramref name="identifier"/> is definined.
         /// </summary>
