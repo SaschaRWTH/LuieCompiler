@@ -49,37 +49,13 @@ public class SemanticAnalysisTest
         "end";
 
     /// <summary>
-    /// Gets a walker.
-    /// </summary>
-    /// <returns></returns>
-    public ParseTreeWalker GetWalker()
-    {
-        ParseTreeWalker walker = new();
-        return walker;
-    }
-
-    /// <summary>
-    /// Creates a parser for the <paramref name="input"/>.
-    /// </summary>
-    /// <param name="input"></param>
-    /// <returns></returns>
-    public LuieParser GetParser(string input)
-    {
-        AntlrInputStream inputStream = new AntlrInputStream(input.ToString());
-        LuieLexer luieLexer = new LuieLexer(inputStream);
-        CommonTokenStream commonTokenStream = new CommonTokenStream(luieLexer);
-        LuieParser luieParser = new LuieParser(commonTokenStream);
-        return luieParser;
-    }
-
-    /// <summary>
     /// Test that already defined identifiers are correctly reported.
     /// </summary>
     [TestMethod]
     public void RedefineErrorTest()
     {
-        var walker = GetWalker();
-        var parser = GetParser(InputSimple);
+        var walker = Utils.GetWalker();
+        var parser = Utils.GetParser(InputSimple);
         var analysis = new DeclarationAnalysisListener();
         walker.Walk(analysis, parser.parse());
         var error = analysis.Error;
@@ -95,8 +71,8 @@ public class SemanticAnalysisTest
     [TestMethod]
     public void UndefinedErrorTest()
     {
-        var walker = GetWalker();
-        var parser = GetParser(InputSimple);
+        var walker = Utils.GetWalker();
+        var parser = Utils.GetParser(InputSimple);
         var analysis = new DeclarationAnalysisListener();
         walker.Walk(analysis, parser.parse());
         var error = analysis.Error;
@@ -113,8 +89,8 @@ public class SemanticAnalysisTest
     [TestMethod]
     public void ScopeCorrectTest()
     {
-        var walker = GetWalker();
-        var parser = GetParser(InputScopeCorrect);
+        var walker = Utils.GetWalker();
+        var parser = Utils.GetParser(InputScopeCorrect);
         var analysis = new DeclarationAnalysisListener();
         walker.Walk(analysis, parser.parse());
         var error = analysis.Error;
@@ -128,8 +104,8 @@ public class SemanticAnalysisTest
     [TestMethod]
     public void ScopeIncorrectTest()
     {
-        var walker = GetWalker();
-        var parser = GetParser(InputScopeIncorrect);
+        var walker = Utils.GetWalker();
+        var parser = Utils.GetParser(InputScopeIncorrect);
         var analysis = new DeclarationAnalysisListener();
         walker.Walk(analysis, parser.parse());
         var error = analysis.Error;
@@ -144,8 +120,8 @@ public class SemanticAnalysisTest
     [TestMethod]
     public void ScopeUseOfOuterScopeTest()
     {
-        var walker = GetWalker();
-        var parser = GetParser(InputScopeUseOfOuterScope);
+        var walker = Utils.GetWalker();
+        var parser = Utils.GetParser(InputScopeUseOfOuterScope);
         var analysis = new DeclarationAnalysisListener();
         walker.Walk(analysis, parser.parse());
         var error = analysis.Error;
