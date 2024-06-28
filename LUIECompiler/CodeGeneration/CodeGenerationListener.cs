@@ -16,6 +16,8 @@ namespace LUIECompiler.CodeGeneration
         /// </summary>
         public CodeGenerationHandler CodeGen { get; } = new();
 
+        private CodeBlock? _lastPoped = null;
+
         public override void ExitDeclaration([NotNull] LuieParser.DeclarationContext context)
         {
             ITerminalNode id = context.IDENTIFIER();
@@ -71,12 +73,15 @@ namespace LUIECompiler.CodeGeneration
 
         public override void ExitBlock([NotNull] LuieParser.BlockContext context)
         {
-            CodeGen.PopCodeBlock();
+            _lastPoped = CodeGen.PopCodeBlock();
         }
 
         public override void ExitIfStat([NotNull] LuieParser.IfStatContext context)
         {
-            CodeBlock block = CodeGen.CurrentBlock;
+            CodeBlock block = _lastPoped ?? throw new InternalException()
+            {
+                Reason = "There was no last poped code block, although block should just have been exited."
+            };
 
             int line = context.Start.Line;
             QuantumIfStatement statement = new()
@@ -92,7 +97,10 @@ namespace LUIECompiler.CodeGeneration
 
         public override void ExitElseStat([NotNull] LuieParser.ElseStatContext context)
         {
-            CodeBlock block = CodeGen.CurrentBlock;
+            CodeBlock block = _lastPoped ?? throw new InternalException()
+            {
+                Reason = "There was no last poped code block, although block should just have been exited."
+            };
 
             int line = context.Start.Line;
             QuantumIfStatement statement = new()
