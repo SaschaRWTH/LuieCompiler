@@ -30,7 +30,7 @@ namespace LUIECompiler.CodeGeneration
         public override void ExitGateapplication([NotNull] LuieParser.GateapplicationContext context)
         {
             string identifier = context.IDENTIFIER().GetText();
-            Register? info = CodeGen.GetSymbolInfo(identifier, context.Start.Line) as Register
+            Qubit? info = CodeGen.GetSymbolInfo(identifier, context.Start.Line) as Qubit
                                     ?? throw new CodeGenerationException()
                                     {
                                         Error = new TypeError(context.Start.Line, identifier),
@@ -52,7 +52,7 @@ namespace LUIECompiler.CodeGeneration
         public override void EnterQifStatement([NotNull] LuieParser.QifStatementContext context)
         {
             string identifier = context.IDENTIFIER().GetText();
-            Register? info = CodeGen.GetSymbolInfo(identifier, context.Start.Line) as Register
+            Qubit? info = CodeGen.GetSymbolInfo(identifier, context.Start.Line) as Qubit
                                     ?? throw new CodeGenerationException()
                                     {
                                         Error = new TypeError(context.Start.Line, identifier),

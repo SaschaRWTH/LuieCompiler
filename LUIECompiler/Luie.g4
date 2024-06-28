@@ -9,9 +9,9 @@ block
  ;
 
 declaration
- : 'qubit' IDENTIFIER ';'
+ : 'qubit' ('[' SIZE ']')? IDENTIFIER ';'
  ;
-
+ 
 statement
  : gateapplication
  | qifStatement 
@@ -50,6 +50,10 @@ DO       : 'do';
 END       : 'end';
 
 SKIPSTAT     : 'skip';
+
+SIZE 
+ : [1-9] [0-9]*
+ ;
 
 IDENTIFIER 
  : [a-zA-Z_] [a-zA-Z_0-9]*

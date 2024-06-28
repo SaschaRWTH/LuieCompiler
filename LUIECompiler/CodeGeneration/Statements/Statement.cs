@@ -12,9 +12,9 @@ namespace LUIECompiler.CodeGeneration.Statements
     public abstract class Statement : ITranslateable
     {
         /// <summary>
-        /// Maps any <see cref="Register"/> to the corresponding <see cref="Definition"/>.
+        /// Maps any <see cref="Qubit"/> to the corresponding <see cref="Definition"/>.
         /// </summary>
-        public required Dictionary<Register, Definition> DefinitionDictionary { get; init; }
+        public required Dictionary<Qubit, Definition> DefinitionDictionary { get; init; }
 
         /// <summary>
         /// Source code line of the statement.
@@ -28,7 +28,7 @@ namespace LUIECompiler.CodeGeneration.Statements
         /// <param name="register"></param>
         /// <returns></returns>
         /// <exception cref="CodeGenerationException"></exception>
-        protected string GetIdentifier([NotNull] Register register)
+        protected string GetIdentifier([NotNull] Qubit register)
         {
             if (!DefinitionDictionary.TryGetValue(register, out var definition))
             {
@@ -46,7 +46,7 @@ namespace LUIECompiler.CodeGeneration.Statements
         /// <param name="register"></param>
         /// <returns></returns>
         /// <exception cref="CodeGenerationException"></exception>
-        protected Definition GetDefinition([NotNull] Register register)
+        protected Definition GetDefinition([NotNull] Qubit register)
         {
             if (!DefinitionDictionary.TryGetValue(register, out var definition))
             {

@@ -138,20 +138,20 @@ public class SemanticAnalysisTest
         SymbolTable table = new();
         
         table.PushScope();
-        Register firstA = new("A");
+        Qubit firstA = new("A");
         table.AddSymbol(firstA);
 
         table.PushScope();
-        Register secondA = new("A");
+        Qubit secondA = new("A");
         table.AddSymbol(secondA);
 
-        Register? secondScopeA = table.GetSymbolInfo("A") as Register;
+        Qubit? secondScopeA = table.GetSymbolInfo("A") as Qubit;
         Assert.IsNotNull(secondScopeA);
         Assert.AreNotEqual(firstA, secondScopeA);
         Assert.AreEqual(secondA, secondScopeA);
 
         table.PopScope();
-        Register? firstScopeA = table.GetSymbolInfo("A") as Register;
+        Qubit? firstScopeA = table.GetSymbolInfo("A") as Qubit;
         Assert.IsNotNull(secondScopeA);
         Assert.AreNotEqual(secondA, firstScopeA);
         Assert.AreEqual(firstA, firstScopeA);

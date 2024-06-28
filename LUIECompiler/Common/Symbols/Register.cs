@@ -3,7 +3,11 @@ namespace LUIECompiler.Common.Symbols
 
     public class Register : Symbol
     {
-        public Register(string identifier) : base(identifier) { }
+        public int Size { get; init; }
+        public Register(string identifier, int size) : base(identifier) 
+        {
+            Size = size;
+        }
     }
 
 }

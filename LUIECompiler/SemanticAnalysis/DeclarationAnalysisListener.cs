@@ -39,7 +39,7 @@ namespace LUIECompiler.SemanticAnalysis
             }
             else
             {
-                Register info = new(identifier);
+                Qubit info = new(identifier);
                 Table.AddSymbol(info);
             }
 

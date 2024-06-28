@@ -17,7 +17,7 @@ namespace LUIECompiler.CodeGeneration.Statements
         /// <summary>
         /// Register to which the gate is applied to.
         /// </summary>
-        public required Register Register { get; init; }
+        public required Qubit Register { get; init; }
 
         /// <summary>
         /// Returns the QASM code for the statement.

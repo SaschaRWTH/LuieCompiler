@@ -94,18 +94,18 @@ public class CodeGenerationTests
         CodeGenerationHandler handler = new();
 
         handler.PushCodeBlock();
-        Register firstA = handler.AddRegister("A", 1);
+        Qubit firstA = handler.AddRegister("A", 1);
 
         handler.PushCodeBlock();
-        Register secondA = handler.AddRegister("A", 2);
+        Qubit secondA = handler.AddRegister("A", 2);
 
-        Register? secondScopeA = handler.GetSymbolInfo("A", 3) as Register;
+        Qubit? secondScopeA = handler.GetSymbolInfo("A", 3) as Qubit;
         Assert.IsNotNull(secondScopeA);
         Assert.AreNotEqual(firstA, secondScopeA);
         Assert.AreEqual(secondA, secondScopeA);
 
         handler.PopCodeBlock();
-        Register? firstScopeA = handler.GetSymbolInfo("A", 4) as Register;
+        Qubit? firstScopeA = handler.GetSymbolInfo("A", 4) as Qubit;
         Assert.IsNotNull(secondScopeA);
         Assert.AreNotEqual(secondA, firstScopeA);
         Assert.AreEqual(firstA, firstScopeA);

@@ -7,7 +7,6 @@ using LUIECompiler.Common;
 using LUIECompiler.Common.Errors;
 using LUIECompiler.CodeGeneration.Exceptions;
 using LUIECompiler.Common.Symbols;
-using System.Diagnostics;
 
 namespace LUIECompiler.CodeGeneration
 {
@@ -21,7 +20,7 @@ namespace LUIECompiler.CodeGeneration
         /// <summary>
         /// Dictionary mapping all registers to a definition.
         /// </summary>
-        public Dictionary<Register, Definition> DefinitionDictionary { get; } = [];
+        public Dictionary<Qubit, Definition> DefinitionDictionary { get; } = [];
 
         /// <summary>
         /// List of all definitions. 
@@ -36,7 +35,7 @@ namespace LUIECompiler.CodeGeneration
         /// <summary>
         /// Stack of the registers guarding the if-clauses.
         /// </summary>
-        public Stack<Register> GuardStack { get; } = [];
+        public Stack<Qubit> GuardStack { get; } = [];
 
         /// <summary>
         ///  Main code block of the program.
@@ -58,7 +57,7 @@ namespace LUIECompiler.CodeGeneration
         /// <summary>
         /// Gets guard of the current if statement.
         /// </summary>
-        public Register CurrentGuard
+        public Qubit CurrentGuard
         {
             get => GuardStack.Peek()
                 ?? throw new InternalException()
@@ -115,7 +114,7 @@ namespace LUIECompiler.CodeGeneration
         /// Pushes a given <paramref name="info"/> onto the guard stack.
         /// </summary>
         /// <param name="info"></param>
-        public void PushGuard([NotNull] Register info)
+        public void PushGuard([NotNull] Qubit info)
         {
             GuardStack.Push(info);
         }
@@ -124,7 +123,7 @@ namespace LUIECompiler.CodeGeneration
         /// Pops the current guard stack.
         /// </summary>
         /// <returns></returns>
-        public Register PopGuard()
+        public Qubit PopGuard()
         {
             return GuardStack.Pop();
         }
@@ -135,7 +134,7 @@ namespace LUIECompiler.CodeGeneration
         /// </summary>
         /// <param name="identifier"></param>
         /// <exception cref="RedefineError"></exception>
-        public Register AddRegister(string identifier, int line)
+        public Qubit AddRegister(string identifier, int line)
         {
             if (Table.IsDefinedInCurrentScop(identifier))
             {
@@ -145,7 +144,7 @@ namespace LUIECompiler.CodeGeneration
                 };
             }
 
-            Register info = new(identifier);
+            Qubit info = new(identifier);
             string id = Table.AddSymbol(info);
 
             RegisterDefinition definition = new()
