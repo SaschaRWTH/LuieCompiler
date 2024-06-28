@@ -41,7 +41,7 @@ parameter
 
 register
  : IDENTIFIER
- | IDENTIFIER '[' size=INTEGER ']'
+ | IDENTIFIER '[' index=INTEGER ']'
  ;
 
 

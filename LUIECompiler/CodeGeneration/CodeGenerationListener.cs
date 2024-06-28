@@ -4,6 +4,7 @@ using Antlr4.Runtime.Tree;
 using LUIECompiler.CodeGeneration.Codes;
 using LUIECompiler.CodeGeneration.Exceptions;
 using LUIECompiler.CodeGeneration.Statements;
+using LUIECompiler.Common;
 using LUIECompiler.Common.Errors;
 using LUIECompiler.Common.Symbols;
 
@@ -51,7 +52,7 @@ namespace LUIECompiler.CodeGeneration
 
         public override void EnterQifStatement([NotNull] LuieParser.QifStatementContext context)
         {
-            string identifier = context.IDENTIFIER().GetText();
+            string identifier = context.register().GetIdentifier();
             Qubit? info = CodeGen.GetSymbolInfo(identifier, context.Start.Line) as Qubit
                                     ?? throw new CodeGenerationException()
                                     {

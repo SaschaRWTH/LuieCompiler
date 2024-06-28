@@ -61,8 +61,7 @@ namespace LUIECompiler.SemanticAnalysis
 
         public override void EnterQifStatement([NotNull] LuieParser.QifStatementContext context)
         {
-            var node = context.IDENTIFIER();
-            string identifier = node.GetText();
+            string identifier = context.register().GetIdentifier();
             CheckDefinedness(identifier, context);
         }
 
