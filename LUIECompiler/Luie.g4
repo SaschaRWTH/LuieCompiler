@@ -9,7 +9,7 @@ block
  ;
 
 declaration
- : 'qubit' ('[' SIZE ']')? IDENTIFIER ';'
+ : 'qubit' ('[' size=INTEGER ']')? IDENTIFIER ';'
  ;
  
 statement
@@ -18,12 +18,13 @@ statement
  | SKIPSTAT ';'
  ;
 
+// TODO: Change IDENTIFIER TO parameter
 gateapplication
  : GATE IDENTIFIER ';'
  ;
 
 qifStatement
- : IF IDENTIFIER ifStat elseStat? END
+ : IF register ifStat elseStat? END
  ;
  
 ifStat
@@ -34,24 +35,37 @@ elseStat
  : ELSE DO block
  ;
 
+parameter
+ : register (',' register)*
+ ;
+
+register
+ : IDENTIFIER
+ | IDENTIFIER '[' size=INTEGER ']'
+ ;
+
+
+
 GATE
  : XGATE
  | ZGATE
  | HGATE
  ;
 
-fragment XGATE : 'x';
-fragment ZGATE : 'z';
-fragment HGATE : 'h';
 
-IF       : 'qif';
-ELSE     : 'else';
-DO       : 'do';
-END       : 'end';
 
-SKIPSTAT     : 'skip';
+fragment XGATE  : 'x';
+fragment ZGATE  : 'z';
+fragment HGATE  : 'h';
 
-SIZE 
+IF     : 'qif';
+ELSE   : 'else';
+DO     : 'do';
+END    : 'end';
+
+SKIPSTAT        : 'skip';
+
+INTEGER 
  : [1-9] [0-9]*
  ;
 
