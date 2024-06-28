@@ -29,6 +29,33 @@ public class CodeGenerationTests
         "ctrl(1) @ h id1, id0;\n" +
         "ctrl(1) @ h id1, id2;\n";
 
+    public const string ScopeInput =
+            "qubit c;\n" +
+            "qubit y;\n" +
+            "x y;\n" +
+            "qif y do\n" +
+            "qubit y;\n" +
+            "qubit t;" +
+            "x c;\n" +
+            "h c;\n" +
+            "h t;\n" +
+            "h y;\n" +
+            "end";
+
+    /// <summary>
+    /// Beware: with changes to the translation code, the translations could change, while still being correct!
+    /// </summary>
+    public const string ScopeInputTranslation =
+        "qubit id0;\n" +
+        "qubit id1;\n" +
+        "qubit id2;\n" +
+        "qubit id3;\n" +
+        "x id1;\n" +
+        "ctrl(1) @ x id1, id0;\n" +
+        "ctrl(1) @ h id1, id0;\n" +
+        "ctrl(1) @ h id1, id3;\n" +
+        "ctrl(1) @ h id1, id2;\n";
+
     [TestMethod]
     public void SimpleInputTest()
     {
@@ -42,6 +69,22 @@ public class CodeGenerationTests
         Assert.IsNotNull(code);
 
         Assert.AreEqual(code, SimpleInputTranslation);
+    }
+
+
+    [TestMethod]
+    public void ScopeInputTest()
+    {
+        var walker = Utils.GetWalker();
+        var parser = Utils.GetParser(ScopeInput);
+
+        var codegen = new CodeGenerationListener();
+        walker.Walk(codegen, parser.parse());
+
+        string? code = codegen.CodeGen.GenerateCode()?.ToString();
+        Assert.IsNotNull(code);
+
+        Assert.AreEqual(code, ScopeInputTranslation);
     }
 
 
