@@ -40,7 +40,7 @@ namespace LUIECompiler.CodeGeneration
         /// <summary>
         ///  Main code block of the program.
         /// </summary>
-        public CodeBlock MainBlock { get => CodeBlocks.Last(); }
+        public CodeBlock MainBlock { get; } = new();
 
         /// <summary>
         /// Gets the current code block.
@@ -71,6 +71,11 @@ namespace LUIECompiler.CodeGeneration
         /// </summary>
         public void PushCodeBlock()
         {
+            if (CodeBlocks.Count == 0)
+            {
+                CodeBlocks.Push(MainBlock);
+                return;
+            }
             CodeBlocks.Push(new());
             Table.PushScope();
         }
