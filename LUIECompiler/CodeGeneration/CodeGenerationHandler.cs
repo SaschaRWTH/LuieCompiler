@@ -72,6 +72,7 @@ namespace LUIECompiler.CodeGeneration
         public void PushCodeBlock()
         {
             CodeBlocks.Push(new());
+            Table.PushScope();
         }
 
         /// <summary>
@@ -81,7 +82,7 @@ namespace LUIECompiler.CodeGeneration
         /// <exception cref="InternalException"></exception>
         public CodeBlock PopCodeBlock()
         {
-            if (CodeBlocks.Count <= 1)
+            if (CodeBlocks.Count < 1)
             {
                 throw new InternalException()
                 {
@@ -89,6 +90,7 @@ namespace LUIECompiler.CodeGeneration
                 };
             }
 
+            Table.PopScope();
             return CodeBlocks.Pop();
         }
 
@@ -125,9 +127,9 @@ namespace LUIECompiler.CodeGeneration
         /// </summary>
         /// <param name="identifier"></param>
         /// <exception cref="RedefineError"></exception>
-        public void AddRegister(string identifier, int line)
+        public Register AddRegister(string identifier, int line)
         {
-            if (Table.IsDefined(identifier))
+            if (Table.IsDefinedInCurrentScop(identifier))
             {
                 throw new CodeGenerationException()
                 {
@@ -146,6 +148,8 @@ namespace LUIECompiler.CodeGeneration
             Definitions.Add(definition);
 
             DefinitionDictionary.Add(info, definition);
+
+            return info;
         }
 
         /// <summary>

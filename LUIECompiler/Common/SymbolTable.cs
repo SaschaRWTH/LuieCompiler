@@ -71,7 +71,7 @@ namespace LUIECompiler.Common
         /// <returns></returns>
         public string AddSymbol(Symbol symbolInfo)
         {
-            Debug.Assert(!CurrentIdentifierDictionary.ContainsKey(symbolInfo.Identifier));
+            Debug.Assert(!IsDefinedInCurrentScop(symbolInfo.Identifier));
             CurrentIdentifierDictionary.Add(symbolInfo.Identifier, symbolInfo);
             return UniqueIdenifier;
         }
