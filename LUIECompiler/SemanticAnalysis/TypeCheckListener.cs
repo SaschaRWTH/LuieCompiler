@@ -19,6 +19,16 @@ namespace LUIECompiler.SemanticAnalysis
         /// </summary>
         public ErrorHandler Error { get; init; } = new();
 
+        public override void EnterBlock([NotNull] LuieParser.BlockContext context)
+        {
+            Table.PushScope();
+        }
+
+        public override void ExitBlock([NotNull] LuieParser.BlockContext context)
+        {
+            Table.PopScope();
+        }
+        
         public override void ExitDeclaration([NotNull] LuieParser.DeclarationContext context)
         {
             ITerminalNode id = context.IDENTIFIER();
@@ -72,10 +82,12 @@ namespace LUIECompiler.SemanticAnalysis
                 return;
             }
 
-            if (symbol is Register && !registerContext.TryGetIndex(out int _))
+            if (symbol is Register && registerContext.TryGetIndex(out int _))
             {
-                Error.Report(new TypeError(context.Start.Line, identifier));
+                return;
             }
+
+            Error.Report(new TypeError(context.Start.Line, identifier));
         }
     }
 
