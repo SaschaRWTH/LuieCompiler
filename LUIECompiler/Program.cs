@@ -43,7 +43,7 @@ namespace LUIECompiler
                 var codegen = new CodeGenerationListener();
                 walker.Walk(codegen, luieParser.parse());
 
-                Console.WriteLine(codegen.CodeGen.GenerateCode());
+                // Console.WriteLine(codegen.CodeGen.GenerateCode());
 
             }
             catch (Exception ex)

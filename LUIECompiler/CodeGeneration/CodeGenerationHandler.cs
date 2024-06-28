@@ -7,6 +7,7 @@ using LUIECompiler.Common;
 using LUIECompiler.Common.Errors;
 using LUIECompiler.CodeGeneration.Exceptions;
 using LUIECompiler.Common.Symbols;
+using System.Diagnostics;
 
 namespace LUIECompiler.CodeGeneration
 {
@@ -71,13 +72,15 @@ namespace LUIECompiler.CodeGeneration
         /// </summary>
         public void PushCodeBlock()
         {
+            Table.PushScope();
             if (CodeBlocks.Count == 0)
             {
                 CodeBlocks.Push(MainBlock);
-                return;
             }
-            CodeBlocks.Push(new());
-            Table.PushScope();
+            else
+            {
+                CodeBlocks.Push(new());
+            }
         }
 
         /// <summary>
@@ -87,7 +90,7 @@ namespace LUIECompiler.CodeGeneration
         /// <exception cref="InternalException"></exception>
         public CodeBlock PopCodeBlock()
         {
-            if (CodeBlocks.Count < 1)
+            if (CodeBlocks.Count <= 0)
             {
                 throw new InternalException()
                 {

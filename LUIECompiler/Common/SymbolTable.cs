@@ -34,7 +34,14 @@ namespace LUIECompiler.Common
         /// </summary>
         public Dictionary<string, Symbol> CurrentIdentifierDictionary
         {
-            get => ScopeStack.Peek() ?? throw new InternalException() { Reason = "Tried peeking an empty scope stack." };
+            get
+            {
+                if (ScopeStack.Count == 0)
+                {
+                    throw new InternalException() { Reason = "Tried peeking an empty scope stack." };
+                }
+                return ScopeStack.Peek() ?? throw new InternalException() { Reason = "Top most element on scope stack null." };
+            }
         }
 
         /// <summary>
@@ -84,7 +91,7 @@ namespace LUIECompiler.Common
             ScopeStack.Push([]);
         }
 
-        
+
         /// <summary>
         /// Pops the current scope.
         /// </summary>
