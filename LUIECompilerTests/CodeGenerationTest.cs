@@ -4,7 +4,7 @@ using LUIECompiler.Common.Symbols;
 namespace LUIECompilerTests;
 
 [TestClass]
-public class CodeGenerationTests
+public class CodeGenerationTest
 {
     public const string SimpleInput =
         "qubit c;\n" +
