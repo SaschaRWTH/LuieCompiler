@@ -20,7 +20,7 @@ namespace LUIECompiler.CodeGeneration
         /// <summary>
         /// Dictionary mapping all registers to a definition.
         /// </summary>
-        public Dictionary<Qubit, Definition> DefinitionDictionary { get; } = [];
+        public Dictionary<Register, Definition> DefinitionDictionary { get; } = [];
 
         /// <summary>
         /// List of all definitions. 
@@ -128,14 +128,8 @@ namespace LUIECompiler.CodeGeneration
             return GuardStack.Pop();
         }
 
-        /// <summary>
-        /// Adds a register to the code generation handler. This includes adding it to the symbol table,
-        /// creating a definition with a unique id, and adding the definition the the definition dictionary.
-        /// </summary>
-        /// <param name="identifier"></param>
-        /// <exception cref="RedefineError"></exception>
-        public Qubit AddRegister(string identifier, int line)
-        {
+        public Qubit AddQubit(string identifier, int line)
+        {            
             if (Table.IsDefinedInCurrentScop(identifier))
             {
                 throw new CodeGenerationException()
@@ -150,6 +144,39 @@ namespace LUIECompiler.CodeGeneration
             RegisterDefinition definition = new()
             {
                 Identifier = id,
+                Size = 1,
+            };
+
+            Definitions.Add(definition);
+
+            DefinitionDictionary.Add(info, definition);
+
+            return info;
+        }
+
+        /// <summary>
+        /// Adds a register to the code generation handler. This includes adding it to the symbol table,
+        /// creating a definition with a unique id, and adding the definition the the definition dictionary.
+        /// </summary>
+        /// <param name="identifier"></param>
+        /// <exception cref="RedefineError"></exception>
+        public Register AddRegister(string identifier, int size, int line)
+        {
+            if (Table.IsDefinedInCurrentScop(identifier))
+            {
+                throw new CodeGenerationException()
+                {
+                    Error = new RedefineError(line, identifier),
+                };
+            }
+
+            Register info = new(identifier, size);
+            string id = Table.AddSymbol(info);
+
+            RegisterDefinition definition = new()
+            {
+                Identifier = id,
+                Size = size,
             };
 
             Definitions.Add(definition);

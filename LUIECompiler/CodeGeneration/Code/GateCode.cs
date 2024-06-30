@@ -26,32 +26,42 @@ namespace LUIECompiler.CodeGeneration.Codes
         public required Gate Gate { get; init; }
         // TODO: extend to multiple params
 
+        public int? Index { get; init; }
         /// <summary>
         /// Register parameter for the gate.
         /// </summary>
         public required RegisterDefinition Register { get; init; }
+        private string TargetCode()
+        {
+            if (Index == null)
+            {
+                return $"{Register.Identifier}";
+            }
+            return $"{Register.Identifier}[{Index}]";
+        }
 
         public override string ToCode()
         {
             if (Guards.Count == 0)
             {
-                return $"{Gate} {Register.Identifier};";
+                return $"{Gate} {TargetCode()};";
             }
 
             if (NegativeGuards.Count == 0)
             {
-                return $"ctrl({PositiveGuards.Count}) @ {Gate} {string.Join(", ", PositiveGuards)}, {Register.Identifier};";
+                return $"ctrl({PositiveGuards.Count}) @ {Gate} {string.Join(", ", PositiveGuards)}, {TargetCode()};";
             }
 
             if (PositiveGuards.Count == 0)
             {
-                return $"negctrl({NegativeGuards.Count}) @ {Gate} {string.Join(", ", NegativeGuards)}, {Register.Identifier};";
+                return $"negctrl({NegativeGuards.Count}) @ {Gate} {string.Join(", ", NegativeGuards)}, {TargetCode()};";
             }
 
 
             return $"negctrl({NegativeGuards.Count}) @ ctrl({PositiveGuards.Count}) @" +
                    $"{Gate} {string.Join(", ", NegativeGuards)}," +
-                   $"{string.Join(", ", PositiveGuards)}, {Register.Identifier};";
+                   $"{string.Join(", ", PositiveGuards)}, {TargetCode()};";
         }
+
     }
 }

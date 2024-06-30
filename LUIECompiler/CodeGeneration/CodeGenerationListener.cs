@@ -21,28 +21,30 @@ namespace LUIECompiler.CodeGeneration
 
         public override void ExitDeclaration([NotNull] LuieParser.DeclarationContext context)
         {
-            ITerminalNode id = context.IDENTIFIER();
-            string identifier = id.GetText();
+            string identifier = context.IDENTIFIER().GetText();
 
-            CodeGen.AddRegister(identifier, context.Start.Line);
+            if (context.TryGetSize(out int size))
+            {
+                CodeGen.AddRegister(identifier, size, context.Start.Line);
+            }
+            else
+            {
+                CodeGen.AddQubit(identifier, context.Start.Line);
+            }
+
         }
 
 
         public override void ExitGateapplication([NotNull] LuieParser.GateapplicationContext context)
         {
-            string identifier = context.IDENTIFIER().GetText();
-            Qubit? info = CodeGen.GetSymbolInfo(identifier, context.Start.Line) as Qubit
-                                    ?? throw new CodeGenerationException()
-                                    {
-                                        Error = new TypeError(context.Start.Line, identifier),
-                                    };
+            Qubit info = context.GetTarget(CodeGen.Table);
 
             Gate gate = new(context);
             int line = context.Start.Line;
             GateApplicationStatement statement = new()
             {
                 Gate = gate,
-                Register = info,
+                Qubit = info,
                 DefinitionDictionary = CodeGen.DefinitionDictionary,
                 Line = line,
             };
@@ -52,13 +54,7 @@ namespace LUIECompiler.CodeGeneration
 
         public override void EnterQifStatement([NotNull] LuieParser.QifStatementContext context)
         {
-            string identifier = context.register().GetIdentifier();
-            Qubit? info = CodeGen.GetSymbolInfo(identifier, context.Start.Line) as Qubit
-                                    ?? throw new CodeGenerationException()
-                                    {
-                                        Error = new TypeError(context.Start.Line, identifier),
-                                    };
-
+            Qubit? info = context.GetGuard(CodeGen.Table);
             CodeGen.PushGuard(info);
         }
 

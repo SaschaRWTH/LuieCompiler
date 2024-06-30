@@ -20,7 +20,7 @@ statement
 
 // TODO: Change IDENTIFIER TO parameter
 gateapplication
- : GATE IDENTIFIER ';'
+ : GATE register ';'
  ;
 
 qifStatement

@@ -2,17 +2,26 @@ using LUIECompiler.CodeGeneration.Definitions;
 
 namespace LUIECompiler.CodeGeneration.Codes
 {
-    public class DefinitionCode : Code 
+    public class DefinitionCode : Code
     {
-        // TODO: extend by size
         /// <summary>
         /// Register that is defined.
         /// </summary>
-        public required RegisterDefinition Register { get; init; }  
+        public required RegisterDefinition Register { get; init; }
+
+        /// <summary>
+        /// The size of the register.
+        /// </summary>
+        public required int Size { get; init; }
 
         public override string ToCode()
         {
-            return $"qubit {Register.Identifier};";
-        } 
+            if (Size == 1)
+            {
+                return $"qubit {Register.Identifier};";
+            }
+
+            return $"qubit[{Size}] {Register.Identifier};";
+        }
     }
 }

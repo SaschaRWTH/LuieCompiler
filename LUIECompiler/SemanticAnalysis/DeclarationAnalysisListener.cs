@@ -53,8 +53,7 @@ namespace LUIECompiler.SemanticAnalysis
 
         public override void ExitGateapplication([NotNull] LuieParser.GateapplicationContext context)
         {
-            var node = context.IDENTIFIER();
-            string identifier = node.GetText();
+            string identifier = context.register().GetIdentifier();
             CheckDefinedness(identifier, context);
             // Could check type here, or create new TypeCheckListener
         }

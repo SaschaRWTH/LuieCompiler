@@ -68,7 +68,7 @@ namespace LUIECompiler.SemanticAnalysis
 
         public override void ExitGateapplication([NotNull] LuieParser.GateapplicationContext context)
         {
-            string identifier = context.IDENTIFIER().GetText();
+            string identifier = context.register().GetIdentifier();
 
             Symbol? symbol = Table.GetSymbolInfo(identifier);
             if (symbol == null)

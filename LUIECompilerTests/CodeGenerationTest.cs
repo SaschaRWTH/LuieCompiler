@@ -94,10 +94,10 @@ public class CodeGenerationTest
         CodeGenerationHandler handler = new();
 
         handler.PushCodeBlock();
-        Qubit firstA = handler.AddRegister("A", 1);
+        Qubit firstA = handler.AddQubit("A", 1);
 
         handler.PushCodeBlock();
-        Qubit secondA = handler.AddRegister("A", 2);
+        Qubit secondA = handler.AddQubit("A", 2);
 
         Qubit? secondScopeA = handler.GetSymbolInfo("A", 3) as Qubit;
         Assert.IsNotNull(secondScopeA);

@@ -15,18 +15,10 @@ namespace LUIECompiler
 
             string input =
             "qubit[3] c;\n" +
-            "qubit y;\n" +
-            "x y;\n" +
+            "x c[1];\n" +
             "qif c[1] do\n" +
+            "x c[1];\n" +
             "qubit y;\n" +
-            "qubit c;" +
-            "qubit t;" +
-            "qif c do\n" +
-            "x c;\n" +
-            "end\n" +
-            "h c;\n" +
-            "h t;\n" +
-            "h y;\n" +
             "end";
 
             try
@@ -37,8 +29,8 @@ namespace LUIECompiler
                 LuieParser luieParser = new LuieParser(commonTokenStream);
 
                 ParseTreeWalker walker = new();
-                var analysis = new TypeCheckListener();
-                walker.Walk(analysis, luieParser.parse());
+                // var analysis = new TypeCheckListener();
+                // walker.Walk(analysis, luieParser.parse());
 
                 // var error = analysis.Error;
                 // if (error.ContainsCriticalError)
@@ -60,6 +52,10 @@ namespace LUIECompiler
             catch (InternalException e)
             {
                 Console.WriteLine($"Internal error!: {e.Reason}");
+            }
+            catch (CodeGenerationException e)
+            {
+                Console.WriteLine($"Code gen exception: {e.Error}");
             }
             catch (Exception ex)
             {
