@@ -15,10 +15,11 @@ namespace LUIECompiler
 
             string input =
             "qubit[3] c;\n" +
+            "qubit[3] a;\n" +
             "x c[1];\n" +
             "qif c[1] do\n" +
             "x c[1];\n" +
-            "qubit y;\n" +
+            "cx c[0], a[2];\n" +
             "end";
 
             try

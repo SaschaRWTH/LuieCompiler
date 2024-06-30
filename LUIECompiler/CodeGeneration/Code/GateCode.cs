@@ -24,43 +24,36 @@ namespace LUIECompiler.CodeGeneration.Codes
         /// Gate to be executed
         /// </summary>
         public required Gate Gate { get; init; }
-        // TODO: extend to multiple params
 
-        public int? Index { get; init; }
-        /// <summary>
-        /// Register parameter for the gate.
-        /// </summary>
-        public required RegisterDefinition Register { get; init; }
-        private string TargetCode()
+
+        public required List<GateParameter> Parameters { get; init; }
+
+        private string GetParameters()
         {
-            if (Index == null)
-            {
-                return $"{Register.Identifier}";
-            }
-            return $"{Register.Identifier}[{Index}]";
+            return string.Join(", ", Parameters.Select(param => param.ToParameterCode()));
         }
 
         public override string ToCode()
         {
             if (Guards.Count == 0)
             {
-                return $"{Gate} {TargetCode()};";
+                return $"{Gate} {GetParameters()};";
             }
 
             if (NegativeGuards.Count == 0)
             {
-                return $"ctrl({PositiveGuards.Count}) @ {Gate} {string.Join(", ", PositiveGuards)}, {TargetCode()};";
+                return $"ctrl({PositiveGuards.Count}) @ {Gate} {string.Join(", ", PositiveGuards)}, {GetParameters()};";
             }
 
             if (PositiveGuards.Count == 0)
             {
-                return $"negctrl({NegativeGuards.Count}) @ {Gate} {string.Join(", ", NegativeGuards)}, {TargetCode()};";
+                return $"negctrl({NegativeGuards.Count}) @ {Gate} {string.Join(", ", NegativeGuards)}, {GetParameters()};";
             }
 
 
             return $"negctrl({NegativeGuards.Count}) @ ctrl({PositiveGuards.Count}) @" +
                    $"{Gate} {string.Join(", ", NegativeGuards)}," +
-                   $"{string.Join(", ", PositiveGuards)}, {TargetCode()};";
+                   $"{string.Join(", ", PositiveGuards)}, {GetParameters()};";
         }
 
     }

@@ -44,8 +44,7 @@ namespace LUIECompiler.CodeGeneration
             GateApplicationStatement statement = new()
             {
                 Gate = gate,
-                // TODO: Change to params
-                Qubit = paramerts[0],
+                Parameters = paramerts,
                 DefinitionDictionary = CodeGen.DefinitionDictionary,
                 Line = line,
             };

@@ -17,40 +17,31 @@ namespace LUIECompiler.CodeGeneration.Statements
         /// <summary>
         /// Register to which the gate is applied to.
         /// </summary>
-        public required Qubit Qubit { get; init; }
+        public required List<Qubit> Parameters { get; init; }
 
         /// <summary>
         /// Returns the QASM code for the statement.
         /// </summary>
         /// <returns></returns>
-        /// <exception cref="CodeGenerationException"></exception>
         public override QASMProgram ToQASM()
         {
-            if (Qubit is RegisterAccess access)
-            {
-                return new(new GateCode()
-                {
-                    Gate = Gate,
-                    Guards = [],
-                    Register = GetDefinition(access.Register) as RegisterDefinition
-                            ?? throw new CodeGenerationException()
-                            {
-                                Error = new TypeError(Line, Qubit.Identifier),
-                            },
-                    Index = access.Index,
-                });
-            }
-
             return new(new GateCode()
             {
                 Gate = Gate,
                 Guards = [],
-                Register = GetDefinition(Qubit) as RegisterDefinition
-                        ?? throw new CodeGenerationException()
-                        {
-                            Error = new TypeError(Line, Qubit.Identifier),
-                        },
+                Parameters = GetParameters(),
             });
+        }
+
+        public List<GateParameter> GetParameters()
+        {
+            return Parameters.Select(param =>
+            {
+                return param.ToQASMParameter(GetDefinition(param) as RegisterDefinition ?? throw new CodeGenerationException()
+                {
+                    Error = new TypeError(Line, param.Identifier),
+                });
+            }).ToList();
         }
     }
 

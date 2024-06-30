@@ -1,3 +1,6 @@
+using LUIECompiler.CodeGeneration.Codes;
+using LUIECompiler.CodeGeneration.Definitions;
+
 namespace LUIECompiler.Common.Symbols
 {
 
@@ -10,6 +13,15 @@ namespace LUIECompiler.Common.Symbols
         {
             Index = index;
             Register = register;
+        }
+
+        public override GateParameter ToQASMParameter(RegisterDefinition definition)
+        {
+            return new RegisterAccessGateParameter()
+            {
+                Register = definition,
+                Index = Index,
+            };
         }
     }
 

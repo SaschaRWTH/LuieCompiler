@@ -57,6 +57,8 @@ namespace LUIECompiler.CodeGeneration.Codes
             return Type switch
             {
                 GateType.X => "x",
+                GateType.CX => "cx",
+                GateType.CCX => "ccx",
                 GateType.Z => "z",
                 GateType.Y => "y",
                 GateType.H => "h",

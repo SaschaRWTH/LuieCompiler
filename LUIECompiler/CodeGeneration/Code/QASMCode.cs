@@ -71,8 +71,10 @@ namespace LUIECompiler.CodeGeneration.Codes
                          .. gate.Guards
                     ],
                     Gate = gate.Gate,
-                    Register = gate.Register,
-                    Index = gate.Index,
+                    Parameters =
+                    [
+                        .. gate.Parameters
+                    ],
                 });
             }
 
