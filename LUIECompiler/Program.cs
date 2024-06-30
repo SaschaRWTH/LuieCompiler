@@ -40,22 +40,22 @@ namespace LUIECompiler
                 var analysis = new TypeCheckListener();
                 walker.Walk(analysis, luieParser.parse());
 
-                var error = analysis.Error;
-                if (error.ContainsCriticalError)
-                {
-                    Console.WriteLine("Critical error occured! Cannot compile.");
-                }
-                Console.WriteLine(error.ToString());
+                // var error = analysis.Error;
+                // if (error.ContainsCriticalError)
+                // {
+                //     Console.WriteLine("Critical error occured! Cannot compile.");
+                // }
+                // Console.WriteLine(error.ToString());
 
-                // var codegen = new CodeGenerationListener();
-                // walker.Walk(codegen, luieParser.parse());
+                var codegen = new CodeGenerationListener();
+                walker.Walk(codegen, luieParser.parse());
 
                 // Console.WriteLine($" Definitions count: {codegen.CodeGen.Definitions.Count}");
                 // Console.WriteLine($" main hash: {codegen.CodeGen.MainBlock.GetHashCode()}");
                 // Console.WriteLine($" if block  hash: {codegen.CodeGen.MainBlock.Statements.Where(s => s is QuantumIfStatement).Cast<QuantumIfStatement>().ToList()[0].Block.GetHashCode()}");
                 // Console.WriteLine($" if statements in main count: {codegen.CodeGen.MainBlock.Statements.Where(s => s is QuantumIfStatement).Count()}");
 
-                // Console.WriteLine(codegen.CodeGen.GenerateCode());
+                Console.WriteLine(codegen.CodeGen.GenerateCode());
             }
             catch (InternalException e)
             {

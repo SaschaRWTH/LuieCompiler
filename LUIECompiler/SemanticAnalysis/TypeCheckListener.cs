@@ -28,7 +28,7 @@ namespace LUIECompiler.SemanticAnalysis
         {
             Table.PopScope();
         }
-        
+
         public override void ExitDeclaration([NotNull] LuieParser.DeclarationContext context)
         {
             ITerminalNode id = context.IDENTIFIER();
@@ -46,6 +46,24 @@ namespace LUIECompiler.SemanticAnalysis
             Table.AddSymbol(reg);
 
             base.ExitDeclaration(context);
+        }
+
+        public override void ExitRegister([NotNull] LuieParser.RegisterContext context)
+        {
+            string identifier = context.IDENTIFIER().GetText();
+
+            Symbol? symbol = Table.GetSymbolInfo(identifier);
+            if (symbol == null)
+            {
+                Error.Report(new UndefinedError(context.Start.Line, identifier));
+                return;
+            }
+
+            // Cannot access qubit with []
+            if (symbol is Qubit && context.TryGetIndex(out int _))
+            {
+                Error.Report(new UndefinedError(context.Start.Line, identifier));
+            }
         }
 
         public override void ExitGateapplication([NotNull] LuieParser.GateapplicationContext context)
