@@ -8,9 +8,9 @@ public class CodeGenerationTest
 {
     public const string SimpleInput =
         "qubit c;\n" +
-        "qubit y;\n" +
-        "x y;\n" +
-        "qif y do\n" +
+        "qubit a;\n" +
+        "x a;\n" +
+        "qif a do\n" +
         "qubit t;" +
         "x c;\n" +
         "h c;\n" +
@@ -31,15 +31,15 @@ public class CodeGenerationTest
 
     public const string ScopeInput =
             "qubit c;\n" +
-            "qubit y;\n" +
-            "x y;\n" +
-            "qif y do\n" +
-            "qubit y;\n" +
+            "qubit a;\n" +
+            "x a;\n" +
+            "qif a do\n" +
+            "qubit a;\n" +
             "qubit t;" +
             "x c;\n" +
             "h c;\n" +
             "h t;\n" +
-            "h y;\n" +
+            "h a;\n" +
             "end";
 
     /// <summary>

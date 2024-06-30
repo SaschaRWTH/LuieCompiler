@@ -12,10 +12,10 @@ public class TypeCheckTest
 {
     public const string InputCorrect =
         "qubit[3] c;\n" +
-        "qubit y;\n" +
-        "x y;\n" +
+        "qubit b;\n" +
+        "x b;\n" +
         "qif c[1] do\n" +
-        "qubit y;\n" +
+        "qubit b;\n" +
         "qubit c;" +
         "qubit t;" +
         "qif c do\n" +
@@ -23,23 +23,23 @@ public class TypeCheckTest
         "end\n" +
         "h c;\n" +
         "h t;\n" +
-        "h y;\n" +
+        "h b;\n" +
         "end";
 
 
     public const string InputIncorrect =
         "qubit[3] c;\n" +
-        "qubit y;\n" +
-        "x y;\n" +
+        "qubit b;\n" +
+        "x b;\n" +
         "qif c do\n" +
-        "qubit y;\n" +
+        "qubit b;\n" +
         "qubit[2] t;\n" +
         "qif t do\n" +
         "x i;\n" +
         "end\n" +
         "h c;\n" +
         "h t;\n" +
-        "h y;\n" +
+        "h b;\n" +
         "end";
 
 

@@ -32,6 +32,7 @@ namespace LUIECompiler.SemanticAnalysis
 
         public override void ExitDeclaration([NotNull] LuieParser.DeclarationContext context)
         {
+            
             ITerminalNode id = context.IDENTIFIER();
             string identifier = id.GetText();
 

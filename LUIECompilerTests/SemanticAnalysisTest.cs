@@ -13,9 +13,9 @@ public class SemanticAnalysisTest
     public const string InputSimple =
         "qubit c;\n" +
         "qubit b;\n" +
-        "x y;\n" +
+        "x a;\n" +
         "qubit c;\n" +
-        "qif y do\n" +
+        "qif a do\n" +
         "skip;\n" +
         "end";
 
