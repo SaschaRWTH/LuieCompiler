@@ -8,6 +8,11 @@ namespace LUIECompiler.Common.Symbols
         {
             Size = size;
         }
+
+        public override string ToString()
+        {
+            return $"Register: [Identifier = {Identifier}, size = {Size}]";
+        }
     }
 
 }

@@ -26,6 +26,21 @@ namespace LUIECompiler.CodeGeneration.Statements
         /// <exception cref="CodeGenerationException"></exception>
         public override QASMProgram ToQASM()
         {
+            if (Qubit is RegisterAccess access)
+            {
+                return new(new GateCode()
+                {
+                    Gate = Gate,
+                    Guards = [],
+                    Register = GetDefinition(access.Register) as RegisterDefinition
+                            ?? throw new CodeGenerationException()
+                            {
+                                Error = new TypeError(Line, Qubit.Identifier),
+                            },
+                    Index = access.Index,
+                });
+            }
+
             return new(new GateCode()
             {
                 Gate = Gate,
@@ -35,7 +50,6 @@ namespace LUIECompiler.CodeGeneration.Statements
                         {
                             Error = new TypeError(Line, Qubit.Identifier),
                         },
-                Index = (Qubit as RegisterAccess)?.Index,
             });
         }
     }

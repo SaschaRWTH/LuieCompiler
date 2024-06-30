@@ -78,7 +78,7 @@ namespace LUIECompiler.Common
                 Error = new UndefinedError(context.Start.Line, identifier),
             };
 
-            if (symbol is not Register)
+            if (symbol is not Register register)
             {
                 throw new CodeGenerationException()
                 {
@@ -99,7 +99,7 @@ namespace LUIECompiler.Common
                 };
             }
 
-            return new RegisterAccess(identifier, index);
+            return new RegisterAccess(register, index);
         }
 
         public static Qubit GetGuard(this LuieParser.QifStatementContext context, SymbolTable table)
@@ -110,7 +110,7 @@ namespace LUIECompiler.Common
                 Error = new UndefinedError(context.Start.Line, identifier),
             };
 
-            if (symbol is not Register)
+            if (symbol is not Register register)
             {
                 throw new CodeGenerationException()
                 {
@@ -131,7 +131,7 @@ namespace LUIECompiler.Common
                 };
             }
 
-            return new RegisterAccess(identifier, index);
+            return new RegisterAccess(register, index);
         }
     }
 }

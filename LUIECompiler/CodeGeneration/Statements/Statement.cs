@@ -30,6 +30,11 @@ namespace LUIECompiler.CodeGeneration.Statements
         /// <exception cref="CodeGenerationException"></exception>
         protected string GetIdentifier([NotNull] Register register)
         {
+            if (register is RegisterAccess access)
+            {
+                register = access.Register;
+            }
+
             if (!DefinitionDictionary.TryGetValue(register, out var definition))
             {
                 throw new CodeGenerationException()
@@ -48,6 +53,11 @@ namespace LUIECompiler.CodeGeneration.Statements
         /// <exception cref="CodeGenerationException"></exception>
         protected Definition GetDefinition([NotNull] Register register)
         {
+            if (register is RegisterAccess access)
+            {
+                register = access.Register;
+            }
+
             if (!DefinitionDictionary.TryGetValue(register, out var definition))
             {
                 throw new CodeGenerationException()
