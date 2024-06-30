@@ -12,6 +12,11 @@ namespace LUIECompiler.Common
             return context.IDENTIFIER().GetText();
         }
 
+        public static IEnumerable<string> GetIdentifiers(this IEnumerable<LuieParser.RegisterContext> context)
+        {
+            return context.Select(c => c.GetIdentifier());
+        }
+
         public static bool HasIndex(this LuieParser.RegisterContext context)
         {
             return context.index != null;
@@ -70,9 +75,15 @@ namespace LUIECompiler.Common
             return true;
         }
 
-        public static Qubit GetTarget(this LuieParser.GateapplicationContext context, SymbolTable table)
+        public static List<Qubit> GetParameter(this LuieParser.GateapplicationContext context, SymbolTable table)
         {
-            string identifier = context.register().GetIdentifier();
+            List<LuieParser.RegisterContext> registers = context.register().ToList();
+            return registers.Select(register => SingleParameter(register, table)).ToList();
+        }
+
+        private static Qubit SingleParameter(LuieParser.RegisterContext context, SymbolTable table)
+        {
+            string identifier = context.GetIdentifier();
             Symbol symbol = table.GetSymbolInfo(identifier) ?? throw new CodeGenerationException()
             {
                 Error = new UndefinedError(context.Start.Line, identifier),
@@ -91,7 +102,7 @@ namespace LUIECompiler.Common
                 return qubit;
             }
 
-            if (!context.register().TryGetIndex(out int index))
+            if (!context.TryGetIndex(out int index))
             {
                 throw new CodeGenerationException()
                 {

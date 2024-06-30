@@ -17,10 +17,9 @@ statement
  | qifStatement 
  | SKIPSTAT ';'
  ;
-
-// TODO: Change IDENTIFIER TO parameter
+ 
 gateapplication
- : GATE register ';'
+ : GATE register (',' register)* ';'
  ;
 
 qifStatement
@@ -48,14 +47,18 @@ register
 
 GATE
  : XGATE
+ | CXGATE
+ | CCXGATE
  | ZGATE
+ | YGATE
  | HGATE
  ;
 
-
-
 fragment XGATE  : 'x';
+fragment CXGATE  : 'cx';
+fragment CCXGATE  : 'ccx';
 fragment ZGATE  : 'z';
+fragment YGATE  : 'y';
 fragment HGATE  : 'h';
 
 IF     : 'qif';

@@ -1,3 +1,4 @@
+using System.Data.Common;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Tree;
@@ -68,18 +69,21 @@ namespace LUIECompiler.SemanticAnalysis
 
         public override void ExitGateapplication([NotNull] LuieParser.GateapplicationContext context)
         {
-            string identifier = context.register().GetIdentifier();
+            List<string> identifiers = context.register().GetIdentifiers().ToList();
 
-            Symbol? symbol = Table.GetSymbolInfo(identifier);
-            if (symbol == null)
+            foreach (string identifier in identifiers)
             {
-                Error.Report(new UndefinedError(context.Start.Line, identifier));
-                return;
-            }
+                Symbol? symbol = Table.GetSymbolInfo(identifier);
+                if (symbol == null)
+                {
+                    Error.Report(new UndefinedError(context.Start.Line, identifier));
+                    return;
+                }
 
-            if (symbol is not Register)
-            {
-                Error.Report(new TypeError(context.Start.Line, identifier));
+                if (symbol is not Register)
+                {
+                    Error.Report(new TypeError(context.Start.Line, identifier));
+                }
             }
         }
 

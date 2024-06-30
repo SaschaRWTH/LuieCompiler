@@ -53,9 +53,11 @@ namespace LUIECompiler.SemanticAnalysis
 
         public override void ExitGateapplication([NotNull] LuieParser.GateapplicationContext context)
         {
-            string identifier = context.register().GetIdentifier();
-            CheckDefinedness(identifier, context);
-            // Could check type here, or create new TypeCheckListener
+            List<string> identifiers = context.register().GetIdentifiers().ToList();
+            foreach (string identifier in identifiers)
+            {
+                CheckDefinedness(identifier, context);
+            }
         }
 
         public override void EnterQifStatement([NotNull] LuieParser.QifStatementContext context)
@@ -75,7 +77,7 @@ namespace LUIECompiler.SemanticAnalysis
             {
                 return;
             }
-            
+
             Error.Report(new UndefinedError(context.Start.Line, identifier));
         }
 
