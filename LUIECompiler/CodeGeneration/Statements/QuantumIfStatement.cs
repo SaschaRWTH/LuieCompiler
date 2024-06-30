@@ -19,7 +19,18 @@ namespace LUIECompiler.CodeGeneration.Statements
 
         public override QASMProgram ToQASM()
         {
-            return Block.ToQASM().AddControl(identifier: GetIdentifier(Guard));
+            return Block.ToQASM().AddControl(identifier: IdentifierString());
+        }
+
+        protected string IdentifierString()
+        {
+            if (Guard is RegisterAccess access)
+            {
+                return $"{GetIdentifier(Guard)}[{access.Index}]";
+            }
+
+            return $"{GetIdentifier(Guard)}";
+
         }
     }
 

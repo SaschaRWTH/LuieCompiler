@@ -8,7 +8,7 @@ namespace LUIECompiler.CodeGeneration.Statements
     {
         public override QASMProgram ToQASM()
         {
-            return Block.ToQASM().AddControl(identifier: GetIdentifier(Guard), negated: true);
+            return Block.ToQASM().AddControl(identifier: IdentifierString(), negated: true);
         }
     }
 
