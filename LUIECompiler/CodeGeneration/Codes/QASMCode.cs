@@ -9,18 +9,33 @@ namespace LUIECompiler.CodeGeneration.Codes
         /// </summary>
         public List<Code> Code { get; init; } = [];
 
+        /// <summary>
+        /// Creates an empty instance of <see cref="QASMProgram"/>.
+        /// </summary>
         public QASMProgram() { }
 
+        /// <summary>
+        /// Creates an instance of <see cref="QASMProgram"/> with a single <paramref name="command"/>.
+        /// </summary>
+        /// <param name="command"></param>
         public QASMProgram(Code command)
         {
             Code.Add(command);
         }
 
+        /// <summary>
+        /// Creates an instance of <see cref="QASMProgram"/> with multiple <paramref name="commands"/>.
+        /// </summary>
+        /// <param name="commands"></param>
         public QASMProgram(params Code[] commands)
         {
             Code.AddRange(commands);
         }
 
+        /// <summary>
+        /// Creates an instance of <see cref="QASMProgram"/> with multiple <paramref name="commands"/>.
+        /// </summary>
+        /// <param name="commands"></param>
         public QASMProgram(List<Code> commands)
         {
             Code.AddRange(commands);

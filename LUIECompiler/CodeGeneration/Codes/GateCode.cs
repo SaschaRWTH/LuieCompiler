@@ -3,6 +3,9 @@ using LUIECompiler.Common;
 
 namespace LUIECompiler.CodeGeneration.Codes
 {
+    /// <summary>
+    /// Class representing the QASM code of a gate application.
+    /// </summary>
     public class GateCode : Code
     {
         /// <summary>
@@ -25,9 +28,15 @@ namespace LUIECompiler.CodeGeneration.Codes
         /// </summary>
         public required Gate Gate { get; init; }
 
-
+        /// <summary>
+        /// List of all gate parameters. 
+        /// </summary>
         public required List<GateParameter> Parameters { get; init; }
 
+        /// <summary>
+        ///  Gets the code string representation of all parameters. 
+        /// </summary>
+        /// <returns></returns>
         private string GetParameters()
         {
             return string.Join(", ", Parameters.Select(param => param.ToParameterCode()));

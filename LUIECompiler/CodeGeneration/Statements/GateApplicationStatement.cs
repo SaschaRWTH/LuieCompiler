@@ -33,6 +33,11 @@ namespace LUIECompiler.CodeGeneration.Statements
             });
         }
 
+        /// <summary>
+        /// Gets the parameters of the gate.
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="CodeGenerationException"></exception>
         public List<GateParameter> GetParameters()
         {
             return Parameters.Select(param =>

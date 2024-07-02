@@ -56,6 +56,9 @@ public class CodeGenerationTest
         "ctrl(1) @ h id1, id3;\n" +
         "ctrl(1) @ h id1, id2;\n";
 
+    /// <summary>
+    /// Tests the code generation for the simple input.
+    /// </summary>
     [TestMethod]
     public void SimpleInputTest()
     {
@@ -71,7 +74,9 @@ public class CodeGenerationTest
         Assert.AreEqual(code, SimpleInputTranslation);
     }
 
-
+    /// <summary>
+    /// Tests if the scope is correctly handled in the input.
+    /// </summary>
     [TestMethod]
     public void ScopeInputTest()
     {
@@ -87,7 +92,9 @@ public class CodeGenerationTest
         Assert.AreEqual(code, ScopeInputTranslation);
     }
 
-
+    /// <summary>
+    /// Tests if the scope is correctly handled.
+    /// </summary>
     [TestMethod]
     public void ScopeCorrectInfoTest()
     {

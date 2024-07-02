@@ -8,6 +8,9 @@ namespace LUIECompiler.CodeGeneration.Exceptions
     /// </summary>
     public class CodeGenerationException : Exception
     {
+        /// <summary>
+        /// Error that caused the exception.
+        /// </summary>
         public required CompilationError Error { get; init; }
     }
 

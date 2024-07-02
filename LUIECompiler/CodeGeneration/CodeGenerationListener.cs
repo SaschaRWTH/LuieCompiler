@@ -17,6 +17,9 @@ namespace LUIECompiler.CodeGeneration
         /// </summary>
         public CodeGenerationHandler CodeGen { get; } = new();
 
+        /// <summary>
+        /// Reference to the last poped code block. This is used, e.g., to create if statements.
+        /// </summary>
         private CodeBlock? _lastPoped = null;
 
         public override void ExitDeclaration([NotNull] LuieParser.DeclarationContext context)

@@ -15,6 +15,11 @@ namespace LUIECompiler.Common.Symbols
             return $"Qubit: [Identifier = {Identifier}]";
         }
 
+        /// <summary>
+        /// Converts the qubit to a QASM parameter.
+        /// </summary>
+        /// <param name="definition"></param>
+        /// <returns> The QASM parameter. </returns>
         public virtual GateParameter ToQASMParameter(RegisterDefinition definition)
         {
             return new()

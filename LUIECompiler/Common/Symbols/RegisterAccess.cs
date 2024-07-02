@@ -6,7 +6,14 @@ namespace LUIECompiler.Common.Symbols
 
     public class RegisterAccess : Qubit
     {
+        /// <summary>
+        /// Index of the qubit in the <see cref="Register"/>.
+        /// </summary>
         public int Index { get; init; }
+
+        /// <summary>
+        /// Register that is accessed.
+        /// </summary>
         public Register Register { get; init; }
 
         public RegisterAccess(Register register, int index) : base(identifier: register.Identifier) 

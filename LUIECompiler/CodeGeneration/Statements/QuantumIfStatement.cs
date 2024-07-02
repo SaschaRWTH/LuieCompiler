@@ -22,6 +22,10 @@ namespace LUIECompiler.CodeGeneration.Statements
             return Block.ToQASM().AddControl(identifier: IdentifierString());
         }
 
+        /// <summary>
+        /// Gets string representation of the guard.
+        /// </summary>
+        /// <returns></returns>
         protected string IdentifierString()
         {
             if (Guard is RegisterAccess access)
