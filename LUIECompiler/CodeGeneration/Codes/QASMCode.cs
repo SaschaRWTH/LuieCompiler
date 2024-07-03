@@ -61,7 +61,7 @@ namespace LUIECompiler.CodeGeneration.Codes
         /// <param name="identifier"></param>
         /// <param name="negated"></param>
         /// <returns></returns>
-        public QASMProgram AddControl(string identifier, bool negated = false)
+        public QASMProgram AddGuard(QubitCode qubit, bool negated = false)
         {
             QASMProgram code = new();
 
@@ -72,9 +72,9 @@ namespace LUIECompiler.CodeGeneration.Codes
                     continue;
                 }
 
-                GateGuard guard = new GateGuard()
+                GuardCode guard = new GuardCode()
                 {
-                    Identifier = identifier,
+                    Qubit = qubit,
                     Negated = negated,
                 };
 

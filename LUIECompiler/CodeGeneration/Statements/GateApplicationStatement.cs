@@ -38,7 +38,7 @@ namespace LUIECompiler.CodeGeneration.Statements
         /// </summary>
         /// <returns></returns>
         /// <exception cref="CodeGenerationException"></exception>
-        public List<GateParameter> GetParameters()
+        public List<QubitCode> GetParameters()
         {
             return Parameters.Select(param =>
             {

@@ -5,7 +5,7 @@ namespace LUIECompiler.CodeGeneration.Codes
     /// <summary>
     /// Represents a parameter of a gate.
     /// </summary>
-    public class GateParameter
+    public class QubitCode : Code
     {
         /// <summary>
         /// Register that the parameter is associated with.
@@ -16,7 +16,7 @@ namespace LUIECompiler.CodeGeneration.Codes
         /// Return the code string representation of the parameter.
         /// </summary>
         /// <returns></returns>
-        public virtual string ToParameterCode()
+        public override string ToCode()
         {
             return Register.Identifier;
         } 

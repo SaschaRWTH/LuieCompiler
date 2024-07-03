@@ -8,7 +8,8 @@ namespace LUIECompiler.CodeGeneration.Statements
     {
         public override QASMProgram ToQASM()
         {
-            return Block.ToQASM().AddControl(identifier: IdentifierString(), negated: true);
+            QubitCode qubit = GetGuardCode();
+            return Block.ToQASM().AddGuard(qubit: qubit, negated: true);
         }
     }
 

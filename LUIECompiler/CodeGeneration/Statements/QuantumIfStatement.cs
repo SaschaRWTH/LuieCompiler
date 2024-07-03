@@ -2,6 +2,9 @@
 using LUIECompiler.Common;
 using LUIECompiler.CodeGeneration.Codes;
 using LUIECompiler.Common.Symbols;
+using LUIECompiler.CodeGeneration.Definitions;
+using LUIECompiler.CodeGeneration.Exceptions;
+using LUIECompiler.Common.Errors;
 
 namespace LUIECompiler.CodeGeneration.Statements
 {
@@ -19,22 +22,23 @@ namespace LUIECompiler.CodeGeneration.Statements
 
         public override QASMProgram ToQASM()
         {
-            return Block.ToQASM().AddControl(identifier: IdentifierString());
+            QubitCode qubit = GetGuardCode();
+            return Block.ToQASM().AddGuard(qubit: qubit);
         }
 
         /// <summary>
         /// Gets string representation of the guard.
         /// </summary>
         /// <returns></returns>
-        protected string IdentifierString()
+        protected QubitCode GetGuardCode()
         {
-            if (Guard is RegisterAccess access)
-            {
-                return $"{GetIdentifier(Guard)}[{access.Index}]";
-            }
+            RegisterDefinition definition = GetDefinition(Guard) as RegisterDefinition ??
+                throw new CodeGenerationException()
+                {
+                    Error = new TypeError(Line, Guard.Identifier),
+                };
 
-            return $"{GetIdentifier(Guard)}";
-
+            return Guard.ToQASMParameter(definition);
         }
     }
 
