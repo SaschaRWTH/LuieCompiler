@@ -22,7 +22,7 @@ namespace LUIECompiler.Common.Symbols
             Register = register;
         }
 
-        public override QubitCode ToQASMParameter(RegisterDefinition definition)
+        public override QubitCode ToQASMCode(RegisterDefinition definition)
         {
             return new RegisterAccessCode()
             {

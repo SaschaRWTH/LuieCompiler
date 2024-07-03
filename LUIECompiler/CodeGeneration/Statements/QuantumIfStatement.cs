@@ -38,7 +38,7 @@ namespace LUIECompiler.CodeGeneration.Statements
                     Error = new TypeError(Line, Guard.Identifier),
                 };
 
-            return Guard.ToQASMParameter(definition);
+            return Guard.ToQASMCode(definition);
         }
     }
 

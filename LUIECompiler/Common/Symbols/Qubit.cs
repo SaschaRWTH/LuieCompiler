@@ -20,7 +20,7 @@ namespace LUIECompiler.Common.Symbols
         /// </summary>
         /// <param name="definition"></param>
         /// <returns> The QASM parameter. </returns>
-        public virtual QubitCode ToQASMParameter(RegisterDefinition definition)
+        public virtual QubitCode ToQASMCode(RegisterDefinition definition)
         {
             return new()
             {

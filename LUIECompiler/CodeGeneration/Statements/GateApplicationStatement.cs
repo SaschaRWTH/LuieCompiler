@@ -42,7 +42,7 @@ namespace LUIECompiler.CodeGeneration.Statements
         {
             return Parameters.Select(param =>
             {
-                return param.ToQASMParameter(GetDefinition(param) as RegisterDefinition ?? throw new CodeGenerationException()
+                return param.ToQASMCode(GetDefinition(param) as RegisterDefinition ?? throw new CodeGenerationException()
                 {
                     Error = new TypeError(Line, param.Identifier),
                 });
