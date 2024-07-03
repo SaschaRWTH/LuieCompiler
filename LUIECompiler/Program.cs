@@ -20,6 +20,7 @@ namespace LUIECompiler
             "qif c[1] do\n" +
             "x c[1];\n" +
             "cx c[0], a[2];\n" +
+            "ccx c[0], a[2], a[1];\n" +
             "end";
 
             try

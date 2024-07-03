@@ -39,6 +39,8 @@ namespace LUIECompiler.CodeGeneration.Codes
         /// <returns></returns>
         private string GetParameters()
         {
+            // TODO: Add check if too many parameters.
+
             return string.Join(", ", Parameters.Select(param => param.ToCode()));
         }
 
