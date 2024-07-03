@@ -7,13 +7,18 @@ namespace LUIECompiler.Common.Errors
         /// </summary>
         public string Identifier { get; init; }
 
-        public TypeError(int line, string identifier)
+        public Type RequiredType { get; init; }
+
+        public Type GivenType { get; init; }
+
+        public TypeError(int line, string identifier, Type requiredType, Type givenType)
         {
             Type = ErrorType.Critical;
             Line = line;
             Identifier = identifier;
-            // TODO: Add expected and current type
-            Description = $"The identifier {identifier} was of the wrong type.";
+            RequiredType = requiredType;
+            GivenType = givenType;
+            Description = $"The identifier {identifier} was of the wrong type. Expected {requiredType} but got {givenType}.";
         }
     }
 

@@ -42,9 +42,9 @@ namespace LUIECompiler.CodeGeneration.Statements
         {
             return Parameters.Select(param =>
             {
-                return param.ToQASMCode(GetDefinition(param) as RegisterDefinition ?? throw new CodeGenerationException()
+                return param.ToQASMCode(GetDefinition(param) as RegisterDefinition ?? throw new InternalException()
                 {
-                    Error = new TypeError(Line, param.Identifier),
+                    Reason = "Parameter is not a register definition. This should have been caught by the semantic analysis and type checking while generating."
                 });
             }).ToList();
         }

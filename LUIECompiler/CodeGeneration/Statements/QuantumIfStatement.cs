@@ -33,9 +33,9 @@ namespace LUIECompiler.CodeGeneration.Statements
         protected QubitCode GetGuardCode()
         {
             RegisterDefinition definition = GetDefinition(Guard) as RegisterDefinition ??
-                throw new CodeGenerationException()
+                throw new InternalException()
                 {
-                    Error = new TypeError(Line, Guard.Identifier),
+                    Reason = "Guard is not a register definition. This should have been caught by the semantic analysis and type checking while generating."
                 };
 
             return Guard.ToQASMCode(definition);

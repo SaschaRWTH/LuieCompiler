@@ -150,7 +150,7 @@ namespace LUIECompiler.Common
             {
                 throw new CodeGenerationException()
                 {
-                    Error = new TypeError(context.Start.Line, identifier),
+                    Error = new TypeError(context.Start.Line, identifier, typeof(Register), symbol.GetType()),
                 };
             }
 
@@ -163,7 +163,7 @@ namespace LUIECompiler.Common
             {
                 throw new CodeGenerationException()
                 {
-                    Error = new TypeError(context.Start.Line, identifier),
+                    Error = new TypeError(context.Start.Line, identifier, typeof(Qubit), symbol.GetType()),
                 };
             }
 
@@ -189,7 +189,7 @@ namespace LUIECompiler.Common
             {
                 throw new CodeGenerationException()
                 {
-                    Error = new TypeError(context.Start.Line, identifier),
+                    Error = new TypeError(context.Start.Line, identifier, typeof(Register), symbol.GetType()),
                 };
             }
 
@@ -202,7 +202,7 @@ namespace LUIECompiler.Common
             {
                 throw new CodeGenerationException()
                 {
-                    Error = new TypeError(context.Start.Line, identifier),
+                    Error = new TypeError(context.Start.Line, identifier, typeof(Qubit), symbol.GetType()),
                 };
             }
 

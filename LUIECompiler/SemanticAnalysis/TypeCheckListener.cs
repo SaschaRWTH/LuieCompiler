@@ -83,7 +83,7 @@ namespace LUIECompiler.SemanticAnalysis
 
                 if (symbol is not Register)
                 {
-                    Error.Report(new TypeError(context.Start.Line, identifier));
+                    Error.Report(new TypeError(context.Start.Line, identifier, typeof(Register), symbol.GetType()));
                 }
             }
         }
@@ -110,7 +110,7 @@ namespace LUIECompiler.SemanticAnalysis
                 return;
             }
 
-            Error.Report(new TypeError(context.Start.Line, identifier));
+            Error.Report(new TypeError(context.Start.Line, identifier, typeof(Qubit), symbol.GetType()));
         }
     }
 
