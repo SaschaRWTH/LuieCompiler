@@ -2,6 +2,7 @@ using System.Data.Common;
 using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Tree;
+using LUIECompiler.CodeGeneration.Codes;
 using LUIECompiler.Common;
 using LUIECompiler.Common.Errors;
 using LUIECompiler.Common.Symbols;
@@ -70,10 +71,11 @@ namespace LUIECompiler.SemanticAnalysis
 
         public override void ExitGateapplication([NotNull] LuieParser.GateapplicationContext context)
         {
-            List<string> identifiers = context.register().GetIdentifiers().ToList();
+            List<LuieParser.RegisterContext> registers = context.register().ToList();
 
-            foreach (string identifier in identifiers)
+            foreach(var register in registers)
             {
+                string identifier = register.GetIdentifier();
                 Symbol? symbol = Table.GetSymbolInfo(identifier);
                 if (symbol == null)
                 {
@@ -85,7 +87,21 @@ namespace LUIECompiler.SemanticAnalysis
                 {
                     Error.Report(new TypeError(context.Start.Line, identifier, typeof(Register), symbol.GetType()));
                 }
+
+                if (symbol is not Qubit && !register.TryGetIndex(out int _))
+                {
+                    // Returning typeof(Qubit) is not perfect, technically RegisterAccess is of type Qubit, but the user could still be confused. 
+                    Error.Report(new TypeError(context.Start.Line, identifier, typeof(Qubit), symbol.GetType()));
+                }
             }
+
+            Gate gate = new(context);
+
+            if(gate.NumberOfArguments != registers.Count)
+            {
+                Error.Report(new InvalidArguments(context.Start.Line, gate, registers.Count));
+            }
+
         }
 
         public override void ExitQifStatement([NotNull] LuieParser.QifStatementContext context)

@@ -125,7 +125,7 @@ namespace LUIECompiler.Common
         /// <param name="context"></param>
         /// <param name="table"></param>
         /// <returns></returns>
-        public static List<Qubit> GetParameter(this LuieParser.GateapplicationContext context, SymbolTable table)
+        public static List<Qubit> GetParameters(this LuieParser.GateapplicationContext context, SymbolTable table)
         {
             List<LuieParser.RegisterContext> registers = context.register().ToList();
             return registers.Select(register => SingleParameter(register, table)).ToList();

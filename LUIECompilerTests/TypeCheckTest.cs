@@ -42,6 +42,13 @@ public class TypeCheckTest
         "h b;\n" +
         "end";
 
+    public const string InvalidArguments =
+        "qubit a;\n" +
+        "qubit b;\n" +
+        "x a;\n" +
+        "x a, b;\n" +
+        "cx a;\n" +
+        "cx a, b;";
 
 
     /// <summary>
@@ -76,5 +83,23 @@ public class TypeCheckTest
         Assert.IsTrue(error.Errors.Any(e => e is UndefinedError && e.Line == 8));
         Assert.IsTrue(error.Errors.Any(e => e is TypeError && e.Line == 4));
         Assert.IsTrue(error.Errors.Any(e => e is TypeError && e.Line == 7));
+    }
+
+    
+    /// <summary>
+    /// Tests that there are errors reported when using invalid arguments.
+    /// </summary>
+    [TestMethod]
+    public void InvalidArgumentsTest()
+    {
+        var walker = Utils.GetWalker();
+        var parser = Utils.GetParser(InvalidArguments);
+        var analysis = new TypeCheckListener();
+        walker.Walk(analysis, parser.parse());
+        var error = analysis.Error;
+
+        Assert.IsTrue(error.ContainsCriticalError);
+        Assert.IsTrue(error.Errors.Any(e => e is InvalidArguments && e.Line == 4));
+        Assert.IsTrue(error.Errors.Any(e => e is InvalidArguments && e.Line == 5));
     }
 }
