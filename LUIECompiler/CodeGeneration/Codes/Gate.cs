@@ -23,7 +23,7 @@ namespace LUIECompiler.CodeGeneration.Codes
         /// <summary>
         /// Returns the number of parameters the gate requires.
         /// </summary>
-        public int NumberOfParameters { get; init; }
+        public int NumberOfArguments { get; init; }
 
         /// <summary>
         /// Create a gate from the <paramref name="context"/>.
@@ -44,7 +44,7 @@ namespace LUIECompiler.CodeGeneration.Codes
                 _ => throw new NotImplementedException()
             };
 
-            NumberOfParameters = Type switch
+            NumberOfArguments = Type switch
             {
                 GateType.CX => 2,
                 GateType.CCX => 3,

@@ -40,14 +40,21 @@ namespace LUIECompiler.CodeGeneration
 
         public override void ExitGateapplication([NotNull] LuieParser.GateapplicationContext context)
         {
-            List<Qubit> paramerts = context.GetParameter(CodeGen.Table);
-
+            List<Qubit> parameters = context.GetParameter(CodeGen.Table);
             Gate gate = new(context);
+            if (parameters.Count != gate.NumberOfArguments)
+            {
+                throw new CodeGenerationException()
+                {
+                    Error = new InvalidArguments(context.Start.Line, gate, parameters.Count),
+                };
+            }
+
             int line = context.Start.Line;
             GateApplicationStatement statement = new()
             {
                 Gate = gate,
-                Parameters = paramerts,
+                Parameters = parameters,
                 DefinitionDictionary = CodeGen.DefinitionDictionary,
                 Line = line,
             };
