@@ -26,7 +26,6 @@ public class TypeCheckTest
         "h b;\n" +
         "end";
 
-
     public const string InputIncorrect =
         "qubit[3] c;\n" +
         "qubit b;\n" +
@@ -50,6 +49,13 @@ public class TypeCheckTest
         "cx a;\n" +
         "cx a, b;";
 
+    public const string TypeErrorsArguments = 
+        "qubit[3] a;\n" +
+        "qubit[2] b;\n" +
+        "x a;\n" +
+        "x a[2];\n" +
+        "cx a[2], b[1];\n" +
+        "cx a[1], b;";
 
     /// <summary>
     /// Test that redefinitions in correctly reported in scopes.
@@ -99,7 +105,26 @@ public class TypeCheckTest
         var error = analysis.Error;
 
         Assert.IsTrue(error.ContainsCriticalError);
+        Assert.AreEqual(2, error.Errors.Count);
         Assert.IsTrue(error.Errors.Any(e => e is InvalidArguments && e.Line == 4));
         Assert.IsTrue(error.Errors.Any(e => e is InvalidArguments && e.Line == 5));
+    }
+    
+    /// <summary>
+    /// Tests that there are errors reported when using invalid arguments.
+    /// </summary>
+    [TestMethod]
+    public void TypeErrorsArgumentsTest()
+    {
+        var walker = Utils.GetWalker();
+        var parser = Utils.GetParser(TypeErrorsArguments);
+        var analysis = new TypeCheckListener();
+        walker.Walk(analysis, parser.parse());
+        var error = analysis.Error;
+
+        Assert.IsTrue(error.ContainsCriticalError);
+        Assert.AreEqual(2, error.Errors.Count);
+        Assert.IsTrue(error.Errors.Any(e => e is TypeError && e.Line == 3));
+        Assert.IsTrue(error.Errors.Any(e => e is TypeError && e.Line == 6));
     }
 }
