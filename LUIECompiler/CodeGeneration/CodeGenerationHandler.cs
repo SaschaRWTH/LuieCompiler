@@ -132,7 +132,8 @@ namespace LUIECompiler.CodeGeneration
         {
             Qubit info = new(identifier);
 
-            string id = AddSymbol(info, line);
+            AddSymbol(info, line);
+            string id = Table.UniqueIdentifier; 
 
             RegisterDefinition definition = new()
             {
@@ -157,7 +158,8 @@ namespace LUIECompiler.CodeGeneration
         {
             Register info = new(identifier, size);
 
-            string id = AddSymbol(info, line);
+            AddSymbol(info, line);
+            string id = Table.UniqueIdentifier; 
 
             RegisterDefinition definition = new()
             {
@@ -172,12 +174,23 @@ namespace LUIECompiler.CodeGeneration
             return info;
         }
 
+        /// <summary>
+        /// Adds an iterator to the symbol table.
+        /// </summary>
+        /// <param name="iterator"></param>
+        /// <param name="line"></param>
         public void AddIterator(LoopIterator iterator, int line)
         {
             AddSymbol(iterator, line);
         }
 
-        protected string AddSymbol(Symbol symbol, int line)
+        /// <summary>
+        /// Adds a symbol to the symbol table.
+        /// </summary>
+        /// <param name="symbol"></param>
+        /// <param name="line"></param>
+        /// <exception cref="CodeGenerationException"></exception>
+        protected void AddSymbol(Symbol symbol, int line)
         {
             if (Table.IsDefinedInCurrentScop(symbol.Identifier))
             {
@@ -186,7 +199,7 @@ namespace LUIECompiler.CodeGeneration
                     Error = new RedefineError(line, symbol.Identifier),
                 };
             }
-            return Table.AddSymbol(symbol);
+            Table.AddSymbol(symbol);
         }
 
         /// <summary>
