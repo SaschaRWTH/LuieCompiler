@@ -23,7 +23,8 @@ jobs:
     - name: Install ANTLR
       run: |
         curl -O https://www.antlr.org/download/antlr-4.9.2-complete.jar
-        echo "ANTLR_JAR=\"$PWD/antlr-4.9.2-complete.jar\"" >> $GITHUB_ENV
+        ls
+        echo "ANTLR_JAR=${{ github.workspace }}/antlr-4.9.2-complete.jar" >> $GITHUB_ENV
     - name: Generate ANTLR C# files
       run: |
         cd ./LUIECompiler
