@@ -3,8 +3,8 @@ using Antlr4.Runtime.Misc;
 using LUIECompiler.CodeGeneration.Codes;
 using LUIECompiler.CodeGeneration.Exceptions;
 using LUIECompiler.CodeGeneration.Statements;
-using LUIECompiler.Common;
 using LUIECompiler.Common.Errors;
+using LUIECompiler.Common.Extensions;
 using LUIECompiler.Common.Symbols;
 
 namespace LUIECompiler.CodeGeneration

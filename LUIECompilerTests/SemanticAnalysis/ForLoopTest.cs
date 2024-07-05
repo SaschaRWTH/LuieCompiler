@@ -1,8 +1,4 @@
-using Antlr4.Runtime;
-using Antlr4.Runtime.Tree;
-using LUIECompiler.Common;
 using LUIECompiler.Common.Errors;
-using LUIECompiler.Common.Symbols;
 using LUIECompiler.SemanticAnalysis;
 
 namespace LUIECompilerTests.SemanticAnalysis;

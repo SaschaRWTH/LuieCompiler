@@ -4,6 +4,7 @@ using Antlr4.Runtime.Tree;
 using LUIECompiler.CodeGeneration.Exceptions;
 using LUIECompiler.Common;
 using LUIECompiler.Common.Errors;
+using LUIECompiler.Common.Extensions;
 using LUIECompiler.Common.Symbols;
 
 namespace LUIECompiler.SemanticAnalysis

@@ -1,11 +1,10 @@
-using System.Data.Common;
-using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Tree;
 using LUIECompiler.CodeGeneration.Codes;
 using LUIECompiler.CodeGeneration.Exceptions;
 using LUIECompiler.Common;
 using LUIECompiler.Common.Errors;
+using LUIECompiler.Common.Extensions;
 using LUIECompiler.Common.Symbols;
 
 namespace LUIECompiler.SemanticAnalysis
