@@ -129,17 +129,10 @@ namespace LUIECompiler.CodeGeneration
         }
 
         public Qubit AddQubit(string identifier, int line)
-        {            
-            if (Table.IsDefinedInCurrentScop(identifier))
-            {
-                throw new CodeGenerationException()
-                {
-                    Error = new RedefineError(line, identifier),
-                };
-            }
-
+        {
             Qubit info = new(identifier);
-            string id = Table.AddSymbol(info);
+
+            string id = AddSymbol(info, line);
 
             RegisterDefinition definition = new()
             {
@@ -162,16 +155,9 @@ namespace LUIECompiler.CodeGeneration
         /// <exception cref="RedefineError"></exception>
         public Register AddRegister(string identifier, int size, int line)
         {
-            if (Table.IsDefinedInCurrentScop(identifier))
-            {
-                throw new CodeGenerationException()
-                {
-                    Error = new RedefineError(line, identifier),
-                };
-            }
-
             Register info = new(identifier, size);
-            string id = Table.AddSymbol(info);
+
+            string id = AddSymbol(info, line);
 
             RegisterDefinition definition = new()
             {
@@ -184,6 +170,23 @@ namespace LUIECompiler.CodeGeneration
             DefinitionDictionary.Add(info, definition);
 
             return info;
+        }
+
+        public void AddIterator(LoopIterator iterator, int line)
+        {
+            AddSymbol(iterator, line);
+        }
+
+        protected string AddSymbol(Symbol symbol, int line)
+        {
+            if (Table.IsDefinedInCurrentScop(symbol.Identifier))
+            {
+                throw new CodeGenerationException()
+                {
+                    Error = new RedefineError(line, symbol.Identifier),
+                };
+            }
+            return Table.AddSymbol(symbol);
         }
 
         /// <summary>

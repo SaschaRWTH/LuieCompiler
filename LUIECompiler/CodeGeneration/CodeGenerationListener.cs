@@ -121,6 +121,28 @@ namespace LUIECompiler.CodeGeneration
             CodeGen.AddStatement(statement);
         }
 
+        public override void ExitForstatement([NotNull] LuieParser.ForstatementContext context)
+        {
+            CodeBlock block = _lastPoped ?? throw new InternalException()
+            {
+                Reason = "There was no last poped code block, although block should just have been exited."
+            };
+
+            LoopIterator iterator = context.GetIterator();
+            CodeGen.AddIterator(iterator, context.Start.Line);
+
+            int line = context.Start.Line;
+            ForLoopStatement statement = new()
+            {
+                Iterator = context.GetIterator(),
+                Body = block,
+                DefinitionDictionary = CodeGen.DefinitionDictionary,
+                Line = line,
+            };
+
+            CodeGen.AddStatement(statement);
+        }
+
     }
 
 }
