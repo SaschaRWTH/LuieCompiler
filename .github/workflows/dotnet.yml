@@ -22,7 +22,7 @@ jobs:
         dotnet-version: 8.0.x
     - name: Install ANTLR
       run: |
-        pip install antlr4-python3-runtime
+        sudo apt-get install antlr4
 # curl -O https://www.antlr.org/download/antlr-4.9.2-complete.jar
 # ls
 # echo "ANTLR_JAR=${{ github.workspace }}/antlr-4.9.2-complete.jar" >> $GITHUB_ENV
