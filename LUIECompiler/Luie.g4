@@ -49,7 +49,7 @@ register
  ;
 
 expression
- : IDENTIFIER
+ : identifier=IDENTIFIER
  | value=INTEGER
  ;
 

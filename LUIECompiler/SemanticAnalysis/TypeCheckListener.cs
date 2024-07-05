@@ -80,8 +80,13 @@ namespace LUIECompiler.SemanticAnalysis
         /// <param name="context"></param>
         public void CheckIndexExpression(LuieParser.ExpressionContext context)
         {
-            string? identifier = context.IDENTIFIER()?.GetText();
+            string? identifier = context?.identifier?.Text;
             if (identifier == null)
+            {
+                return;
+            }
+
+            if(context == null) 
             {
                 return;
             }

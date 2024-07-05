@@ -26,6 +26,19 @@ public class ForLoopTest
         "    cx c, a;\n" +
         "end";
 
+    public const string InputIteratorExpressionCorrect = 
+        "qubit[3] c;\n" +
+        "for i in 1..3 do\n" +
+        "    h c[i];\n" +
+        "end";
+
+    public const string InputIteratorExpressionIncorrect = 
+        "qubit[3] c;\n" +
+        "qubit b;\n" +
+        "for i in 1..3 do\n" +
+        "    h c[b];\n" +
+        "end";
+
     /// <summary>
     /// Test no error are incorrectly reported.
     /// </summary>
@@ -57,6 +70,40 @@ public class ForLoopTest
 
         
         Assert.IsTrue(error.Errors.Any(e => e is RedefineError && e.Line == 3));
+    }
+
+    /// <summary>
+    /// Test no error are incorrectly reported.
+    /// </summary>
+    [TestMethod]
+    public void CorrectIteratorUseTest()
+    {
+        var walker = Utils.GetWalker();
+        var parser = Utils.GetParser(InputIteratorExpressionCorrect);
+        var analysis = new TypeCheckListener();
+        walker.Walk(analysis, parser.parse());
+        var error = analysis.Error;
+
+        Assert.IsTrue(!error.ContainsCriticalError);
+    }
+
+    /// <summary>
+    /// Test no error are incorrectly reported.
+    /// </summary>
+    [TestMethod]
+    public void IncorrectIteratorUseTest()
+    {
+        var walker = Utils.GetWalker();
+        var parser = Utils.GetParser(InputIteratorExpressionIncorrect);
+        var analysis = new TypeCheckListener();
+        walker.Walk(analysis, parser.parse());
+        var error = analysis.Error;
+
+        Assert.IsTrue(error.ContainsCriticalError);
+        
+        Console.WriteLine($"Error count: {error.Errors.Count}");
+        Console.WriteLine($"Error: {error}");
+        Assert.IsTrue(error.Errors.Any(e => e is TypeError && e.Line == 4));
     }
 
 }

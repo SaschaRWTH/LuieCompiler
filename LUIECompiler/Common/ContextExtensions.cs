@@ -43,7 +43,7 @@ namespace LUIECompiler.Common
                 return false;
             }
 
-            string integer = expression.value.Text;
+            string? integer = expression?.value?.Text;
             if(string.IsNullOrEmpty(integer))
             {
                 return false;
