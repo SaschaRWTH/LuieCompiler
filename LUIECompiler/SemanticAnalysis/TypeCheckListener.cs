@@ -34,7 +34,7 @@ namespace LUIECompiler.SemanticAnalysis
 
         public override void ExitDeclaration([NotNull] LuieParser.DeclarationContext context)
         {
-            
+
             ITerminalNode id = context.IDENTIFIER();
             string identifier = id.GetText();
 
@@ -68,13 +68,42 @@ namespace LUIECompiler.SemanticAnalysis
             {
                 Error.Report(new UndefinedError(context.Start.Line, identifier));
             }
+
+            // Only allow expression in register to be iterator (for now)
+            LuieParser.ExpressionContext expression = context.index;
+            CheckIndexExpression(expression);
+        }
+
+        /// <summary>
+        /// Checks that the expression is a valid index expression.
+        /// </summary>
+        /// <param name="context"></param>
+        public void CheckIndexExpression(LuieParser.ExpressionContext context)
+        {
+            string? identifier = context.IDENTIFIER()?.GetText();
+            if (identifier == null)
+            {
+                return;
+            }
+
+            Symbol? symbol = Table.GetSymbolInfo(identifier);
+            if(symbol == null)
+            {
+                Error.Report(new UndefinedError(context.Start.Line, identifier));
+                return;
+            }
+
+            if(symbol is not LoopIterator)
+            {
+                Error.Report(new TypeError(context.Start.Line, identifier, typeof(LoopIterator), symbol.GetType()));
+            }
         }
 
         public override void ExitGateapplication([NotNull] LuieParser.GateapplicationContext context)
         {
             List<LuieParser.RegisterContext> registers = context.register().ToList();
 
-            foreach(var register in registers)
+            foreach (var register in registers)
             {
                 string identifier = register.GetIdentifier();
                 Symbol? symbol = Table.GetSymbolInfo(identifier);
@@ -98,7 +127,7 @@ namespace LUIECompiler.SemanticAnalysis
 
             Gate gate = new(context);
 
-            if(gate.NumberOfArguments != registers.Count)
+            if (gate.NumberOfArguments != registers.Count)
             {
                 Error.Report(new InvalidArguments(context.Start.Line, gate, registers.Count));
             }
