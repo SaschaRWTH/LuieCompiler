@@ -59,6 +59,16 @@ namespace LUIECompiler.Common
         }
 
         /// <summary>
+        /// Checks whether a register access is given in the context.
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public static bool IsRegisterAccess(this LuieParser.RegisterContext context)
+        {
+            return context.index != null;
+        }
+
+        /// <summary>
         /// Checks whether a size is given in the context.
         /// </summary>
         /// <param name="context"></param>

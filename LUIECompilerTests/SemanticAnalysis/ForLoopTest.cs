@@ -84,6 +84,7 @@ public class ForLoopTest
         walker.Walk(analysis, parser.parse());
         var error = analysis.Error;
 
+        Console.WriteLine($"Error:\n{error}");
         Assert.IsTrue(!error.ContainsCriticalError);
     }
 

@@ -70,23 +70,21 @@ namespace LUIECompiler.SemanticAnalysis
             }
 
             // Only allow expression in register to be iterator (for now)
-            LuieParser.ExpressionContext expression = context.index;
-            CheckIndexExpression(expression);
+            LuieParser.ExpressionContext? expression = context.index;
+            if(expression != null)
+            {
+                CheckIndexExpression(expression);
+            }
         }
 
         /// <summary>
         /// Checks that the expression is a valid index expression.
         /// </summary>
         /// <param name="context"></param>
-        public void CheckIndexExpression(LuieParser.ExpressionContext context)
+        public void CheckIndexExpression([NotNull] LuieParser.ExpressionContext context)
         {
-            string? identifier = context?.identifier?.Text;
+            string? identifier = context.identifier?.Text;
             if (identifier == null)
-            {
-                return;
-            }
-
-            if(context == null) 
             {
                 return;
             }
@@ -123,7 +121,7 @@ namespace LUIECompiler.SemanticAnalysis
                     Error.Report(new TypeError(context.Start.Line, identifier, typeof(Register), symbol.GetType()));
                 }
 
-                if (symbol is not Qubit && !register.TryGetIndex(out int _))
+                if (symbol is not Qubit && !register.IsRegisterAccess())
                 {
                     // Returning typeof(Qubit) is not perfect, technically RegisterAccess is of type Qubit, but the user could still be confused. 
                     Error.Report(new TypeError(context.Start.Line, identifier, typeof(Qubit), symbol.GetType()));
