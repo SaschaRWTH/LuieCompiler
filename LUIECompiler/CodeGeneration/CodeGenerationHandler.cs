@@ -128,6 +128,12 @@ namespace LUIECompiler.CodeGeneration
             return GuardStack.Pop();
         }
 
+        /// <summary>
+        /// Adds a qubit to the code generation handler. This includes adding it to the symbol table,
+        /// creating a definition with a unique id, and adding the definition the the definition dictionary.
+        /// <param name="identifier">Identifier of the qubit</param>
+        /// <param name="line">Line of the declaration</param>
+        /// <returns></returns>
         public Qubit AddQubit(string identifier, int line)
         {
             Qubit info = new(identifier);
@@ -151,9 +157,10 @@ namespace LUIECompiler.CodeGeneration
         /// <summary>
         /// Adds a register to the code generation handler. This includes adding it to the symbol table,
         /// creating a definition with a unique id, and adding the definition the the definition dictionary.
-        /// </summary>
-        /// <param name="identifier"></param>
-        /// <exception cref="RedefineError"></exception>
+        /// <param name="identifier">Identifier of the register</param>
+        /// <param name="size">Size of the register</param>
+        /// <param name="line">Line of the declaration</param>
+        /// <returns></returns>
         public Register AddRegister(string identifier, int size, int line)
         {
             Register info = new(identifier, size);

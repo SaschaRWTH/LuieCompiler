@@ -1,7 +1,7 @@
 using LUIECompiler.Common.Errors;
 using LUIECompiler.SemanticAnalysis;
 
-namespace LUIECompilerTests;
+namespace LUIECompilerTests.SemanticAnalysis;
 
 [TestClass]
 public class TypeCheckTest
