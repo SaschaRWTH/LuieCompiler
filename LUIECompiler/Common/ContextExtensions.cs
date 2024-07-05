@@ -28,34 +28,6 @@ namespace LUIECompiler.Common
         }
 
         /// <summary>
-        /// Checks whether an index is given in the context.
-        /// </summary>
-        /// <param name="context"></param>
-        /// <returns></returns>
-        public static bool HasIndex(this LuieParser.RegisterContext context)
-        {
-            return context.index != null;
-        }
-
-        /// <summary>
-        /// Gets the index in the context.
-        /// </summary>
-        /// <param name="context"></param>
-        /// <returns></returns>
-        /// <exception cref="InternalException"></exception>
-        public static int GetIndex(this LuieParser.RegisterContext context)
-        {
-            if (!int.TryParse(context?.index?.Text, out int result))
-            {
-                throw new InternalException()
-                {
-                    Reason = "Could not parse the index. This should not occure!"
-                };
-            }
-            return result;
-        }
-
-        /// <summary>
         /// Tries to get the index that is accessed in the register.
         /// </summary>
         /// <param name="context"></param>
@@ -65,10 +37,23 @@ namespace LUIECompiler.Common
         {
             index = 0;
 
-            if (!int.TryParse(context?.index?.Text, out int result))
+            LuieParser.ExpressionContext expression = context.index;
+            if(expression == null)
             {
                 return false;
             }
+
+            string integer = expression.value.Text;
+            if(string.IsNullOrEmpty(integer))
+            {
+                return false;
+            }
+
+            if (!int.TryParse(integer, out int result))
+            {
+                return false;
+            }
+
             index = result;
             return true;
         }

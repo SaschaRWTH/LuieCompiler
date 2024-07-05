@@ -45,7 +45,12 @@ parameter
 
 register
  : IDENTIFIER
- | IDENTIFIER '[' index=INTEGER ']'
+ | IDENTIFIER '[' index=expression ']'
+ ;
+
+expression
+ : register
+ | value=INTEGER
  ;
 
 range 
