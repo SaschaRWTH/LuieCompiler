@@ -15,6 +15,7 @@ declaration
 statement
  : gateapplication
  | qifStatement 
+ | forstatement 
  | SKIPSTAT ';'
  ;
  
@@ -34,6 +35,10 @@ elseStat
  : ELSE DO block
  ;
 
+forstatement
+ : FOR IDENTIFIER IN range DO block END
+ ;
+
 parameter
  : register (',' register)*
  ;
@@ -43,7 +48,9 @@ register
  | IDENTIFIER '[' index=INTEGER ']'
  ;
 
-
+range 
+ : INTEGER '..' INTEGER
+ ;
 
 GATE
  : XGATE
@@ -65,6 +72,8 @@ IF     : 'qif';
 ELSE   : 'else';
 DO     : 'do';
 END    : 'end';
+FOR    : 'for';
+IN    : 'in';
 
 SKIPSTAT        : 'skip';
 

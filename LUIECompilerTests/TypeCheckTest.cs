@@ -1,8 +1,4 @@
-using Antlr4.Runtime;
-using Antlr4.Runtime.Tree;
-using LUIECompiler.Common;
 using LUIECompiler.Common.Errors;
-using LUIECompiler.Common.Symbols;
 using LUIECompiler.SemanticAnalysis;
 
 namespace LUIECompilerTests;
@@ -111,7 +107,7 @@ public class TypeCheckTest
     }
     
     /// <summary>
-    /// Tests that there are errors reported when using invalid arguments.
+    /// Tests that there are errors reported when giving wrong type of arguments.
     /// </summary>
     [TestMethod]
     public void TypeErrorsArgumentsTest()
