@@ -22,13 +22,14 @@ jobs:
         dotnet-version: 8.0.x
     - name: Install ANTLR
       run: |
-        curl -O https://www.antlr.org/download/antlr-4.9.2-complete.jar
-        ls
-        echo "ANTLR_JAR=${{ github.workspace }}/antlr-4.9.2-complete.jar" >> $GITHUB_ENV
+        pip install antlr4-python3-runtime
+# curl -O https://www.antlr.org/download/antlr-4.9.2-complete.jar
+# ls
+# echo "ANTLR_JAR=${{ github.workspace }}/antlr-4.9.2-complete.jar" >> $GITHUB_ENV
     - name: Generate ANTLR C# files
       run: |
         cd ./LUIECompiler
-        java -jar $ANTLR_JAR -Dlanguage=CSharp -listener Luie.g4
+        antlr4 -Dlanguage=CSharp -listener Luie.g4
     - name: Restore dependencies
       run: dotnet restore
     - name: Build
