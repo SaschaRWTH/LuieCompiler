@@ -49,7 +49,7 @@ register
  ;
 
 range 
- : INTEGER '..' INTEGER
+ : start=INTEGER '..' end=INTEGER
  ;
 
 GATE
