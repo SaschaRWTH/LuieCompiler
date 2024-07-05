@@ -23,6 +23,7 @@ jobs:
     - name: Install ANTLR
       run: |
         sudo apt-get install antlr4
+        antlr4 
 # curl -O https://www.antlr.org/download/antlr-4.9.2-complete.jar
 # ls
 # echo "ANTLR_JAR=${{ github.workspace }}/antlr-4.9.2-complete.jar" >> $GITHUB_ENV
