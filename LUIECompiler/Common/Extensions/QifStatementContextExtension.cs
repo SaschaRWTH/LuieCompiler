@@ -1,4 +1,5 @@
 using LUIECompiler.CodeGeneration.Exceptions;
+using LUIECompiler.CodeGeneration.Expressions;
 using LUIECompiler.Common.Errors;
 using LUIECompiler.Common.Symbols;
 
@@ -42,7 +43,11 @@ namespace LUIECompiler.Common.Extensions
                 };
             }
 
-            return new RegisterAccess(register, index);
+            ConstantExpression<int> exp = new()
+            {
+                Value = index,
+            };
+            return new RegisterAccess(register, exp);
         }
     }
 }
