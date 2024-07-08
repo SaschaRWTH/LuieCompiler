@@ -2,6 +2,7 @@ using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Tree;
 using LUIECompiler.CodeGeneration.Codes;
 using LUIECompiler.CodeGeneration.Exceptions;
+using LUIECompiler.CodeGeneration.Expressions;
 using LUIECompiler.Common;
 using LUIECompiler.Common.Errors;
 using LUIECompiler.Common.Extensions;
@@ -63,7 +64,7 @@ namespace LUIECompiler.SemanticAnalysis
             }
 
             // Cannot access qubit with []
-            if (symbol is Qubit && context.TryGetIndex(out int _))
+            if (symbol is Qubit && context.TryGetIndexExpression(out Expression<int> _))
             {
                 Error.Report(new UndefinedError(context.Start.Line, identifier));
             }
@@ -153,7 +154,7 @@ namespace LUIECompiler.SemanticAnalysis
                 return;
             }
 
-            if (symbol is Register && registerContext.TryGetIndex(out int _))
+            if (symbol is Register && registerContext.TryGetIndexExpression(out Expression<int> _))
             {
                 return;
             }
