@@ -1,5 +1,6 @@
 using LUIECompiler.CodeGeneration.Statements;
 using LUIECompiler.CodeGeneration.Codes;
+using LUIECompiler.Common.Symbols;
 
 namespace LUIECompiler.CodeGeneration
 {
@@ -11,6 +12,7 @@ namespace LUIECompiler.CodeGeneration
         /// </summary>
         public List<Statement> Statements { get; } = [];
 
+
         /// <summary>
         /// Adds a statement to the code block.
         /// </summary>
@@ -20,13 +22,13 @@ namespace LUIECompiler.CodeGeneration
             Statements.Add(statement);
         }
 
-        public QASMProgram ToQASM()
+        public QASMProgram ToQASM(List<Constant<int>> constants)
         {
             QASMProgram code = new();
 
             foreach (var statement in Statements)
             {
-                code += statement.ToQASM();
+                code += statement.ToQASM(constants);
             }
 
             return code;

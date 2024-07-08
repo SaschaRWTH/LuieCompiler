@@ -128,18 +128,18 @@ namespace LUIECompiler.CodeGeneration
             return GuardStack.Pop();
         }
 
+        /// <summary>
+        /// Adds a qubit to the code generation handler. This includes adding it to the symbol table,
+        /// creating a definition with a unique id, and adding the definition the the definition dictionary.
+        /// <param name="identifier">Identifier of the qubit</param>
+        /// <param name="line">Line of the declaration</param>
+        /// <returns></returns>
         public Qubit AddQubit(string identifier, int line)
-        {            
-            if (Table.IsDefinedInCurrentScop(identifier))
-            {
-                throw new CodeGenerationException()
-                {
-                    Error = new RedefineError(line, identifier),
-                };
-            }
-
+        {
             Qubit info = new(identifier);
-            string id = Table.AddSymbol(info);
+
+            AddSymbol(info, line);
+            string id = Table.UniqueIdentifier; 
 
             RegisterDefinition definition = new()
             {
@@ -157,21 +157,16 @@ namespace LUIECompiler.CodeGeneration
         /// <summary>
         /// Adds a register to the code generation handler. This includes adding it to the symbol table,
         /// creating a definition with a unique id, and adding the definition the the definition dictionary.
-        /// </summary>
-        /// <param name="identifier"></param>
-        /// <exception cref="RedefineError"></exception>
+        /// <param name="identifier">Identifier of the register</param>
+        /// <param name="size">Size of the register</param>
+        /// <param name="line">Line of the declaration</param>
+        /// <returns></returns>
         public Register AddRegister(string identifier, int size, int line)
         {
-            if (Table.IsDefinedInCurrentScop(identifier))
-            {
-                throw new CodeGenerationException()
-                {
-                    Error = new RedefineError(line, identifier),
-                };
-            }
-
             Register info = new(identifier, size);
-            string id = Table.AddSymbol(info);
+
+            AddSymbol(info, line);
+            string id = Table.UniqueIdentifier; 
 
             RegisterDefinition definition = new()
             {
@@ -187,6 +182,34 @@ namespace LUIECompiler.CodeGeneration
         }
 
         /// <summary>
+        /// Adds an iterator to the symbol table.
+        /// </summary>
+        /// <param name="iterator"></param>
+        /// <param name="line"></param>
+        public void AddIterator(LoopIterator iterator, int line)
+        {
+            AddSymbol(iterator, line);
+        }
+
+        /// <summary>
+        /// Adds a symbol to the symbol table.
+        /// </summary>
+        /// <param name="symbol"></param>
+        /// <param name="line"></param>
+        /// <exception cref="CodeGenerationException"></exception>
+        protected void AddSymbol(Symbol symbol, int line)
+        {
+            if (Table.IsDefinedInCurrentScop(symbol.Identifier))
+            {
+                throw new CodeGenerationException()
+                {
+                    Error = new RedefineError(line, symbol.Identifier),
+                };
+            }
+            Table.AddSymbol(symbol);
+        }
+
+        /// <summary>
         /// Generates the entier QASM program for the code generation handler.
         /// </summary>
         /// <returns></returns>
@@ -195,10 +218,10 @@ namespace LUIECompiler.CodeGeneration
             QASMProgram code = new();
             foreach (Definition definition in Definitions)
             {
-                code += definition.ToQASM();
+                code += definition.ToQASM([]);
             }
 
-            code += MainBlock.ToQASM();
+            code += MainBlock.ToQASM([]);
 
             return code;
         }

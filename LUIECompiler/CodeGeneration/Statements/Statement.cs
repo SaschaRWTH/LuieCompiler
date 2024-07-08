@@ -19,7 +19,7 @@ namespace LUIECompiler.CodeGeneration.Statements
         /// Source code line of the statement.
         /// </summary>
         public required int Line { get; init; }
-        public abstract QASMProgram ToQASM();
+        public abstract QASMProgram ToQASM(List<Constant<int>> constants);
 
         /// <summary>
         /// Returns the QASM identifier of a given <paramref name="register"/>.

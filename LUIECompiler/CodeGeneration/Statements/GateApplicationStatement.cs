@@ -23,13 +23,13 @@ namespace LUIECompiler.CodeGeneration.Statements
         /// Returns the QASM code for the statement.
         /// </summary>
         /// <returns></returns>
-        public override QASMProgram ToQASM()
+        public override QASMProgram ToQASM(List<Constant<int>> constants)
         {
             return new(new GateCode()
             {
                 Gate = Gate,
                 Guards = [],
-                Parameters = GetParameters(),
+                Parameters = GetParameters(constants),
             });
         }
 
@@ -38,14 +38,14 @@ namespace LUIECompiler.CodeGeneration.Statements
         /// </summary>
         /// <returns></returns>
         /// <exception cref="CodeGenerationException"></exception>
-        public List<QubitCode> GetParameters()
+        public List<QubitCode> GetParameters(List<Constant<int>> constants)
         {
             return Parameters.Select(param =>
             {
                 return param.ToQASMCode(GetDefinition(param) as RegisterDefinition ?? throw new InternalException()
                 {
                     Reason = "Parameter is not a register definition. This should have been caught by the semantic analysis and type checking while generating."
-                });
+                }, constants);
             }).ToList();
         }
     }

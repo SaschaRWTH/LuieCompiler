@@ -1,10 +1,11 @@
-using System.Data.Common;
-using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Tree;
 using LUIECompiler.CodeGeneration.Codes;
+using LUIECompiler.CodeGeneration.Exceptions;
+using LUIECompiler.CodeGeneration.Expressions;
 using LUIECompiler.Common;
 using LUIECompiler.Common.Errors;
+using LUIECompiler.Common.Extensions;
 using LUIECompiler.Common.Symbols;
 
 namespace LUIECompiler.SemanticAnalysis
@@ -33,7 +34,7 @@ namespace LUIECompiler.SemanticAnalysis
 
         public override void ExitDeclaration([NotNull] LuieParser.DeclarationContext context)
         {
-            
+
             ITerminalNode id = context.IDENTIFIER();
             string identifier = id.GetText();
 
@@ -63,9 +64,41 @@ namespace LUIECompiler.SemanticAnalysis
             }
 
             // Cannot access qubit with []
-            if (symbol is Qubit && context.TryGetIndex(out int _))
+            if (symbol is Qubit && context.TryGetIndexExpression(out Expression<int> _))
             {
                 Error.Report(new UndefinedError(context.Start.Line, identifier));
+            }
+
+            // Only allow expression in register to be iterator (for now)
+            LuieParser.ExpressionContext? expression = context.index;
+            if(expression != null)
+            {
+                CheckIndexExpression(expression);
+            }
+        }
+
+        /// <summary>
+        /// Checks that the expression is a valid index expression.
+        /// </summary>
+        /// <param name="context"></param>
+        public void CheckIndexExpression([NotNull] LuieParser.ExpressionContext context)
+        {
+            string? identifier = context.identifier?.Text;
+            if (identifier == null)
+            {
+                return;
+            }
+
+            Symbol? symbol = Table.GetSymbolInfo(identifier);
+            if(symbol == null)
+            {
+                Error.Report(new UndefinedError(context.Start.Line, identifier));
+                return;
+            }
+
+            if(symbol is not LoopIterator)
+            {
+                Error.Report(new TypeError(context.Start.Line, identifier, typeof(LoopIterator), symbol.GetType()));
             }
         }
 
@@ -73,7 +106,7 @@ namespace LUIECompiler.SemanticAnalysis
         {
             List<LuieParser.RegisterContext> registers = context.register().ToList();
 
-            foreach(var register in registers)
+            foreach (var register in registers)
             {
                 string identifier = register.GetIdentifier();
                 Symbol? symbol = Table.GetSymbolInfo(identifier);
@@ -88,7 +121,7 @@ namespace LUIECompiler.SemanticAnalysis
                     Error.Report(new TypeError(context.Start.Line, identifier, typeof(Register), symbol.GetType()));
                 }
 
-                if (symbol is not Qubit && !register.TryGetIndex(out int _))
+                if (symbol is not Qubit && !register.IsRegisterAccess())
                 {
                     // Returning typeof(Qubit) is not perfect, technically RegisterAccess is of type Qubit, but the user could still be confused. 
                     Error.Report(new TypeError(context.Start.Line, identifier, typeof(Qubit), symbol.GetType()));
@@ -97,7 +130,7 @@ namespace LUIECompiler.SemanticAnalysis
 
             Gate gate = new(context);
 
-            if(gate.NumberOfArguments != registers.Count)
+            if (gate.NumberOfArguments != registers.Count)
             {
                 Error.Report(new InvalidArguments(context.Start.Line, gate, registers.Count));
             }
@@ -121,12 +154,29 @@ namespace LUIECompiler.SemanticAnalysis
                 return;
             }
 
-            if (symbol is Register && registerContext.TryGetIndex(out int _))
+            if (symbol is Register && registerContext.TryGetIndexExpression(out Expression<int> _))
             {
                 return;
             }
 
             Error.Report(new TypeError(context.Start.Line, identifier, typeof(Qubit), symbol.GetType()));
+        }
+
+        public override void EnterForstatement([NotNull] LuieParser.ForstatementContext context)
+        {
+            string identifier = context.IDENTIFIER().GetText();
+
+            LuieParser.RangeContext range = context.range();
+            if (!int.TryParse(range.start.Text, out int start) || !int.TryParse(range.end.Text, out int end))
+            {
+                throw new InternalException()
+                {
+                    Reason = "Failed to parse the range of the for statement.",
+                };
+            }
+
+            LoopIterator loopIterator = new(identifier, start, end);
+            Table.AddSymbol(loopIterator);
         }
     }
 

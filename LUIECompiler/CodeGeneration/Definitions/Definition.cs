@@ -1,5 +1,6 @@
 using LUIECompiler.Common;
 using LUIECompiler.CodeGeneration.Codes;
+using LUIECompiler.Common.Symbols;
 
 namespace LUIECompiler.CodeGeneration.Definitions
 {
@@ -11,7 +12,7 @@ namespace LUIECompiler.CodeGeneration.Definitions
         /// </summary>
         public required string Identifier { get; init; }
 
-        public abstract QASMProgram ToQASM();
+        public abstract QASMProgram ToQASM(List<Constant<int>> constants);
     }
 
 }

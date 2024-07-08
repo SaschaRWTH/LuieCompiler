@@ -1,11 +1,10 @@
 
 using Antlr4.Runtime.Misc;
-using Antlr4.Runtime.Tree;
 using LUIECompiler.CodeGeneration.Codes;
 using LUIECompiler.CodeGeneration.Exceptions;
 using LUIECompiler.CodeGeneration.Statements;
-using LUIECompiler.Common;
 using LUIECompiler.Common.Errors;
+using LUIECompiler.Common.Extensions;
 using LUIECompiler.Common.Symbols;
 
 namespace LUIECompiler.CodeGeneration
@@ -114,6 +113,28 @@ namespace LUIECompiler.CodeGeneration
             {
                 Block = block,
                 Guard = CodeGen.CurrentGuard,
+                DefinitionDictionary = CodeGen.DefinitionDictionary,
+                Line = line,
+            };
+
+            CodeGen.AddStatement(statement);
+        }
+
+        public override void ExitForstatement([NotNull] LuieParser.ForstatementContext context)
+        {
+            CodeBlock block = _lastPoped ?? throw new InternalException()
+            {
+                Reason = "There was no last poped code block, although block should just have been exited."
+            };
+
+            LoopIterator iterator = context.GetIterator();
+            CodeGen.AddIterator(iterator, context.Start.Line);
+
+            int line = context.Start.Line;
+            ForLoopStatement statement = new()
+            {
+                Iterator = context.GetIterator(),
+                Body = block,
                 DefinitionDictionary = CodeGen.DefinitionDictionary,
                 Line = line,
             };

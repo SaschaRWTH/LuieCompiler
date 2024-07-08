@@ -1,8 +1,10 @@
 using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Tree;
+using LUIECompiler.CodeGeneration.Exceptions;
 using LUIECompiler.Common;
 using LUIECompiler.Common.Errors;
+using LUIECompiler.Common.Extensions;
 using LUIECompiler.Common.Symbols;
 
 namespace LUIECompiler.SemanticAnalysis
@@ -64,6 +66,31 @@ namespace LUIECompiler.SemanticAnalysis
         {
             string identifier = context.register().GetIdentifier();
             CheckDefinedness(identifier, context);
+        }
+
+        public override void ExitForstatement([NotNull] LuieParser.ForstatementContext context)
+        {
+            string identifier = context.IDENTIFIER().GetText();
+            
+
+            if(Table.IsDefined(identifier))
+            {
+                Error.Report(new RedefineError(context.Start.Line, identifier));
+                return;
+            }
+            
+            LuieParser.RangeContext range = context.range();
+            if(!int.TryParse(range.start.Text, out int start) || !int.TryParse(range.end.Text, out int end))
+            {
+                throw new InternalException()
+                {
+                    Reason = "Failed to parse the range of the for statement.",
+                };
+            }   
+
+            LoopIterator loop = new(identifier, start, end);
+            Table.AddSymbol(loop);
+                     
         }
 
         /// <summary>

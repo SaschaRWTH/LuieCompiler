@@ -20,17 +20,17 @@ namespace LUIECompiler.CodeGeneration.Statements
         /// </summary>
         public required CodeBlock Block { get; init; }
 
-        public override QASMProgram ToQASM()
+        public override QASMProgram ToQASM(List<Constant<int>> constants)
         {
-            QubitCode qubit = GetGuardCode();
-            return Block.ToQASM().AddGuard(qubit: qubit);
+            QubitCode qubit = GetGuardCode(constants);
+            return Block.ToQASM(constants).AddGuard(qubit: qubit);
         }
 
         /// <summary>
         /// Gets string representation of the guard.
         /// </summary>
         /// <returns></returns>
-        protected QubitCode GetGuardCode()
+        protected QubitCode GetGuardCode(List<Constant<int>> constants)
         {
             RegisterDefinition definition = GetDefinition(Guard) as RegisterDefinition ??
                 throw new InternalException()
@@ -38,7 +38,7 @@ namespace LUIECompiler.CodeGeneration.Statements
                     Reason = "Guard is not a register definition. This should have been caught by the semantic analysis and type checking while generating."
                 };
 
-            return Guard.ToQASMCode(definition);
+            return Guard.ToQASMCode(definition, constants);
         }
     }
 

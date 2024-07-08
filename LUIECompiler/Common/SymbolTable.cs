@@ -14,7 +14,7 @@ namespace LUIECompiler.Common
         /// <summary>
         /// Gets a unique identifier.
         /// </summary>
-        public string UniqueIdenifier
+        public string UniqueIdentifier
         {
             get
             {
@@ -76,11 +76,10 @@ namespace LUIECompiler.Common
         /// </summary>
         /// <param name="symbolInfo"></param>
         /// <returns></returns>
-        public string AddSymbol(Symbol symbolInfo)
+        public void AddSymbol(Symbol symbolInfo)
         {
             Debug.Assert(!IsDefinedInCurrentScop(symbolInfo.Identifier));
             CurrentIdentifierDictionary.Add(symbolInfo.Identifier, symbolInfo);
-            return UniqueIdenifier;
         }
 
         /// <summary>
