@@ -14,11 +14,6 @@ namespace LUIECompiler.Common.Symbols
         public Expression<int> IndexExpression { get; init; }
 
         /// <summary>
-        /// Index of the qubit in the <see cref="Register"/>.
-        /// </summary>
-        public int Index { get => IndexExpression.Evaluate() ;}
-
-        /// <summary>
         /// Register that is accessed.
         /// </summary>
         public Register Register { get; init; }
@@ -29,12 +24,12 @@ namespace LUIECompiler.Common.Symbols
             Register = register;
         }
 
-        public override QubitCode ToQASMCode(RegisterDefinition definition)
+        public override QubitCode ToQASMCode(RegisterDefinition definition, List<Constant<int>> constants)
         {
             return new RegisterAccessCode()
             {
                 Register = definition,
-                Index = this.Index,
+                Index = IndexExpression.Evaluate(constants),
             };
         }
     }

@@ -15,12 +15,19 @@ namespace LUIECompiler.CodeGeneration.Statements
         /// </summary>
         public required CodeBlock Body { get; init; }
 
-        public override QASMProgram ToQASM()
+        public override QASMProgram ToQASM(List<Constant<int>> constants)
         {
             QASMProgram program = new();
             for (int i = Iterator.Start; i <= Iterator.End; i++)
             {
-                program += Body.ToQASM();
+                if(constants.Exists(c => c.Identifier == Iterator.Identifier))
+                {
+                    throw new NotImplementedException($"The constant {Iterator.Identifier} is already defined in the current scope.");
+                }
+
+                constants.Add(new Constant<int>(Iterator.Identifier, i));
+
+                program += Body.ToQASM(constants);
             }
             return program;
         }

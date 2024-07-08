@@ -5,7 +5,7 @@ namespace LUIECompiler.Common.Symbols
         /// <summary>
         /// The value of the constant.
         /// </summary>
-        public required T Value { get; init; }
+        public T Value { get; init; }
 
         public Constant(string identifier, T value) : base(identifier)
         {

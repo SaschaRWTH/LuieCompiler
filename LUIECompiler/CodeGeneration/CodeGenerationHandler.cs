@@ -218,10 +218,10 @@ namespace LUIECompiler.CodeGeneration
             QASMProgram code = new();
             foreach (Definition definition in Definitions)
             {
-                code += definition.ToQASM();
+                code += definition.ToQASM([]);
             }
 
-            code += MainBlock.ToQASM();
+            code += MainBlock.ToQASM([]);
 
             return code;
         }
