@@ -11,5 +11,10 @@ namespace LUIECompiler.Common.Symbols
         {
             Value = value;
         }
+
+        public override string ToString()
+        {
+            return $"Constant: [Identifier = {Identifier}, Value = {Value}]";
+        }
     }
 }

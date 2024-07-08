@@ -20,14 +20,14 @@ namespace LUIECompiler.CodeGeneration.Statements
             QASMProgram program = new();
             for (int i = Iterator.Start; i <= Iterator.End; i++)
             {
-                if(constants.Exists(c => c.Identifier == Iterator.Identifier))
+                if (constants.Exists(c => c.Identifier == Iterator.Identifier))
                 {
                     throw new NotImplementedException($"The constant {Iterator.Identifier} is already defined in the current scope.");
                 }
 
-                constants.Add(new Constant<int>(Iterator.Identifier, i));
+                Constant<int> constant = new Constant<int>(Iterator.Identifier, i);
 
-                program += Body.ToQASM(constants);
+                program += Body.ToQASM([.. constants, constant]);
             }
             return program;
         }
