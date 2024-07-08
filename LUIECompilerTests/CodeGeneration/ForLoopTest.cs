@@ -39,6 +39,24 @@ public class ForLoopTest
         "    cx c, a;\n" +
         "end";
 
+    public const string InputIdenExpression = 
+        "qubit[3] c;\n" +
+        "qubit a;\n" +
+        "for i in 0..2 do\n" +
+        "    h c[i];\n" +
+        "    cx c[i], a;\n" +
+        "end";
+
+    public const string InputIdenExpressionTranslation =
+        "qubit[3] id0;\n" +
+        "qubit id1;\n" +
+        "h id0[0];\n" +
+        "cx id0[0], id1;\n" +
+        "h id0[1];\n" +
+        "cx id0[1], id1;\n" +
+        "h id0[2];\n" +
+        "cx id0[2], id1;\n";
+
     /// <summary>
     /// Test the translation of a simple for loop.
     /// </summary>
@@ -72,4 +90,20 @@ public class ForLoopTest
         Assert.AreEqual(3, e.Error.Line);
     }
 
+    /// <summary>
+    /// Test the translation of a simple for loop.
+    /// </summary>
+    [TestMethod]
+    public void InputIdenExpressionTest()
+    {
+        var walker = Utils.GetWalker();
+        var parser = Utils.GetParser(InputIdenExpression);
+        var gen = new CodeGenerationListener();
+        walker.Walk(gen, parser.parse());
+        
+        string? code = gen.CodeGen.GenerateCode()?.ToString();
+        Assert.IsNotNull(code);
+
+        Assert.AreEqual(InputIdenExpressionTranslation, code);
+    }
 }
