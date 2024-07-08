@@ -1,3 +1,5 @@
+using LUIECompiler.CodeGeneration.Expressions;
+
 namespace LUIECompiler.Common.Extensions
 {
     public static class RegisterContextExtension
@@ -28,9 +30,12 @@ namespace LUIECompiler.Common.Extensions
         /// <param name="context"></param>
         /// <param name="index"> Index that is accessed. </param>
         /// <returns>True, if a valid <paramref name="index"/> was given, overwise false.</returns>
-        public static bool TryGetIndex(this LuieParser.RegisterContext context, out int index)
+        public static bool TryGetIndexExpression(this LuieParser.RegisterContext context, out Expression<int> index)
         {
-            index = 0;
+            index = new ConstantExpression<int>()
+            {
+                Value = 0
+            };
 
             LuieParser.ExpressionContext expression = context.index;
             if(expression == null)
@@ -38,18 +43,8 @@ namespace LUIECompiler.Common.Extensions
                 return false;
             }
 
-            string? integer = expression?.value?.Text;
-            if(string.IsNullOrEmpty(integer))
-            {
-                return false;
-            }
-
-            if (!int.TryParse(integer, out int result))
-            {
-                return false;
-            }
-
-            index = result;
+            index = expression.GetExpression<int>();
+            
             return true;
         }
 
@@ -62,6 +57,6 @@ namespace LUIECompiler.Common.Extensions
         {
             return context.index != null;
         }
-        
+
     }
 }

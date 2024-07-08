@@ -35,19 +35,15 @@ namespace LUIECompiler.Common.Extensions
                 return qubit;
             }
 
-            if (!context.register().TryGetIndex(out int index))
+            if (!context.register().TryGetIndexExpression(out Expression<int> index))
             {
                 throw new CodeGenerationException()
                 {
                     Error = new TypeError(context.Start.Line, identifier, typeof(Qubit), symbol.GetType()),
                 };
             }
-
-            ConstantExpression<int> exp = new()
-            {
-                Value = index,
-            };
-            return new RegisterAccess(register, exp);
+            
+            return new RegisterAccess(register, index);
         }
     }
 }

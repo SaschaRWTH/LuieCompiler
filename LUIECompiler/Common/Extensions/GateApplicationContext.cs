@@ -47,7 +47,7 @@ namespace LUIECompiler.Common.Extensions
                 return qubit;
             }
 
-            if (!context.TryGetIndex(out int index))
+            if (!context.TryGetIndexExpression(out Expression<int> index))
             {
                 throw new CodeGenerationException()
                 {
@@ -55,11 +55,7 @@ namespace LUIECompiler.Common.Extensions
                 };
             }
 
-            ConstantExpression<int> exp = new()
-            {
-                Value = index,
-            };
-            return new RegisterAccess(register, exp);
+            return new RegisterAccess(register, index);
         }
     }
 }
