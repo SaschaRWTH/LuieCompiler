@@ -41,12 +41,8 @@ namespace LUIECompiler.CodeGeneration.Statements
         public List<QubitCode> GetParameters(List<Constant<int>> constants)
         {
             return Parameters.Select(param =>
-            {
-                return param.ToQASMCode(GetDefinition(param) as RegisterDefinition ?? throw new InternalException()
-                {
-                    Reason = "Parameter is not a register definition. This should have been caught by the semantic analysis and type checking while generating."
-                }, constants, Line);
-            }).ToList();
+                TranslateQubit(param, constants)
+            ).ToList();
         }
     }
 

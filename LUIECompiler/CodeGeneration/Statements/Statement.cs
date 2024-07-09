@@ -66,6 +66,24 @@ namespace LUIECompiler.CodeGeneration.Statements
             }
             return definition;
         }
+
+        /// <summary>
+        /// Translates a <paramref name="qubit"/> symbol to QASM qubit code.
+        /// </summary>
+        /// <param name="qubit"></param>
+        /// <param name="constants"></param>
+        /// <returns></returns>
+        /// <exception cref="InternalException"></exception>
+        protected QubitCode TranslateQubit([NotNull] Qubit qubit, List<Constant<int>> constants)
+        {
+            RegisterDefinition definition = GetDefinition(qubit) as RegisterDefinition ??
+                throw new InternalException()
+                {
+                    Reason = "Guard is not a register definition. This should have been caught by the semantic analysis and type checking while generating."
+                };
+
+            return qubit.ToQASMCode(definition, constants, Line);
+        } 
     }
 
 }
