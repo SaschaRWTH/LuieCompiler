@@ -7,7 +7,7 @@ using LUIECompiler.SemanticAnalysis;
 
 namespace LUIECompilerTests.SemanticAnalysis;
 
-[TestClass]
+[TestClass, TestCategory("SemanticAnalysis"), TestCategory("Definitions")]
 public class DefinitionTest
 {
     public const string InputSimple =

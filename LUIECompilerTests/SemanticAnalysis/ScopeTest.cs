@@ -7,7 +7,7 @@ using LUIECompiler.SemanticAnalysis;
 
 namespace LUIECompilerTests.SemanticAnalysis;
 
-[TestClass]
+[TestClass, TestCategory("SemanticAnalysis"), TestCategory("Scope")]
 public class ScopeTest
 {
 

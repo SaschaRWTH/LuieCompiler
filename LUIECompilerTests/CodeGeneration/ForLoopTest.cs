@@ -9,7 +9,7 @@ using LUIECompiler.SemanticAnalysis;
 
 namespace LUIECompilerTests.CodeGeneration;
 
-[TestClass]
+[TestClass, TestCategory("CodeGeneration"), TestCategory("ForLoop")]
 public class ForLoopTest
 {            
     public const string InputCorrect =

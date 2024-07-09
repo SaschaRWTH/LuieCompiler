@@ -4,7 +4,7 @@ using LUIECompiler.Common.Symbols;
 
 namespace LUIECompilerTests.CodeGeneration;
 
-[TestClass]
+[TestClass, TestCategory("CodeGeneration"), TestCategory("Register")]
 public class RegisterTest
 {
         public const string RegisterSizeInput =
@@ -102,7 +102,7 @@ public class RegisterTest
                 CodeGenerationException exception = Assert.ThrowsException<CodeGenerationException>(
                         codegen.CodeGen.GenerateCode
                 );
-                
+
                 Assert.IsNotNull(exception);
 
                 Assert.AreEqual(exception.Error.ErrorContext.Line, 2);
@@ -121,7 +121,7 @@ public class RegisterTest
                 CodeGenerationException exception = Assert.ThrowsException<CodeGenerationException>(
                         codegen.CodeGen.GenerateCode
                 );
-                
+
                 Assert.IsNotNull(exception);
 
                 Assert.AreEqual(exception.Error.ErrorContext.Line, 3);

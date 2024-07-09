@@ -3,7 +3,7 @@ using LUIECompiler.SemanticAnalysis;
 
 namespace LUIECompilerTests.SemanticAnalysis;
 
-[TestClass]
+[TestClass, TestCategory("SemanticAnalysis"), TestCategory("TypeCheck")]
 public class TypeCheckTest
 {
     public const string InputCorrect =

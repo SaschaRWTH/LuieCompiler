@@ -3,7 +3,7 @@ using LUIECompiler.SemanticAnalysis;
 
 namespace LUIECompilerTests.SemanticAnalysis;
 
-[TestClass]
+[TestClass, TestCategory("SemanticAnalysis"), TestCategory("ForLoop")]
 public class ForLoopTest
 {            
     public const string InputCorrect =

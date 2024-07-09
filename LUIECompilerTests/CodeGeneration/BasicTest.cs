@@ -3,7 +3,7 @@ using LUIECompiler.Common.Symbols;
 
 namespace LUIECompilerTests.CodeGeneration;
 
-[TestClass]
+[TestClass, TestCategory("CodeGeneration")]
 public class BasicTest
 {
     public const string SimpleInput =
