@@ -14,12 +14,20 @@ namespace LUIECompiler
         {
 
             string input =
-                "qubit[3] c;\n" +
-                "qubit a;\n" +
-                "for i in 0..2 do\n" +
-                "    h c[i];\n" +
-                "    cx c[i], a;\n" +
+                "qubit[5] c;\n" +
+                "qubit[5] d;\n" +
+                "qif c[0] do\n" +
+                "    h c[0];\n" +
+                "    qubit[2] c;\n" +
+                "    h c[0];\n" +
                 "end";
+                // "qubit[5] c;\n" +
+                // "qubit a;\n" +
+                // "for i in 0..5 do\n" +
+                // "    h c[i];\n" +
+                // "    cx c[i], a;\n" +
+                // "    for j in 0..99 do\n" +
+                // "end";
 
             try
             {

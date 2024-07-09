@@ -33,6 +33,24 @@ public class ScopeTest
         "ctrl(1) @ h id1, id3;\n" +
         "ctrl(1) @ h id1, id2;\n";
 
+    public const string ChangeUsedInScopeInput =                 
+        "qubit[5] c;\n" +
+        "qubit[5] d;\n" +
+        "qif c[0] do\n" +
+        "    h c[0];\n" +
+        "    qubit[2] c;\n" +
+        "    h c[0];\n" +
+        "end";
+
+    /// <summary>
+    /// Beware: with changes to the translation code, the translations could change, while still being correct!
+    /// </summary>
+    public const string ChangeUsedInScopeInputTranslation =
+        "qubit[5] id0;\n" +
+        "qubit[5] id1;\n" +
+        "qubit[2] id2;\n" +
+        "ctrl(1) @ h id0[0], id0[0];\n" +
+        "ctrl(1) @ h id0[0], id2[0];\n";
 
     /// <summary>
     /// Tests if the scope is correctly handled in the input.
@@ -50,6 +68,24 @@ public class ScopeTest
         Assert.IsNotNull(code);
 
         Assert.AreEqual(code, ScopeInputTranslation);
+    }    
+
+    /// <summary>
+    /// Tests the translation of the input where an identifier is change mid scope (after beding used).
+    /// </summary>
+    [TestMethod]
+    public void ChangeUsedInScopeTest()
+    {
+        var walker = Utils.GetWalker();
+        var parser = Utils.GetParser(ChangeUsedInScopeInput);
+
+        var codegen = new CodeGenerationListener();
+        walker.Walk(codegen, parser.parse());
+
+        string? code = codegen.CodeGen.GenerateCode()?.ToString();
+        Assert.IsNotNull(code);
+
+        Assert.AreEqual(ChangeUsedInScopeInputTranslation, code);
     }    
 
     /// <summary>
@@ -77,4 +113,6 @@ public class ScopeTest
         Assert.AreNotEqual(secondA, firstScopeA);
         Assert.AreEqual(firstA, firstScopeA);
     }
+
+    
 }
