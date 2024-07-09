@@ -35,6 +35,12 @@ public class ForLoopTest
         "    h c[b];\n" +
         "end";
 
+    public const string InvalidRangeInput = 
+        "qubit[3] c;\n" +
+        "for i in 3..1 do\n" +
+        "    h c[i];\n" +
+        "end";
+
     /// <summary>
     /// Test no error are incorrectly reported.
     /// </summary>
@@ -63,8 +69,6 @@ public class ForLoopTest
         var error = analysis.Error;
 
         Assert.IsTrue(error.ContainsCriticalError);
-
-        
         Assert.IsTrue(error.Errors.Any(e => e is RedefineError && e.Line == 3));
     }
 
@@ -80,7 +84,6 @@ public class ForLoopTest
         walker.Walk(analysis, parser.parse());
         var error = analysis.Error;
 
-        Console.WriteLine($"Error:\n{error}");
         Assert.IsTrue(!error.ContainsCriticalError);
     }
 
@@ -97,10 +100,24 @@ public class ForLoopTest
         var error = analysis.Error;
 
         Assert.IsTrue(error.ContainsCriticalError);
-        
-        Console.WriteLine($"Error count: {error.Errors.Count}");
-        Console.WriteLine($"Error: {error}");
         Assert.IsTrue(error.Errors.Any(e => e is TypeError && e.Line == 4));
+    }
+
+    /// <summary>
+    /// Test no error are incorrectly reported.
+    /// </summary>
+    [TestMethod]
+    public void InvalidRangeTest()
+    {
+        var walker = Utils.GetWalker();
+        var parser = Utils.GetParser(InvalidRangeInput);
+        var analysis = new TypeCheckListener();
+        walker.Walk(analysis, parser.parse());
+        var error = analysis.Error;
+
+        Assert.IsTrue(!error.ContainsCriticalError);
+        Assert.IsTrue(error.Warnings.Count != 0);
+        Assert.IsTrue(error.Errors.Any(e => e is InvalidRangeWarning && e.Line == 2));
     }
 
 }

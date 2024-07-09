@@ -166,17 +166,20 @@ namespace LUIECompiler.SemanticAnalysis
         {
             string identifier = context.IDENTIFIER().GetText();
 
-            LuieParser.RangeContext range = context.range();
-            if (!int.TryParse(range.start.Text, out int start) || !int.TryParse(range.end.Text, out int end))
-            {
-                throw new InternalException()
-                {
-                    Reason = "Failed to parse the range of the for statement.",
-                };
-            }
+            Range range = context.range().GetRange();
 
-            LoopIterator loopIterator = new(identifier, start, end);
+            LoopIterator loopIterator = new(identifier, range.Start.Value, range.End.Value);
             Table.AddSymbol(loopIterator);
+        }
+
+        public override void ExitRange([NotNull] LuieParser.RangeContext context)
+        {
+            Range range = context.GetRange();
+
+            if (range.Start.Value >= range.End.Value)
+            {
+                Error.Report(new InvalidRangeWarning(context.Start.Line, range.Start.Value, range.End.Value));
+            }
         }
     }
 
