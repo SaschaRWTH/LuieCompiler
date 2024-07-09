@@ -4,8 +4,16 @@ namespace LUIECompiler.Common.Errors
 {
     public class InvalidRangeWarning : CompilationError
     {
+        /// <summary>
+        /// The start of the range.
+        /// </summary>
         public int Start { get; init; }
+
+        /// <summary>
+        /// The end of the range.
+        /// </summary>
         public int End { get; init; }
+        
         public InvalidRangeWarning(int line, int start, int end)
         {
             Type = ErrorType.Warning;

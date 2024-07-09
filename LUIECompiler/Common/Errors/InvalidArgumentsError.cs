@@ -4,8 +4,16 @@ namespace LUIECompiler.Common.Errors
 {
     public class InvalidArguments : CompilationError
     {
+        /// <summary>
+        /// Gate with the wrong number of arguments.
+        /// </summary>
         public Gate Gate { get; init; }
+
+        /// <summary>
+        /// Given number of arguments.
+        /// </summary>
         public int NumberOfArguments { get; init; }
+        
         public InvalidArguments(int line, Gate gate, int numberOfArguments)
         {
             Type = ErrorType.Critical;

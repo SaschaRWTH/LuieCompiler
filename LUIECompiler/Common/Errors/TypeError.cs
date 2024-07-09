@@ -7,8 +7,14 @@ namespace LUIECompiler.Common.Errors
         /// </summary>
         public string Identifier { get; init; }
 
+        /// <summary>
+        /// The required type.
+        /// </summary>
         public Type RequiredType { get; init; }
 
+        /// <summary>
+        /// The given type.
+        /// </summary>
         public Type GivenType { get; init; }
 
         public TypeError(int line, string identifier, Type requiredType, Type givenType)

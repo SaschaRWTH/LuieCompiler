@@ -2,6 +2,8 @@ using LUIECompiler.CodeGeneration.Codes;
 using LUIECompiler.CodeGeneration.Definitions;
 using LUIECompiler.CodeGeneration;
 using LUIECompiler.CodeGeneration.Expressions;
+using LUIECompiler.CodeGeneration.Exceptions;
+using LUIECompiler.Common.Errors;
 
 namespace LUIECompiler.Common.Symbols
 {
@@ -18,14 +20,25 @@ namespace LUIECompiler.Common.Symbols
         /// </summary>
         public Register Register { get; init; }
 
-        public RegisterAccess(Register register, Expression<int> indexExpression) : base(identifier: register.Identifier) 
+        public RegisterAccess(Register register, Expression<int> indexExpression) : base(identifier: register.Identifier)
         {
             IndexExpression = indexExpression;
             Register = register;
         }
 
-        public override QubitCode ToQASMCode(RegisterDefinition definition, List<Constant<int>> constants)
+        public override QubitCode ToQASMCode(RegisterDefinition definition, List<Constant<int>> constants, int line)
         {
+            int index = IndexExpression.Evaluate(constants);
+
+            if (index < 0 || index >= Register.Size)
+            {
+                throw new CodeGenerationException()
+                {
+                    Error = new InvalidAccessError(line, Register.Identifier, index, Register.Size)
+                };
+
+            }
+
             return new RegisterAccessCode()
             {
                 Register = definition,

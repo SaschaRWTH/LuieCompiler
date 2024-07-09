@@ -38,7 +38,7 @@ namespace LUIECompiler.CodeGeneration.Statements
                     Reason = "Guard is not a register definition. This should have been caught by the semantic analysis and type checking while generating."
                 };
 
-            return Guard.ToQASMCode(definition, constants);
+            return Guard.ToQASMCode(definition, constants, Line);
         }
     }
 

@@ -45,7 +45,7 @@ namespace LUIECompiler.CodeGeneration.Statements
                 return param.ToQASMCode(GetDefinition(param) as RegisterDefinition ?? throw new InternalException()
                 {
                     Reason = "Parameter is not a register definition. This should have been caught by the semantic analysis and type checking while generating."
-                }, constants);
+                }, constants, Line);
             }).ToList();
         }
     }
