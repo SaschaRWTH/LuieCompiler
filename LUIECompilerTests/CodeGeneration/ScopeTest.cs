@@ -97,18 +97,18 @@ public class ScopeTest
         CodeGenerationHandler handler = new();
 
         handler.PushCodeBlock();
-        Qubit firstA = handler.AddQubit("A", 1);
+        Qubit firstA = handler.AddQubit("A", new(1, 1));
 
         handler.PushCodeBlock();
-        Qubit secondA = handler.AddQubit("A", 2);
+        Qubit secondA = handler.AddQubit("A", new(2, 1));
 
-        Qubit? secondScopeA = handler.GetSymbolInfo("A", 3) as Qubit;
+        Qubit? secondScopeA = handler.GetSymbolInfo("A", new(3, 1)) as Qubit;
         Assert.IsNotNull(secondScopeA);
         Assert.AreNotEqual(firstA, secondScopeA);
         Assert.AreEqual(secondA, secondScopeA);
 
         handler.PopCodeBlock();
-        Qubit? firstScopeA = handler.GetSymbolInfo("A", 4) as Qubit;
+        Qubit? firstScopeA = handler.GetSymbolInfo("A", new(4, 1)) as Qubit;
         Assert.IsNotNull(secondScopeA);
         Assert.AreNotEqual(secondA, firstScopeA);
         Assert.AreEqual(firstA, firstScopeA);

@@ -82,9 +82,9 @@ public class TypeCheckTest
 
         Assert.IsTrue(error.ContainsCriticalError);
         Console.WriteLine(error.ToString());
-        Assert.IsTrue(error.Errors.Any(e => e is UndefinedError && e.Line == 8));
-        Assert.IsTrue(error.Errors.Any(e => e is TypeError && e.Line == 4));
-        Assert.IsTrue(error.Errors.Any(e => e is TypeError && e.Line == 7));
+        Assert.IsTrue(error.Errors.Any(e => e is UndefinedError && e.ErrorContext.Line == 8));
+        Assert.IsTrue(error.Errors.Any(e => e is TypeError && e.ErrorContext.Line == 4));
+        Assert.IsTrue(error.Errors.Any(e => e is TypeError && e.ErrorContext.Line == 7));
     }
 
     
@@ -102,8 +102,8 @@ public class TypeCheckTest
 
         Assert.IsTrue(error.ContainsCriticalError);
         Assert.AreEqual(2, error.Errors.Count);
-        Assert.IsTrue(error.Errors.Any(e => e is InvalidArguments && e.Line == 4));
-        Assert.IsTrue(error.Errors.Any(e => e is InvalidArguments && e.Line == 5));
+        Assert.IsTrue(error.Errors.Any(e => e is InvalidArguments && e.ErrorContext.Line == 4));
+        Assert.IsTrue(error.Errors.Any(e => e is InvalidArguments && e.ErrorContext.Line == 5));
     }
     
     /// <summary>
@@ -120,7 +120,7 @@ public class TypeCheckTest
 
         Assert.IsTrue(error.ContainsCriticalError);
         Assert.AreEqual(2, error.Errors.Count);
-        Assert.IsTrue(error.Errors.Any(e => e is TypeError && e.Line == 3));
-        Assert.IsTrue(error.Errors.Any(e => e is TypeError && e.Line == 6));
+        Assert.IsTrue(error.Errors.Any(e => e is TypeError && e.ErrorContext.Line == 3));
+        Assert.IsTrue(error.Errors.Any(e => e is TypeError && e.ErrorContext.Line == 6));
     }
 }

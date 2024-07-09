@@ -33,7 +33,7 @@ public class DefinitionTest
 
         Assert.IsTrue(error.ContainsCriticalError);
 
-        Assert.IsTrue(error.Errors.Any(e => e is RedefineError && e.Line == 4));
+        Assert.IsTrue(error.Errors.Any(e => e is RedefineError && e.ErrorContext.Line == 4));
     }
 
     /// <summary>
@@ -50,7 +50,7 @@ public class DefinitionTest
 
         Assert.IsTrue(error.ContainsCriticalError);
 
-        Assert.IsTrue(error.Errors.Any(e => e is UndefinedError && e.Line == 3));
-        Assert.IsTrue(error.Errors.Any(e => e is UndefinedError && e.Line == 5));
+        Assert.IsTrue(error.Errors.Any(e => e is UndefinedError && e.ErrorContext.Line == 3));
+        Assert.IsTrue(error.Errors.Any(e => e is UndefinedError && e.ErrorContext.Line == 5));
     }
 }

@@ -1,5 +1,6 @@
 using LUIECompiler.CodeGeneration.Codes;
 using LUIECompiler.CodeGeneration.Definitions;
+using LUIECompiler.Common.Errors;
 
 namespace LUIECompiler.Common.Symbols
 {
@@ -20,7 +21,7 @@ namespace LUIECompiler.Common.Symbols
         /// </summary>
         /// <param name="definition"></param>
         /// <returns> The QASM parameter. </returns>
-        public virtual QubitCode ToQASMCode(RegisterDefinition definition, List<Constant<int>> constants, int line)
+        public virtual QubitCode ToQASMCode(RegisterDefinition definition, List<Constant<int>> constants, ErrorContext context)
         {
             return new()
             {

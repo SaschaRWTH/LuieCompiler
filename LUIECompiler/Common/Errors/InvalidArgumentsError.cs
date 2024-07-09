@@ -14,10 +14,10 @@ namespace LUIECompiler.Common.Errors
         /// </summary>
         public int NumberOfArguments { get; init; }
         
-        public InvalidArguments(int line, Gate gate, int numberOfArguments)
+        public InvalidArguments(ErrorContext context, Gate gate, int numberOfArguments)
         {
             Type = ErrorType.Critical;
-            Line = line;
+            ErrorContext = context;
             Gate = gate;
             NumberOfArguments = numberOfArguments;
             Description = $"The gate '{Gate}' takes {Gate.NumberOfArguments} arguments, but received {NumberOfArguments}.";

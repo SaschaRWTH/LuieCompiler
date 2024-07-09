@@ -14,10 +14,10 @@ namespace LUIECompiler.Common.Errors
         /// </summary>
         public int End { get; init; }
         
-        public InvalidRangeWarning(int line, int start, int end)
+        public InvalidRangeWarning(ErrorContext context, int start, int end)
         {
             Type = ErrorType.Warning;
-            Line = line;
+            ErrorContext = context;
             Start = start;
             End = end;
             Description = $"The range from {start} to {end} is invalid and has a size of {end-start}.";

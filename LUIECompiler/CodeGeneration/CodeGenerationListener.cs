@@ -27,11 +27,11 @@ namespace LUIECompiler.CodeGeneration
 
             if (context.TryGetSize(out int size))
             {
-                CodeGen.AddRegister(identifier, size, context.Start.Line);
+                CodeGen.AddRegister(identifier, size, new ErrorContext(context.Start));
             }
             else
             {
-                CodeGen.AddQubit(identifier, context.Start.Line);
+                CodeGen.AddQubit(identifier, new ErrorContext(context.Start));
             }
 
         }
@@ -45,17 +45,16 @@ namespace LUIECompiler.CodeGeneration
             {
                 throw new CodeGenerationException()
                 {
-                    Error = new InvalidArguments(context.Start.Line, gate, parameters.Count),
+                    Error = new InvalidArguments(new ErrorContext(context.Start), gate, parameters.Count),
                 };
             }
 
-            int line = context.Start.Line;
             GateApplicationStatement statement = new()
             {
                 Gate = gate,
                 Parameters = parameters,
                 DefinitionDictionary = CodeGen.DefinitionDictionary,
-                Line = line,
+                ErrorContext = new ErrorContext(context.Start),
             };
 
             CodeGen.AddStatement(statement);
@@ -89,13 +88,12 @@ namespace LUIECompiler.CodeGeneration
                 Reason = "There was no last poped code block, although block should just have been exited."
             };
 
-            int line = context.Start.Line;
             QuantumIfStatement statement = new()
             {
                 Block = block,
                 Guard = CodeGen.CurrentGuard,
                 DefinitionDictionary = CodeGen.DefinitionDictionary,
-                Line = line,
+                ErrorContext = new ErrorContext(context.Start),
             };
 
             CodeGen.AddStatement(statement);
@@ -108,13 +106,12 @@ namespace LUIECompiler.CodeGeneration
                 Reason = "There was no last poped code block, although block should just have been exited."
             };
 
-            int line = context.Start.Line;
             QuantumIfStatement statement = new()
             {
                 Block = block,
                 Guard = CodeGen.CurrentGuard,
                 DefinitionDictionary = CodeGen.DefinitionDictionary,
-                Line = line,
+                ErrorContext = new ErrorContext(context.Start),
             };
 
             CodeGen.AddStatement(statement);
@@ -128,15 +125,14 @@ namespace LUIECompiler.CodeGeneration
             };
 
             LoopIterator iterator = context.GetIterator();
-            CodeGen.AddIterator(iterator, context.Start.Line);
+            CodeGen.AddIterator(iterator, new ErrorContext(context.Start));
 
-            int line = context.Start.Line;
             ForLoopStatement statement = new()
             {
                 Iterator = context.GetIterator(),
                 Body = block,
                 DefinitionDictionary = CodeGen.DefinitionDictionary,
-                Line = line,
+                ErrorContext = new ErrorContext(context.Start),
             };
 
             CodeGen.AddStatement(statement);

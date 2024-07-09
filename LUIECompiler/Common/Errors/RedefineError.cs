@@ -10,10 +10,10 @@ namespace LUIECompiler.Common.Errors
         /// </summary>
         public string Identifier { get; init; }
 
-        public RedefineError(int line, string identifier)
+        public RedefineError(ErrorContext context, string identifier)
         {
             Type = ErrorType.Critical;
-            Line = line;
+            ErrorContext = context;
             Identifier = identifier;
             Description = $"The register {identifier} is already defined in the context.";
         }

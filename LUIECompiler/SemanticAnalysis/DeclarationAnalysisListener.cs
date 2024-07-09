@@ -37,7 +37,7 @@ namespace LUIECompiler.SemanticAnalysis
             string identifier = id.GetText();
             if (Table.IsDefinedInCurrentScop(identifier))
             {
-                Error.Report(new RedefineError(context.Start.Line, identifier));
+                Error.Report(new RedefineError(new ErrorContext(context.Start), identifier));
             }
             else
             {
@@ -75,7 +75,7 @@ namespace LUIECompiler.SemanticAnalysis
 
             if(Table.IsDefined(identifier))
             {
-                Error.Report(new RedefineError(context.Start.Line, identifier));
+                Error.Report(new RedefineError(new ErrorContext(context.Start), identifier));
                 return;
             }
             
@@ -105,7 +105,7 @@ namespace LUIECompiler.SemanticAnalysis
                 return;
             }
 
-            Error.Report(new UndefinedError(context.Start.Line, identifier));
+            Error.Report(new UndefinedError(new ErrorContext(context.Start), identifier));
         }
 
     }

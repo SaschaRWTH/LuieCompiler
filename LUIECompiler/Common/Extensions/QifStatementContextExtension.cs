@@ -19,14 +19,14 @@ namespace LUIECompiler.Common.Extensions
             string identifier = context.register().GetIdentifier();
             Symbol symbol = table.GetSymbolInfo(identifier) ?? throw new CodeGenerationException()
             {
-                Error = new UndefinedError(context.Start.Line, identifier),
+                Error = new UndefinedError(new ErrorContext(context.Start), identifier),
             };
 
             if (symbol is not Register register)
             {
                 throw new CodeGenerationException()
                 {
-                    Error = new TypeError(context.Start.Line, identifier, typeof(Register), symbol.GetType()),
+                    Error = new TypeError(new ErrorContext(context.Start), identifier, typeof(Register), symbol.GetType()),
                 };
             }
 
@@ -39,7 +39,7 @@ namespace LUIECompiler.Common.Extensions
             {
                 throw new CodeGenerationException()
                 {
-                    Error = new TypeError(context.Start.Line, identifier, typeof(Qubit), symbol.GetType()),
+                    Error = new TypeError(new ErrorContext(context.Start), identifier, typeof(Qubit), symbol.GetType()),
                 };
             }
             

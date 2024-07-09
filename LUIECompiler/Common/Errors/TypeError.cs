@@ -17,10 +17,10 @@ namespace LUIECompiler.Common.Errors
         /// </summary>
         public Type GivenType { get; init; }
 
-        public TypeError(int line, string identifier, Type requiredType, Type givenType)
+        public TypeError(ErrorContext context, string identifier, Type requiredType, Type givenType)
         {
             Type = ErrorType.Critical;
-            Line = line;
+            ErrorContext = context;
             Identifier = identifier;
             RequiredType = requiredType;
             GivenType = givenType;

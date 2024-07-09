@@ -132,13 +132,13 @@ namespace LUIECompiler.CodeGeneration
         /// Adds a qubit to the code generation handler. This includes adding it to the symbol table,
         /// creating a definition with a unique id, and adding the definition the the definition dictionary.
         /// <param name="identifier">Identifier of the qubit</param>
-        /// <param name="line">Line of the declaration</param>
+        /// <param name="context">Line of the declaration</param>
         /// <returns></returns>
-        public Qubit AddQubit(string identifier, int line)
+        public Qubit AddQubit(string identifier, ErrorContext context)
         {
             Qubit info = new(identifier);
 
-            AddSymbol(info, line);
+            AddSymbol(info, context);
             string id = Table.UniqueIdentifier; 
 
             RegisterDefinition definition = new()
@@ -159,13 +159,13 @@ namespace LUIECompiler.CodeGeneration
         /// creating a definition with a unique id, and adding the definition the the definition dictionary.
         /// <param name="identifier">Identifier of the register</param>
         /// <param name="size">Size of the register</param>
-        /// <param name="line">Line of the declaration</param>
+        /// <param name="context">Line of the declaration</param>
         /// <returns></returns>
-        public Register AddRegister(string identifier, int size, int line)
+        public Register AddRegister(string identifier, int size, ErrorContext context)
         {
             Register info = new(identifier, size);
 
-            AddSymbol(info, line);
+            AddSymbol(info, context);
             string id = Table.UniqueIdentifier; 
 
             RegisterDefinition definition = new()
@@ -185,25 +185,25 @@ namespace LUIECompiler.CodeGeneration
         /// Adds an iterator to the symbol table.
         /// </summary>
         /// <param name="iterator"></param>
-        /// <param name="line"></param>
-        public void AddIterator(LoopIterator iterator, int line)
+        /// <param name="context"></param>
+        public void AddIterator(LoopIterator iterator, ErrorContext context)
         {
-            AddSymbol(iterator, line);
+            AddSymbol(iterator, context);
         }
 
         /// <summary>
         /// Adds a symbol to the symbol table.
         /// </summary>
         /// <param name="symbol"></param>
-        /// <param name="line"></param>
+        /// <param name="context"></param>
         /// <exception cref="CodeGenerationException"></exception>
-        protected void AddSymbol(Symbol symbol, int line)
+        protected void AddSymbol(Symbol symbol, ErrorContext context)
         {
             if (Table.IsDefinedInCurrentScop(symbol.Identifier))
             {
                 throw new CodeGenerationException()
                 {
-                    Error = new RedefineError(line, symbol.Identifier),
+                    Error = new RedefineError(context, symbol.Identifier),
                 };
             }
             Table.AddSymbol(symbol);
@@ -233,11 +233,11 @@ namespace LUIECompiler.CodeGeneration
         /// <param name="identifier"></param>
         /// <returns></returns>
         /// <exception cref="Exception"></exception>
-        public Symbol GetSymbolInfo(string identifier, int line)
+        public Symbol GetSymbolInfo(string identifier, ErrorContext context)
         {
             return Table.GetSymbolInfo(identifier) ?? throw new CodeGenerationException()
             {
-                Error = new UndefinedError(line, identifier)
+                Error = new UndefinedError(context, identifier)
             };
 
         }

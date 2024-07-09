@@ -10,10 +10,10 @@ namespace LUIECompiler.Common.Errors
         /// </summary>
         public string Identifier { get; init; }
 
-        public UndefinedError(int line, string identifier)
+        public UndefinedError(ErrorContext context, string identifier)
         {
             Type = ErrorType.Critical;
-            Line = line;
+            ErrorContext = context;
             Identifier = identifier;
             Description = $"The identifier {identifier} does not exist in the context.";
         }

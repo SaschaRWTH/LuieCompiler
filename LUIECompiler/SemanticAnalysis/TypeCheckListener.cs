@@ -59,14 +59,14 @@ namespace LUIECompiler.SemanticAnalysis
             Symbol? symbol = Table.GetSymbolInfo(identifier);
             if (symbol == null)
             {
-                Error.Report(new UndefinedError(context.Start.Line, identifier));
+                Error.Report(new UndefinedError(new ErrorContext(context.Start), identifier));
                 return;
             }
 
             // Cannot access qubit with []
             if (symbol is Qubit && context.TryGetIndexExpression(out Expression<int> _))
             {
-                Error.Report(new UndefinedError(context.Start.Line, identifier));
+                Error.Report(new UndefinedError(new ErrorContext(context.Start), identifier));
             }
 
             // Only allow expression in register to be iterator (for now)
@@ -92,13 +92,13 @@ namespace LUIECompiler.SemanticAnalysis
             Symbol? symbol = Table.GetSymbolInfo(identifier);
             if(symbol == null)
             {
-                Error.Report(new UndefinedError(context.Start.Line, identifier));
+                Error.Report(new UndefinedError(new ErrorContext(context.Start), identifier));
                 return;
             }
 
             if(symbol is not LoopIterator)
             {
-                Error.Report(new TypeError(context.Start.Line, identifier, typeof(LoopIterator), symbol.GetType()));
+                Error.Report(new TypeError(new ErrorContext(context.Start), identifier, typeof(LoopIterator), symbol.GetType()));
             }
         }
 
@@ -112,19 +112,19 @@ namespace LUIECompiler.SemanticAnalysis
                 Symbol? symbol = Table.GetSymbolInfo(identifier);
                 if (symbol == null)
                 {
-                    Error.Report(new UndefinedError(context.Start.Line, identifier));
+                    Error.Report(new UndefinedError(new ErrorContext(context.Start), identifier));
                     return;
                 }
 
                 if (symbol is not Register)
                 {
-                    Error.Report(new TypeError(context.Start.Line, identifier, typeof(Register), symbol.GetType()));
+                    Error.Report(new TypeError(new ErrorContext(context.Start), identifier, typeof(Register), symbol.GetType()));
                 }
 
                 if (symbol is not Qubit && !register.IsRegisterAccess())
                 {
                     // Returning typeof(Qubit) is not perfect, technically RegisterAccess is of type Qubit, but the user could still be confused. 
-                    Error.Report(new TypeError(context.Start.Line, identifier, typeof(Qubit), symbol.GetType()));
+                    Error.Report(new TypeError(new ErrorContext(context.Start), identifier, typeof(Qubit), symbol.GetType()));
                 }
             }
 
@@ -132,7 +132,7 @@ namespace LUIECompiler.SemanticAnalysis
 
             if (gate.NumberOfArguments != registers.Count)
             {
-                Error.Report(new InvalidArguments(context.Start.Line, gate, registers.Count));
+                Error.Report(new InvalidArguments(new ErrorContext(context.Start), gate, registers.Count));
             }
 
         }
@@ -145,7 +145,7 @@ namespace LUIECompiler.SemanticAnalysis
             Symbol? symbol = Table.GetSymbolInfo(identifier);
             if (symbol == null)
             {
-                Error.Report(new UndefinedError(context.Start.Line, identifier));
+                Error.Report(new UndefinedError(new ErrorContext(context.Start), identifier));
                 return;
             }
 
@@ -159,7 +159,7 @@ namespace LUIECompiler.SemanticAnalysis
                 return;
             }
 
-            Error.Report(new TypeError(context.Start.Line, identifier, typeof(Qubit), symbol.GetType()));
+            Error.Report(new TypeError(new ErrorContext(context.Start), identifier, typeof(Qubit), symbol.GetType()));
         }
 
         public override void EnterForstatement([NotNull] LuieParser.ForstatementContext context)
@@ -178,7 +178,7 @@ namespace LUIECompiler.SemanticAnalysis
 
             if (range.Start.Value >= range.End.Value)
             {
-                Error.Report(new InvalidRangeWarning(context.Start.Line, range.Start.Value, range.End.Value));
+                Error.Report(new InvalidRangeWarning(new ErrorContext(context.Start), range.Start.Value, range.End.Value));
             }
         }
     }

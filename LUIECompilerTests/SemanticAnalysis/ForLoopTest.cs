@@ -69,7 +69,7 @@ public class ForLoopTest
         var error = analysis.Error;
 
         Assert.IsTrue(error.ContainsCriticalError);
-        Assert.IsTrue(error.Errors.Any(e => e is RedefineError && e.Line == 3));
+        Assert.IsTrue(error.Errors.Any(e => e is RedefineError && e.ErrorContext.Line == 3));
     }
 
     /// <summary>
@@ -100,7 +100,7 @@ public class ForLoopTest
         var error = analysis.Error;
 
         Assert.IsTrue(error.ContainsCriticalError);
-        Assert.IsTrue(error.Errors.Any(e => e is TypeError && e.Line == 4));
+        Assert.IsTrue(error.Errors.Any(e => e is TypeError && e.ErrorContext.Line == 4));
     }
 
     /// <summary>
@@ -117,7 +117,7 @@ public class ForLoopTest
 
         Assert.IsTrue(!error.ContainsCriticalError);
         Assert.IsTrue(error.Warnings.Count != 0);
-        Assert.IsTrue(error.Errors.Any(e => e is InvalidRangeWarning && e.Line == 2));
+        Assert.IsTrue(error.Errors.Any(e => e is InvalidRangeWarning && e.ErrorContext.Line == 2));
     }
 
 }

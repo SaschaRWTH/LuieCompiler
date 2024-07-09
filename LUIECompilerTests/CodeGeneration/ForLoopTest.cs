@@ -87,7 +87,7 @@ public class ForLoopTest
             => walker.Walk(gen, parser.parse())
             );
         Assert.IsTrue(e.Error is RedefineError);
-        Assert.AreEqual(3, e.Error.Line);
+        Assert.AreEqual(3, e.Error.ErrorContext.Line);
     }
 
     /// <summary>

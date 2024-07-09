@@ -18,7 +18,7 @@ namespace LUIECompiler.CodeGeneration.Statements
         /// <summary>
         /// Source code line of the statement.
         /// </summary>
-        public required int Line { get; init; }
+        public required ErrorContext ErrorContext { get; init; }
         public abstract QASMProgram ToQASM(List<Constant<int>> constants);
 
         /// <summary>
@@ -38,7 +38,7 @@ namespace LUIECompiler.CodeGeneration.Statements
             {
                 throw new CodeGenerationException()
                 {
-                    Error = new UndefinedError(Line, register.Identifier),
+                    Error = new UndefinedError(ErrorContext, register.Identifier),
                 };
             }
             return definition.Identifier;
@@ -61,7 +61,7 @@ namespace LUIECompiler.CodeGeneration.Statements
             {
                 throw new CodeGenerationException()
                 {
-                    Error = new UndefinedError(Line, register.Identifier),
+                    Error = new UndefinedError(ErrorContext, register.Identifier),
                 };
             }
             return definition;
@@ -82,7 +82,7 @@ namespace LUIECompiler.CodeGeneration.Statements
                     Reason = "Guard is not a register definition. This should have been caught by the semantic analysis and type checking while generating."
                 };
 
-            return qubit.ToQASMCode(definition, constants, Line);
+            return qubit.ToQASMCode(definition, constants, ErrorContext);
         } 
     }
 

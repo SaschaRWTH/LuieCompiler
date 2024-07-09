@@ -105,7 +105,7 @@ public class RegisterTest
                 
                 Assert.IsNotNull(exception);
 
-                Assert.AreEqual(exception.Error.Line, 2);
+                Assert.AreEqual(exception.Error.ErrorContext.Line, 2);
         }
         /// <summary>
         /// Tests if the scope is correctly handled in the input.
@@ -124,7 +124,7 @@ public class RegisterTest
                 
                 Assert.IsNotNull(exception);
 
-                Assert.AreEqual(exception.Error.Line, 3);
+                Assert.AreEqual(exception.Error.ErrorContext.Line, 3);
         }
 
 }

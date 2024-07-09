@@ -17,10 +17,10 @@ namespace LUIECompiler.Common.Errors
 
         public int RegisterSize { get; init; }
 
-        public InvalidAccessError(int line, string identifier, int invalidIndex, int registerSize)
+        public InvalidAccessError(ErrorContext context, string identifier, int invalidIndex, int registerSize)
         {
             Type = ErrorType.Critical;
-            Line = line;
+            ErrorContext = context;
             Identifier = identifier;
             InvalidIndex = invalidIndex;
             RegisterSize = registerSize;

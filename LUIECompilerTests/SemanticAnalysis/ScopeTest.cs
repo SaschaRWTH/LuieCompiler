@@ -69,7 +69,7 @@ public class ScopeTest
         var error = analysis.Error;
 
         Assert.IsTrue(error.ContainsCriticalError);
-        Assert.IsTrue(error.Errors.Any(e => e is RedefineError && e.Line == 6));
+        Assert.IsTrue(error.Errors.Any(e => e is RedefineError && e.ErrorContext.Line == 6));
     }
 
     /// <summary>
