@@ -23,8 +23,8 @@ public class BasicTest
     public const string SimpleInputTranslation =
         "qubit id0;\n" +
         "qubit id1;\n" +
-        "qubit id2;\n" +
         "x id1;\n" +
+        "qubit id2;\n" +
         "ctrl(1) @ x id1, id0;\n" +
         "ctrl(1) @ h id1, id0;\n" +
         "ctrl(1) @ h id1, id2;\n";

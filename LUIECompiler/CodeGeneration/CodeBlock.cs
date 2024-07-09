@@ -1,6 +1,7 @@
 using LUIECompiler.CodeGeneration.Statements;
 using LUIECompiler.CodeGeneration.Codes;
 using LUIECompiler.Common.Symbols;
+using LUIECompiler.CodeGeneration.Definitions;
 
 namespace LUIECompiler.CodeGeneration
 {
@@ -10,23 +11,22 @@ namespace LUIECompiler.CodeGeneration
         /// <summary>
         /// List of statements in the code block.
         /// </summary>
-        public List<Statement> Statements { get; } = [];
-
+        public List<ITranslateable> Translateables { get; } = [];
 
         /// <summary>
         /// Adds a statement to the code block.
         /// </summary>
         /// <param name="statement"></param>
-        public void AddStatement(Statement statement)
+        public void AddTranslateable(ITranslateable statement)
         {
-            Statements.Add(statement);
+            Translateables.Add(statement);
         }
 
         public QASMProgram ToQASM(List<Constant<int>> constants)
         {
             QASMProgram code = new();
 
-            foreach (var statement in Statements)
+            foreach (var statement in Translateables)
             {
                 code += statement.ToQASM(constants);
             }

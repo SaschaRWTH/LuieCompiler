@@ -1,10 +1,7 @@
-﻿using System;
-using Antlr4.Runtime;
+﻿using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
 using LUIECompiler.CodeGeneration;
 using LUIECompiler.CodeGeneration.Exceptions;
-using LUIECompiler.CodeGeneration.Statements;
-using LUIECompiler.SemanticAnalysis;
 
 namespace LUIECompiler
 {
@@ -15,9 +12,13 @@ namespace LUIECompiler
 
             string input =
                 "qubit[5] c;\n" +
-                "for i in 0..10 do\n" +
+                "for i in 0..4 do\n" +
+                "    qubit a;\n" +
                 "    h c[i];\n" +
-                "end";
+                "    h a;\n" +
+                "end\n" +
+                "qubit a;\n" +
+                "h a;";
 
             try
             {

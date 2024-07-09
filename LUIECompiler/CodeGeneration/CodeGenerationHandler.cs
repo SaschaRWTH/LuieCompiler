@@ -25,6 +25,7 @@ namespace LUIECompiler.CodeGeneration
         /// <summary>
         /// List of all definitions. 
         /// </summary>
+        [Obsolete("Use ITranslateable List instread instead.")]
         public List<Definition> Definitions { get; } = [];
 
         /// <summary>
@@ -107,7 +108,7 @@ namespace LUIECompiler.CodeGeneration
         /// <param name="statement"></param>
         public void AddStatement([NotNull] Statement statement)
         {
-            CurrentBlock.AddStatement(statement);
+            CurrentBlock.AddTranslateable(statement);
         }
 
         /// <summary>
@@ -147,7 +148,7 @@ namespace LUIECompiler.CodeGeneration
                 Size = 1,
             };
 
-            Definitions.Add(definition);
+            CurrentBlock.AddTranslateable(definition);
 
             DefinitionDictionary.Add(info, definition);
 
@@ -174,7 +175,7 @@ namespace LUIECompiler.CodeGeneration
                 Size = size,
             };
 
-            Definitions.Add(definition);
+            CurrentBlock.AddTranslateable(definition);
 
             DefinitionDictionary.Add(info, definition);
 
@@ -216,10 +217,6 @@ namespace LUIECompiler.CodeGeneration
         public QASMProgram GenerateCode()
         {
             QASMProgram code = new();
-            foreach (Definition definition in Definitions)
-            {
-                code += definition.ToQASM([]);
-            }
 
             code += MainBlock.ToQASM([]);
 

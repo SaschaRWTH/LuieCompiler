@@ -54,6 +54,7 @@ namespace LUIECompiler.CodeGeneration
                 Gate = gate,
                 Parameters = parameters,
                 DefinitionDictionary = CodeGen.DefinitionDictionary,
+                SymbolTable = CodeGen.Table,
                 ErrorContext = new ErrorContext(context.Start),
             };
 
@@ -93,6 +94,7 @@ namespace LUIECompiler.CodeGeneration
                 Block = block,
                 Guard = CodeGen.CurrentGuard,
                 DefinitionDictionary = CodeGen.DefinitionDictionary,
+                SymbolTable = CodeGen.Table,
                 ErrorContext = new ErrorContext(context.Start),
             };
 
@@ -111,6 +113,7 @@ namespace LUIECompiler.CodeGeneration
                 Block = block,
                 Guard = CodeGen.CurrentGuard,
                 DefinitionDictionary = CodeGen.DefinitionDictionary,
+                SymbolTable = CodeGen.Table,
                 ErrorContext = new ErrorContext(context.Start),
             };
 
@@ -132,6 +135,7 @@ namespace LUIECompiler.CodeGeneration
                 Iterator = context.GetIterator(),
                 Body = block,
                 DefinitionDictionary = CodeGen.DefinitionDictionary,
+                SymbolTable = CodeGen.Table,
                 ErrorContext = new ErrorContext(context.Start),
             };
 

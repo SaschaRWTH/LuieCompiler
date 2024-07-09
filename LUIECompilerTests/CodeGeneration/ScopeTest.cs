@@ -25,9 +25,9 @@ public class ScopeTest
     public const string ScopeInputTranslation =
         "qubit id0;\n" +
         "qubit id1;\n" +
+        "x id1;\n" +
         "qubit id2;\n" +
         "qubit id3;\n" +
-        "x id1;\n" +
         "ctrl(1) @ x id1, id0;\n" +
         "ctrl(1) @ h id1, id0;\n" +
         "ctrl(1) @ h id1, id3;\n" +
@@ -48,8 +48,8 @@ public class ScopeTest
     public const string ChangeUsedInScopeInputTranslation =
         "qubit[5] id0;\n" +
         "qubit[5] id1;\n" +
-        "qubit[2] id2;\n" +
         "ctrl(1) @ h id0[0], id0[0];\n" +
+        "qubit[2] id2;\n" +
         "ctrl(1) @ h id0[0], id2[0];\n";
 
     /// <summary>
@@ -67,7 +67,7 @@ public class ScopeTest
         string? code = codegen.CodeGen.GenerateCode()?.ToString();
         Assert.IsNotNull(code);
 
-        Assert.AreEqual(code, ScopeInputTranslation);
+        Assert.AreEqual(ScopeInputTranslation, code);
     }    
 
     /// <summary>
