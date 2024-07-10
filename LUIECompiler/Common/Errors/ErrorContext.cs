@@ -18,5 +18,10 @@ namespace LUIECompiler.Common.Errors{
             Line = token.Line;
             Column = token.Column;
         }
+        public ErrorContext(ParserRuleContext context)
+        {
+            Line = context.Start.Line;
+            Column = context.Start.Column;
+        }
     }
 }

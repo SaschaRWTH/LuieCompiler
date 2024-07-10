@@ -96,11 +96,11 @@ public class ScopeTest
         SymbolTable table = new();
         
         table.PushScope();
-        Qubit firstA = new("A");
+        Qubit firstA = new("A", new ErrorContext());
         table.AddSymbol(firstA);
 
         table.PushScope();
-        Qubit secondA = new("A");
+        Qubit secondA = new("A", new ErrorContext());
         table.AddSymbol(secondA);
 
         Qubit? secondScopeA = table.GetSymbolInfo("A") as Qubit;

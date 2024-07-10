@@ -17,7 +17,7 @@ namespace LUIECompiler.CodeGeneration.Statements
         /// </summary>
         public required Dictionary<Register, Definition> DefinitionDictionary { get; init; }
 
-        public required SymbolTable SymbolTable { get; init; }
+        public required CodeBlock ParentBlock { get; init; }
 
         /// <summary>
         /// Source code line of the statement.

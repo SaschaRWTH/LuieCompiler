@@ -1,3 +1,5 @@
+using LUIECompiler.Common.Errors;
+
 namespace LUIECompiler.Common.Symbols
 {
 
@@ -8,9 +10,12 @@ namespace LUIECompiler.Common.Symbols
         /// </summary>
         public string Identifier { get; init; }
 
-        public Symbol(string identifier)
+        public ErrorContext ErrorContext { get; init; }
+
+        public Symbol(string identifier, ErrorContext errorContext)
         {
             Identifier = identifier;
+            ErrorContext = errorContext;
         }
     }
 

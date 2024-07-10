@@ -1,3 +1,5 @@
+using LUIECompiler.Common.Errors;
+
 namespace LUIECompiler.Common.Symbols
 {
     public class LoopIterator : Symbol
@@ -12,7 +14,7 @@ namespace LUIECompiler.Common.Symbols
         /// </summary>
         public int End { get; init; }
 
-        public LoopIterator(string identifier, int start, int end) : base(identifier)
+        public LoopIterator(string identifier, int start, int end, ErrorContext errorContext) : base(identifier, errorContext)
         {
             Start = start;
             End = end;

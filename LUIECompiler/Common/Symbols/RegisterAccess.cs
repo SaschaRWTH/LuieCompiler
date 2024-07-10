@@ -20,7 +20,8 @@ namespace LUIECompiler.Common.Symbols
         /// </summary>
         public Register Register { get; init; }
 
-        public RegisterAccess(Register register, Expression<int> indexExpression) : base(identifier: register.Identifier)
+        public RegisterAccess(Register register, Expression<int> indexExpression, ErrorContext errorContext) 
+        : base(identifier: register.Identifier, errorContext)
         {
             IndexExpression = indexExpression;
             Register = register;

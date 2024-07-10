@@ -41,7 +41,10 @@ namespace LUIECompiler.CodeGeneration
         /// <summary>
         ///  Main code block of the program.
         /// </summary>
-        public CodeBlock MainBlock { get; } = new();
+        public CodeBlock MainBlock { get; } = new()
+        {
+            Parent = null,
+        };
 
         /// <summary>
         /// Gets the current code block.
@@ -79,7 +82,10 @@ namespace LUIECompiler.CodeGeneration
             }
             else
             {
-                CodeBlocks.Push(new());
+                CodeBlocks.Push(new()
+                {
+                    Parent = CurrentBlock,
+                });
             }
         }
 
@@ -137,10 +143,10 @@ namespace LUIECompiler.CodeGeneration
         /// <returns></returns>
         public Qubit AddQubit(string identifier, ErrorContext context)
         {
-            Qubit info = new(identifier);
+            Qubit info = new(identifier, context);
 
             AddSymbol(info, context);
-            string id = Table.UniqueIdentifier; 
+            string id = Table.UniqueIdentifier;
 
             RegisterDefinition definition = new()
             {
@@ -164,10 +170,10 @@ namespace LUIECompiler.CodeGeneration
         /// <returns></returns>
         public Register AddRegister(string identifier, int size, ErrorContext context)
         {
-            Register info = new(identifier, size);
+            Register info = new(identifier, size, context);
 
             AddSymbol(info, context);
-            string id = Table.UniqueIdentifier; 
+            string id = Table.UniqueIdentifier;
 
             RegisterDefinition definition = new()
             {

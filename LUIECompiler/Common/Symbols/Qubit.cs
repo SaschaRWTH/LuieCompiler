@@ -7,7 +7,7 @@ namespace LUIECompiler.Common.Symbols
 
     public class Qubit : Register
     {
-        public Qubit(string identifier) : base(identifier: identifier, size: 1)
+        public Qubit(string identifier, ErrorContext errorContext) : base(identifier: identifier, size: 1, errorContext)
         {
         }
 

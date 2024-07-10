@@ -41,11 +41,11 @@ namespace LUIECompiler.SemanticAnalysis
             Register reg;
             if (context.TryGetSize(out int size))
             {
-                reg = new Register(identifier, size);
+                reg = new Register(identifier, size, new ErrorContext(context));
             }
             else
             {
-                reg = new Qubit(identifier);
+                reg = new Qubit(identifier, new ErrorContext(context));
             }
             Table.AddSymbol(reg);
 
@@ -168,7 +168,7 @@ namespace LUIECompiler.SemanticAnalysis
 
             Range range = context.range().GetRange();
 
-            LoopIterator loopIterator = new(identifier, range.Start.Value, range.End.Value);
+            LoopIterator loopIterator = new(identifier, range.Start.Value, range.End.Value, new ErrorContext(context));
             Table.AddSymbol(loopIterator);
         }
 

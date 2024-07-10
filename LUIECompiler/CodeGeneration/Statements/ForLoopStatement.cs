@@ -25,7 +25,7 @@ namespace LUIECompiler.CodeGeneration.Statements
                     throw new NotImplementedException($"The constant {Iterator.Identifier} is already defined in the current scope.");
                 }
 
-                Constant<int> constant = new Constant<int>(Iterator.Identifier, i);
+                Constant<int> constant = new Constant<int>(Iterator.Identifier, i, ErrorContext);
 
                 program += Body.ToQASM([.. constants, constant]);
             }
