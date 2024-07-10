@@ -23,7 +23,7 @@ namespace LUIECompiler.CodeGeneration.Statements
         /// Source code line of the statement.
         /// </summary>
         public required ErrorContext ErrorContext { get; init; }
-        public abstract QASMProgram ToQASM(List<Constant<int>> constants);
+        public abstract QASMProgram ToQASM(CodeGenerationContext context);
 
         /// <summary>
         /// Returns the QASM identifier of a given <paramref name="register"/>.
@@ -78,7 +78,7 @@ namespace LUIECompiler.CodeGeneration.Statements
         /// <param name="constants"></param>
         /// <returns></returns>
         /// <exception cref="InternalException"></exception>
-        protected QubitCode TranslateQubit([NotNull] Qubit qubit, List<Constant<int>> constants)
+        protected QubitCode TranslateQubit([NotNull] Qubit qubit, CodeGenerationContext context)
         {
             RegisterDefinition definition = GetDefinition(qubit) as RegisterDefinition ??
                 throw new InternalException()
@@ -86,7 +86,7 @@ namespace LUIECompiler.CodeGeneration.Statements
                     Reason = "Guard is not a register definition. This should have been caught by the semantic analysis and type checking while generating."
                 };
 
-            return qubit.ToQASMCode(definition, constants, ErrorContext);
+            return qubit.ToQASMCode(definition, context, ErrorContext);
         } 
     }
 

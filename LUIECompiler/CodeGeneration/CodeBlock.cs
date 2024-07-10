@@ -28,13 +28,13 @@ namespace LUIECompiler.CodeGeneration
             Translateables.Add(statement);
         }
 
-        public QASMProgram ToQASM(List<Constant<int>> constants)
+        public QASMProgram ToQASM(CodeGenerationContext context)
         {
             QASMProgram code = new();
 
             foreach (var statement in Translateables)
             {
-                code += statement.ToQASM(constants);
+                code += statement.ToQASM(context);
             }
 
             return code;

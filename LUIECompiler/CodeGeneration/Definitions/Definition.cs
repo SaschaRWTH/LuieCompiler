@@ -12,7 +12,7 @@ namespace LUIECompiler.CodeGeneration.Definitions
         /// </summary>
         public required string Identifier { get; init; }
 
-        public abstract QASMProgram ToQASM(List<Constant<int>> constants);
+        public abstract QASMProgram ToQASM(CodeGenerationContext context);
     }
 
 }

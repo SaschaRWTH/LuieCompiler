@@ -12,7 +12,7 @@ namespace LUIECompiler.CodeGeneration.Definitions
         /// </summary>
         public required int Size { get; init; }
 
-        public override QASMProgram ToQASM(List<Constant<int>> constants)
+        public override QASMProgram ToQASM(CodeGenerationContext context)
         {
             return new(new DefinitionCode()
             {

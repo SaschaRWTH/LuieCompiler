@@ -224,7 +224,7 @@ namespace LUIECompiler.CodeGeneration
         {
             QASMProgram code = new();
 
-            code += MainBlock.ToQASM([]);
+            code += MainBlock.ToQASM(new());
 
             return code;
         }

@@ -20,19 +20,19 @@ namespace LUIECompiler.CodeGeneration.Statements
         /// </summary>
         public required CodeBlock Block { get; init; }
 
-        public override QASMProgram ToQASM(List<Constant<int>> constants)
+        public override QASMProgram ToQASM(CodeGenerationContext context)
         {
-            QubitCode qubit = GetGuardCode(constants);
-            return Block.ToQASM(constants).AddGuard(qubit: qubit);
+            QubitCode qubit = GetGuardCode(context);
+            return Block.ToQASM(context).AddGuard(qubit: qubit);
         }
 
         /// <summary>
         /// Gets string representation of the guard.
         /// </summary>
         /// <returns></returns>
-        protected QubitCode GetGuardCode(List<Constant<int>> constants)
+        protected QubitCode GetGuardCode(CodeGenerationContext context)
         {
-            return TranslateQubit(Guard, constants);
+            return TranslateQubit(Guard, context);
         }
     }
 
