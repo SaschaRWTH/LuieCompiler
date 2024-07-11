@@ -118,7 +118,8 @@ namespace LUIECompiler.CodeGeneration
 
         public override void EnterForstatement([NotNull] LuieParser.ForstatementContext context)
         {
-            
+            LoopIterator iterator = context.GetIterator();
+            CodeGen.AddIterator(iterator, new ErrorContext(context.Start));
         }
 
         public override void ExitForstatement([NotNull] LuieParser.ForstatementContext context)
@@ -128,12 +129,15 @@ namespace LUIECompiler.CodeGeneration
                 Reason = "There was no last poped code block, although block should just have been exited."
             };
 
-            LoopIterator iterator = context.GetIterator();
-            CodeGen.AddIterator(iterator, new ErrorContext(context.Start));
+            string identifier = context.IDENTIFIER().GetText(); ;
+            LoopIterator iterator = CodeGen.Table.GetSymbolInfo(identifier) as LoopIterator ?? throw new InternalException()
+            {
+                Reason = $"Iterator {identifier} was not found in the symbol table or of wrong type.",
+            };
 
             ForLoopStatement statement = new()
             {
-                Iterator = context.GetIterator(),
+                Iterator = iterator,
                 Body = block,
                 ParentBlock = CodeGen.CurrentBlock,
                 ErrorContext = new ErrorContext(context.Start),
