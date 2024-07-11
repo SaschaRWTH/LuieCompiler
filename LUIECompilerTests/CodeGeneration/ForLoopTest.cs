@@ -82,6 +82,15 @@ public class ForLoopTest
         "qubit id6;\n" +
         "h id6;\n";
 
+    public const string InvalidIteratorInput =
+        "qubit[5] c;\n" +
+        "for i in 0..4 do\n" +
+        "    qubit a;\n" +
+        "    h c[i];\n" +
+        "    h c[j];\n" +
+        "    h a;\n" +
+        "end\n";
+
     /// <summary>
     /// Test the translation of a simple for loop.
     /// </summary>
@@ -147,5 +156,21 @@ public class ForLoopTest
         Assert.IsNotNull(code);
 
         Assert.AreEqual(DefinitionInForLoopTranslation, code);
+    }
+
+    /// <summary>
+    /// Test the translation of a simple for loop.
+    /// </summary>
+    [TestMethod]
+    public void InvalidIteratorInputTest()
+    {
+        var walker = Utils.GetWalker();
+        var parser = Utils.GetParser(InvalidIteratorInput);
+        var gen = new CodeGenerationListener();
+
+        var ex = Assert.ThrowsException<CodeGenerationException>(() => walker.Walk(gen, parser.parse()));
+        
+        Assert.IsTrue(ex.Error is UndefinedError);
+        Assert.AreEqual(5, ex.Error.ErrorContext.Line);
     }
 }
