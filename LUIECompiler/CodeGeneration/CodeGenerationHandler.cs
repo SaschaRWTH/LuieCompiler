@@ -23,12 +23,6 @@ namespace LUIECompiler.CodeGeneration
         public Dictionary<Register, Definition> DefinitionDictionary { get; } = [];
 
         /// <summary>
-        /// List of all definitions. 
-        /// </summary>
-        [Obsolete("Use ITranslateable List instread instead.")]
-        public List<Definition> Definitions { get; } = [];
-
-        /// <summary>
         /// Stack of currently nested code blocks.
         /// </summary>
         public Stack<CodeBlock> CodeBlocks { get; } = [];

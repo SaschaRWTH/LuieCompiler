@@ -7,7 +7,9 @@ using LUIECompiler.Common.Errors;
 
 namespace LUIECompiler.CodeGeneration
 {
-
+    /// <summary>
+    /// Represents a code block in the code generation.
+    /// </summary>
     public class CodeBlock : ITranslateable
     {
         /// <summary>
@@ -15,8 +17,14 @@ namespace LUIECompiler.CodeGeneration
         /// </summary>
         public List<ITranslateable> Translateables { get; } = [];
 
-        public Dictionary<Definition, UniqueIdentifier> DefinitionDictionary { get; } = [];
+        /// <summary>
+        /// Maps definitions to their unique identifiers given while generating.
+        /// </summary>
+        public Dictionary<Definition, UniqueIdentifier> IdentifierMap { get; } = [];
 
+        /// <summary>
+        /// Parent code block. If null, this is the main block.
+        /// </summary>
         public required CodeBlock? Parent { get; init; }
 
         /// <summary>
@@ -46,7 +54,7 @@ namespace LUIECompiler.CodeGeneration
                 if(statement is Definition definition)
                 {
                     Console.WriteLine($"Adding definition {definition} to dictionary");
-                    DefinitionDictionary.Add(definition, new UniqueIdentifier(context.SymbolTable));
+                    IdentifierMap.Add(definition, new UniqueIdentifier(context.SymbolTable));
                 }
                 code += statement.ToQASM(context);
             }
@@ -54,9 +62,15 @@ namespace LUIECompiler.CodeGeneration
             return code;
         }
 
+        /// <summary>
+        /// Gets the unique identifier for the given definition.
+        /// </summary>
+        /// <param name="definition"></param>
+        /// <returns></returns>
+        /// <exception cref="CodeGenerationException"></exception>
         public UniqueIdentifier GetUniqueIdentifier(Definition definition)
         {
-            if(DefinitionDictionary.TryGetValue(definition, out var identifier))
+            if(IdentifierMap.TryGetValue(definition, out var identifier))
             {
                 return identifier;
             }
