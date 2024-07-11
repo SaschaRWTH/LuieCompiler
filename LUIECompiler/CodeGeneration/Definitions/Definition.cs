@@ -10,9 +10,14 @@ namespace LUIECompiler.CodeGeneration.Definitions
         /// <summary>
         /// Identifier to be defined.
         /// </summary>
-        public required string Identifier { get; init; }
+        public abstract Symbol Register { get; init; }
 
-        public abstract QASMProgram ToQASM(List<Constant<int>> constants);
+        public abstract QASMProgram ToQASM(CodeGenerationContext context);
+
+        public override string ToString()
+        {
+            return $"Definition = {{Register = {Register}}}";
+        }
     }
 
 }

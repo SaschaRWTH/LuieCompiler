@@ -11,6 +11,8 @@ namespace LUIECompiler.CodeGeneration.Codes
         /// Register that the parameter is associated with.
         /// </summary>
         public required RegisterDefinition Register { get; init; }
+
+        public required UniqueIdentifier Identifier { get; init; }
     
         /// <summary>
         /// Return the code string representation of the parameter.
@@ -18,7 +20,7 @@ namespace LUIECompiler.CodeGeneration.Codes
         /// <returns></returns>
         public override string ToCode()
         {
-            return Register.Identifier;
+            return Identifier.Identifier;
         } 
     }
 }

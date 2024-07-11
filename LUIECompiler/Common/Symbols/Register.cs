@@ -1,3 +1,5 @@
+using LUIECompiler.Common.Errors;
+
 namespace LUIECompiler.Common.Symbols
 {
 
@@ -8,7 +10,7 @@ namespace LUIECompiler.Common.Symbols
         /// </summary>
         public int Size { get; init; }
         
-        public Register(string identifier, int size) : base(identifier) 
+        public Register(string identifier, int size, ErrorContext errorContext) : base(identifier, errorContext) 
         {
             Size = size;
         }

@@ -41,7 +41,7 @@ namespace LUIECompiler.SemanticAnalysis
             }
             else
             {
-                Qubit info = new(identifier);
+                Qubit info = new(identifier, new ErrorContext(context));
                 Table.AddSymbol(info);
             }
 
@@ -88,7 +88,7 @@ namespace LUIECompiler.SemanticAnalysis
                 };
             }   
 
-            LoopIterator loop = new(identifier, start, end);
+            LoopIterator loop = new(identifier, start, end, new ErrorContext(context));
             Table.AddSymbol(loop);
                      
         }

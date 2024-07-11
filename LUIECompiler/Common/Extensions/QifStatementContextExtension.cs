@@ -43,7 +43,7 @@ namespace LUIECompiler.Common.Extensions
                 };
             }
             
-            return new RegisterAccess(register, index);
+            return new RegisterAccess(register, index, new ErrorContext(context));
         }
     }
 }

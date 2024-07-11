@@ -1,11 +1,6 @@
-using Antlr4.Runtime;
-using Antlr4.Runtime.Tree;
 using LUIECompiler.CodeGeneration;
 using LUIECompiler.CodeGeneration.Exceptions;
-using LUIECompiler.Common;
 using LUIECompiler.Common.Errors;
-using LUIECompiler.Common.Symbols;
-using LUIECompiler.SemanticAnalysis;
 
 namespace LUIECompilerTests.CodeGeneration;
 
@@ -57,6 +52,36 @@ public class ForLoopTest
         "h id0[2];\n" +
         "cx id0[2], id1;\n";
 
+    public const string DefinitionInForLoop =
+        "qubit[5] c;\n" +
+        "for i in 0..4 do\n" +
+        "    qubit a;\n" +
+        "    h c[i];\n" +
+        "    h a;\n" +
+        "end\n" +
+        "qubit a;\n" +
+        "h a;";
+
+    public const string DefinitionInForLoopTranslation =
+        "qubit[5] id0;\n" +
+        "qubit id1;\n" +
+        "h id0[0];\n" +
+        "h id1;\n" +
+        "qubit id2;\n" +
+        "h id0[1];\n" +
+        "h id2;\n" +
+        "qubit id3;\n" +
+        "h id0[2];\n" +
+        "h id3;\n" +
+        "qubit id4;\n" +
+        "h id0[3];\n" +
+        "h id4;\n" +
+        "qubit id5;\n" +
+        "h id0[4];\n" +
+        "h id5;\n" +
+        "qubit id6;\n" +
+        "h id6;\n";
+
     /// <summary>
     /// Test the translation of a simple for loop.
     /// </summary>
@@ -105,5 +130,22 @@ public class ForLoopTest
         Assert.IsNotNull(code);
 
         Assert.AreEqual(InputIdenExpressionTranslation, code);
+    }
+
+    /// <summary>
+    /// Test the translation of a simple for loop.
+    /// </summary>
+    [TestMethod]
+    public void DefinitionInForLoopTest()
+    {
+        var walker = Utils.GetWalker();
+        var parser = Utils.GetParser(DefinitionInForLoop);
+        var gen = new CodeGenerationListener();
+        walker.Walk(gen, parser.parse());
+        
+        string? code = gen.CodeGen.GenerateCode()?.ToString();
+        Assert.IsNotNull(code);
+
+        Assert.AreEqual(DefinitionInForLoopTranslation, code);
     }
 }

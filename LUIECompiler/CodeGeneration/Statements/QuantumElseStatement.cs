@@ -1,16 +1,14 @@
 
-using LUIECompiler.Common;
 using LUIECompiler.CodeGeneration.Codes;
-using LUIECompiler.Common.Symbols;
 
 namespace LUIECompiler.CodeGeneration.Statements
 {
     public class QuantumElseStatement : QuantumIfStatement
     {
-        public override QASMProgram ToQASM(List<Constant<int>> constants)
+        public override QASMProgram ToQASM(CodeGenerationContext context)
         {
-            QubitCode qubit = GetGuardCode(constants);
-            return Block.ToQASM(constants).AddGuard(qubit: qubit, negated: true);
+            QubitCode qubit = GetGuardCode(context);
+            return Block.ToQASM(context).AddGuard(qubit: qubit, negated: true);
         }
     }
 

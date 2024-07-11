@@ -7,17 +7,22 @@ namespace LUIECompiler.CodeGeneration.Definitions
 
     public class RegisterDefinition : Definition
     {
-        /// <summary>
-        /// The size of the register.
-        /// </summary>
-        public required int Size { get; init; }
+        public override Symbol Register { get; init; }
 
-        public override QASMProgram ToQASM(List<Constant<int>> constants)
+        public RegisterDefinition(Register register)
         {
+            Register = register;
+        }
+
+        public override QASMProgram ToQASM(CodeGenerationContext context)
+        {
+            Register register = (Register)Register;
+
             return new(new DefinitionCode()
             {
                 Register = this,
-                Size = Size,
+                Size = register.Size,
+                Identifier = context.CurrentBlock.GetUniqueIdentifier(this),
             });
         }
     }

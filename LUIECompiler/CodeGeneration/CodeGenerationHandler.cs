@@ -18,16 +18,6 @@ namespace LUIECompiler.CodeGeneration
         public SymbolTable Table { get; set; } = new();
 
         /// <summary>
-        /// Dictionary mapping all registers to a definition.
-        /// </summary>
-        public Dictionary<Register, Definition> DefinitionDictionary { get; } = [];
-
-        /// <summary>
-        /// List of all definitions. 
-        /// </summary>
-        public List<Definition> Definitions { get; } = [];
-
-        /// <summary>
         /// Stack of currently nested code blocks.
         /// </summary>
         public Stack<CodeBlock> CodeBlocks { get; } = [];
@@ -40,7 +30,10 @@ namespace LUIECompiler.CodeGeneration
         /// <summary>
         ///  Main code block of the program.
         /// </summary>
-        public CodeBlock MainBlock { get; } = new();
+        public CodeBlock MainBlock { get; } = new()
+        {
+            Parent = null,
+        };
 
         /// <summary>
         /// Gets the current code block.
@@ -78,7 +71,10 @@ namespace LUIECompiler.CodeGeneration
             }
             else
             {
-                CodeBlocks.Push(new());
+                CodeBlocks.Push(new()
+                {
+                    Parent = CurrentBlock,
+                });
             }
         }
 
@@ -107,7 +103,7 @@ namespace LUIECompiler.CodeGeneration
         /// <param name="statement"></param>
         public void AddStatement([NotNull] Statement statement)
         {
-            CurrentBlock.AddStatement(statement);
+            CurrentBlock.AddTranslateable(statement);
         }
 
         /// <summary>
@@ -136,20 +132,13 @@ namespace LUIECompiler.CodeGeneration
         /// <returns></returns>
         public Qubit AddQubit(string identifier, ErrorContext context)
         {
-            Qubit info = new(identifier);
+            Qubit info = new(identifier, context);
 
             AddSymbol(info, context);
-            string id = Table.UniqueIdentifier; 
 
-            RegisterDefinition definition = new()
-            {
-                Identifier = id,
-                Size = 1,
-            };
+            RegisterDefinition definition = new(info);
 
-            Definitions.Add(definition);
-
-            DefinitionDictionary.Add(info, definition);
+            CurrentBlock.AddTranslateable(definition);
 
             return info;
         }
@@ -163,20 +152,13 @@ namespace LUIECompiler.CodeGeneration
         /// <returns></returns>
         public Register AddRegister(string identifier, int size, ErrorContext context)
         {
-            Register info = new(identifier, size);
+            Register info = new(identifier, size, context);
 
             AddSymbol(info, context);
-            string id = Table.UniqueIdentifier; 
 
-            RegisterDefinition definition = new()
-            {
-                Identifier = id,
-                Size = size,
-            };
+            RegisterDefinition definition = new(info);
 
-            Definitions.Add(definition);
-
-            DefinitionDictionary.Add(info, definition);
+            CurrentBlock.AddTranslateable(definition);
 
             return info;
         }
@@ -216,12 +198,14 @@ namespace LUIECompiler.CodeGeneration
         public QASMProgram GenerateCode()
         {
             QASMProgram code = new();
-            foreach (Definition definition in Definitions)
-            {
-                code += definition.ToQASM([]);
-            }
 
-            code += MainBlock.ToQASM([]);
+            CodeGenerationContext context = new()
+            {
+                SymbolTable = Table,
+                CurrentBlock = MainBlock,
+            };
+
+            code += MainBlock.ToQASM(context);
 
             return code;
         }

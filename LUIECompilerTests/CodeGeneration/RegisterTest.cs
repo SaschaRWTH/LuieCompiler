@@ -36,8 +36,8 @@ public class RegisterTest
         public const string RegisterAccessTranslation =
                 "qubit[3] id0;\n" +
                 "qubit[3] id1;\n" +
-                "qubit[3] id2;\n" +
                 "x id0[1];\n" +
+                "qubit[3] id2;\n" +
                 "ctrl(1) @ x id0[1], id0[1];\n" +
                 "ctrl(1) @ h id0[1], id2[2];\n";
 

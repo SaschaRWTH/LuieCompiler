@@ -1,3 +1,5 @@
+using LUIECompiler.Common.Errors;
+
 namespace LUIECompiler.Common.Symbols
 {
     public class Constant<T> : Symbol
@@ -7,7 +9,7 @@ namespace LUIECompiler.Common.Symbols
         /// </summary>
         public T Value { get; init; }
 
-        public Constant(string identifier, T value) : base(identifier)
+        public Constant(string identifier, T value, ErrorContext errorContext) : base(identifier, errorContext)
         {
             Value = value;
         }

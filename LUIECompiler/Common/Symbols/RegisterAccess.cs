@@ -20,15 +20,16 @@ namespace LUIECompiler.Common.Symbols
         /// </summary>
         public Register Register { get; init; }
 
-        public RegisterAccess(Register register, Expression<int> indexExpression) : base(identifier: register.Identifier)
+        public RegisterAccess(Register register, Expression<int> indexExpression, ErrorContext errorContext) 
+        : base(identifier: register.Identifier, errorContext)
         {
             IndexExpression = indexExpression;
             Register = register;
         }
 
-        public override QubitCode ToQASMCode(RegisterDefinition definition, List<Constant<int>> constants, ErrorContext context)
+        public override QubitCode ToQASMCode(RegisterDefinition definition, CodeGenerationContext codeGenContext, ErrorContext context)
         {
-            int index = IndexExpression.Evaluate(constants);
+            int index = IndexExpression.Evaluate(codeGenContext.IntegerConstants);
 
             if (index < 0 || index >= Register.Size)
             {
@@ -42,7 +43,8 @@ namespace LUIECompiler.Common.Symbols
             return new RegisterAccessCode()
             {
                 Register = definition,
-                Index = IndexExpression.Evaluate(constants),
+                Index = IndexExpression.Evaluate(codeGenContext.IntegerConstants),
+                Identifier = codeGenContext.CurrentBlock.GetUniqueIdentifier(definition),
             };
         }
     }

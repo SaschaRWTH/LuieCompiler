@@ -1,4 +1,5 @@
 using LUIECompiler.CodeGeneration.Exceptions;
+using LUIECompiler.Common.Errors;
 using LUIECompiler.Common.Symbols;
 
 namespace LUIECompiler.Common.Extensions
@@ -16,7 +17,7 @@ namespace LUIECompiler.Common.Extensions
 
             Range range = context.range().GetRange();
 
-            return new(identifier, range.Start.Value, range.End.Value);
+            return new(identifier, range.Start.Value, range.End.Value, new ErrorContext(context));
         }
     }
 }
