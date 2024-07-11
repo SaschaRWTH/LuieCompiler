@@ -18,11 +18,6 @@ namespace LUIECompiler.CodeGeneration
         public SymbolTable Table { get; set; } = new();
 
         /// <summary>
-        /// Dictionary mapping all registers to a definition.
-        /// </summary>
-        public Dictionary<Register, Definition> DefinitionDictionary { get; } = [];
-
-        /// <summary>
         /// Stack of currently nested code blocks.
         /// </summary>
         public Stack<CodeBlock> CodeBlocks { get; } = [];
@@ -145,8 +140,6 @@ namespace LUIECompiler.CodeGeneration
 
             CurrentBlock.AddTranslateable(definition);
 
-            DefinitionDictionary.Add(info, definition);
-
             return info;
         }
 
@@ -166,8 +159,6 @@ namespace LUIECompiler.CodeGeneration
             RegisterDefinition definition = new(info);
 
             CurrentBlock.AddTranslateable(definition);
-
-            DefinitionDictionary.Add(info, definition);
 
             return info;
         }

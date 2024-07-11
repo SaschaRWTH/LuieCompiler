@@ -10,12 +10,6 @@ namespace LUIECompiler.CodeGeneration.Statements
 {
     public abstract class Statement : ITranslateable
     {
-        
-        /// <summary>
-        /// Maps any <see cref="Qubit"/> to the corresponding <see cref="Definition"/>.
-        /// </summary>
-        public required Dictionary<Register, Definition> DefinitionDictionary { get; init; }
-
         public required CodeBlock ParentBlock { get; init; }
 
         /// <summary>
@@ -37,13 +31,8 @@ namespace LUIECompiler.CodeGeneration.Statements
                 register = access.Register;
             }
 
-            if (!DefinitionDictionary.TryGetValue(register, out var definition))
-            {
-                throw new CodeGenerationException()
-                {
-                    Error = new UndefinedError(ErrorContext, register.Identifier),
-                };
-            }
+            Definition definition = ParentBlock.GetDefinition(register);
+            
             return definition;
         }
 

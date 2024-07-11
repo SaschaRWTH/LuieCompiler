@@ -86,6 +86,37 @@ namespace LUIECompiler.CodeGeneration
             return Parent.GetUniqueIdentifier(definition);
         }
 
+        public Definition GetDefinition(Register register)
+        {
+
+            Definition? definition = null;
+            try
+            {
+                definition = Translateables.OfType<Definition>().SingleOrDefault(def => def.Register == register);
+            }
+            catch (InvalidOperationException)
+            {
+                throw new InternalException()
+                {
+                    Reason = "Multiple definitions found for the same register. This should have been caught by the semantic analysis and indicates a compiler error."
+                };
+            }
+
+            if(definition != null)
+            {
+                return definition;
+            }
+
+            if (Parent == null)
+            {
+                throw new CodeGenerationException()
+                {
+                    Error = new UndefinedError(register.ErrorContext, register.Identifier)
+                };
+            }
+            
+            return Parent.GetDefinition(register);
+        }
 
     }
 
