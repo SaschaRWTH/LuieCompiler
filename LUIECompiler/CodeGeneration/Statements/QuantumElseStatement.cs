@@ -1,7 +1,5 @@
 
-using LUIECompiler.Common;
 using LUIECompiler.CodeGeneration.Codes;
-using LUIECompiler.Common.Symbols;
 
 namespace LUIECompiler.CodeGeneration.Statements
 {

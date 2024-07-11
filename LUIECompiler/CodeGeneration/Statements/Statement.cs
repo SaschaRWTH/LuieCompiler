@@ -5,7 +5,6 @@ using LUIECompiler.CodeGeneration.Codes;
 using LUIECompiler.Common.Errors;
 using LUIECompiler.CodeGeneration.Exceptions;
 using LUIECompiler.Common.Symbols;
-using LUIECompiler.Common;
 
 namespace LUIECompiler.CodeGeneration.Statements
 {

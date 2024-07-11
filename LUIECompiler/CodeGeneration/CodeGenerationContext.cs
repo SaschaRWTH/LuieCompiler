@@ -1,4 +1,3 @@
-using LUIECompiler.CodeGeneration.Definitions;
 using LUIECompiler.Common;
 using LUIECompiler.Common.Symbols;
 

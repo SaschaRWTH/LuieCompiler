@@ -1,10 +1,5 @@
-
-using LUIECompiler.Common;
 using LUIECompiler.CodeGeneration.Codes;
 using LUIECompiler.Common.Symbols;
-using LUIECompiler.CodeGeneration.Definitions;
-using LUIECompiler.CodeGeneration.Exceptions;
-using LUIECompiler.Common.Errors;
 
 namespace LUIECompiler.CodeGeneration.Statements
 {
