@@ -53,7 +53,6 @@ namespace LUIECompiler.CodeGeneration
             {
                 if(statement is Definition definition)
                 {
-                    Console.WriteLine($"Adding definition {definition} to dictionary");
                     IdentifierMap.Add(definition, new UniqueIdentifier(context.SymbolTable));
                 }
                 code += statement.ToQASM(context);

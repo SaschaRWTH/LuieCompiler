@@ -19,6 +19,10 @@ public class DefinitionTest
         "skip;\n" +
         "end";
 
+    public const string DefineLaterInput = 
+        "h c;\n" +
+        "qubit c;";
+
     /// <summary>
     /// Test that already defined identifiers are correctly reported.
     /// </summary>
@@ -34,6 +38,23 @@ public class DefinitionTest
         Assert.IsTrue(error.ContainsCriticalError);
 
         Assert.IsTrue(error.Errors.Any(e => e is RedefineError && e.ErrorContext.Line == 4));
+    }
+
+    /// <summary>
+    /// Test that already defined identifiers are correctly reported.
+    /// </summary>
+    [TestMethod]
+    public void DefineLaterTest()
+    {
+        var walker = Utils.GetWalker();
+        var parser = Utils.GetParser(DefineLaterInput);
+        var analysis = new DeclarationAnalysisListener();
+        walker.Walk(analysis, parser.parse());
+        var error = analysis.Error;
+
+        Assert.IsTrue(error.ContainsCriticalError);
+
+        Assert.IsTrue(error.Errors.Any(e => e is UndefinedError && e.ErrorContext.Line == 1));
     }
 
     /// <summary>

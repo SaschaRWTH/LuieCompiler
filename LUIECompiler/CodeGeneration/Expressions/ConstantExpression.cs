@@ -1,3 +1,4 @@
+using LUIECompiler.Common;
 using LUIECompiler.Common.Symbols;
 
 namespace LUIECompiler.CodeGeneration.Expressions
@@ -9,6 +10,11 @@ namespace LUIECompiler.CodeGeneration.Expressions
         public override T Evaluate(List<Constant<T>> constants) 
         { 
             return Value;
+        }
+
+        public override List<string> UndefinedIdentifiers(SymbolTable table)
+        {
+            return new();
         }
     }
 }

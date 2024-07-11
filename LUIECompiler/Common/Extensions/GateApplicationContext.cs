@@ -15,7 +15,7 @@ namespace LUIECompiler.Common.Extensions
         /// <returns></returns>
         public static List<Qubit> GetParameters(this LuieParser.GateapplicationContext context, SymbolTable table)
         {
-            List<LuieParser.RegisterContext> registers = context.register().ToList();
+            var registers = context.register();
             return registers.Select(register => SingleParameter(register, table)).ToList();
         }
 
@@ -29,6 +29,7 @@ namespace LUIECompiler.Common.Extensions
         private static Qubit SingleParameter(LuieParser.RegisterContext context, SymbolTable table)
         {
             string identifier = context.GetIdentifier();
+
             Symbol symbol = table.GetSymbolInfo(identifier) ?? throw new CodeGenerationException()
             {
                 Error = new UndefinedError(new ErrorContext(context.Start), identifier),
@@ -52,6 +53,15 @@ namespace LUIECompiler.Common.Extensions
                 throw new CodeGenerationException()
                 {
                     Error = new TypeError(new ErrorContext(context.Start), identifier, typeof(Qubit), symbol.GetType()),
+                };
+            }
+
+            List<string> undefined = index.UndefinedIdentifiers(table);
+            if(undefined.Count > 0)
+            {
+                throw new CodeGenerationException()
+                {
+                    Error = new UndefinedError(new ErrorContext(context.Start), undefined),
                 };
             }
 

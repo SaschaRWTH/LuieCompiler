@@ -67,9 +67,10 @@ namespace LUIECompiler.SemanticAnalysis
             string identifier = context.register().GetIdentifier();
             CheckDefinedness(identifier, context);
         }
-
-        public override void ExitForstatement([NotNull] LuieParser.ForstatementContext context)
+        
+        public override void EnterForstatement([NotNull] LuieParser.ForstatementContext context)
         {
+
             string identifier = context.IDENTIFIER().GetText();
             
 

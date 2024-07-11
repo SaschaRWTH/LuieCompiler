@@ -36,7 +36,6 @@ namespace LUIECompiler.CodeGeneration
 
         }
 
-
         public override void ExitGateapplication([NotNull] LuieParser.GateapplicationContext context)
         {
             List<Qubit> parameters = context.GetParameters(CodeGen.Table);
@@ -115,6 +114,11 @@ namespace LUIECompiler.CodeGeneration
             };
 
             CodeGen.AddStatement(statement);
+        }
+
+        public override void EnterForstatement([NotNull] LuieParser.ForstatementContext context)
+        {
+            
         }
 
         public override void ExitForstatement([NotNull] LuieParser.ForstatementContext context)
