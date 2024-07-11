@@ -51,10 +51,12 @@ namespace LUIECompiler
             catch (InternalException e)
             {
                 Console.WriteLine($"Internal error!: {e.Reason}");
+                Console.WriteLine($"{e}");
             }
             catch (CodeGenerationException e)
             {
                 Console.WriteLine($"Code gen exception: {e.Error}");
+                Console.WriteLine($"{e}");
             }
             catch (Exception ex)
             {

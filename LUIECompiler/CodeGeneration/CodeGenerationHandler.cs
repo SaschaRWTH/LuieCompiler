@@ -148,11 +148,7 @@ namespace LUIECompiler.CodeGeneration
             AddSymbol(info, context);
             string id = Table.UniqueIdentifier;
 
-            RegisterDefinition definition = new()
-            {
-                Identifier = id,
-                Size = 1,
-            };
+            RegisterDefinition definition = new(info);
 
             CurrentBlock.AddTranslateable(definition);
 
@@ -175,11 +171,7 @@ namespace LUIECompiler.CodeGeneration
             AddSymbol(info, context);
             string id = Table.UniqueIdentifier;
 
-            RegisterDefinition definition = new()
-            {
-                Identifier = id,
-                Size = size,
-            };
+            RegisterDefinition definition = new(info);
 
             CurrentBlock.AddTranslateable(definition);
 
@@ -224,7 +216,13 @@ namespace LUIECompiler.CodeGeneration
         {
             QASMProgram code = new();
 
-            code += MainBlock.ToQASM(new());
+            CodeGenerationContext context = new()
+            {
+                SymbolTable = Table,
+                CurrentBlock = MainBlock,
+            };
+
+            code += MainBlock.ToQASM(context);
 
             return code;
         }

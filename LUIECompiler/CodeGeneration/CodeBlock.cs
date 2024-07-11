@@ -15,7 +15,7 @@ namespace LUIECompiler.CodeGeneration
         /// </summary>
         public List<ITranslateable> Translateables { get; } = [];
 
-        public Dictionary<Register, Definition> DefinitionDictionary { get; } = [];
+        public Dictionary<Definition, UniqueIdentifier> DefinitionDictionary { get; } = [];
 
         public required CodeBlock? Parent { get; init; }
 
@@ -28,35 +28,51 @@ namespace LUIECompiler.CodeGeneration
             Translateables.Add(statement);
         }
 
+        /// <summary>
+        /// Adds a statement to the code block.
+        /// </summary>
+        /// <param name="statement"></param>
+        public void AddTranslateables(IEnumerable<ITranslateable> statements)
+        {
+            Translateables.AddRange(statements);
+        }
+
         public QASMProgram ToQASM(CodeGenerationContext context)
         {
+            context.CurrentBlock = this;
             QASMProgram code = new();
-
             foreach (var statement in Translateables)
             {
+                if(statement is Definition definition)
+                {
+                    Console.WriteLine($"Adding definition {definition} to dictionary");
+                    DefinitionDictionary.Add(definition, new UniqueIdentifier(context.SymbolTable));
+                }
                 code += statement.ToQASM(context);
             }
 
             return code;
         }
 
-        public Definition GetDefinition(Register register)
+        public UniqueIdentifier GetUniqueIdentifier(Definition definition)
         {
-            if(DefinitionDictionary.TryGetValue(register, out var definition))
+            if(DefinitionDictionary.TryGetValue(definition, out var identifier))
             {
-                return definition;
+                return identifier;
             }
             
             if(Parent == null)
             {
                 throw new CodeGenerationException()
                 {
-                    Error = new UndefinedError(register.ErrorContext, register.Identifier),
+                    Error = new UndefinedError(definition.Register.ErrorContext, definition.Register.Identifier),
                 };
             }
             
-            return Parent.GetDefinition(register);
+            return Parent.GetUniqueIdentifier(definition);
         }
+
+
     }
 
 }

@@ -25,9 +25,19 @@ namespace LUIECompiler.CodeGeneration.Statements
                     throw new NotImplementedException($"The constant {Iterator.Identifier} is already defined in the current scope.");
                 }
 
+                // TODO: Create a new body for each iteration.
+                CodeBlock block = new() {
+                    Parent = Body.Parent,
+                };
+                block.AddTranslateables(Body.Translateables);
+
                 Constant<int> constant = new Constant<int>(Iterator.Identifier, i, ErrorContext);
 
-                program += Body.ToQASM(new([.. context.IntegerConstants, constant]));
+                program += block.ToQASM(new([.. context.IntegerConstants, constant])
+                {
+                    SymbolTable = context.SymbolTable,
+                    CurrentBlock = Body,
+                });
             }
             return program;
         }

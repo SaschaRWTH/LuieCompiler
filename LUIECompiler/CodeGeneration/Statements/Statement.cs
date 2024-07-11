@@ -24,30 +24,7 @@ namespace LUIECompiler.CodeGeneration.Statements
         /// </summary>
         public required ErrorContext ErrorContext { get; init; }
         public abstract QASMProgram ToQASM(CodeGenerationContext context);
-
-        /// <summary>
-        /// Returns the QASM identifier of a given <paramref name="register"/>.
-        /// </summary>
-        /// <param name="register"></param>
-        /// <returns></returns>
-        /// <exception cref="CodeGenerationException"></exception>
-        protected string GetIdentifier([NotNull] Register register)
-        {
-            if (register is RegisterAccess access)
-            {
-                register = access.Register;
-            }
-
-            if (!DefinitionDictionary.TryGetValue(register, out var definition))
-            {
-                throw new CodeGenerationException()
-                {
-                    Error = new UndefinedError(ErrorContext, register.Identifier),
-                };
-            }
-            return definition.Identifier;
-        }
-
+        
         /// <summary>
         /// Returns the <see cref="Definition"/> of a given <paramref name="register"/>
         /// </summary>

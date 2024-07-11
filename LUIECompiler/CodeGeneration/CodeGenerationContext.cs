@@ -1,3 +1,5 @@
+using LUIECompiler.CodeGeneration.Definitions;
+using LUIECompiler.Common;
 using LUIECompiler.Common.Symbols;
 
 namespace LUIECompiler.CodeGeneration
@@ -8,6 +10,10 @@ namespace LUIECompiler.CodeGeneration
         /// The constants in the program.
         /// </summary>
         public List<Constant<int>> IntegerConstants { get; } = [];
+
+        public required CodeBlock CurrentBlock { get; set; }
+
+        public required SymbolTable SymbolTable { get; init; }
 
         public CodeGenerationContext()
         {

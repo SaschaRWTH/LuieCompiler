@@ -10,9 +10,14 @@ namespace LUIECompiler.CodeGeneration.Codes
         /// </summary>
         public required int Index { get; init; }
     
+        /// <summary>
+        /// Unique identifier of the register.
+        /// </summary>
+        /// <returns></returns>
+
         public override string ToCode()
         {
-            return $"{Register.Identifier}[{Index}]";
+            return $"{Identifier.Identifier}[{Index}]";
         } 
     }
 }

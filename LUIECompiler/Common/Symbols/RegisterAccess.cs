@@ -44,6 +44,7 @@ namespace LUIECompiler.Common.Symbols
             {
                 Register = definition,
                 Index = IndexExpression.Evaluate(codeGenContext.IntegerConstants),
+                Identifier = codeGenContext.CurrentBlock.GetUniqueIdentifier(definition),
             };
         }
     }

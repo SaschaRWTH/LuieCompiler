@@ -27,6 +27,7 @@ namespace LUIECompiler.Common.Symbols
             return new()
             {
                 Register = definition,
+                Identifier = codeGenContext.CurrentBlock.GetUniqueIdentifier(definition),
             };
         }
     }
