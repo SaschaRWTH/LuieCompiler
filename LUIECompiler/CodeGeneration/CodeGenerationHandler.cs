@@ -146,7 +146,6 @@ namespace LUIECompiler.CodeGeneration
             Qubit info = new(identifier, context);
 
             AddSymbol(info, context);
-            string id = Table.UniqueIdentifier;
 
             RegisterDefinition definition = new(info);
 
@@ -169,7 +168,6 @@ namespace LUIECompiler.CodeGeneration
             Register info = new(identifier, size, context);
 
             AddSymbol(info, context);
-            string id = Table.UniqueIdentifier;
 
             RegisterDefinition definition = new(info);
 

@@ -44,6 +44,6 @@ public class BasicTest
         string? code = codegen.CodeGen.GenerateCode()?.ToString();
         Assert.IsNotNull(code);
 
-        Assert.AreEqual(code, SimpleInputTranslation);
+        Assert.AreEqual(SimpleInputTranslation, code);
     }
 }
