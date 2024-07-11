@@ -23,6 +23,12 @@ public class DefinitionTest
         "h c;\n" +
         "qubit c;";
 
+    public const string UndefinedExpressionInput = 
+        "qubit[5] c;\n" +
+        "h c[i];\n" +
+        "h c[2];\n" +
+        "h c[j];";
+
     /// <summary>
     /// Test that already defined identifiers are correctly reported.
     /// </summary>
@@ -73,5 +79,23 @@ public class DefinitionTest
 
         Assert.IsTrue(error.Errors.Any(e => e is UndefinedError && e.ErrorContext.Line == 3));
         Assert.IsTrue(error.Errors.Any(e => e is UndefinedError && e.ErrorContext.Line == 5));
+    }
+
+    /// <summary>
+    /// Tests that undefined identifiers are correctly reported.
+    /// </summary>
+    [TestMethod]
+    public void UndefinedExpressionTest()
+    {
+        var walker = Utils.GetWalker();
+        var parser = Utils.GetParser(UndefinedExpressionInput);
+        var analysis = new DeclarationAnalysisListener();
+        walker.Walk(analysis, parser.parse());
+        var error = analysis.Error;
+
+        Assert.IsTrue(error.ContainsCriticalError);
+
+        Assert.IsTrue(error.Errors.Any(e => e is UndefinedError && e.ErrorContext.Line == 2));
+        Assert.IsTrue(error.Errors.Any(e => e is UndefinedError && e.ErrorContext.Line == 4));
     }
 }
