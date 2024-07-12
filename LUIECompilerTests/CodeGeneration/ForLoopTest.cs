@@ -91,6 +91,13 @@ public class ForLoopTest
         "    h a;\n" +
         "end\n";
 
+    public const string InvalidRedefinitionInput = 
+        "qubit[5] i;\n" +
+        "qubit[5] c;\n" +
+        "for i in 0..4 do\n" +
+        "    h c[i];\n" +
+        "end\n";
+
     /// <summary>
     /// Test the translation of a simple for loop.
     /// </summary>
@@ -172,5 +179,21 @@ public class ForLoopTest
         
         Assert.IsTrue(ex.Error is UndefinedError);
         Assert.AreEqual(5, ex.Error.ErrorContext.Line);
+    }
+
+    /// <summary>
+    /// Test the translation of a simple for loop.
+    /// </summary>
+    [TestMethod]
+    public void InvalidRedefinitionTest()
+    {
+        var walker = Utils.GetWalker();
+        var parser = Utils.GetParser(InvalidRedefinitionInput);
+        var gen = new CodeGenerationListener();
+
+        var ex = Assert.ThrowsException<CodeGenerationException>(() => walker.Walk(gen, parser.parse()));
+        
+        Assert.IsTrue(ex.Error is RedefineError);
+        Assert.AreEqual(3, ex.Error.ErrorContext.Line);
     }
 }

@@ -41,6 +41,19 @@ public class ForLoopTest
         "    h c[i];\n" +
         "end";
 
+    public const string InvalidRedefinitionInput = 
+        "qubit[5] i;\n" +
+        "qubit[5] c;\n" +
+        "for i in 0..4 do\n" +
+        "    skip;\n" +
+        "end\n"+
+        "for j in 0..4 do\n" +
+        "    skip;\n" +
+        "    for j in 0..3 do\n" +
+        "        skip;\n" +
+        "    end\n" +
+        "end";
+
     /// <summary>
     /// Test no error are incorrectly reported.
     /// </summary>
@@ -118,6 +131,24 @@ public class ForLoopTest
         Assert.IsTrue(!error.ContainsCriticalError);
         Assert.IsTrue(error.Warnings.Count != 0);
         Assert.IsTrue(error.Errors.Any(e => e is InvalidRangeWarning && e.ErrorContext.Line == 2));
+    }
+
+    /// <summary>
+    /// Test no error are incorrectly reported.
+    /// </summary>
+    [TestMethod]
+    public void InvalidRedefinitionTest()
+    {
+        var walker = Utils.GetWalker();
+        var parser = Utils.GetParser(InvalidRedefinitionInput);
+        var analysis = new DeclarationAnalysisListener();
+        walker.Walk(analysis, parser.parse());
+        var error = analysis.Error;
+
+        Assert.IsTrue(error.ContainsCriticalError);
+        Assert.IsTrue(error.Warnings.Count == 0);
+        Assert.IsTrue(error.Errors.Any(e => e is RedefineError && e.ErrorContext.Line == 3));
+        Assert.IsTrue(error.Errors.Any(e => e is RedefineError && e.ErrorContext.Line == 8));
     }
 
 }
