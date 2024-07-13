@@ -34,22 +34,8 @@ namespace LUIECompiler.SemanticAnalysis
 
         public override void ExitDeclaration([NotNull] LuieParser.DeclarationContext context)
         {
-
-            ITerminalNode id = context.IDENTIFIER();
-            string identifier = id.GetText();
-
-            Register reg;
-            if (context.TryGetSize(out Expression<int> size))
-            {
-                reg = new Register(identifier, size, new ErrorContext(context));
-            }
-            else
-            {
-                reg = new Qubit(identifier, new ErrorContext(context));
-            }
+            Register reg = context.GetRegister();
             Table.AddSymbol(reg);
-
-            base.ExitDeclaration(context);
         }
 
         public override void ExitRegister([NotNull] LuieParser.RegisterContext context)

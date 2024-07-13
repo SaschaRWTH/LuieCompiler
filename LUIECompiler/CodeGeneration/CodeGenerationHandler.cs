@@ -126,42 +126,21 @@ namespace LUIECompiler.CodeGeneration
         }
 
         /// <summary>
-        /// Adds a qubit to the code generation handler. This includes adding it to the symbol table,
-        /// creating a definition with a unique id, and adding the definition the the definition dictionary.
-        /// <param name="identifier">Identifier of the qubit</param>
-        /// <param name="context">Line of the declaration</param>
-        /// <returns></returns>
-        public Qubit AddQubit(string identifier, ErrorContext context)
-        {
-            Qubit info = new(identifier, context);
-
-            AddSymbol(info, context);
-
-            RegisterDefinition definition = new(info);
-
-            CurrentBlock.AddTranslateable(definition);
-
-            return info;
-        }
-
-        /// <summary>
         /// Adds a register to the code generation handler. This includes adding it to the symbol table,
         /// creating a definition with a unique id, and adding the definition the the definition dictionary.
         /// <param name="identifier">Identifier of the register</param>
         /// <param name="size">Size of the register</param>
         /// <param name="context">Line of the declaration</param>
         /// <returns></returns>
-        public Register AddRegister(string identifier, Expression<int> size, ErrorContext context)
+        public Register AddRegister(Register register, ErrorContext context)
         {
-            Register info = new(identifier, size, context);
+            AddSymbol(register, context);
 
-            AddSymbol(info, context);
-
-            RegisterDefinition definition = new(info);
+            RegisterDefinition definition = new(register);
 
             CurrentBlock.AddTranslateable(definition);
 
-            return info;
+            return register;
         }
 
         /// <summary>

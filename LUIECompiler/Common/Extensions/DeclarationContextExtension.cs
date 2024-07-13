@@ -1,5 +1,7 @@
 using LUIECompiler.CodeGeneration.Exceptions;
 using LUIECompiler.CodeGeneration.Expressions;
+using LUIECompiler.Common.Errors;
+using LUIECompiler.Common.Symbols;
 
 
 namespace LUIECompiler.Common.Extensions
@@ -44,6 +46,28 @@ namespace LUIECompiler.Common.Extensions
                 };
                 return false;
             }
+        }
+
+        /// <summary>
+        /// Gets the register from the declaration context.
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        public static Register GetRegister(this LuieParser.DeclarationContext context)
+        {
+            string identifier = context.IDENTIFIER().GetText();
+            Register register;
+
+            if (context.TryGetSize(out Expression<int> size))
+            {
+                register = new Register(identifier, size, new ErrorContext(context));
+            }
+            else
+            {
+                register = new Qubit(identifier, new ErrorContext(context));
+            }
+
+            return register;
         }
     }
 }

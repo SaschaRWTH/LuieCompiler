@@ -24,17 +24,8 @@ namespace LUIECompiler.CodeGeneration
 
         public override void ExitDeclaration([NotNull] LuieParser.DeclarationContext context)
         {
-            string identifier = context.IDENTIFIER().GetText();
-
-            if (context.TryGetSize(out Expression<int> size))
-            {
-                CodeGen.AddRegister(identifier, size, new ErrorContext(context.Start));
-            }
-            else
-            {
-                CodeGen.AddQubit(identifier, new ErrorContext(context.Start));
-            }
-
+            Register register = context.GetRegister();
+            CodeGen.AddRegister(register, new ErrorContext(context.Start));
         }
 
         public override void ExitGateapplication([NotNull] LuieParser.GateapplicationContext context)
