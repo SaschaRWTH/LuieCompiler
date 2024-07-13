@@ -94,7 +94,7 @@ namespace LUIECompiler.SemanticAnalysis
                      
         }
 
-        public override void ExitExpression([NotNull] LuieParser.ExpressionContext context)
+        public override void ExitFactor([NotNull] LuieParser.FactorContext context)
         {
             if(context.identifier?.Text is not string identifier)
             {
@@ -102,8 +102,9 @@ namespace LUIECompiler.SemanticAnalysis
             }
             
             CheckDefinedness(identifier, context);    
+            base.ExitFactor(context);
         }
-
+        
         /// <summary>
         /// Checks whether a given <paramref name="identifier"/> is defined in the current context.
         /// </summary>

@@ -53,19 +53,19 @@ range
  ;
 
 expression
- : left=expression '+' right=term
- | left=expression '-' right=term
+ : left=expression op='+' right=term
+ | left=expression op='-' right=term
  | term
  ;
 
 term
- : left=term '*' right=factor
- | left=term '/' right=factor
+ : left=term op='*' right=factor
+ | left=term op='/' right=factor
  | factor
  ;
 
 factor
- :'(' expression ')'
+ :'(' exp=expression ')'
  | identifier=IDENTIFIER
  | value=INTEGER
  | '-' factor

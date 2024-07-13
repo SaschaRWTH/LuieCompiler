@@ -54,21 +54,11 @@ namespace LUIECompiler.SemanticAnalysis
             {
                 Error.Report(new UndefinedError(new ErrorContext(context.Start), identifier));
             }
-
-            // Only allow expression in register to be iterator (for now)
-            LuieParser.ExpressionContext? expression = context.index;
-            if(expression != null)
-            {
-                CheckIndexExpression(expression);
-            }
         }
 
-        /// <summary>
-        /// Checks that the expression is a valid index expression.
-        /// </summary>
-        /// <param name="context"></param>
-        public void CheckIndexExpression([NotNull] LuieParser.ExpressionContext context)
+        public override void ExitFactor([NotNull] LuieParser.FactorContext context)
         {
+            // Only allow factors in register to be iterator (for now)
             string? identifier = context.identifier?.Text;
             if (identifier == null)
             {

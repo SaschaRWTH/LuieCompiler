@@ -3,13 +3,13 @@ using LUIECompiler.CodeGeneration.Expressions;
 
 namespace LUIECompiler.Common.Extensions
 {
-    public static class ExpressionContextExtension
+    public static class TermContextExtension
     {
-        public static Expression<T> GetExpression<T>(this LuieParser.ExpressionContext context) where T : INumber<T>
+        public static Expression<T> GetExpression<T>(this LuieParser.TermContext context) where T : INumber<T>
         {
             if(context.op is null)
             {
-                return context.term().GetExpression<T>();
+                return context.factor().GetExpression<T>();
             }
 
             throw new NotImplementedException();
