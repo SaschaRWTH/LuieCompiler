@@ -1,6 +1,8 @@
 # Setup
 ANTLR is used to generate the lexer and parser for Luie based on its [grammar](./LUIECompiler/Luie.g4). It can be downloaded from the [official website](https://www.antlr.org/download.html). The website also contains information on how to install ANTLR and generate files for different languages.
 
+The compiler is written in C# and uses .NET 8. For building the compiler, the [.NET 8 SDK](https://dotnet.microsoft.com/en-us/download/dotnet/8.0) is required.
+
 ## Generate files
 The following command can be used to generate the lexer and parser files for Luie:
 ```bash
