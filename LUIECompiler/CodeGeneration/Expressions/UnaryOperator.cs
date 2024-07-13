@@ -24,7 +24,7 @@ namespace LUIECompiler.CodeGeneration.Expressions
         {
             return op switch
             {
-                "+" => new UnaryOperator<T> { Type = UnaryOperatorType.AdditiveInverse },
+                "-" => new UnaryOperator<T> { Type = UnaryOperatorType.AdditiveInverse },
                 _ => throw new NotImplementedException(),
             };
         }

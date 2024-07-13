@@ -18,6 +18,19 @@ public class ExpressionTest
     public const string BasicDivision = "21 / 2";
     public const int BasicDivisionResult = 10;
 
+    public const string OrderOfOperations = "10 + 2 * 3";
+    public const int OrderOfOperationsResult = 16;
+    public const string ParanthesesExpression = "2 * (3+4)";
+    public const int ParanthesesExpressionResult = 14;
+
+    public const string AdditiveInverseExpression = "3 + -2";
+    public const int AdditiveInverseExpressionResult = 1;
+
+    public const string ComplexExample = "4 + 360 / ((2 + 4) + 3 * 2)";
+    public const int ComplexExampleResult = 34;
+
+    
+
     public class ExpressionListener : LuieBaseListener
     {
         public int? Result { get; private set; } = null;
@@ -34,7 +47,7 @@ public class ExpressionTest
     }
     
     /// <summary>
-    /// Tests the code generation for the simple input.
+    /// Tests addition expression with a basic example.
     /// </summary>
     [TestMethod]
     public void BasicAdditionTest()
@@ -52,7 +65,7 @@ public class ExpressionTest
     }    
 
     /// <summary>
-    /// Tests the code generation for the simple input.
+    /// Tests subtraction expression with a basic example.
     /// </summary>
     [TestMethod]
     public void BasicSubtractionTest()
@@ -70,7 +83,7 @@ public class ExpressionTest
     }
 
     /// <summary>
-    /// Tests the code generation for the simple input.
+    /// Tests multiplication expression with a basic example.
     /// </summary>
     [TestMethod]
     public void BasicMultiplicationTest()
@@ -88,7 +101,7 @@ public class ExpressionTest
     }
 
     /// <summary>
-    /// Tests the code generation for the simple input.
+    /// Tests division expression with a basic example.
     /// </summary>
     [TestMethod]
     public void BasicDivisionTest()
@@ -103,5 +116,75 @@ public class ExpressionTest
         Assert.IsNotNull(result);
 
         Assert.AreEqual(BasicDivisionResult, result);
+    }
+
+    /// <summary>
+    /// Tests order of operations with a basic example.
+    /// </summary>
+    [TestMethod]
+    public void OrderOfOperationsTest()
+    {
+        var walker = Utils.GetWalker();
+        var parser = Utils.GetParser(OrderOfOperations);
+
+        var codegen = new ExpressionListener();
+        walker.Walk(codegen, parser.expression());
+
+        int? result = codegen.Result;
+        Assert.IsNotNull(result);
+
+        Assert.AreEqual(OrderOfOperationsResult, result);
+    }
+    /// <summary>
+    /// Tests order of operations with a basic example.
+    /// </summary>
+    [TestMethod]
+    public void ParanthesesExpressionTest()
+    {
+        var walker = Utils.GetWalker();
+        var parser = Utils.GetParser(ParanthesesExpression);
+
+        var codegen = new ExpressionListener();
+        walker.Walk(codegen, parser.expression());
+
+        int? result = codegen.Result;
+        Assert.IsNotNull(result);
+
+        Assert.AreEqual(ParanthesesExpressionResult, result);
+    }
+    /// <summary>
+    /// Tests order of operations with a basic example.
+    /// </summary>
+    [TestMethod]
+    public void AdditiveInverseExpressionTest()
+    {
+        var walker = Utils.GetWalker();
+        var parser = Utils.GetParser(AdditiveInverseExpression);
+
+        var codegen = new ExpressionListener();
+        walker.Walk(codegen, parser.expression());
+
+        int? result = codegen.Result;
+        Assert.IsNotNull(result);
+
+        Assert.AreEqual(AdditiveInverseExpressionResult, result);
+    }
+
+    /// <summary>
+    /// Tests order of operations with a basic example.
+    /// </summary>
+    [TestMethod]
+    public void ComplexExampleTest()
+    {
+        var walker = Utils.GetWalker();
+        var parser = Utils.GetParser(ComplexExample);
+
+        var codegen = new ExpressionListener();
+        walker.Walk(codegen, parser.expression());
+
+        int? result = codegen.Result;
+        Assert.IsNotNull(result);
+
+        Assert.AreEqual(ComplexExampleResult, result);
     }
 }
