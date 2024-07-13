@@ -51,6 +51,21 @@ public class RegisterTest
             "    h c[i];\n" +
             "end";
 
+        public const string IteratorRegisterSizeInput = 
+                "qubit[3] c;\n" +
+                "for i in 2..4 do\n" +
+                "    qubit[i] d;\n" +
+                "    h d[0];\n" +
+                "end\n";
+
+        public const string IteratorRegisterSizeTranslation =
+                "qubit[3] id0;\n" +
+                "qubit[2] id1;\n" +
+                "h id1[0];\n" +
+                "qubit[3] id2;\n" +
+                "h id2[0];\n" +
+                "qubit[4] id3;\n" +
+                "h id3[0];\n";
 
         /// <summary>
         /// Tests if the scope is correctly handled in the input.
@@ -125,6 +140,23 @@ public class RegisterTest
                 Assert.IsNotNull(exception);
 
                 Assert.AreEqual(exception.Error.ErrorContext.Line, 3);
+        }
+        /// <summary>
+        /// Tests if the scope is correctly handled in the input.
+        /// </summary>
+        [TestMethod]
+        public void IteratorRegisterSizeTest()
+        {
+                var walker = Utils.GetWalker();
+                var parser = Utils.GetParser(IteratorRegisterSizeInput);
+
+                var codegen = new CodeGenerationListener();
+                walker.Walk(codegen, parser.parse());
+
+                string? code = codegen.CodeGen.GenerateCode()?.ToString();
+                Assert.IsNotNull(code);
+
+                Assert.AreEqual(IteratorRegisterSizeTranslation, code);
         }
 
 }
