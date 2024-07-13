@@ -1,10 +1,5 @@
-
-using LUIECompiler.Common;
 using LUIECompiler.CodeGeneration.Codes;
 using LUIECompiler.Common.Symbols;
-using LUIECompiler.CodeGeneration.Definitions;
-using LUIECompiler.CodeGeneration.Exceptions;
-using LUIECompiler.Common.Errors;
 
 namespace LUIECompiler.CodeGeneration.Statements
 {
@@ -20,25 +15,19 @@ namespace LUIECompiler.CodeGeneration.Statements
         /// </summary>
         public required CodeBlock Block { get; init; }
 
-        public override QASMProgram ToQASM()
+        public override QASMProgram ToQASM(CodeGenerationContext context)
         {
-            QubitCode qubit = GetGuardCode();
-            return Block.ToQASM().AddGuard(qubit: qubit);
+            QubitCode qubit = GetGuardCode(context);
+            return Block.ToQASM(context).AddGuard(qubit: qubit);
         }
 
         /// <summary>
         /// Gets string representation of the guard.
         /// </summary>
         /// <returns></returns>
-        protected QubitCode GetGuardCode()
+        protected QubitCode GetGuardCode(CodeGenerationContext context)
         {
-            RegisterDefinition definition = GetDefinition(Guard) as RegisterDefinition ??
-                throw new InternalException()
-                {
-                    Reason = "Guard is not a register definition. This should have been caught by the semantic analysis and type checking while generating."
-                };
-
-            return Guard.ToQASMCode(definition);
+            return TranslateQubit(Guard, context);
         }
     }
 

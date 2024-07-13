@@ -1,7 +1,4 @@
-using LUIECompiler.Common;
 using LUIECompiler.CodeGeneration.Codes;
-using LUIECompiler.CodeGeneration.Definitions;
-using LUIECompiler.Common.Errors;
 using LUIECompiler.CodeGeneration.Exceptions;
 using LUIECompiler.Common.Symbols;
 
@@ -23,13 +20,13 @@ namespace LUIECompiler.CodeGeneration.Statements
         /// Returns the QASM code for the statement.
         /// </summary>
         /// <returns></returns>
-        public override QASMProgram ToQASM()
+        public override QASMProgram ToQASM(CodeGenerationContext context)
         {
             return new(new GateCode()
             {
                 Gate = Gate,
                 Guards = [],
-                Parameters = GetParameters(),
+                Parameters = GetParameters(context),
             });
         }
 
@@ -38,15 +35,11 @@ namespace LUIECompiler.CodeGeneration.Statements
         /// </summary>
         /// <returns></returns>
         /// <exception cref="CodeGenerationException"></exception>
-        public List<QubitCode> GetParameters()
+        public List<QubitCode> GetParameters(CodeGenerationContext context)
         {
             return Parameters.Select(param =>
-            {
-                return param.ToQASMCode(GetDefinition(param) as RegisterDefinition ?? throw new InternalException()
-                {
-                    Reason = "Parameter is not a register definition. This should have been caught by the semantic analysis and type checking while generating."
-                });
-            }).ToList();
+                TranslateQubit(param, context)
+            ).ToList();
         }
     }
 

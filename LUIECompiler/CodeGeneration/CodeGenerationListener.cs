@@ -1,11 +1,10 @@
 
 using Antlr4.Runtime.Misc;
-using Antlr4.Runtime.Tree;
 using LUIECompiler.CodeGeneration.Codes;
 using LUIECompiler.CodeGeneration.Exceptions;
 using LUIECompiler.CodeGeneration.Statements;
-using LUIECompiler.Common;
 using LUIECompiler.Common.Errors;
+using LUIECompiler.Common.Extensions;
 using LUIECompiler.Common.Symbols;
 
 namespace LUIECompiler.CodeGeneration
@@ -28,15 +27,14 @@ namespace LUIECompiler.CodeGeneration
 
             if (context.TryGetSize(out int size))
             {
-                CodeGen.AddRegister(identifier, size, context.Start.Line);
+                CodeGen.AddRegister(identifier, size, new ErrorContext(context.Start));
             }
             else
             {
-                CodeGen.AddQubit(identifier, context.Start.Line);
+                CodeGen.AddQubit(identifier, new ErrorContext(context.Start));
             }
 
         }
-
 
         public override void ExitGateapplication([NotNull] LuieParser.GateapplicationContext context)
         {
@@ -46,17 +44,16 @@ namespace LUIECompiler.CodeGeneration
             {
                 throw new CodeGenerationException()
                 {
-                    Error = new InvalidArguments(context.Start.Line, gate, parameters.Count),
+                    Error = new InvalidArguments(new ErrorContext(context.Start), gate, parameters.Count),
                 };
             }
 
-            int line = context.Start.Line;
             GateApplicationStatement statement = new()
             {
                 Gate = gate,
                 Parameters = parameters,
-                DefinitionDictionary = CodeGen.DefinitionDictionary,
-                Line = line,
+                ParentBlock = CodeGen.CurrentBlock,
+                ErrorContext = new ErrorContext(context.Start),
             };
 
             CodeGen.AddStatement(statement);
@@ -90,13 +87,12 @@ namespace LUIECompiler.CodeGeneration
                 Reason = "There was no last poped code block, although block should just have been exited."
             };
 
-            int line = context.Start.Line;
             QuantumIfStatement statement = new()
             {
                 Block = block,
                 Guard = CodeGen.CurrentGuard,
-                DefinitionDictionary = CodeGen.DefinitionDictionary,
-                Line = line,
+                ParentBlock = CodeGen.CurrentBlock,
+                ErrorContext = new ErrorContext(context.Start),
             };
 
             CodeGen.AddStatement(statement);
@@ -109,13 +105,42 @@ namespace LUIECompiler.CodeGeneration
                 Reason = "There was no last poped code block, although block should just have been exited."
             };
 
-            int line = context.Start.Line;
             QuantumIfStatement statement = new()
             {
                 Block = block,
                 Guard = CodeGen.CurrentGuard,
-                DefinitionDictionary = CodeGen.DefinitionDictionary,
-                Line = line,
+                ParentBlock = CodeGen.CurrentBlock,
+                ErrorContext = new ErrorContext(context.Start),
+            };
+
+            CodeGen.AddStatement(statement);
+        }
+
+        public override void EnterForstatement([NotNull] LuieParser.ForstatementContext context)
+        {
+            LoopIterator iterator = context.GetIterator();
+            CodeGen.AddIterator(iterator, new ErrorContext(context.Start));
+        }
+
+        public override void ExitForstatement([NotNull] LuieParser.ForstatementContext context)
+        {
+            CodeBlock block = _lastPoped ?? throw new InternalException()
+            {
+                Reason = "There was no last poped code block, although block should just have been exited."
+            };
+
+            string identifier = context.IDENTIFIER().GetText(); ;
+            LoopIterator iterator = CodeGen.Table.GetSymbolInfo(identifier) as LoopIterator ?? throw new InternalException()
+            {
+                Reason = $"Iterator {identifier} was not found in the symbol table or of wrong type.",
+            };
+
+            ForLoopStatement statement = new()
+            {
+                Iterator = iterator,
+                Body = block,
+                ParentBlock = CodeGen.CurrentBlock,
+                ErrorContext = new ErrorContext(context.Start),
             };
 
             CodeGen.AddStatement(statement);

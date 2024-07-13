@@ -20,7 +20,7 @@ namespace LUIECompiler.Common.Errors
         /// <summary>
         /// Line where the error occured.
         /// </summary>
-        public int Line { get; init; }
+        public ErrorContext ErrorContext { get; init; }
 
         /// <summary>
         /// Description of the error.
@@ -29,7 +29,7 @@ namespace LUIECompiler.Common.Errors
 
         public override string ToString()
         {
-            return $"A {(Type == ErrorType.Warning ? "Warning" : "critical Error")} occured in line {Line}: {Description}";
+            return $"A {(Type == ErrorType.Warning ? "Warning" : "critical Error")} occured at ({ErrorContext.Line}, {ErrorContext.Column}): {Description}";
         }
     }
 

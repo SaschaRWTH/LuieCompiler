@@ -1,5 +1,9 @@
 using LUIECompiler.CodeGeneration.Codes;
 using LUIECompiler.CodeGeneration.Definitions;
+using LUIECompiler.CodeGeneration;
+using LUIECompiler.CodeGeneration.Expressions;
+using LUIECompiler.CodeGeneration.Exceptions;
+using LUIECompiler.Common.Errors;
 
 namespace LUIECompiler.Common.Symbols
 {
@@ -7,27 +11,40 @@ namespace LUIECompiler.Common.Symbols
     public class RegisterAccess : Qubit
     {
         /// <summary>
-        /// Index of the qubit in the <see cref="Register"/>.
+        /// Expression that evaluates to the index of the qubit in the <see cref="Register"/>.
         /// </summary>
-        public int Index { get; init; }
+        public Expression<int> IndexExpression { get; init; }
 
         /// <summary>
         /// Register that is accessed.
         /// </summary>
         public Register Register { get; init; }
 
-        public RegisterAccess(Register register, int index) : base(identifier: register.Identifier) 
+        public RegisterAccess(Register register, Expression<int> indexExpression, ErrorContext errorContext) 
+        : base(identifier: register.Identifier, errorContext)
         {
-            Index = index;
+            IndexExpression = indexExpression;
             Register = register;
         }
 
-        public override QubitCode ToQASMCode(RegisterDefinition definition)
+        public override QubitCode ToQASMCode(RegisterDefinition definition, CodeGenerationContext codeGenContext, ErrorContext context)
         {
+            int index = IndexExpression.Evaluate(codeGenContext.IntegerConstants);
+
+            if (index < 0 || index >= Register.Size)
+            {
+                throw new CodeGenerationException()
+                {
+                    Error = new InvalidAccessError(context, Register.Identifier, index, Register.Size)
+                };
+
+            }
+
             return new RegisterAccessCode()
             {
                 Register = definition,
-                Index = Index,
+                Index = IndexExpression.Evaluate(codeGenContext.IntegerConstants),
+                Identifier = codeGenContext.CurrentBlock.GetUniqueIdentifier(definition),
             };
         }
     }

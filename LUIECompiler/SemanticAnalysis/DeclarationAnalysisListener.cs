@@ -1,8 +1,10 @@
 using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Tree;
+using LUIECompiler.CodeGeneration.Exceptions;
 using LUIECompiler.Common;
 using LUIECompiler.Common.Errors;
+using LUIECompiler.Common.Extensions;
 using LUIECompiler.Common.Symbols;
 
 namespace LUIECompiler.SemanticAnalysis
@@ -35,11 +37,11 @@ namespace LUIECompiler.SemanticAnalysis
             string identifier = id.GetText();
             if (Table.IsDefinedInCurrentScop(identifier))
             {
-                Error.Report(new RedefineError(context.Start.Line, identifier));
+                Error.Report(new RedefineError(new ErrorContext(context.Start), identifier));
             }
             else
             {
-                Qubit info = new(identifier);
+                Qubit info = new(identifier, new ErrorContext(context));
                 Table.AddSymbol(info);
             }
 
@@ -65,6 +67,42 @@ namespace LUIECompiler.SemanticAnalysis
             string identifier = context.register().GetIdentifier();
             CheckDefinedness(identifier, context);
         }
+        
+        public override void EnterForstatement([NotNull] LuieParser.ForstatementContext context)
+        {
+
+            string identifier = context.IDENTIFIER().GetText();
+            
+
+            if(Table.IsDefined(identifier))
+            {
+                Error.Report(new RedefineError(new ErrorContext(context.Start), identifier));
+                return;
+            }
+            
+            LuieParser.RangeContext range = context.range();
+            if(!int.TryParse(range.start.Text, out int start) || !int.TryParse(range.end.Text, out int end))
+            {
+                throw new InternalException()
+                {
+                    Reason = "Failed to parse the range of the for statement.",
+                };
+            }   
+
+            LoopIterator loop = new(identifier, start, end, new ErrorContext(context));
+            Table.AddSymbol(loop);
+                     
+        }
+
+        public override void ExitExpression([NotNull] LuieParser.ExpressionContext context)
+        {
+            if(context.identifier?.Text is not string identifier)
+            {
+                return;
+            }
+            
+            CheckDefinedness(identifier, context);    
+        }
 
         /// <summary>
         /// Checks whether a given <paramref name="identifier"/> is defined in the current context.
@@ -78,7 +116,7 @@ namespace LUIECompiler.SemanticAnalysis
                 return;
             }
 
-            Error.Report(new UndefinedError(context.Start.Line, identifier));
+            Error.Report(new UndefinedError(new ErrorContext(context.Start), identifier));
         }
 
     }

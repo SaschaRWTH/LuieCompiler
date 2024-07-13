@@ -1,5 +1,6 @@
 using LUIECompiler.Common;
 using LUIECompiler.CodeGeneration.Codes;
+using LUIECompiler.Common.Symbols;
 
 namespace LUIECompiler.CodeGeneration.Definitions
 {
@@ -9,9 +10,14 @@ namespace LUIECompiler.CodeGeneration.Definitions
         /// <summary>
         /// Identifier to be defined.
         /// </summary>
-        public required string Identifier { get; init; }
+        public abstract Symbol Register { get; init; }
 
-        public abstract QASMProgram ToQASM();
+        public abstract QASMProgram ToQASM(CodeGenerationContext context);
+
+        public override string ToString()
+        {
+            return $"Definition = {{Register = {Register}}}";
+        }
     }
 
 }

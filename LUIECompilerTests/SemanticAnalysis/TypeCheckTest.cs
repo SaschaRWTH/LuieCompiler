@@ -1,13 +1,9 @@
-using Antlr4.Runtime;
-using Antlr4.Runtime.Tree;
-using LUIECompiler.Common;
 using LUIECompiler.Common.Errors;
-using LUIECompiler.Common.Symbols;
 using LUIECompiler.SemanticAnalysis;
 
-namespace LUIECompilerTests;
+namespace LUIECompilerTests.SemanticAnalysis;
 
-[TestClass]
+[TestClass, TestCategory("SemanticAnalysis"), TestCategory("TypeCheck")]
 public class TypeCheckTest
 {
     public const string InputCorrect =
@@ -86,9 +82,9 @@ public class TypeCheckTest
 
         Assert.IsTrue(error.ContainsCriticalError);
         Console.WriteLine(error.ToString());
-        Assert.IsTrue(error.Errors.Any(e => e is UndefinedError && e.Line == 8));
-        Assert.IsTrue(error.Errors.Any(e => e is TypeError && e.Line == 4));
-        Assert.IsTrue(error.Errors.Any(e => e is TypeError && e.Line == 7));
+        Assert.IsTrue(error.Errors.Any(e => e is UndefinedError && e.ErrorContext.Line == 8));
+        Assert.IsTrue(error.Errors.Any(e => e is TypeError && e.ErrorContext.Line == 4));
+        Assert.IsTrue(error.Errors.Any(e => e is TypeError && e.ErrorContext.Line == 7));
     }
 
     
@@ -106,12 +102,12 @@ public class TypeCheckTest
 
         Assert.IsTrue(error.ContainsCriticalError);
         Assert.AreEqual(2, error.Errors.Count);
-        Assert.IsTrue(error.Errors.Any(e => e is InvalidArguments && e.Line == 4));
-        Assert.IsTrue(error.Errors.Any(e => e is InvalidArguments && e.Line == 5));
+        Assert.IsTrue(error.Errors.Any(e => e is InvalidArguments && e.ErrorContext.Line == 4));
+        Assert.IsTrue(error.Errors.Any(e => e is InvalidArguments && e.ErrorContext.Line == 5));
     }
     
     /// <summary>
-    /// Tests that there are errors reported when using invalid arguments.
+    /// Tests that there are errors reported when giving wrong type of arguments.
     /// </summary>
     [TestMethod]
     public void TypeErrorsArgumentsTest()
@@ -124,7 +120,7 @@ public class TypeCheckTest
 
         Assert.IsTrue(error.ContainsCriticalError);
         Assert.AreEqual(2, error.Errors.Count);
-        Assert.IsTrue(error.Errors.Any(e => e is TypeError && e.Line == 3));
-        Assert.IsTrue(error.Errors.Any(e => e is TypeError && e.Line == 6));
+        Assert.IsTrue(error.Errors.Any(e => e is TypeError && e.ErrorContext.Line == 3));
+        Assert.IsTrue(error.Errors.Any(e => e is TypeError && e.ErrorContext.Line == 6));
     }
 }

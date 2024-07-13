@@ -10,40 +10,14 @@ namespace LUIECompiler.CodeGeneration.Statements
 {
     public abstract class Statement : ITranslateable
     {
-        /// <summary>
-        /// Maps any <see cref="Qubit"/> to the corresponding <see cref="Definition"/>.
-        /// </summary>
-        public required Dictionary<Register, Definition> DefinitionDictionary { get; init; }
+        public required CodeBlock ParentBlock { get; init; }
 
         /// <summary>
         /// Source code line of the statement.
         /// </summary>
-        public required int Line { get; init; }
-        public abstract QASMProgram ToQASM();
-
-        /// <summary>
-        /// Returns the QASM identifier of a given <paramref name="register"/>.
-        /// </summary>
-        /// <param name="register"></param>
-        /// <returns></returns>
-        /// <exception cref="CodeGenerationException"></exception>
-        protected string GetIdentifier([NotNull] Register register)
-        {
-            if (register is RegisterAccess access)
-            {
-                register = access.Register;
-            }
-
-            if (!DefinitionDictionary.TryGetValue(register, out var definition))
-            {
-                throw new CodeGenerationException()
-                {
-                    Error = new UndefinedError(Line, register.Identifier),
-                };
-            }
-            return definition.Identifier;
-        }
-
+        public required ErrorContext ErrorContext { get; init; }
+        public abstract QASMProgram ToQASM(CodeGenerationContext context);
+        
         /// <summary>
         /// Returns the <see cref="Definition"/> of a given <paramref name="register"/>
         /// </summary>
@@ -57,15 +31,28 @@ namespace LUIECompiler.CodeGeneration.Statements
                 register = access.Register;
             }
 
-            if (!DefinitionDictionary.TryGetValue(register, out var definition))
-            {
-                throw new CodeGenerationException()
-                {
-                    Error = new UndefinedError(Line, register.Identifier),
-                };
-            }
+            Definition definition = ParentBlock.GetDefinition(register);
+            
             return definition;
         }
+
+        /// <summary>
+        /// Translates a <paramref name="qubit"/> symbol to QASM qubit code.
+        /// </summary>
+        /// <param name="qubit"></param>
+        /// <param name="constants"></param>
+        /// <returns></returns>
+        /// <exception cref="InternalException"></exception>
+        protected QubitCode TranslateQubit([NotNull] Qubit qubit, CodeGenerationContext context)
+        {
+            RegisterDefinition definition = GetDefinition(qubit) as RegisterDefinition ??
+                throw new InternalException()
+                {
+                    Reason = "Guard is not a register definition. This should have been caught by the semantic analysis and type checking while generating."
+                };
+
+            return qubit.ToQASMCode(definition, context, ErrorContext);
+        } 
     }
 
 }

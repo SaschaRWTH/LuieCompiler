@@ -18,16 +18,6 @@ namespace LUIECompiler.CodeGeneration
         public SymbolTable Table { get; set; } = new();
 
         /// <summary>
-        /// Dictionary mapping all registers to a definition.
-        /// </summary>
-        public Dictionary<Register, Definition> DefinitionDictionary { get; } = [];
-
-        /// <summary>
-        /// List of all definitions. 
-        /// </summary>
-        public List<Definition> Definitions { get; } = [];
-
-        /// <summary>
         /// Stack of currently nested code blocks.
         /// </summary>
         public Stack<CodeBlock> CodeBlocks { get; } = [];
@@ -40,7 +30,10 @@ namespace LUIECompiler.CodeGeneration
         /// <summary>
         ///  Main code block of the program.
         /// </summary>
-        public CodeBlock MainBlock { get; } = new();
+        public CodeBlock MainBlock { get; } = new()
+        {
+            Parent = null,
+        };
 
         /// <summary>
         /// Gets the current code block.
@@ -78,7 +71,10 @@ namespace LUIECompiler.CodeGeneration
             }
             else
             {
-                CodeBlocks.Push(new());
+                CodeBlocks.Push(new()
+                {
+                    Parent = CurrentBlock,
+                });
             }
         }
 
@@ -107,7 +103,7 @@ namespace LUIECompiler.CodeGeneration
         /// <param name="statement"></param>
         public void AddStatement([NotNull] Statement statement)
         {
-            CurrentBlock.AddStatement(statement);
+            CurrentBlock.AddTranslateable(statement);
         }
 
         /// <summary>
@@ -128,28 +124,21 @@ namespace LUIECompiler.CodeGeneration
             return GuardStack.Pop();
         }
 
-        public Qubit AddQubit(string identifier, int line)
-        {            
-            if (Table.IsDefinedInCurrentScop(identifier))
-            {
-                throw new CodeGenerationException()
-                {
-                    Error = new RedefineError(line, identifier),
-                };
-            }
+        /// <summary>
+        /// Adds a qubit to the code generation handler. This includes adding it to the symbol table,
+        /// creating a definition with a unique id, and adding the definition the the definition dictionary.
+        /// <param name="identifier">Identifier of the qubit</param>
+        /// <param name="context">Line of the declaration</param>
+        /// <returns></returns>
+        public Qubit AddQubit(string identifier, ErrorContext context)
+        {
+            Qubit info = new(identifier, context);
 
-            Qubit info = new(identifier);
-            string id = Table.AddSymbol(info);
+            AddSymbol(info, context);
 
-            RegisterDefinition definition = new()
-            {
-                Identifier = id,
-                Size = 1,
-            };
+            RegisterDefinition definition = new(info);
 
-            Definitions.Add(definition);
-
-            DefinitionDictionary.Add(info, definition);
+            CurrentBlock.AddTranslateable(definition);
 
             return info;
         }
@@ -157,33 +146,49 @@ namespace LUIECompiler.CodeGeneration
         /// <summary>
         /// Adds a register to the code generation handler. This includes adding it to the symbol table,
         /// creating a definition with a unique id, and adding the definition the the definition dictionary.
-        /// </summary>
-        /// <param name="identifier"></param>
-        /// <exception cref="RedefineError"></exception>
-        public Register AddRegister(string identifier, int size, int line)
+        /// <param name="identifier">Identifier of the register</param>
+        /// <param name="size">Size of the register</param>
+        /// <param name="context">Line of the declaration</param>
+        /// <returns></returns>
+        public Register AddRegister(string identifier, int size, ErrorContext context)
         {
-            if (Table.IsDefinedInCurrentScop(identifier))
+            Register info = new(identifier, size, context);
+
+            AddSymbol(info, context);
+
+            RegisterDefinition definition = new(info);
+
+            CurrentBlock.AddTranslateable(definition);
+
+            return info;
+        }
+
+        /// <summary>
+        /// Adds an iterator to the symbol table.
+        /// </summary>
+        /// <param name="iterator"></param>
+        /// <param name="context"></param>
+        public void AddIterator(LoopIterator iterator, ErrorContext context)
+        {
+            AddSymbol(iterator, context);
+        }
+
+        /// <summary>
+        /// Adds a symbol to the symbol table.
+        /// </summary>
+        /// <param name="symbol"></param>
+        /// <param name="context"></param>
+        /// <exception cref="CodeGenerationException"></exception>
+        protected void AddSymbol(Symbol symbol, ErrorContext context)
+        {
+            if (Table.IsDefinedInCurrentScop(symbol.Identifier))
             {
                 throw new CodeGenerationException()
                 {
-                    Error = new RedefineError(line, identifier),
+                    Error = new RedefineError(context, symbol.Identifier),
                 };
             }
-
-            Register info = new(identifier, size);
-            string id = Table.AddSymbol(info);
-
-            RegisterDefinition definition = new()
-            {
-                Identifier = id,
-                Size = size,
-            };
-
-            Definitions.Add(definition);
-
-            DefinitionDictionary.Add(info, definition);
-
-            return info;
+            Table.AddSymbol(symbol);
         }
 
         /// <summary>
@@ -193,12 +198,14 @@ namespace LUIECompiler.CodeGeneration
         public QASMProgram GenerateCode()
         {
             QASMProgram code = new();
-            foreach (Definition definition in Definitions)
-            {
-                code += definition.ToQASM();
-            }
 
-            code += MainBlock.ToQASM();
+            CodeGenerationContext context = new()
+            {
+                SymbolTable = Table,
+                CurrentBlock = MainBlock,
+            };
+
+            code += MainBlock.ToQASM(context);
 
             return code;
         }
@@ -210,11 +217,11 @@ namespace LUIECompiler.CodeGeneration
         /// <param name="identifier"></param>
         /// <returns></returns>
         /// <exception cref="Exception"></exception>
-        public Symbol GetSymbolInfo(string identifier, int line)
+        public Symbol GetSymbolInfo(string identifier, ErrorContext context)
         {
             return Table.GetSymbolInfo(identifier) ?? throw new CodeGenerationException()
             {
-                Error = new UndefinedError(line, identifier)
+                Error = new UndefinedError(context, identifier)
             };
 
         }

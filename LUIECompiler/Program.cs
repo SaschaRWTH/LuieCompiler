@@ -1,10 +1,7 @@
-﻿using System;
-using Antlr4.Runtime;
+﻿using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
 using LUIECompiler.CodeGeneration;
 using LUIECompiler.CodeGeneration.Exceptions;
-using LUIECompiler.CodeGeneration.Statements;
-using LUIECompiler.SemanticAnalysis;
 
 namespace LUIECompiler
 {
@@ -14,14 +11,10 @@ namespace LUIECompiler
         {
 
             string input =
-            "qubit[3] c;\n" +
-            "qubit[3] a;\n" +
-            "x c[1];\n" +
-            "qif c[1] do\n" +
-            "x c[1];\n" +
-            "cx c[0], a[2];\n" +
-            "ccx c[0], a[2], a[1];\n" +
-            "end";
+                "qubit[5] c;\n" +
+                "for i in 0..4 do\n" +
+                "    h c[j];\n" +
+                "end";
 
             try
             {
@@ -54,10 +47,12 @@ namespace LUIECompiler
             catch (InternalException e)
             {
                 Console.WriteLine($"Internal error!: {e.Reason}");
+                Console.WriteLine($"{e}");
             }
             catch (CodeGenerationException e)
             {
                 Console.WriteLine($"Code gen exception: {e.Error}");
+                Console.WriteLine($"{e}");
             }
             catch (Exception ex)
             {

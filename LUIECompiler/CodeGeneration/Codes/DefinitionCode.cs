@@ -9,6 +9,8 @@ namespace LUIECompiler.CodeGeneration.Codes
         /// </summary>
         public required RegisterDefinition Register { get; init; }
 
+        public required UniqueIdentifier Identifier { get; init; }
+
         /// <summary>
         /// The size of the register.
         /// </summary>
@@ -18,10 +20,10 @@ namespace LUIECompiler.CodeGeneration.Codes
         {
             if (Size == 1)
             {
-                return $"qubit {Register.Identifier};";
+                return $"qubit {Identifier.Identifier};";
             }
 
-            return $"qubit[{Size}] {Register.Identifier};";
+            return $"qubit[{Size}] {Identifier.Identifier};";
         }
     }
 }

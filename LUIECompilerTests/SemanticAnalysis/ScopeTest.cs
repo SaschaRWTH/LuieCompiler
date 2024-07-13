@@ -5,19 +5,11 @@ using LUIECompiler.Common.Errors;
 using LUIECompiler.Common.Symbols;
 using LUIECompiler.SemanticAnalysis;
 
-namespace LUIECompilerTests;
+namespace LUIECompilerTests.SemanticAnalysis;
 
-[TestClass]
-public class SemanticAnalysisTest
+[TestClass, TestCategory("SemanticAnalysis"), TestCategory("Scope")]
+public class ScopeTest
 {
-    public const string InputSimple =
-        "qubit c;\n" +
-        "qubit b;\n" +
-        "x a;\n" +
-        "qubit c;\n" +
-        "qif a do\n" +
-        "skip;\n" +
-        "end";
 
     public const string InputScopeCorrect =
         "qubit a;\n" +
@@ -48,40 +40,6 @@ public class SemanticAnalysisTest
         "end\n" +
         "end";
 
-    /// <summary>
-    /// Test that already defined identifiers are correctly reported.
-    /// </summary>
-    [TestMethod]
-    public void RedefineErrorTest()
-    {
-        var walker = Utils.GetWalker();
-        var parser = Utils.GetParser(InputSimple);
-        var analysis = new DeclarationAnalysisListener();
-        walker.Walk(analysis, parser.parse());
-        var error = analysis.Error;
-
-        Assert.IsTrue(error.ContainsCriticalError);
-
-        Assert.IsTrue(error.Errors.Any(e => e is RedefineError && e.Line == 4));
-    }
-
-    /// <summary>
-    /// Tests that undefined identifiers are correctly reported.
-    /// </summary>
-    [TestMethod]
-    public void UndefinedErrorTest()
-    {
-        var walker = Utils.GetWalker();
-        var parser = Utils.GetParser(InputSimple);
-        var analysis = new DeclarationAnalysisListener();
-        walker.Walk(analysis, parser.parse());
-        var error = analysis.Error;
-
-        Assert.IsTrue(error.ContainsCriticalError);
-
-        Assert.IsTrue(error.Errors.Any(e => e is UndefinedError && e.Line == 3));
-        Assert.IsTrue(error.Errors.Any(e => e is UndefinedError && e.Line == 5));
-    }
 
     /// <summary>
     /// Test that in a simple, correct program with scopes there are no errors reported. 
@@ -111,7 +69,7 @@ public class SemanticAnalysisTest
         var error = analysis.Error;
 
         Assert.IsTrue(error.ContainsCriticalError);
-        Assert.IsTrue(error.Errors.Any(e => e is RedefineError && e.Line == 6));
+        Assert.IsTrue(error.Errors.Any(e => e is RedefineError && e.ErrorContext.Line == 6));
     }
 
     /// <summary>
@@ -138,11 +96,11 @@ public class SemanticAnalysisTest
         SymbolTable table = new();
         
         table.PushScope();
-        Qubit firstA = new("A");
+        Qubit firstA = new("A", new ErrorContext());
         table.AddSymbol(firstA);
 
         table.PushScope();
-        Qubit secondA = new("A");
+        Qubit secondA = new("A", new ErrorContext());
         table.AddSymbol(secondA);
 
         Qubit? secondScopeA = table.GetSymbolInfo("A") as Qubit;
