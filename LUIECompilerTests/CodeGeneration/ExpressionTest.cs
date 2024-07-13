@@ -29,8 +29,6 @@ public class ExpressionTest
     public const string ComplexExample = "4 + 360 / ((2 + 4) + 3 * 2)";
     public const int ComplexExampleResult = 34;
 
-    
-
     public class ExpressionListener : LuieBaseListener
     {
         public int? Result { get; private set; } = null;

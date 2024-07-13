@@ -15,6 +15,7 @@ namespace LUIECompiler
                 "for i in 2..4 do\n" +
                 "    qubit[i] d;\n" +
                 "    h d[0];\n" +
+                "    h c[i-2];\n" +
                 "end\n";
 
             try
