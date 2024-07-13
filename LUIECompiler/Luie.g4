@@ -48,13 +48,27 @@ register
  | IDENTIFIER '[' index=expression ']'
  ;
 
-expression
- : identifier=IDENTIFIER
- | value=INTEGER
- ;
-
 range 
  : start=INTEGER '..' end=INTEGER
+ ;
+
+expression
+ : left=expression '+' right=term
+ | left=expression '-' right=term
+ | term
+ ;
+
+term
+ : left=term '*' right=factor
+ | left=term '/' right=factor
+ | factor
+ ;
+
+factor
+ :'(' expression ')'
+ | identifier=IDENTIFIER
+ | value=INTEGER
+ | '-' factor
  ;
 
 GATE
