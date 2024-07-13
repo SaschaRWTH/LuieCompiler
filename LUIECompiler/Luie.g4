@@ -9,7 +9,7 @@ block
  ;
 
 declaration
- : 'qubit' ('[' size=INTEGER ']')? IDENTIFIER ';'
+ : 'qubit' ('[' size=expression ']')? IDENTIFIER ';'
  ;
  
 statement

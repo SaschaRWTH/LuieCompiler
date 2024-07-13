@@ -30,12 +30,13 @@ namespace LUIECompiler.Common.Symbols
         public override QubitCode ToQASMCode(RegisterDefinition definition, CodeGenerationContext codeGenContext, ErrorContext context)
         {
             int index = IndexExpression.Evaluate(codeGenContext.IntegerConstants);
+            int size = Register.Size.Evaluate(codeGenContext.IntegerConstants);
 
-            if (index < 0 || index >= Register.Size)
+            if (index < 0 || index >= size)
             {
                 throw new CodeGenerationException()
                 {
-                    Error = new InvalidAccessError(context, Register.Identifier, index, Register.Size)
+                    Error = new InvalidAccessError(context, Register.Identifier, index, size)
                 };
 
             }

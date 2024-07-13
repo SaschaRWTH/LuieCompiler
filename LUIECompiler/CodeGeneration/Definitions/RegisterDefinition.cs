@@ -21,7 +21,7 @@ namespace LUIECompiler.CodeGeneration.Definitions
             return new(new DefinitionCode()
             {
                 Register = this,
-                Size = register.Size,
+                Size = register.Size.Evaluate(context.IntegerConstants),
                 Identifier = context.CurrentBlock.GetUniqueIdentifier(this),
             });
         }

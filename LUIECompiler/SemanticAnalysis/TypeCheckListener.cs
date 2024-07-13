@@ -39,7 +39,7 @@ namespace LUIECompiler.SemanticAnalysis
             string identifier = id.GetText();
 
             Register reg;
-            if (context.TryGetSize(out int size))
+            if (context.TryGetSize(out Expression<int> size))
             {
                 reg = new Register(identifier, size, new ErrorContext(context));
             }

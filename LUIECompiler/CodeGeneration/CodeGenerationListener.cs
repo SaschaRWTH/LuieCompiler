@@ -2,6 +2,7 @@
 using Antlr4.Runtime.Misc;
 using LUIECompiler.CodeGeneration.Codes;
 using LUIECompiler.CodeGeneration.Exceptions;
+using LUIECompiler.CodeGeneration.Expressions;
 using LUIECompiler.CodeGeneration.Statements;
 using LUIECompiler.Common.Errors;
 using LUIECompiler.Common.Extensions;
@@ -25,7 +26,7 @@ namespace LUIECompiler.CodeGeneration
         {
             string identifier = context.IDENTIFIER().GetText();
 
-            if (context.TryGetSize(out int size))
+            if (context.TryGetSize(out Expression<int> size))
             {
                 CodeGen.AddRegister(identifier, size, new ErrorContext(context.Start));
             }

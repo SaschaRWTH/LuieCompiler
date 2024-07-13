@@ -7,6 +7,7 @@ using LUIECompiler.Common;
 using LUIECompiler.Common.Errors;
 using LUIECompiler.CodeGeneration.Exceptions;
 using LUIECompiler.Common.Symbols;
+using LUIECompiler.CodeGeneration.Expressions;
 
 namespace LUIECompiler.CodeGeneration
 {
@@ -150,7 +151,7 @@ namespace LUIECompiler.CodeGeneration
         /// <param name="size">Size of the register</param>
         /// <param name="context">Line of the declaration</param>
         /// <returns></returns>
-        public Register AddRegister(string identifier, int size, ErrorContext context)
+        public Register AddRegister(string identifier, Expression<int> size, ErrorContext context)
         {
             Register info = new(identifier, size, context);
 
