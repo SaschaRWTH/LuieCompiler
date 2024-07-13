@@ -1,10 +1,11 @@
+using System.Numerics;
 using LUIECompiler.CodeGeneration.Exceptions;
 using LUIECompiler.Common;
 using LUIECompiler.Common.Symbols;
 
 namespace LUIECompiler.CodeGeneration.Expressions
 {
-    public class IdentifierExpression<T> : Expression<T>
+    public class IdentifierExpression<T> : Expression<T> where T : INumber<T>
     {
         public required string Identifier { get; init; }
 

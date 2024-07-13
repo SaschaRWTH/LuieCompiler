@@ -1,4 +1,5 @@
 using System.Numerics;
+using LUIECompiler.CodeGeneration.Exceptions;
 using LUIECompiler.CodeGeneration.Expressions;
 
 namespace LUIECompiler.Common.Extensions
@@ -12,7 +13,21 @@ namespace LUIECompiler.Common.Extensions
                 return context.term().GetExpression<T>();
             }
 
-            throw new NotImplementedException();
+            if(context.left is null || context.right is null)
+            {
+                throw new InternalException()
+                {
+                    Reason = "Binary operation expression must have both left and right operands if it has an operator.",
+                };
+            }
+
+            BinaryOperator<T> op = BinaryOperator<T>.FromString(context.op.Text); 
+            return new BinaryOperationExpression<T>()
+            {
+                Left = context.left.GetExpression<T>(),
+                Right = context.right.GetExpression<T>(),
+                Operator = op,
+            };
         }
     }
 }

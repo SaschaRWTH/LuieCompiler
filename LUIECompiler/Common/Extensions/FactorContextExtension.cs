@@ -34,6 +34,17 @@ namespace LUIECompiler.Common.Extensions
             {
                 return context.exp.GetExpression<T>();
             }
+
+            LuieParser.FactorContext? factor = context.factor();
+            if(factor is not null && context.op is not null)
+            {
+                UnaryOperator<T> op = UnaryOperator<T>.FromString(context.op.Text);
+                return new UnaryOperationExpression<T>()
+                {
+                    Operand = factor.GetExpression<T>(),
+                    Operator = op,
+                };
+            }
             
             throw new NotImplementedException();
         }

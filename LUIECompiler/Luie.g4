@@ -68,7 +68,7 @@ factor
  :'(' exp=expression ')'
  | identifier=IDENTIFIER
  | value=INTEGER
- | '-' factor
+ | op='-' factor
  ;
 
 GATE
