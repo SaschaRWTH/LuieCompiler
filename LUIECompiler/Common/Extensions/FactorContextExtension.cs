@@ -35,6 +35,15 @@ namespace LUIECompiler.Common.Extensions
                 return context.exp.GetExpression<T>();
             }
 
+            if(context.func is LuieParser.FunctionContext functionContext)
+            {
+                return new FunctionExpression<T>()
+                {
+                    Type = functionContext.GetFunctionType(),
+                    Parameter = functionContext.GetFunctionParameters(),
+                };
+            }
+
             LuieParser.FactorContext? factor = context.factor();
             if(factor is not null && context.op is not null)
             {
@@ -45,6 +54,8 @@ namespace LUIECompiler.Common.Extensions
                     Operator = op,
                 };
             }
+
+            
             
             throw new NotImplementedException();
         }

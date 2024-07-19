@@ -20,7 +20,7 @@ namespace LUIECompiler.CodeGeneration.Definitions
         {
             Register register = (Register)Register;
 
-            int size = register.Size.Evaluate(context.IntegerConstants);
+            int size = register.Size.Evaluate(context.IntegerConstants, context.CurrentBlock);
 
             if (size <= 0)
             {

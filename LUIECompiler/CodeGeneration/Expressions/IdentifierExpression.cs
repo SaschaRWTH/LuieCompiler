@@ -20,7 +20,7 @@ namespace LUIECompiler.CodeGeneration.Expressions
             return undefined;
         }
 
-        public override T Evaluate(List<Constant<T>> constants)
+        public override T Evaluate(List<Constant<T>> constants, CodeBlock codeBlock)
         {
             // Find the constant with the given identifier
             var constant = constants.Find(constant => constant.Identifier == Identifier);

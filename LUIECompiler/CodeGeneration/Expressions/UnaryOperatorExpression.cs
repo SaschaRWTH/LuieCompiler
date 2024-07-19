@@ -17,9 +17,9 @@ namespace LUIECompiler.CodeGeneration.Expressions
         /// </summary>
         public required UnaryOperator<T> Operator { get; init; }
 
-        public override T Evaluate(List<Constant<T>> constants) 
+        public override T Evaluate(List<Constant<T>> constants, CodeBlock codeBlock) 
         { 
-            return Operator.Apply(Operand.Evaluate(constants));
+            return Operator.Apply(Operand.Evaluate(constants, codeBlock));
         }
 
         public override List<string> UndefinedIdentifiers(SymbolTable table)

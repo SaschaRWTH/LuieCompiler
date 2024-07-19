@@ -85,6 +85,51 @@ namespace LUIECompiler.CodeGeneration
             return Parent.GetUniqueIdentifier(definition);
         }
 
+        /// <summary>
+        /// Gets the symbol with the given identifier.
+        /// </summary>
+        /// <param name="identifier"></param>
+        /// <returns></returns>
+        /// <exception cref="InternalException"></exception>
+        /// <exception cref="CodeGenerationException"></exception>
+        public Symbol GetSymbol(string identifier)
+        {
+            Symbol? symbol = null;
+            try
+            {
+                symbol = Translateables.OfType<Definition>().SingleOrDefault(def => def.Register.Identifier == identifier)?.Register;
+            }
+            catch (InvalidOperationException)
+            {
+                throw new InternalException()
+                {
+                    Reason = "Multiple definitions found for the same register. This should have been caught by the semantic analysis and indicates a compiler error.",
+                };
+            }
+
+            if(symbol != null)
+            {
+                return symbol;
+            }
+
+            if(Parent == null)
+            {
+                throw new CodeGenerationException()
+                {
+                    Error = new UndefinedError(new ErrorContext(), identifier),
+                };
+            }
+            
+            return Parent.GetSymbol(identifier);
+        }
+
+        /// <summary>
+        /// Gets the definition for the given register.
+        /// </summary>
+        /// <param name="register"></param>
+        /// <returns></returns>
+        /// <exception cref="InternalException"></exception>
+        /// <exception cref="CodeGenerationException"></exception>
         public Definition GetDefinition(Register register)
         {
 

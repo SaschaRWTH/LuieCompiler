@@ -40,7 +40,10 @@ public class ExpressionTest
         /// <param name="context"></param>
         public override void ExitExpression(LuieParser.ExpressionContext context)
         {
-            Result = context.GetExpression<int>().Evaluate(new());
+            Result = context.GetExpression<int>().Evaluate(new(), new()
+            {
+                Parent = null,
+            });
         }
     }
     

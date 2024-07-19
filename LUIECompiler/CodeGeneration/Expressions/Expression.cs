@@ -11,7 +11,7 @@ namespace LUIECompiler.CodeGeneration.Expressions
         /// </summary>
         /// <param name="constants"></param>
         /// <returns></returns>
-        public abstract T Evaluate(List<Constant<T>> constants);
+        public abstract T Evaluate(List<Constant<T>> constants, CodeBlock codeBlock);
 
         /// <summary>
         /// Gets the list of undefined identifiers in the expression.
