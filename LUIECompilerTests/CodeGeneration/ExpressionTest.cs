@@ -41,6 +41,19 @@ public class ExpressionTest
         "qubit[4] id2;\n" +
         "qubit[5] id3;\n";
 
+    public const string SizeOfAccessInput =
+        "qubit[5] a;\n" +
+        "for i in 1..5 do\n" +
+        "    x a[sizeof(a) - i];\n" +
+        "end";
+    public const string SizeOfAccessTranslation =
+        "qubit[5] id0;\n" +
+        "x id0[4];\n" +
+        "x id0[3];\n" +
+        "x id0[2];\n" +
+        "x id0[1];\n" +
+        "x id0[0];\n";
+
     public class ExpressionListener : LuieBaseListener
     {
         public int? Result { get; private set; } = null;
@@ -217,5 +230,23 @@ public class ExpressionTest
         Assert.IsNotNull(result);
 
         Assert.AreEqual(SizeOfFunctionExpressionTranslation, result);
+    }
+
+    /// <summary>
+    /// Tests the size of access expression.
+    /// </summary>
+    [TestMethod]
+    public void SizeOfAccessTest()
+    {
+        var walker = Utils.GetWalker();
+        var parser = Utils.GetParser(SizeOfAccessInput);
+
+        var codegen = new CodeGenerationListener();
+        walker.Walk(codegen, parser.parse());
+
+        string? result = codegen.CodeGen.GenerateCode()?.ToString();
+        Assert.IsNotNull(result);
+
+        Assert.AreEqual(SizeOfAccessTranslation, result);
     }
 }

@@ -66,9 +66,9 @@ term
 
 factor
  :'(' exp=expression ')'
+ | func=function
  | identifier=IDENTIFIER
  | value=INTEGER
- | func=function
  | op='-' factor
  ;
 
