@@ -68,7 +68,12 @@ factor
  :'(' exp=expression ')'
  | identifier=IDENTIFIER
  | value=INTEGER
+ | func=function
  | op='-' factor
+ ;
+
+function
+ : func='sizeof' '(' param=IDENTIFIER ')'
  ;
 
 GATE
