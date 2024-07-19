@@ -104,7 +104,13 @@ namespace LUIECompiler.SemanticAnalysis
             CheckDefinedness(identifier, context);    
             base.ExitFactor(context);
         }
-        
+
+        public override void ExitFunction([NotNull] LuieParser.FunctionContext context)
+        {
+            string identifier = context.param.Text;
+            CheckDefinedness(identifier, context);
+        }
+
         /// <summary>
         /// Checks whether a given <paramref name="identifier"/> is defined in the current context.
         /// </summary>
@@ -119,7 +125,6 @@ namespace LUIECompiler.SemanticAnalysis
 
             Error.Report(new UndefinedError(new ErrorContext(context.Start), identifier));
         }
-
     }
 
 }

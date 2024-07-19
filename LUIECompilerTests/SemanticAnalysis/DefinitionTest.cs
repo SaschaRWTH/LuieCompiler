@@ -29,6 +29,10 @@ public class DefinitionTest
         "h c[2];\n" +
         "h c[j];";
 
+    public const string UndefinedFunctionParameterInput =
+        "qubit[5] c;\n" +
+        "qubit[sizeof(i)] d;";
+
     /// <summary>
     /// Test that already defined identifiers are correctly reported.
     /// </summary>
@@ -97,5 +101,22 @@ public class DefinitionTest
 
         Assert.IsTrue(error.Errors.Any(e => e is UndefinedError && e.ErrorContext.Line == 2));
         Assert.IsTrue(error.Errors.Any(e => e is UndefinedError && e.ErrorContext.Line == 4));
+    }
+    
+    /// <summary>
+    /// Tests that undefined identifiers are correctly reported.
+    /// </summary>
+    [TestMethod]
+    public void UndefinedFunctionParameterTest()
+    {
+        var walker = Utils.GetWalker();
+        var parser = Utils.GetParser(UndefinedFunctionParameterInput);
+        var analysis = new DeclarationAnalysisListener();
+        walker.Walk(analysis, parser.parse());
+        var error = analysis.Error;
+
+        Assert.IsTrue(error.ContainsCriticalError);
+
+        Assert.IsTrue(error.Errors.Any(e => e is UndefinedError && e.ErrorContext.Line == 2));
     }
 }
