@@ -1,3 +1,4 @@
+using LUIECompiler.CodeGeneration;
 using LUIECompiler.Common.Extensions;
 
 namespace LUIECompilerTests.CodeGeneration;
@@ -28,6 +29,17 @@ public class ExpressionTest
 
     public const string ComplexExample = "4 + 360 / ((2 + 4) + 3 * 2)";
     public const int ComplexExampleResult = 34;
+
+    public const string SizeOfFunctionExpressionInput =
+        "qubit[3] a;\n" +
+        "qubit[sizeof(a)] b;\n" +
+        "qubit[sizeof(b) + 1] c;\n" +
+        "qubit[sizeof(c) + 1] d;";
+    public const string SizeOfFunctionExpressionTranslation =
+        "qubit[3] id0;\n" +
+        "qubit[3] id1;\n" +
+        "qubit[4] id2;\n" +
+        "qubit[5] id3;\n";
 
     public class ExpressionListener : LuieBaseListener
     {
@@ -187,5 +199,23 @@ public class ExpressionTest
         Assert.IsNotNull(result);
 
         Assert.AreEqual(ComplexExampleResult, result);
+    }
+
+    /// <summary>
+    /// Tests the size of function expression.
+    /// </summary>
+    [TestMethod]
+    public void SizeOfFunctionExpressionTest()
+    {
+        var walker = Utils.GetWalker();
+        var parser = Utils.GetParser(SizeOfFunctionExpressionInput);
+
+        var codegen = new CodeGenerationListener();
+        walker.Walk(codegen, parser.parse());
+
+        string? result = codegen.CodeGen.GenerateCode()?.ToString();
+        Assert.IsNotNull(result);
+
+        Assert.AreEqual(SizeOfFunctionExpressionTranslation, result);
     }
 }

@@ -11,12 +11,10 @@ namespace LUIECompiler
         {
 
             string input =
-                "qubit[3] c;\n" +
-                "for i in 2..4 do\n" +
-                "    qubit[i] d;\n" +
-                "    h d[0];\n" +
-                "    h c[i-2];\n" +
-                "end\n";
+                "qubit[3] a;\n" +
+                "qubit[sizeof(a)] b;\n" +
+                "qubit[sizeof(b) + 1] c;\n" +
+                "qubit[sizeof(c) + 1] d;";
 
             try
             {
