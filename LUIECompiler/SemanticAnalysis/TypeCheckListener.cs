@@ -154,7 +154,24 @@ namespace LUIECompiler.SemanticAnalysis
 
             if (range.Start.Value >= range.End.Value)
             {
-                Error.Report(new InvalidRangeWarning(new ErrorContext(context.Start), range.Start.Value, range.End.Value));
+                Error.Report(new InvalidRangeWarning(new ErrorContext(context), range.Start.Value, range.End.Value));
+            }
+        }
+
+        public override void ExitFunction([NotNull] LuieParser.FunctionContext context)
+        {
+            string identifier = context.param.Text;
+
+            Symbol? symbol = Table.GetSymbolInfo(identifier);
+            if (symbol == null)
+            {
+                Error.Report(new UndefinedError(new ErrorContext(context), identifier));
+                return;
+            }
+
+            if (symbol is not Register)
+            {
+                Error.Report(new TypeError(new ErrorContext(context), identifier, typeof(Register), symbol.GetType()));
             }
         }
     }

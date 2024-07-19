@@ -53,6 +53,16 @@ public class TypeCheckTest
         "cx a[2], b[1];\n" +
         "cx a[1], b;";
 
+    public const string FunctionParameterValidType = 
+        "qubit[3] a;\n" +
+        "qubit[sizeof(a)] b;";
+        
+    public const string FunctionParameterInvalidType = 
+        "qubit[3] a;\n" +
+        "for i in 1..5 do\n" +
+        "    qubit[sizeof(i)] b;\n" +
+        "end";
+
     /// <summary>
     /// Test that redefinitions in correctly reported in scopes.
     /// </summary>
@@ -122,5 +132,36 @@ public class TypeCheckTest
         Assert.AreEqual(2, error.Errors.Count);
         Assert.IsTrue(error.Errors.Any(e => e is TypeError && e.ErrorContext.Line == 3));
         Assert.IsTrue(error.Errors.Any(e => e is TypeError && e.ErrorContext.Line == 6));
+    }   
+
+    /// <summary>
+    /// Tests that there are errors reported when giving wrong type of arguments.
+    /// </summary>
+    [TestMethod]
+    public void FunctionParameterValidTypeTest()
+    {
+        var walker = Utils.GetWalker();
+        var parser = Utils.GetParser(FunctionParameterValidType);
+        var analysis = new TypeCheckListener();
+        walker.Walk(analysis, parser.parse());
+        var error = analysis.Error;
+
+        Assert.IsTrue(!error.ContainsCriticalError);
+    }
+    /// <summary>
+    /// Tests that there are errors reported when giving wrong type of arguments.
+    /// </summary>
+    [TestMethod]
+    public void FunctionParameterInvalidTypeTest()
+    {
+        var walker = Utils.GetWalker();
+        var parser = Utils.GetParser(FunctionParameterInvalidType);
+        var analysis = new TypeCheckListener();
+        walker.Walk(analysis, parser.parse());
+        var error = analysis.Error;
+
+        Assert.IsTrue(error.ContainsCriticalError);
+        Assert.AreEqual(1, error.Errors.Count);
+        Assert.IsTrue(error.Errors.Any(e => e is TypeError && e.ErrorContext.Line == 3));
     }
 }
