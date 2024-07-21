@@ -98,6 +98,22 @@ public class ForLoopTest
         "    h c[i];\n" +
         "end\n";
 
+    public const string RangeFunctionInput =
+        "qubit[5] a;\n" +
+        "for i in range(sizeof(a)) do\n" +
+        "    h a[i];\n" +
+        "end\n";
+
+    public const string RangeFunctionTranslation =
+        "qubit[5] id0;\n" +
+        "h id0[0];\n" +
+        "h id0[1];\n" +
+        "h id0[2];\n" +
+        "h id0[3];\n" +
+        "h id0[4];\n";
+
+        
+
     /// <summary>
     /// Test the translation of a simple for loop.
     /// </summary>
@@ -195,5 +211,22 @@ public class ForLoopTest
         
         Assert.IsTrue(ex.Error is RedefineError);
         Assert.AreEqual(3, ex.Error.ErrorContext.Line);
+    }
+    
+    /// <summary>
+    /// Test the translation of a simple for loop.
+    /// </summary>
+    [TestMethod]
+    public void RangeFunctionTest()
+    {
+        var walker = Utils.GetWalker();
+        var parser = Utils.GetParser(RangeFunctionInput);
+        var gen = new CodeGenerationListener();
+        walker.Walk(gen, parser.parse());
+        
+        string? code = gen.CodeGen.GenerateCode()?.ToString();
+        Assert.IsNotNull(code);
+
+        Assert.AreEqual(RangeFunctionTranslation, code);
     }
 }
