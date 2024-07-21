@@ -1,4 +1,6 @@
 using LUIECompiler.CodeGeneration.Exceptions;
+using LUIECompiler.CodeGeneration.Expressions;
+using LUIECompiler.Common.Symbols;
 
 namespace LUIECompiler.Common.Extensions
 {
@@ -10,17 +12,46 @@ namespace LUIECompiler.Common.Extensions
         /// <param name="context"></param>
         /// <returns></returns>
         /// <exception cref="InternalException"></exception>
-        public static Range GetRange(this LuieParser.RangeContext context)
+        public static LoopIterator GetRange(this LuieParser.RangeContext context, string identifier)
         {
-            if (!int.TryParse(context.start.Text, out int start) || !int.TryParse(context.end.Text, out int end))
+            if (int.TryParse(context.start?.Text, out int start) && int.TryParse(context.end?.Text, out int end))
             {
-                throw new InternalException()
+                ConstantExpression<int> startExpression = new()
                 {
-                    Reason = "Failed to parse the range of the for statement.",
+                    Value = start,
                 };
+                ConstantExpression<int> endExpression = new()
+                {
+                    Value = end,
+                };
+
+                return new(identifier, startExpression, endExpression, new(context));
             }
 
-            return new(start, end);
+            var length = context.length;
+            if(length != null)
+            {
+                ConstantExpression<int> startExpression = new()
+                {
+                    Value = 0,
+                };
+                ConstantExpression<int> oneExpression = new()
+                {
+                    Value = 1,
+                };
+                BinaryOperationExpression<int> endExpression = new()
+                {
+                    Left = length.GetExpression<int>(),
+                    Right = oneExpression,
+                    Operator = BinaryOperator<int>.FromString("-"),
+                };
+                return new(identifier, startExpression, endExpression, new(context));
+            }
+
+            throw new InternalException()
+            {
+                Reason = "Failed to parse the range of the for statement.",
+            };
         }
     }
 }

@@ -81,17 +81,9 @@ namespace LUIECompiler.SemanticAnalysis
             }
             
             LuieParser.RangeContext range = context.range();
-            if(!int.TryParse(range.start.Text, out int start) || !int.TryParse(range.end.Text, out int end))
-            {
-                throw new InternalException()
-                {
-                    Reason = "Failed to parse the range of the for statement.",
-                };
-            }   
-
-            LoopIterator loop = new(identifier, start, end, new ErrorContext(context));
+            LoopIterator loop = range.GetRange(identifier);
+         
             Table.AddSymbol(loop);
-                     
         }
 
         public override void ExitFactor([NotNull] LuieParser.FactorContext context)

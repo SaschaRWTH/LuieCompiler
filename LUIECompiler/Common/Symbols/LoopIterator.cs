@@ -1,3 +1,4 @@
+using LUIECompiler.CodeGeneration.Expressions;
 using LUIECompiler.Common.Errors;
 
 namespace LUIECompiler.Common.Symbols
@@ -7,14 +8,14 @@ namespace LUIECompiler.Common.Symbols
         /// <summary>
         /// Start of the loop.
         /// </summary>
-        public int Start { get; init; }
+        public Expression<int> Start { get; init; }
 
         /// <summary>
         /// End of the loop.
         /// </summary>
-        public int End { get; init; }
+        public Expression<int> End { get; init; }
 
-        public LoopIterator(string identifier, int start, int end, ErrorContext errorContext) : base(identifier, errorContext)
+        public LoopIterator(string identifier, Expression<int> start, Expression<int> end, ErrorContext errorContext) : base(identifier, errorContext)
         {
             Start = start;
             End = end;

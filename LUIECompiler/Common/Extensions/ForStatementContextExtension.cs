@@ -15,9 +15,7 @@ namespace LUIECompiler.Common.Extensions
         {
             string identifier = context.IDENTIFIER().GetText();
 
-            Range range = context.range().GetRange();
-
-            return new(identifier, range.Start.Value, range.End.Value, new ErrorContext(context));
+            return context.range().GetRange(identifier);
         }
     }
 }

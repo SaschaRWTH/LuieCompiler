@@ -141,20 +141,21 @@ namespace LUIECompiler.SemanticAnalysis
         public override void EnterForstatement([NotNull] LuieParser.ForstatementContext context)
         {
             string identifier = context.IDENTIFIER().GetText();
+            LoopIterator loopIterator = context.range().GetRange(identifier);
 
-            Range range = context.range().GetRange();
-
-            LoopIterator loopIterator = new(identifier, range.Start.Value, range.End.Value, new ErrorContext(context));
             Table.AddSymbol(loopIterator);
         }
 
         public override void ExitRange([NotNull] LuieParser.RangeContext context)
         {
-            Range range = context.GetRange();
-
-            if (range.Start.Value >= range.End.Value)
+            if(!int.TryParse(context.start.Text, out int start) || !int.TryParse(context.end.Text, out int end))
             {
-                Error.Report(new InvalidRangeWarning(new ErrorContext(context), range.Start.Value, range.End.Value));
+                return;
+            }
+
+            if (start >= end)
+            {
+                Error.Report(new InvalidRangeWarning(new ErrorContext(context), start, end));
             }
         }
 

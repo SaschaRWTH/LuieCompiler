@@ -50,6 +50,7 @@ register
 
 range 
  : start=INTEGER '..' end=INTEGER
+ | 'range' '(' length=expression ')'
  ;
 
 expression
