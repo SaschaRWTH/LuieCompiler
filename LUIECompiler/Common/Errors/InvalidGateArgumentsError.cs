@@ -1,4 +1,5 @@
 using LUIECompiler.CodeGeneration.Codes;
+using LUIECompiler.CodeGeneration.Gates;
 
 namespace LUIECompiler.Common.Errors
 {

@@ -1,6 +1,6 @@
 
 using Antlr4.Runtime.Misc;
-using LUIECompiler.CodeGeneration.Codes;
+using LUIECompiler.CodeGeneration.Gates;
 using LUIECompiler.CodeGeneration.Exceptions;
 using LUIECompiler.CodeGeneration.Expressions;
 using LUIECompiler.CodeGeneration.Statements;
@@ -31,7 +31,7 @@ namespace LUIECompiler.CodeGeneration
         public override void ExitGateapplication([NotNull] LuieParser.GateapplicationContext context)
         {
             List<Qubit> parameters = context.GetParameters(CodeGen.Table);
-            Gate gate = new(context);
+            Gate gate = context.gate().GetGate(CodeGen.Table);
             if (parameters.Count != gate.NumberOfArguments)
             {
                 throw new CodeGenerationException()

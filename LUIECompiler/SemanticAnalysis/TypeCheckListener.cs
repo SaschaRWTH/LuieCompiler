@@ -1,5 +1,6 @@
 using Antlr4.Runtime.Misc;
-using LUIECompiler.CodeGeneration.Codes;
+using LUIECompiler.CodeGeneration;
+using LUIECompiler.CodeGeneration.Gates;
 using LUIECompiler.CodeGeneration.Expressions;
 using LUIECompiler.Common;
 using LUIECompiler.Common.Errors;
@@ -47,6 +48,12 @@ namespace LUIECompiler.SemanticAnalysis
                 return;
             }
 
+            // Check type of parameter at generation time
+            if (symbol is Parameter)
+            {
+                return;
+            }
+
             // Cannot access qubit with []
             if (symbol is Qubit && context.TryGetIndexExpression(out Expression<int> _))
             {
@@ -64,13 +71,13 @@ namespace LUIECompiler.SemanticAnalysis
             }
 
             Symbol? symbol = Table.GetSymbolInfo(identifier);
-            if(symbol == null)
+            if (symbol == null)
             {
                 Error.Report(new UndefinedError(new ErrorContext(context.Start), identifier));
                 return;
             }
 
-            if(symbol is not LoopIterator)
+            if (symbol is not LoopIterator)
             {
                 Error.Report(new TypeError(new ErrorContext(context.Start), identifier, typeof(LoopIterator), symbol.GetType()));
             }
@@ -90,6 +97,13 @@ namespace LUIECompiler.SemanticAnalysis
                     return;
                 }
 
+
+                // Check type of parameter at generation time
+                if (symbol is Parameter)
+                {
+                    return;
+                }
+
                 if (symbol is not Register)
                 {
                     Error.Report(new TypeError(new ErrorContext(context.Start), identifier, typeof(Register), symbol.GetType()));
@@ -102,7 +116,7 @@ namespace LUIECompiler.SemanticAnalysis
                 }
             }
 
-            Gate gate = new(context);
+            Gate gate = context.gate().GetGate(Table);
 
             if (gate.NumberOfArguments != registers.Count)
             {
@@ -120,6 +134,12 @@ namespace LUIECompiler.SemanticAnalysis
             if (symbol == null)
             {
                 Error.Report(new UndefinedError(new ErrorContext(context.Start), identifier));
+                return;
+            }
+
+            // Check type of parameter at generation time
+            if (symbol is Parameter)
+            {
                 return;
             }
 
@@ -146,7 +166,7 @@ namespace LUIECompiler.SemanticAnalysis
 
         public override void ExitRange([NotNull] LuieParser.RangeContext context)
         {
-            if(!int.TryParse(context.start.Text, out int start) || !int.TryParse(context.end.Text, out int end))
+            if (!int.TryParse(context.start.Text, out int start) || !int.TryParse(context.end.Text, out int end))
             {
                 return;
             }
@@ -154,6 +174,29 @@ namespace LUIECompiler.SemanticAnalysis
             if (start >= end)
             {
                 Error.Report(new InvalidRangeWarning(new ErrorContext(context), start, end));
+            }
+        }
+
+        public override void ExitGate([NotNull] LuieParser.GateContext context)
+        {
+            if (context.type is not null)
+            {
+                return;
+            }
+
+            if (context.identifier?.Text is string identifier)
+            {
+                Symbol? symbol = Table.GetSymbolInfo(identifier);
+                if (symbol == null)
+                {
+                    Error.Report(new UndefinedError(new ErrorContext(context.Start), identifier));
+                    return;
+                }
+
+                if (symbol is not CompositeGate)
+                {
+                    Error.Report(new TypeError(new ErrorContext(context.Start), identifier, typeof(CompositeGate), symbol.GetType()));
+                }
             }
         }
 
@@ -168,10 +211,39 @@ namespace LUIECompiler.SemanticAnalysis
                 return;
             }
 
+            // Check type of parameter at generation time
+            if (symbol is Parameter)
+            {
+                return;
+            }
+
             if (symbol is not Register)
             {
                 Error.Report(new TypeError(new ErrorContext(context), identifier, typeof(Register), symbol.GetType()));
             }
+        }
+
+        
+        public override void EnterGateDeclaration([NotNull] LuieParser.GateDeclarationContext context)
+        {
+            Table.PushScope();
+            foreach (Parameter param in context.GetParameters())
+            {
+                Table.AddSymbol(param);
+            }
+        }
+
+        public override void ExitGateDeclaration([NotNull] LuieParser.GateDeclarationContext context)
+        {
+            Table.PopScope();
+
+            // Create emtpy block for declaration analysis
+            CodeBlock block = new()
+            {
+                Parent = null
+            };
+            CompositeGate gate = new(context.identifier.Text, block, new ErrorContext(context));
+            Table.AddSymbol(gate);
         }
     }
 

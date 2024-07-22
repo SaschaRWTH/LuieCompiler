@@ -1,4 +1,4 @@
-using LUIECompiler.CodeGeneration.Definitions;
+using LUIECompiler.CodeGeneration.Gates;
 using LUIECompiler.Common;
 
 namespace LUIECompiler.CodeGeneration.Codes
@@ -39,8 +39,6 @@ namespace LUIECompiler.CodeGeneration.Codes
         /// <returns></returns>
         private string GetParameters()
         {
-            // TODO: Add check if too many parameters.
-
             return string.Join(", ", Parameters.Select(param => param.ToCode()));
         }
 
@@ -48,22 +46,22 @@ namespace LUIECompiler.CodeGeneration.Codes
         {
             if (Guards.Count == 0)
             {
-                return $"{Gate} {GetParameters()};";
+                return $"{Gate.ToCode()} {GetParameters()};";
             }
 
             if (NegativeGuards.Count == 0)
             {
-                return $"ctrl({PositiveGuards.Count}) @ {Gate} {string.Join(", ", PositiveGuards.Select(g => g.ToCode()))}, {GetParameters()};";
+                return $"ctrl({PositiveGuards.Count}) @ {Gate.ToCode()} {string.Join(", ", PositiveGuards.Select(g => g.ToCode()))}, {GetParameters()};";
             }
 
             if (PositiveGuards.Count == 0)
             {
-                return $"negctrl({NegativeGuards.Count}) @ {Gate} {string.Join(", ", NegativeGuards.Select(g => g.ToCode()))}, {GetParameters()};";
+                return $"negctrl({NegativeGuards.Count}) @ {Gate.ToCode()} {string.Join(", ", NegativeGuards.Select(g => g.ToCode()))}, {GetParameters()};";
             }
 
 
             return $"negctrl({NegativeGuards.Count}) @ ctrl({PositiveGuards.Count}) @" +
-                   $"{Gate} {string.Join(", ", NegativeGuards.Select(g => g.ToCode()))}," +
+                   $"{Gate.ToCode()} {string.Join(", ", NegativeGuards.Select(g => g.ToCode()))}," +
                    $"{string.Join(", ", PositiveGuards.Select(g => g.ToCode()))}, {GetParameters()};";
         }
 
