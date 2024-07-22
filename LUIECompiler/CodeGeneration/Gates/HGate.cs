@@ -1,14 +1,14 @@
 
 namespace LUIECompiler.CodeGeneration.Gates
 {
-    public class HGate : Gate
+    public class HGate : PredefinedGate
     {
         public HGate() 
         { 
             NumberOfArguments = 1;
         }
 
-        public override string ToCode()
+        protected override string ToCode()
         {
             return "h";
         }

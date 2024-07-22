@@ -1,14 +1,14 @@
 
 namespace LUIECompiler.CodeGeneration.Gates
 {
-    public class ZGate : Gate
+    public class ZGate : PredefinedGate
     {
         public ZGate() 
         { 
             NumberOfArguments = 1;
         }
 
-        public override string ToCode()
+        protected override string ToCode()
         {
             return "z";
         }

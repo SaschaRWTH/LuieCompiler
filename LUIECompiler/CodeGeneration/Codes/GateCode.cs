@@ -44,25 +44,7 @@ namespace LUIECompiler.CodeGeneration.Codes
 
         public override string ToCode()
         {
-            if (Guards.Count == 0)
-            {
-                return $"{Gate.ToCode()} {GetParameters()};";
-            }
-
-            if (NegativeGuards.Count == 0)
-            {
-                return $"ctrl({PositiveGuards.Count}) @ {Gate.ToCode()} {string.Join(", ", PositiveGuards.Select(g => g.ToCode()))}, {GetParameters()};";
-            }
-
-            if (PositiveGuards.Count == 0)
-            {
-                return $"negctrl({NegativeGuards.Count}) @ {Gate.ToCode()} {string.Join(", ", NegativeGuards.Select(g => g.ToCode()))}, {GetParameters()};";
-            }
-
-
-            return $"negctrl({NegativeGuards.Count}) @ ctrl({PositiveGuards.Count}) @" +
-                   $"{Gate.ToCode()} {string.Join(", ", NegativeGuards.Select(g => g.ToCode()))}," +
-                   $"{string.Join(", ", PositiveGuards.Select(g => g.ToCode()))}, {GetParameters()};";
+            return Gate.GenerateCode(GetParameters(), NegativeGuards, PositiveGuards);
         }
 
     }

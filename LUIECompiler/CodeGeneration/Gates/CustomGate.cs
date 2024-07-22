@@ -1,3 +1,4 @@
+using LUIECompiler.CodeGeneration.Codes;
 using LUIECompiler.Common.Symbols;
 
 namespace LUIECompiler.CodeGeneration.Gates
@@ -12,7 +13,7 @@ namespace LUIECompiler.CodeGeneration.Gates
             NumberOfArguments = CompositeGate.Parameters.Count;
         }
 
-        public override string ToCode()
+        public override string GenerateCode(string parameters, List<GuardCode> negativeGuards, List<GuardCode> positiveGuards)
         {
             throw new NotImplementedException();
         }

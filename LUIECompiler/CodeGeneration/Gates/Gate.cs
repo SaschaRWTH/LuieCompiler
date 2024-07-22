@@ -10,6 +10,6 @@ namespace LUIECompiler.CodeGeneration.Gates
         /// </summary>
         public int NumberOfArguments { get; init; }
 
-        public abstract string ToCode();
+        public abstract string GenerateCode(string parameters, List<GuardCode> negativeGuards, List<GuardCode> positiveGuards);
     }
 }
