@@ -59,7 +59,7 @@ register
 
 range 
  : start=INTEGER '..' end=INTEGER
- | 'range' '(' length=expression ')'
+ | RANGE '(' length=expression ')'
  ;
 
 expression
@@ -83,7 +83,7 @@ factor
  ;
 
 function
- : func='sizeof' '(' param=IDENTIFIER ')'
+ : func=FUNCTION '(' param=IDENTIFIER ')'
  ;
 
 GATE
@@ -101,6 +101,14 @@ fragment CCXGATE  : 'ccx';
 fragment ZGATE  : 'z';
 fragment YGATE  : 'y';
 fragment HGATE  : 'h';
+
+FUNCTION
+ : SIZEOF
+ ;
+
+fragment SIZEOF : 'sizeof';
+
+RANGE : 'range';
 
 IF     : 'qif';
 ELSE   : 'else';
