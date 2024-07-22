@@ -21,6 +21,18 @@ namespace LUIECompiler.SemanticAnalysis
         /// </summary>
         public ErrorHandler Error { get; init; } = new();
 
+        
+        public override void EnterMainblock([NotNull] LuieParser.MainblockContext context)
+        {
+            Table.PushScope();
+        }
+
+        public override void ExitMainblock([NotNull] LuieParser.MainblockContext context)
+        {
+            // Technically not needed, just for completeness.
+            Table.PopScope();
+        }
+
         public override void EnterBlock([NotNull] LuieParser.BlockContext context)
         {
             Table.PushScope();

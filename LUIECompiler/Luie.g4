@@ -5,7 +5,7 @@ parse
  ;
 
 mainblock
- : gateDeclaration* block
+ : gateDeclaration* (declaration | statement)*
  ;
 
 block

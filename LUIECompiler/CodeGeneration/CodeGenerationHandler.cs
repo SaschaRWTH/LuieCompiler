@@ -66,17 +66,28 @@ namespace LUIECompiler.CodeGeneration
         public void PushCodeBlock()
         {
             Table.PushScope();
-            if (CodeBlocks.Count == 0)
+            CodeBlocks.Push(new()
             {
-                CodeBlocks.Push(MainBlock);
-            }
-            else
+                Parent = CurrentBlock,
+            });   
+        }
+
+        /// <summary>
+        /// Pushes the main code block onto the stack.
+        /// </summary>
+        /// <exception cref="InternalException"></exception>
+        public void PushMainCodeBlock()
+        {
+            if(CodeBlocks.Count > 0)
             {
-                CodeBlocks.Push(new()
+                throw new InternalException()
                 {
-                    Parent = CurrentBlock,
-                });
+                    Reason = "Tried to push main code block onto non-empty stack.",
+                };
             }
+
+            Table.PushScope();
+            CodeBlocks.Push(MainBlock);
         }
 
         /// <summary>
@@ -86,11 +97,11 @@ namespace LUIECompiler.CodeGeneration
         /// <exception cref="InternalException"></exception>
         public CodeBlock PopCodeBlock()
         {
-            if (CodeBlocks.Count <= 0)
+            if (CodeBlocks.Count <= 1)
             {
                 throw new InternalException()
                 {
-                    Reason = "Tried to pop empty code block stack.",
+                    Reason = "Tried to pop main code block from stack.",
                 };
             }
 

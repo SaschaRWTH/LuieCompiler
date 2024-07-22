@@ -96,7 +96,7 @@ public class ScopeTest
     {
         CodeGenerationHandler handler = new();
 
-        handler.PushCodeBlock();
+        handler.PushMainCodeBlock();
         Qubit firstA = new Qubit("A", new(1, 1));
         handler.AddRegister(firstA, new(1, 1));
 

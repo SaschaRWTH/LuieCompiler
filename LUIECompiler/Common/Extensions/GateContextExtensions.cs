@@ -25,7 +25,7 @@ namespace LUIECompiler.Common.Extensions
                 };
             }
 
-            return new CustomGate(compositeGate);
+            return new DefinedGate(compositeGate);
         }
 
         private static Gate FromString(string gate)

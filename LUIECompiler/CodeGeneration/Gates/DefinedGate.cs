@@ -3,11 +3,11 @@ using LUIECompiler.Common.Symbols;
 
 namespace LUIECompiler.CodeGeneration.Gates
 {
-    public class CustomGate : Gate
+    public class DefinedGate : Gate
     {
         public CompositeGate CompositeGate { get; init; }
 
-        public CustomGate(CompositeGate compositeGate)
+        public DefinedGate(CompositeGate compositeGate)
         {
             CompositeGate = compositeGate;
             NumberOfArguments = CompositeGate.Parameters.Count;

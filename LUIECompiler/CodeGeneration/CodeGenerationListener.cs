@@ -62,6 +62,12 @@ namespace LUIECompiler.CodeGeneration
             CodeGen.PopGuard();
         }
 
+        
+        public override void EnterMainblock([NotNull] LuieParser.MainblockContext context)
+        {
+            CodeGen.PushMainCodeBlock();
+        }
+
         public override void EnterBlock([NotNull] LuieParser.BlockContext context)
         {
             CodeGen.PushCodeBlock();
