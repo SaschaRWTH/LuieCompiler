@@ -53,6 +53,20 @@ namespace LUIECompilerTests.SemanticAnalysis
             "qubit c;\n" +
             "x swap;";
 
+        public const string GateUseInGateDefinition =
+            "gate swap(a, b) do\n" +
+            "    cx a, b;\n" +
+            "    cx b, a;\n" +
+            "    cx a, b;\n" +
+            "gate swap1(a, b) do\n" +
+            "    swap a, b;\n" +
+            "end\n" +
+            "\n" +
+            "qubit b;\n" +
+            "qubit c;\n" +
+            "x c;\n" +
+            "swap b, c;";
+
         [TestMethod]
         public void SimpleGateDefinitionTest()
         {
@@ -121,6 +135,19 @@ namespace LUIECompilerTests.SemanticAnalysis
             Assert.IsTrue(error.CriticalErrors.Exists(e => e.ErrorContext.Line == 7));
             // TODO: "A critical Error occured at (9, 0)" occures twice
             Assert.IsTrue(error.CriticalErrors.Exists(e => e.ErrorContext.Line == 9));
+        }
+
+
+        [TestMethod]
+        public void GateUseInGateDefinitionTest()
+        {
+            var walker = Utils.GetWalker();
+            var parser = Utils.GetParser(GateUseInGateDefinition);
+            var analysis = new TypeCheckListener();
+            walker.Walk(analysis, parser.parse());
+            var error = analysis.Error;
+
+            Assert.IsFalse(error.ContainsCriticalError);
         }
     }
 }
