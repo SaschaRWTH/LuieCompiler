@@ -1,7 +1,6 @@
 using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Tree;
-using LUIECompiler.CodeGeneration.Exceptions;
 using LUIECompiler.Common;
 using LUIECompiler.Common.Errors;
 using LUIECompiler.Common.Extensions;
@@ -31,7 +30,7 @@ namespace LUIECompiler.SemanticAnalysis
             Table.PopScope();
         }
 
-        public override void ExitDeclaration([NotNull] LuieParser.DeclarationContext context)
+        public override void ExitRegisterDeclaration([NotNull] LuieParser.RegisterDeclarationContext context)
         {
             ITerminalNode id = context.IDENTIFIER();
             string identifier = id.GetText();
@@ -44,8 +43,6 @@ namespace LUIECompiler.SemanticAnalysis
                 Qubit info = new(identifier, new ErrorContext(context));
                 Table.AddSymbol(info);
             }
-
-            base.ExitDeclaration(context);
         }
 
         public override void ExitStatement([NotNull] LuieParser.StatementContext context)

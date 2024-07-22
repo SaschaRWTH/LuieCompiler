@@ -9,9 +9,18 @@ block
  ;
 
 declaration
+ : registerDeclaration
+ | gateDeclaration
+ ;
+
+registerDeclaration
  : 'qubit' ('[' size=expression ']')? IDENTIFIER ';'
  ;
- 
+
+gateDeclaration
+ : 'gate' IDENTIFIER '(' parameter ')' DO block END
+ ;
+
 statement
  : gateapplication
  | qifStatement 

@@ -22,7 +22,7 @@ namespace LUIECompiler.CodeGeneration
         /// </summary>
         private CodeBlock? _lastPoped = null;
 
-        public override void ExitDeclaration([NotNull] LuieParser.DeclarationContext context)
+        public override void ExitRegisterDeclaration([NotNull] LuieParser.RegisterDeclarationContext context)
         {
             Register register = context.GetRegister();
             CodeGen.AddRegister(register, new ErrorContext(context.Start));
