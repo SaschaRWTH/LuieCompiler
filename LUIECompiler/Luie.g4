@@ -36,7 +36,12 @@ statement
  ;
  
 gateapplication
- : GATE register (',' register)* ';'
+ : gate register (',' register)* ';'
+ ;
+
+gate 
+ : type=GATE
+ | identifier=IDENTIFIER
  ;
 
 qifStatement

@@ -2,6 +2,7 @@ using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Tree;
 using LUIECompiler.CodeGeneration;
+using LUIECompiler.CodeGeneration.Exceptions;
 using LUIECompiler.Common;
 using LUIECompiler.Common.Errors;
 using LUIECompiler.Common.Extensions;
@@ -102,9 +103,9 @@ namespace LUIECompiler.SemanticAnalysis
         }
 
         public override void EnterGateDeclaration([NotNull] LuieParser.GateDeclarationContext context)
-        { 
+        {
             Table.PushScope();
-            foreach(Parameter param in context.GetParameters())
+            foreach (Parameter param in context.GetParameters())
             {
                 Table.AddSymbol(param);
             }
@@ -113,14 +114,30 @@ namespace LUIECompiler.SemanticAnalysis
         public override void ExitGateDeclaration([NotNull] LuieParser.GateDeclarationContext context)
         {
             Table.PopScope();
-            
+
             // Create emtpy block for declaration analysis
             CodeBlock block = new()
             {
                 Parent = null
             };
-            CompositeGate gate = new(context.identifier.Text, block, new ErrorContext(context)); 
-            Table.AddSymbol(gate);	
+            CompositeGate gate = new(context.identifier.Text, block, new ErrorContext(context));
+            Table.AddSymbol(gate);
+        }
+
+        public override void ExitGate([NotNull] LuieParser.GateContext context)
+        {
+            if (context.type is not null)
+            {
+                return;
+
+            }
+
+            string? identifier = (context.identifier?.Text) ?? throw new InternalException()
+                {
+                    Reason = "Gate did have neither a type nor an identifier."
+                };
+
+            CheckDefinedness(identifier, context);
         }
 
         /// <summary>
