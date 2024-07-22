@@ -1,6 +1,7 @@
 using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Tree;
+using LUIECompiler.CodeGeneration;
 using LUIECompiler.Common;
 using LUIECompiler.Common.Errors;
 using LUIECompiler.Common.Extensions;
@@ -64,33 +65,33 @@ namespace LUIECompiler.SemanticAnalysis
             string identifier = context.register().GetIdentifier();
             CheckDefinedness(identifier, context);
         }
-        
+
         public override void EnterForstatement([NotNull] LuieParser.ForstatementContext context)
         {
 
             string identifier = context.IDENTIFIER().GetText();
-            
 
-            if(Table.IsDefined(identifier))
+
+            if (Table.IsDefined(identifier))
             {
                 Error.Report(new RedefineError(new ErrorContext(context.Start), identifier));
                 return;
             }
-            
+
             LuieParser.RangeContext range = context.range();
             LoopIterator loop = range.GetRange(identifier);
-         
+
             Table.AddSymbol(loop);
         }
 
         public override void ExitFactor([NotNull] LuieParser.FactorContext context)
         {
-            if(context.identifier?.Text is not string identifier)
+            if (context.identifier?.Text is not string identifier)
             {
                 return;
             }
-            
-            CheckDefinedness(identifier, context);    
+
+            CheckDefinedness(identifier, context);
             base.ExitFactor(context);
         }
 
@@ -98,6 +99,28 @@ namespace LUIECompiler.SemanticAnalysis
         {
             string identifier = context.param.Text;
             CheckDefinedness(identifier, context);
+        }
+
+        public override void EnterGateDeclaration([NotNull] LuieParser.GateDeclarationContext context)
+        { 
+            Table.PushScope();
+            foreach(Parameter param in context.GetParameters())
+            {
+                Table.AddSymbol(param);
+            }
+        }
+
+        public override void ExitGateDeclaration([NotNull] LuieParser.GateDeclarationContext context)
+        {
+            Table.PopScope();
+            
+            // Create emtpy block for declaration analysis
+            CodeBlock block = new()
+            {
+                Parent = null
+            };
+            CompositeGate gate = new(context.identifier.Text, block, new ErrorContext(context)); 
+            Table.AddSymbol(gate);	
         }
 
         /// <summary>

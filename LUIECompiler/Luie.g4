@@ -1,7 +1,11 @@
 grammar Luie;
 
 parse
- : block EOF
+ : mainblock EOF
+ ;
+
+mainblock
+ : gateDeclaration* block
  ;
 
 block
@@ -10,7 +14,6 @@ block
 
 declaration
  : registerDeclaration
- | gateDeclaration
  ;
 
 registerDeclaration
@@ -18,7 +21,11 @@ registerDeclaration
  ;
 
 gateDeclaration
- : 'gate' IDENTIFIER '(' parameter ')' DO block END
+ : 'gate' identifier=IDENTIFIER '(' param=gateParameter? ')' DO block END
+ ;
+
+gateParameter 
+ : IDENTIFIER (',' IDENTIFIER)*
  ;
 
 statement
