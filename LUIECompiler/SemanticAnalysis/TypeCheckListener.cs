@@ -254,7 +254,7 @@ namespace LUIECompiler.SemanticAnalysis
             {
                 Parent = null
             };
-            CompositeGate gate = new(context.identifier.Text, block, new ErrorContext(context));
+            CompositeGate gate = new(context.identifier.Text, block, context.GetParameters(), new ErrorContext(context));
             Table.AddSymbol(gate);
         }
     }

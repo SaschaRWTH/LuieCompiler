@@ -10,7 +10,6 @@ namespace LUIECompiler.Common.Extensions
             {
                 return [];
             }
-            
             return gateParameterContext.GetParameters();
         }
     }
