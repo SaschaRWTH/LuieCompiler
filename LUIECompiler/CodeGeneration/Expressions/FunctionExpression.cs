@@ -43,22 +43,14 @@ namespace LUIECompiler.CodeGeneration.Expressions
                 };
             }
 
-            if (typeof(T) != typeof(int))
-            {
-                throw new InternalException()
-                {
-                    Reason = "SizeOf function can currently only be used with int type.",
-                };
-            }
-
             // This is a bad solution, but I can not think of a better one right now.
             List<Constant<int>> intConstants = new();
             foreach (var constant in constants)
             {
-                intConstants.Add(new Constant<int>(constant.Identifier, (int) (object) constant.Value, constant.ErrorContext));
+                intConstants.Add(new Constant<int>(constant.Identifier, int.CreateChecked(constant.Value), constant.ErrorContext));
             }
 
-            return (T) (object) register.Size.Evaluate(intConstants, codeBlock);
+            return T.CreateChecked(register.Size.Evaluate(intConstants, codeBlock));
         }
     }
 
