@@ -25,18 +25,49 @@ namespace LUIECompiler.CodeGeneration
         public override void ExitRegisterDeclaration([NotNull] LuieParser.RegisterDeclarationContext context)
         {
             Register register = context.GetRegister();
-            CodeGen.AddRegister(register, new ErrorContext(context.Start));
+            CodeGen.AddRegister(register, new ErrorContext(context));
         }
 
         public override void ExitGateapplication([NotNull] LuieParser.GateapplicationContext context)
         {
-            List<Qubit> parameters = context.GetParameters(CodeGen.Table);
+            List<Symbol> parameters = context.GetParameters(CodeGen.Table);
             Gate gate = context.gate().GetGate(CodeGen.Table);
+
+            if (gate is DefinedGate definedGate)
+            {
+                CreateCompositeGate(definedGate, parameters, new ErrorContext(context));
+            }
+            else
+            {
+                CreatePredefinedGate(gate, parameters, new ErrorContext(context));
+            }
+        }
+
+        /// <summary>
+        /// Creates a predefined gate application statement.
+        /// </summary>
+        /// <param name="gate"></param>
+        /// <param name="parameters"></param>
+        /// <param name="errorContext"></param>
+        /// <exception cref="CodeGenerationException"></exception>
+        private void CreatePredefinedGate(Gate gate, List<Symbol> parameters, ErrorContext errorContext)
+        {
+            foreach(Register parameter in parameters)
+            {
+                if (parameter is not Qubit)
+                {
+                    throw new CodeGenerationException()
+                    {
+                        Error = new TypeError(errorContext, parameter.Identifier, typeof(Qubit), parameter.GetType()),
+                    };
+                }
+            }
+
             if (parameters.Count != gate.NumberOfArguments)
             {
                 throw new CodeGenerationException()
                 {
-                    Error = new InvalidArguments(new ErrorContext(context.Start), gate, parameters.Count),
+                    Error = new InvalidArguments(errorContext, gate, parameters.Count),
                 };
             }
 
@@ -45,7 +76,25 @@ namespace LUIECompiler.CodeGeneration
                 Gate = gate,
                 Parameters = parameters,
                 ParentBlock = CodeGen.CurrentBlock,
-                ErrorContext = new ErrorContext(context.Start),
+                ErrorContext = errorContext,
+            };
+
+            CodeGen.AddStatement(statement);
+        }
+
+        /// <summary>
+        /// Creates a composite gate application statement.
+        /// </summary>
+        /// <param name="gate"></param>
+        /// <param name="parameters"></param>
+        private void CreateCompositeGate(DefinedGate gate, List<Symbol> parameters, ErrorContext errorContext)
+        {
+            CompositeGateStatement statement = new()
+            {
+                Gate = gate,
+                Parameters = parameters.ToDictionary(parameter => gate.CompositeGate.Parameters[parameters.IndexOf(parameter)]),
+                ParentBlock = CodeGen.CurrentBlock,
+                ErrorContext = errorContext,
             };
 
             CodeGen.AddStatement(statement);
@@ -62,7 +111,7 @@ namespace LUIECompiler.CodeGeneration
             CodeGen.PopGuard();
         }
 
-        
+
         public override void EnterMainblock([NotNull] LuieParser.MainblockContext context)
         {
             CodeGen.PushMainCodeBlock();

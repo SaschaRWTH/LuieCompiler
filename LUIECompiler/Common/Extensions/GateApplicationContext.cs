@@ -13,7 +13,7 @@ namespace LUIECompiler.Common.Extensions
         /// <param name="context"></param>
         /// <param name="table"></param>
         /// <returns></returns>
-        public static List<Qubit> GetParameters(this LuieParser.GateapplicationContext context, SymbolTable table)
+        public static List<Symbol> GetParameters(this LuieParser.GateapplicationContext context, SymbolTable table)
         {
             var registers = context.register();
             return registers.Select(register => SingleParameter(register, table)).ToList();
@@ -26,7 +26,7 @@ namespace LUIECompiler.Common.Extensions
         /// <param name="table"></param>
         /// <returns></returns>
         /// <exception cref="CodeGenerationException"></exception>
-        private static Qubit SingleParameter(LuieParser.RegisterContext context, SymbolTable table)
+        private static Symbol SingleParameter(LuieParser.RegisterContext context, SymbolTable table)
         {
             string identifier = context.GetIdentifier();
 
@@ -34,6 +34,11 @@ namespace LUIECompiler.Common.Extensions
             {
                 Error = new UndefinedError(new ErrorContext(context.Start), identifier),
             };
+
+            if (symbol is Parameter parameter)
+            {
+                return parameter;
+            }
 
             if (symbol is not Register register)
             {
@@ -48,16 +53,21 @@ namespace LUIECompiler.Common.Extensions
                 return qubit;
             }
 
+            if (context.index is null)
+            {
+                return register;
+            }
+
             if (!context.TryGetIndexExpression(out Expression<int> index))
             {
-                throw new CodeGenerationException()
+                throw new InternalException()
                 {
-                    Error = new TypeError(new ErrorContext(context.Start), identifier, typeof(Qubit), symbol.GetType()),
+                    Reason = $"Could not get index expression for register {register.Identifier}.",
                 };
             }
 
             List<string> undefined = index.UndefinedIdentifiers(table);
-            if(undefined.Count > 0)
+            if (undefined.Count > 0)
             {
                 throw new CodeGenerationException()
                 {
