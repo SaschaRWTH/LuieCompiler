@@ -45,6 +45,11 @@ namespace LUIECompiler.CodeGeneration.Statements
         /// <exception cref="InternalException"></exception>
         protected QubitCode TranslateQubit([NotNull] Symbol symbol, CodeGenerationContext context)
         {
+            if(symbol is Parameter parameter)
+            {
+                symbol = context.GetSymbol(parameter);
+            }
+
             Qubit qubit = symbol as Qubit ?? throw new CodeGenerationException()
             {
                 Error = new TypeError(ErrorContext, symbol.Identifier, typeof(Qubit), symbol.GetType())
@@ -58,6 +63,7 @@ namespace LUIECompiler.CodeGeneration.Statements
 
             return qubit.ToQASMCode(definition, context, ErrorContext);
         } 
+
     }
 
 }

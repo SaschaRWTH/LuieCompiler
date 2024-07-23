@@ -11,10 +11,16 @@ namespace LUIECompiler
         {
 
             string input =
-        "qubit[5] a;\n" +
-        "for i in range(sizeof(a)) do\n" +
-        "    h a[i];\n" +
-        "end\n";
+            "gate swap(a, b) do\n" +
+            "    cx a, b;\n" +
+            "    cx b, a;\n" +
+            "    cx a, b;\n" +
+            "end\n" +
+            "\n" +
+            "qubit b;\n" +
+            "qubit c;\n" +
+            "x c;\n" +
+            "swap b, c;";
 
             try
             {

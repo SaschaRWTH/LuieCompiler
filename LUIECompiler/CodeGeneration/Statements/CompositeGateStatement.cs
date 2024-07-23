@@ -21,8 +21,17 @@ namespace LUIECompiler.CodeGeneration.Statements {
         /// <returns></returns>
         public override QASMProgram ToQASM(CodeGenerationContext context)
         {
-
-            throw new NotImplementedException();
+            Dictionary<Parameter, Symbol> parameterMap = context.ParameterMap;
+            foreach(var parameter in Parameters)
+            {
+                parameterMap[parameter.Key] = parameter.Value;
+            }
+            CodeGenerationContext bodyContext = new CodeGenerationContext(context.IntegerConstants, parameterMap){
+                CurrentBlock = context.CurrentBlock,
+                SymbolTable = context.SymbolTable,
+            };
+            
+            return Gate.CompositeGate.Body.ToQASM(bodyContext);
         }
     }
 }

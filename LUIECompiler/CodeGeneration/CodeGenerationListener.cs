@@ -182,6 +182,28 @@ namespace LUIECompiler.CodeGeneration
             CodeGen.AddStatement(statement);
         }
 
+        public override void EnterGateDeclaration([NotNull] LuieParser.GateDeclarationContext context)
+        {
+            CodeGen.Table.PushScope();
+            foreach (Parameter param in context.GetParameters())
+            {
+                CodeGen.AddParameter(param, new(context));
+            }
+        }
+
+        public override void ExitGateDeclaration([NotNull] LuieParser.GateDeclarationContext context)
+        {
+            CodeGen.Table.PopScope();
+
+            // Create emtpy block for declaration analysis
+            CodeBlock block = _lastPoped ?? throw new InternalException()
+            {
+                Reason = "There was no last poped code block, although block should just have been exited."
+            };
+            CompositeGate gate = new(context.identifier.Text, block, context.GetParameters(), new ErrorContext(context));
+            CodeGen.AddCompositeGate(gate, new(context));
+        }
+
     }
 
 }
