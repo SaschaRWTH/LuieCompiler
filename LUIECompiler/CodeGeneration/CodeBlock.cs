@@ -49,6 +49,7 @@ namespace LUIECompiler.CodeGeneration
         {
             context.CurrentBlock = this;
             QASMProgram code = new();
+
             foreach (var statement in Translateables)
             {
                 if(statement is Definition definition)
@@ -116,6 +117,7 @@ namespace LUIECompiler.CodeGeneration
             {
                 throw new CodeGenerationException()
                 {
+                    // TODO: Fix this error context.
                     Error = new UndefinedError(new ErrorContext(), identifier),
                 };
             }

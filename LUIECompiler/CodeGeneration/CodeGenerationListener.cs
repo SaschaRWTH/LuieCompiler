@@ -2,7 +2,6 @@
 using Antlr4.Runtime.Misc;
 using LUIECompiler.CodeGeneration.Gates;
 using LUIECompiler.CodeGeneration.Exceptions;
-using LUIECompiler.CodeGeneration.Expressions;
 using LUIECompiler.CodeGeneration.Statements;
 using LUIECompiler.Common.Errors;
 using LUIECompiler.Common.Extensions;
@@ -33,6 +32,7 @@ namespace LUIECompiler.CodeGeneration
             List<Symbol> parameters = context.GetParameters(CodeGen.Table);
             Gate gate = context.gate().GetGate(CodeGen.Table);
 
+            
             if (gate is DefinedGate definedGate)
             {
                 CreateCompositeGate(definedGate, parameters, new ErrorContext(context));

@@ -34,7 +34,7 @@ namespace LUIECompiler.CodeGeneration.Statements
 
                 Constant<int> constant = new Constant<int>(Iterator.Identifier, i, ErrorContext);
 
-                program += block.ToQASM(new([.. context.IntegerConstants, constant])
+                program += block.ToQASM(new([.. context.IntegerConstants, constant], context.ParameterMap)
                 {
                     SymbolTable = context.SymbolTable,
                     CurrentBlock = Body,

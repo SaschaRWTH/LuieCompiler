@@ -66,6 +66,20 @@ public class CompositeGateTest
         "x c;\n" +
         "paws b, c;";
 
+    public const string SimpleForLoopGate =   
+        "gate hTwice(reg) do\n" +
+        "    for i in 0..1 do\n" +
+        "        h reg;\n" +
+        "    end\n" +
+        "end\n" +
+        "qubit b;\n" +
+        "hTwice b;";
+        
+    public const string SimpleForLoopGateTranslation = 
+        "qubit id0;\n" +
+        "h id0;\n" +
+        "h id0;\n";
+
     /// <summary>
     /// Tests the code generation for the simple input.
     /// </summary>
@@ -116,5 +130,23 @@ public class CompositeGateTest
         var exception = Assert.ThrowsException<CodeGenerationException>(() => walker.Walk(codegen, parser.parse()));
 
         Assert.IsTrue(exception.Error is UndefinedError error && error.Identifier[0] == "paws");
+    }
+
+    /// <summary>
+    /// Tests the code generation for a simple for loop inside a gate definition.
+    /// </summary>
+    [TestMethod]
+    public void SimpleForLoopGateTest()
+    {
+        var walker = Utils.GetWalker();
+        var parser = Utils.GetParser(SimpleForLoopGate);
+
+        var codegen = new CodeGenerationListener();
+        walker.Walk(codegen, parser.parse());
+
+        string? code = codegen.CodeGen.GenerateCode()?.ToString();
+        Assert.IsNotNull(code);
+
+        Assert.AreEqual(SimpleForLoopGateTranslation, code);
     }
 }
