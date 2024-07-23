@@ -3,8 +3,8 @@ using LUIECompiler.SemanticAnalysis;
 namespace LUIECompilerTests.SemanticAnalysis
 {
     
-    [TestClass, TestCategory("SemanticAnalysis"), TestCategory("GateDefinition")]
-    public class GateDefinitionTest
+    [TestClass, TestCategory("SemanticAnalysis"), TestCategory("CompositeGate")]
+    public class CompositeGateTest
     {
         public const string SimpleGateDefinition =
             "gate swap(a, b) do\n" +
