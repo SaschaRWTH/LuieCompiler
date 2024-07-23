@@ -193,6 +193,7 @@ namespace LUIECompiler.CodeGeneration
 
         public override void ExitGateDeclaration([NotNull] LuieParser.GateDeclarationContext context)
         {
+            List<Parameter> parameters = CodeGen.Table.GetParameters();
             CodeGen.Table.PopScope();
 
             // Create emtpy block for declaration analysis
@@ -200,7 +201,7 @@ namespace LUIECompiler.CodeGeneration
             {
                 Reason = "There was no last poped code block, although block should just have been exited."
             };
-            CompositeGate gate = new(context.identifier.Text, block, context.GetParameters(), new ErrorContext(context));
+            CompositeGate gate = new(context.identifier.Text, block, parameters, new ErrorContext(context));
             CodeGen.AddCompositeGate(gate, new(context));
         }
 
