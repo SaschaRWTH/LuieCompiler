@@ -18,8 +18,8 @@ namespace LUIECompiler.CodeGeneration.Statements
         public override QASMProgram ToQASM(CodeGenerationContext context)
         {
             QASMProgram program = new();
-            int start = Iterator.Start.Evaluate(context.IntegerConstants, ParentBlock);
-            int end = Iterator.End.Evaluate(context.IntegerConstants, ParentBlock);
+            int start = Iterator.Start.Evaluate(context);
+            int end = Iterator.End.Evaluate(context);
             for (int i = start; i <= end; i++)
             {
                 if (context.IntegerConstants.Exists(c => c.Identifier == Iterator.Identifier))

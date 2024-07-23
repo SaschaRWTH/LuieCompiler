@@ -13,16 +13,16 @@ namespace LUIECompiler.CodeGeneration.Expressions
 
     public static class FunctionTypeExtension
     {
-        public static Func<List<string>, List<Constant<T>>, CodeBlock, T> GetFunction<T>(this FunctionType function) where T : INumber<T>
+        public static Func<List<string>, CodeGenerationContext, T> GetFunction<T>(this FunctionType function) where T : INumber<T>
         {
             return function switch
             {
-                FunctionType.SizeOf => SizeOf,
+                FunctionType.SizeOf => SizeOf<T>,
                 _ => throw new NotImplementedException(),
             };
         }
 
-        private static T SizeOf<T>(List<string> parameters, List<Constant<T>> constants, CodeBlock codeBlock) where T : INumber<T>
+        private static T SizeOf<T>(List<string> parameters, CodeGenerationContext context) where T : INumber<T>
         {
             if (parameters.Count != 1)
             {
@@ -34,7 +34,7 @@ namespace LUIECompiler.CodeGeneration.Expressions
 
             string identifier = parameters[0];
 
-            Symbol parameter = codeBlock.GetSymbol(identifier);
+            Symbol parameter = context.CurrentBlock.GetSymbol(identifier);
             if (parameter is not Register register)
             {
                 throw new CodeGenerationException()
@@ -45,12 +45,12 @@ namespace LUIECompiler.CodeGeneration.Expressions
 
             // This is a bad solution, but I can not think of a better one right now.
             List<Constant<int>> intConstants = new();
-            foreach (var constant in constants)
+            foreach (var constant in context.IntegerConstants)
             {
                 intConstants.Add(new Constant<int>(constant.Identifier, int.CreateChecked(constant.Value), constant.ErrorContext));
             }
 
-            return T.CreateChecked(register.Size.Evaluate(intConstants, codeBlock));
+            return T.CreateChecked(register.Size.Evaluate(context));
         }
     }
 
@@ -60,9 +60,9 @@ namespace LUIECompiler.CodeGeneration.Expressions
 
         public required List<string> Parameter { get; init; }
 
-        public override T Evaluate(List<Constant<T>> constants, CodeBlock codeBlock)
+        public override T Evaluate(CodeGenerationContext context)
         {
-            return Type.GetFunction<T>()(Parameter, constants, codeBlock);
+            return Type.GetFunction<T>()(Parameter, context);
         }
 
         public override List<string> UndefinedIdentifiers(SymbolTable table)

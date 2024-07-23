@@ -20,10 +20,10 @@ namespace LUIECompiler.CodeGeneration.Expressions
             return undefined;
         }
 
-        public override T Evaluate(List<Constant<T>> constants, CodeBlock codeBlock)
+        public override T Evaluate(CodeGenerationContext context)
         {
             // Find the constant with the given identifier
-            var constant = constants.Find(constant => constant.Identifier == Identifier);
+            var constant = context.IntegerConstants.Find(constant => constant.Identifier == Identifier);
             if (constant == null)
             {
                 throw new InternalException()
@@ -31,7 +31,7 @@ namespace LUIECompiler.CodeGeneration.Expressions
                     Reason = $"Constant with identifier {Identifier} not found.",
                 };
             }
-            return constant.Value;
+            return T.CreateChecked(constant.Value);
         }
     }
 }
