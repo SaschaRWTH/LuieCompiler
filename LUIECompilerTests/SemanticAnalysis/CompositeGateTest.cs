@@ -58,6 +58,7 @@ namespace LUIECompilerTests.SemanticAnalysis
             "    cx a, b;\n" +
             "    cx b, a;\n" +
             "    cx a, b;\n" +
+            "end\n" +
             "gate swap1(a, b) do\n" +
             "    swap a, b;\n" +
             "end\n" +
