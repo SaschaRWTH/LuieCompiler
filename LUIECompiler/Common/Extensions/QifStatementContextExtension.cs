@@ -14,13 +14,18 @@ namespace LUIECompiler.Common.Extensions
         /// <param name="table"></param>
         /// <returns></returns>
         /// <exception cref="CodeGenerationException"></exception>
-        public static Qubit GetGuard(this LuieParser.QifStatementContext context, SymbolTable table)
+        public static Symbol GetGuard(this LuieParser.QifStatementContext context, SymbolTable table)
         {
             string identifier = context.register().GetIdentifier();
             Symbol symbol = table.GetSymbolInfo(identifier) ?? throw new CodeGenerationException()
             {
                 Error = new UndefinedError(new ErrorContext(context.Start), identifier),
             };
+
+            if(symbol is Parameter parameter)
+            {
+                return parameter;
+            }
 
             if (symbol is not Register register)
             {

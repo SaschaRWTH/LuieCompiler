@@ -26,7 +26,7 @@ namespace LUIECompiler.CodeGeneration
         /// <summary>
         /// Stack of the registers guarding the if-clauses.
         /// </summary>
-        public Stack<Qubit> GuardStack { get; } = [];
+        public Stack<Symbol> GuardStack { get; } = [];
 
         /// <summary>
         ///  Main code block of the program.
@@ -51,7 +51,7 @@ namespace LUIECompiler.CodeGeneration
         /// <summary>
         /// Gets guard of the current if statement.
         /// </summary>
-        public Qubit CurrentGuard
+        public Symbol CurrentGuard
         {
             get => GuardStack.Peek()
                 ?? throw new InternalException()
@@ -122,7 +122,7 @@ namespace LUIECompiler.CodeGeneration
         /// Pushes a given <paramref name="info"/> onto the guard stack.
         /// </summary>
         /// <param name="info"></param>
-        public void PushGuard([NotNull] Qubit info)
+        public void PushGuard([NotNull] Symbol info)
         {
             GuardStack.Push(info);
         }
@@ -131,7 +131,7 @@ namespace LUIECompiler.CodeGeneration
         /// Pops the current guard stack.
         /// </summary>
         /// <returns></returns>
-        public Qubit PopGuard()
+        public Symbol PopGuard()
         {
             return GuardStack.Pop();
         }

@@ -52,17 +52,6 @@ namespace LUIECompiler.CodeGeneration
         /// <exception cref="CodeGenerationException"></exception>
         private void CreatePredefinedGate(Gate gate, List<Symbol> parameters, ErrorContext errorContext)
         {
-            foreach(Register parameter in parameters)
-            {
-                if (parameter is not Qubit)
-                {
-                    throw new CodeGenerationException()
-                    {
-                        Error = new TypeError(errorContext, parameter.Identifier, typeof(Qubit), parameter.GetType()),
-                    };
-                }
-            }
-
             if (parameters.Count != gate.NumberOfArguments)
             {
                 throw new CodeGenerationException()
@@ -102,7 +91,7 @@ namespace LUIECompiler.CodeGeneration
 
         public override void EnterQifStatement([NotNull] LuieParser.QifStatementContext context)
         {
-            Qubit? info = context.GetGuard(CodeGen.Table);
+            Symbol? info = context.GetGuard(CodeGen.Table);
             CodeGen.PushGuard(info);
         }
 
