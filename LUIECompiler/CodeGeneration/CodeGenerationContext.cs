@@ -43,23 +43,5 @@ namespace LUIECompiler.CodeGeneration
         }
 
 
-        public Symbol GetSymbol(Parameter parameter)
-        {
-            if (!ParameterMap.TryGetValue(parameter, out Symbol? symbol))
-            {
-                throw new CodeGenerationException()
-                {
-                    Error = new UndefinedError(parameter.ErrorContext, parameter.Identifier),
-                };
-            }
-
-            // TODO: Is a cycle possible? E.g. a -> b, b -> a
-            if (symbol is Parameter parameter1)
-            {
-                return GetSymbol(parameter1);
-            }
-
-            return symbol;
-        }
     }
 }

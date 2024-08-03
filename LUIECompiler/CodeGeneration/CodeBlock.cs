@@ -175,7 +175,7 @@ namespace LUIECompiler.CodeGeneration
                 return null;
             }
 
-            return context.GetSymbol(parameter);
+            return parameter.ToRegister(context);
         }
 
         /// <summary>

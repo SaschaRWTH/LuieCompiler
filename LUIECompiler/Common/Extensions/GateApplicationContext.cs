@@ -16,7 +16,7 @@ namespace LUIECompiler.Common.Extensions
         public static List<Symbol> GetParameters(this LuieParser.GateapplicationContext context, SymbolTable table)
         {
             var registers = context.register();
-            return registers.Select(register => SingleParameter(register, table)).ToList();
+            return registers.Select(register => SingleSymbol(register, table)).ToList();
         }
 
         /// <summary>
@@ -26,7 +26,7 @@ namespace LUIECompiler.Common.Extensions
         /// <param name="table"></param>
         /// <returns></returns>
         /// <exception cref="CodeGenerationException"></exception>
-        private static Symbol SingleParameter(LuieParser.RegisterContext context, SymbolTable table)
+        private static Symbol SingleSymbol(LuieParser.RegisterContext context, SymbolTable table)
         {
             string identifier = context.GetIdentifier();
 
@@ -37,7 +37,7 @@ namespace LUIECompiler.Common.Extensions
 
             if (symbol is Parameter parameter)
             {
-                return parameter;
+                return SingleParameter(context, parameter, table);
             }
 
             if (symbol is not Register register)
@@ -48,7 +48,22 @@ namespace LUIECompiler.Common.Extensions
                 };
             }
 
-            if (symbol is Qubit qubit)
+            return SingleRegister(context, register, table);
+        }
+
+        /// <summary>
+        /// Gets the symbol of a single register.
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="register"></param>
+        /// <param name="table"></param>
+        /// <returns></returns>
+        /// <exception cref="InternalException"></exception>
+        /// <exception cref="CodeGenerationException"></exception>
+        private static Register SingleRegister(LuieParser.RegisterContext context, Register register, SymbolTable table)
+        {
+
+            if (register is Qubit qubit)
             {
                 return qubit;
             }
@@ -76,6 +91,23 @@ namespace LUIECompiler.Common.Extensions
             }
 
             return new RegisterAccess(register, index, new ErrorContext(context));
+        }
+
+        /// <summary>
+        /// Gets the symbol of a single parameter.
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="parameter"></param>
+        /// <param name="table"></param>
+        /// <returns></returns>
+        private static Parameter SingleParameter(LuieParser.RegisterContext context, Parameter parameter, SymbolTable table)
+        {
+            if (!context.TryGetIndexExpression(out Expression<int> index))
+            {
+                return parameter;
+            }
+
+            return new ParameterAccess(parameter, index, new ErrorContext(context));
         }
     }
 }

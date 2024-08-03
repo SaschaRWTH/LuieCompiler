@@ -47,7 +47,7 @@ namespace LUIECompiler.CodeGeneration.Statements
         {
             if(symbol is Parameter parameter)
             {
-                symbol = context.GetSymbol(parameter);
+                symbol = parameter.ToRegister(context);
             }
 
             Qubit qubit = symbol as Qubit ?? throw new CodeGenerationException()
