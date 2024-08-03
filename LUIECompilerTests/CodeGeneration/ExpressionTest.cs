@@ -30,6 +30,9 @@ public class ExpressionTest
     public const string ComplexExample = "4 + 360 / ((2 + 4) + 3 * 2)";
     public const int ComplexExampleResult = 34;
 
+    public const string PowerExample = "power(2, 5)";
+    public const int PowerExampleResult = 32;
+
     public const string SizeOfFunctionExpressionInput =
         "qubit[3] a;\n" +
         "qubit[sizeof(a)] b;\n" +
@@ -182,6 +185,7 @@ public class ExpressionTest
 
         Assert.AreEqual(ParanthesesExpressionResult, result);
     }
+
     /// <summary>
     /// Tests order of operations with a basic example.
     /// </summary>
@@ -198,6 +202,24 @@ public class ExpressionTest
         Assert.IsNotNull(result);
 
         Assert.AreEqual(AdditiveInverseExpressionResult, result);
+    }
+
+    /// <summary>
+    /// Tests the power function.
+    /// </summary>
+    [TestMethod]
+    public void PowerTest()
+    {
+        var walker = Utils.GetWalker();
+        var parser = Utils.GetParser(PowerExample);
+
+        var codegen = new ExpressionListener();
+        walker.Walk(codegen, parser.expression());
+
+        int? result = codegen.Result;
+        Assert.IsNotNull(result);
+
+        Assert.AreEqual(PowerExampleResult, result);
     }
 
     /// <summary>

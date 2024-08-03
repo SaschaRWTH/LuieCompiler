@@ -32,16 +32,13 @@ namespace LUIECompiler.CodeGeneration.Expressions
                 };
             }
 
-            Expression<double> @base = Parameters[0] as Expression<double> ?? throw new InternalException()
-            {
-                Reason = "The base parameter is not a double expression.",
-            };
-            Expression<double> exponent = Parameters[0] as Expression<double> ?? throw new InternalException()
-            {
-                Reason = "The exponent parameter is not a double expression.",
-            };
+            Expression<T> baseExp = Parameters[0];
+            Expression<T> exponentExp = Parameters[1];
 
-            return T.CreateChecked(Math.Pow(@base.Evaluate(context), exponent.Evaluate(context)));
+            double baseValue = double.CreateChecked(baseExp.Evaluate(context));
+            double exponent = double.CreateChecked(exponentExp.Evaluate(context));
+
+            return T.CreateChecked(Math.Pow(baseValue, exponent));
         }
 
         public override List<string> UndefinedIdentifiers(SymbolTable table)

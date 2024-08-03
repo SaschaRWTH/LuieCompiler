@@ -3,7 +3,7 @@ gate qft(reg) do
         h reg[i];
         for j in range(sizeof(reg) - (i + 1)) do
             qif reg[j + (i + 1)] do
-                p(1/(2^(j + 1))) reg[i];
+                p(1/(power(2, (j + 1)))) reg[i];
             end
         end
     end
