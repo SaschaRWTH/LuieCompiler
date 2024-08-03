@@ -2,12 +2,11 @@ gate qft(reg) do
     for i in range(sizeof(reg)) do
         h reg[i];
         for j in range(sizeof(reg) - (i + 1)) do
-        // currently issue with parameter reg here
             qif reg[j + (i + 1)] do
                 p(1/(power(2, (j + 1)))) reg[i];
             end
         end
     end
 end
-qubit[3] a;
+qubit[5] a;
 qft a;
