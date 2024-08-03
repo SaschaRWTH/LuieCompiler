@@ -7,14 +7,14 @@ namespace LUIECompiler.Common.Errors
         /// <summary>
         /// Gate with the wrong number of arguments.
         /// </summary>
-        public Gate Gate { get; init; }
+        public IGate Gate { get; init; }
 
         /// <summary>
         /// Given number of arguments.
         /// </summary>
         public int NumberOfArguments { get; init; }
         
-        public InvalidArguments(ErrorContext context, Gate gate, int numberOfArguments)
+        public InvalidArguments(ErrorContext context, IGate gate, int numberOfArguments)
         {
             Type = ErrorType.Critical;
             ErrorContext = context;

@@ -6,7 +6,7 @@ namespace LUIECompiler.CodeGeneration.Codes
     /// <summary>
     /// Class representing the QASM code of a gate application.
     /// </summary>
-    public class GateCode : Code
+    public class GateApplicationCode : Code
     {
         /// <summary>
         /// List of all registers guarding the gate.
@@ -26,7 +26,7 @@ namespace LUIECompiler.CodeGeneration.Codes
         /// <summary>
         /// Gate to be executed
         /// </summary>
-        public required Gate Gate { get; init; }
+        public required GateCode Gate { get; init; }
 
         /// <summary>
         /// List of all gate parameters. 

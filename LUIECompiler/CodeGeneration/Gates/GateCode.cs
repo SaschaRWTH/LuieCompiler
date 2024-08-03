@@ -1,13 +1,10 @@
-
 using LUIECompiler.CodeGeneration.Codes;
 
 namespace LUIECompiler.CodeGeneration.Gates
 {
-    public abstract class PredefinedGate : Gate
+    public abstract class GateCode : Code
     {
-        protected abstract string ToCode();
-
-        public override string GenerateCode(string parameters, List<GuardCode> negativeGuards, List<GuardCode> positiveGuards)
+        public string GenerateCode(string parameters, List<GuardCode> negativeGuards, List<GuardCode> positiveGuards)
         {
             
             if (negativeGuards.Count == 0 && positiveGuards.Count == 0)

@@ -67,7 +67,7 @@ namespace LUIECompiler.CodeGeneration.Codes
 
             foreach (Code line in Code)
             {
-                if (line is not GateCode gate)
+                if (line is not GateApplicationCode gate)
                 {
                     // TODO: Change to shallow copy?
                     code.Code.Add(line);
@@ -80,7 +80,7 @@ namespace LUIECompiler.CodeGeneration.Codes
                     Negated = negated,
                 };
 
-                code.Code.Add(new GateCode()
+                code.Code.Add(new GateApplicationCode()
                 {
                     Guards =
                     [

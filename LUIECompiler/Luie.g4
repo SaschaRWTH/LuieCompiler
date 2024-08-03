@@ -40,7 +40,7 @@ gateapplication
  ;
 
 gate 
- : type=GATE
+ : type=CONSTANTGATE
  | identifier=IDENTIFIER
  ;
 
@@ -98,7 +98,7 @@ function
  : func=FUNCTION '(' param=IDENTIFIER ')'
  ;
 
-GATE
+CONSTANTGATE
  : XGATE
  | CXGATE
  | CCXGATE

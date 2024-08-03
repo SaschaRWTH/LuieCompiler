@@ -1,14 +1,9 @@
 
 namespace LUIECompiler.CodeGeneration.Gates
 {
-    public class ControlledXGate : PredefinedGate
+    public class ControlledXGate : GateCode
     {
-        public ControlledXGate() 
-        { 
-            NumberOfArguments = 2;
-        }
-
-        protected override string ToCode()
+        public override string ToCode()
         {
             return "cx";
         }

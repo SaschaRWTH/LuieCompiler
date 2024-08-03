@@ -128,7 +128,7 @@ namespace LUIECompiler.SemanticAnalysis
                 }
             }
 
-            Gate gate = context.gate().GetGate(Table);
+            IGate gate = context.gate().GetGate(Table);
 
             if (gate.NumberOfArguments != registers.Count)
             {

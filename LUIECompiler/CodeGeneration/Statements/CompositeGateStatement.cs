@@ -8,7 +8,7 @@ namespace LUIECompiler.CodeGeneration.Statements {
         /// <summary>
         /// Gate that is applied in the statement.
         /// </summary>
-        public required DefinedGate Gate { get; init; }
+        public required CompositeGate Gate { get; init; }
 
         /// <summary>
         /// Register to which the gate is applied to.
@@ -31,7 +31,7 @@ namespace LUIECompiler.CodeGeneration.Statements {
                 SymbolTable = context.SymbolTable,
             };
             
-            return Gate.CompositeGate.Body.ToQASM(bodyContext);
+            return Gate.Body.ToQASM(bodyContext);
         }
     }
 }
