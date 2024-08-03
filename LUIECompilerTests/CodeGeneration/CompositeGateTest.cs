@@ -80,6 +80,28 @@ public class CompositeGateTest
         "h id0;\n" +
         "h id0;\n";
 
+    public const string ApplyGateToRegister = 
+        "gate h_reg(reg) do\n" +
+        "    for i in range(sizeof(reg)) do\n" +
+        "        h reg[i];\n" +
+        "    end\n" +
+        "end\n" +
+        "qubit[10] b;\n" +
+        "h_reg b;";
+
+    public const string ApplyGateToRegisterTranslation = 
+        "qubit[10] id0;\n" +
+        "h id0[0];\n" +
+        "h id0[1];\n" +
+        "h id0[2];\n" +
+        "h id0[3];\n" +
+        "h id0[4];\n" +
+        "h id0[5];\n" +
+        "h id0[6];\n" +
+        "h id0[7];\n" +
+        "h id0[8];\n" +
+        "h id0[9];\n";
+
     /// <summary>
     /// Tests the code generation for the simple input.
     /// </summary>
@@ -148,5 +170,23 @@ public class CompositeGateTest
         Assert.IsNotNull(code);
 
         Assert.AreEqual(SimpleForLoopGateTranslation, code);
+    }
+
+    /// <summary>
+    /// Tests the code generation for a simple for loop inside a gate definition.
+    /// </summary>
+    [TestMethod]
+    public void ApplyGateToRegisterTest()
+    {
+        var walker = Utils.GetWalker();
+        var parser = Utils.GetParser(ApplyGateToRegister);
+
+        var codegen = new CodeGenerationListener();
+        walker.Walk(codegen, parser.parse());
+
+        string? code = codegen.CodeGen.GenerateCode()?.ToString();
+        Assert.IsNotNull(code);
+
+        Assert.AreEqual(ApplyGateToRegisterTranslation, code);
     }
 }
