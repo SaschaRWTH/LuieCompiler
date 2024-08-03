@@ -11,10 +11,24 @@ namespace LUIECompiler
         {
 
             string input =
-        "qubit[5] a;\n" +
-        "for i in range(sizeof(a)) do\n" +
-        "    h a[i];\n" +
-        "end\n";
+            "gate cx_reg(control, reg) do\n" +
+            "    qif control do\n" +
+            "        for i in range(sizeof(reg)) do\n" +
+            "            x reg[i];\n" +
+            "        end\n" +
+            "    end\n" +
+            "end\n" +
+            "qubit a;\n" +
+            "qubit[10] b;\n" +
+            "x a;\n" +
+            "cx_reg a, b;";
+            // "gate hReg(reg) do\n" +
+            // "    for i in range(sizeof(reg)) do\n" +
+            // "        h reg[i];\n" +
+            // "    end\n" +
+            // "end\n" +
+            // "qubit[5] b;\n" +
+            // "hReg b;";
 
             try
             {

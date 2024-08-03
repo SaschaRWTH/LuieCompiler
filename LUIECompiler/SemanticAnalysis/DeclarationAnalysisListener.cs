@@ -1,6 +1,7 @@
 using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Tree;
+using LUIECompiler.CodeGeneration;
 using LUIECompiler.CodeGeneration.Exceptions;
 using LUIECompiler.Common;
 using LUIECompiler.Common.Errors;
@@ -21,6 +22,17 @@ namespace LUIECompiler.SemanticAnalysis
         /// </summary>
         public ErrorHandler Error { get; init; } = new();
 
+        public override void EnterMainblock([NotNull] LuieParser.MainblockContext context)
+        {
+            Table.PushScope();
+        }
+
+        public override void ExitMainblock([NotNull] LuieParser.MainblockContext context)
+        {
+            // Technically not needed, just for completeness.
+            Table.PopScope();
+        }
+
         public override void EnterBlock([NotNull] LuieParser.BlockContext context)
         {
             Table.PushScope();
@@ -31,7 +43,7 @@ namespace LUIECompiler.SemanticAnalysis
             Table.PopScope();
         }
 
-        public override void ExitDeclaration([NotNull] LuieParser.DeclarationContext context)
+        public override void ExitRegisterDeclaration([NotNull] LuieParser.RegisterDeclarationContext context)
         {
             ITerminalNode id = context.IDENTIFIER();
             string identifier = id.GetText();
@@ -44,8 +56,6 @@ namespace LUIECompiler.SemanticAnalysis
                 Qubit info = new(identifier, new ErrorContext(context));
                 Table.AddSymbol(info);
             }
-
-            base.ExitDeclaration(context);
         }
 
         public override void ExitStatement([NotNull] LuieParser.StatementContext context)
@@ -67,39 +77,77 @@ namespace LUIECompiler.SemanticAnalysis
             string identifier = context.register().GetIdentifier();
             CheckDefinedness(identifier, context);
         }
-        
+
         public override void EnterForstatement([NotNull] LuieParser.ForstatementContext context)
         {
 
             string identifier = context.IDENTIFIER().GetText();
-            
 
-            if(Table.IsDefined(identifier))
+
+            if (Table.IsDefined(identifier))
             {
                 Error.Report(new RedefineError(new ErrorContext(context.Start), identifier));
                 return;
             }
-            
+
             LuieParser.RangeContext range = context.range();
             LoopIterator loop = range.GetRange(identifier);
-         
+
             Table.AddSymbol(loop);
         }
 
         public override void ExitFactor([NotNull] LuieParser.FactorContext context)
         {
-            if(context.identifier?.Text is not string identifier)
+            if (context.identifier?.Text is not string identifier)
             {
                 return;
             }
-            
-            CheckDefinedness(identifier, context);    
+
+            CheckDefinedness(identifier, context);
             base.ExitFactor(context);
         }
 
         public override void ExitFunction([NotNull] LuieParser.FunctionContext context)
         {
             string identifier = context.param.Text;
+            CheckDefinedness(identifier, context);
+        }
+
+        public override void EnterGateDeclaration([NotNull] LuieParser.GateDeclarationContext context)
+        {
+            Table.PushScope();
+            foreach (Parameter param in context.GetParameters())
+            {
+                Table.AddSymbol(param);
+            }
+        }
+
+        public override void ExitGateDeclaration([NotNull] LuieParser.GateDeclarationContext context)
+        {
+            Table.PopScope();
+
+            // Create emtpy block for declaration analysis
+            CodeBlock block = new()
+            {
+                Parent = null
+            };
+            CompositeGate gate = new(context.identifier.Text, block, context.GetParameters(), new ErrorContext(context));
+            Table.AddSymbol(gate);
+        }
+
+        public override void ExitGate([NotNull] LuieParser.GateContext context)
+        {
+            if (context.type is not null)
+            {
+                return;
+
+            }
+
+            string? identifier = (context.identifier?.Text) ?? throw new InternalException()
+                {
+                    Reason = "Gate did have neither a type nor an identifier."
+                };
+
             CheckDefinedness(identifier, context);
         }
 

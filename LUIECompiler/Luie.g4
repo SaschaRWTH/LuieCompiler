@@ -1,7 +1,11 @@
 grammar Luie;
 
 parse
- : block EOF
+ : mainblock EOF
+ ;
+
+mainblock
+ : gateDeclaration* (declaration | statement)*
  ;
 
 block
@@ -9,9 +13,21 @@ block
  ;
 
 declaration
+ : registerDeclaration
+ ;
+
+registerDeclaration
  : 'qubit' ('[' size=expression ']')? IDENTIFIER ';'
  ;
- 
+
+gateDeclaration
+ : 'gate' identifier=IDENTIFIER '(' param=gateParameter? ')' DO block END
+ ;
+
+gateParameter 
+ : IDENTIFIER (',' IDENTIFIER)*
+ ;
+
 statement
  : gateapplication
  | qifStatement 
@@ -20,7 +36,12 @@ statement
  ;
  
 gateapplication
- : GATE register (',' register)* ';'
+ : gate register (',' register)* ';'
+ ;
+
+gate 
+ : type=GATE
+ | identifier=IDENTIFIER
  ;
 
 qifStatement
@@ -50,7 +71,7 @@ register
 
 range 
  : start=INTEGER '..' end=INTEGER
- | 'range' '(' length=expression ')'
+ | RANGE '(' length=expression ')'
  ;
 
 expression
@@ -74,7 +95,7 @@ factor
  ;
 
 function
- : func='sizeof' '(' param=IDENTIFIER ')'
+ : func=FUNCTION '(' param=IDENTIFIER ')'
  ;
 
 GATE
@@ -92,6 +113,14 @@ fragment CCXGATE  : 'ccx';
 fragment ZGATE  : 'z';
 fragment YGATE  : 'y';
 fragment HGATE  : 'h';
+
+FUNCTION
+ : SIZEOF
+ ;
+
+fragment SIZEOF : 'sizeof';
+
+RANGE : 'range';
 
 IF     : 'qif';
 ELSE   : 'else';

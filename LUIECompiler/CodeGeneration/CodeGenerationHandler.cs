@@ -26,7 +26,7 @@ namespace LUIECompiler.CodeGeneration
         /// <summary>
         /// Stack of the registers guarding the if-clauses.
         /// </summary>
-        public Stack<Qubit> GuardStack { get; } = [];
+        public Stack<Symbol> GuardStack { get; } = [];
 
         /// <summary>
         ///  Main code block of the program.
@@ -51,7 +51,7 @@ namespace LUIECompiler.CodeGeneration
         /// <summary>
         /// Gets guard of the current if statement.
         /// </summary>
-        public Qubit CurrentGuard
+        public Symbol CurrentGuard
         {
             get => GuardStack.Peek()
                 ?? throw new InternalException()
@@ -66,17 +66,28 @@ namespace LUIECompiler.CodeGeneration
         public void PushCodeBlock()
         {
             Table.PushScope();
-            if (CodeBlocks.Count == 0)
+            CodeBlocks.Push(new()
             {
-                CodeBlocks.Push(MainBlock);
-            }
-            else
+                Parent = CurrentBlock,
+            });   
+        }
+
+        /// <summary>
+        /// Pushes the main code block onto the stack.
+        /// </summary>
+        /// <exception cref="InternalException"></exception>
+        public void PushMainCodeBlock()
+        {
+            if(CodeBlocks.Count > 0)
             {
-                CodeBlocks.Push(new()
+                throw new InternalException()
                 {
-                    Parent = CurrentBlock,
-                });
+                    Reason = "Tried to push main code block onto non-empty stack.",
+                };
             }
+
+            Table.PushScope();
+            CodeBlocks.Push(MainBlock);
         }
 
         /// <summary>
@@ -86,11 +97,11 @@ namespace LUIECompiler.CodeGeneration
         /// <exception cref="InternalException"></exception>
         public CodeBlock PopCodeBlock()
         {
-            if (CodeBlocks.Count <= 0)
+            if (CodeBlocks.Count <= 1)
             {
                 throw new InternalException()
                 {
-                    Reason = "Tried to pop empty code block stack.",
+                    Reason = "Tried to pop main code block from stack.",
                 };
             }
 
@@ -111,7 +122,7 @@ namespace LUIECompiler.CodeGeneration
         /// Pushes a given <paramref name="info"/> onto the guard stack.
         /// </summary>
         /// <param name="info"></param>
-        public void PushGuard([NotNull] Qubit info)
+        public void PushGuard([NotNull] Symbol info)
         {
             GuardStack.Push(info);
         }
@@ -120,7 +131,7 @@ namespace LUIECompiler.CodeGeneration
         /// Pops the current guard stack.
         /// </summary>
         /// <returns></returns>
-        public Qubit PopGuard()
+        public Symbol PopGuard()
         {
             return GuardStack.Pop();
         }
@@ -151,6 +162,26 @@ namespace LUIECompiler.CodeGeneration
         public void AddIterator(LoopIterator iterator, ErrorContext context)
         {
             AddSymbol(iterator, context);
+        }
+
+        /// <summary>
+        /// Adds a parameter to the symbol table.
+        /// </summary>
+        /// <param name="parameter"></param>
+        /// <param name="context"></param>
+        public void AddParameter(Parameter parameter, ErrorContext context)
+        {
+            AddSymbol(parameter, context);
+        }
+
+        /// <summary>
+        /// Adds a composite gate to the symbol table.
+        /// </summary>
+        /// <param name="gate"></param>
+        /// <param name="context"></param>
+        public void AddCompositeGate(CompositeGate gate, ErrorContext context)
+        {
+            AddSymbol(gate, context);
         }
 
         /// <summary>

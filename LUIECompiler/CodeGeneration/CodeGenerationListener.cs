@@ -1,8 +1,7 @@
 
 using Antlr4.Runtime.Misc;
-using LUIECompiler.CodeGeneration.Codes;
+using LUIECompiler.CodeGeneration.Gates;
 using LUIECompiler.CodeGeneration.Exceptions;
-using LUIECompiler.CodeGeneration.Expressions;
 using LUIECompiler.CodeGeneration.Statements;
 using LUIECompiler.Common.Errors;
 using LUIECompiler.Common.Extensions;
@@ -22,21 +21,42 @@ namespace LUIECompiler.CodeGeneration
         /// </summary>
         private CodeBlock? _lastPoped = null;
 
-        public override void ExitDeclaration([NotNull] LuieParser.DeclarationContext context)
+        public override void ExitRegisterDeclaration([NotNull] LuieParser.RegisterDeclarationContext context)
         {
             Register register = context.GetRegister();
-            CodeGen.AddRegister(register, new ErrorContext(context.Start));
+            CodeGen.AddRegister(register, new ErrorContext(context));
         }
 
         public override void ExitGateapplication([NotNull] LuieParser.GateapplicationContext context)
         {
-            List<Qubit> parameters = context.GetParameters(CodeGen.Table);
-            Gate gate = new(context);
+            List<Symbol> parameters = context.GetParameters(CodeGen.Table);
+            Gate gate = context.gate().GetGate(CodeGen.Table);
+
+            
+            if (gate is DefinedGate definedGate)
+            {
+                CreateCompositeGate(definedGate, parameters, new ErrorContext(context));
+            }
+            else
+            {
+                CreatePredefinedGate(gate, parameters, new ErrorContext(context));
+            }
+        }
+
+        /// <summary>
+        /// Creates a predefined gate application statement.
+        /// </summary>
+        /// <param name="gate"></param>
+        /// <param name="parameters"></param>
+        /// <param name="errorContext"></param>
+        /// <exception cref="CodeGenerationException"></exception>
+        private void CreatePredefinedGate(Gate gate, List<Symbol> parameters, ErrorContext errorContext)
+        {
             if (parameters.Count != gate.NumberOfArguments)
             {
                 throw new CodeGenerationException()
                 {
-                    Error = new InvalidArguments(new ErrorContext(context.Start), gate, parameters.Count),
+                    Error = new InvalidArguments(errorContext, gate, parameters.Count),
                 };
             }
 
@@ -45,7 +65,25 @@ namespace LUIECompiler.CodeGeneration
                 Gate = gate,
                 Parameters = parameters,
                 ParentBlock = CodeGen.CurrentBlock,
-                ErrorContext = new ErrorContext(context.Start),
+                ErrorContext = errorContext,
+            };
+
+            CodeGen.AddStatement(statement);
+        }
+
+        /// <summary>
+        /// Creates a composite gate application statement.
+        /// </summary>
+        /// <param name="gate"></param>
+        /// <param name="parameters"></param>
+        private void CreateCompositeGate(DefinedGate gate, List<Symbol> parameters, ErrorContext errorContext)
+        {
+            CompositeGateStatement statement = new()
+            {
+                Gate = gate,
+                Parameters = parameters.ToDictionary(parameter => gate.CompositeGate.Parameters[parameters.IndexOf(parameter)]),
+                ParentBlock = CodeGen.CurrentBlock,
+                ErrorContext = errorContext,
             };
 
             CodeGen.AddStatement(statement);
@@ -53,13 +91,19 @@ namespace LUIECompiler.CodeGeneration
 
         public override void EnterQifStatement([NotNull] LuieParser.QifStatementContext context)
         {
-            Qubit? info = context.GetGuard(CodeGen.Table);
+            Symbol? info = context.GetGuard(CodeGen.Table);
             CodeGen.PushGuard(info);
         }
 
         public override void ExitQifStatement([NotNull] LuieParser.QifStatementContext context)
         {
             CodeGen.PopGuard();
+        }
+
+
+        public override void EnterMainblock([NotNull] LuieParser.MainblockContext context)
+        {
+            CodeGen.PushMainCodeBlock();
         }
 
         public override void EnterBlock([NotNull] LuieParser.BlockContext context)
@@ -136,6 +180,29 @@ namespace LUIECompiler.CodeGeneration
             };
 
             CodeGen.AddStatement(statement);
+        }
+
+        public override void EnterGateDeclaration([NotNull] LuieParser.GateDeclarationContext context)
+        {
+            CodeGen.Table.PushScope();
+            foreach (Parameter param in context.GetParameters())
+            {
+                CodeGen.AddParameter(param, new(context));
+            }
+        }
+
+        public override void ExitGateDeclaration([NotNull] LuieParser.GateDeclarationContext context)
+        {
+            List<Parameter> parameters = CodeGen.Table.GetParameters();
+            CodeGen.Table.PopScope();
+
+            // Create emtpy block for declaration analysis
+            CodeBlock block = _lastPoped ?? throw new InternalException()
+            {
+                Reason = "There was no last poped code block, although block should just have been exited."
+            };
+            CompositeGate gate = new(context.identifier.Text, block, parameters, new ErrorContext(context));
+            CodeGen.AddCompositeGate(gate, new(context));
         }
 
     }

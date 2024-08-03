@@ -23,18 +23,23 @@ namespace LUIECompiler.CodeGeneration
         /// </summary>
         public required SymbolTable SymbolTable { get; init; }
 
+        public Dictionary<Parameter, Symbol> ParameterMap { get; } = [];
+
         public CodeGenerationContext()
         {
-            
+
         }
 
         /// <summary>
         /// Creates a new code generation context with the given integer constants.
         /// </summary>
         /// <param name="integerConstants"></param>
-        public CodeGenerationContext(List<Constant<int>> integerConstants)
+        public CodeGenerationContext(List<Constant<int>> integerConstants, Dictionary<Parameter, Symbol> parameterMap)
         {
             IntegerConstants = integerConstants;
+            ParameterMap = parameterMap;
         }
+
+
     }
 }

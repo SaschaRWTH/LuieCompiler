@@ -116,6 +116,26 @@ namespace LUIECompiler.Common
             }
             return null;
         }
+
+        /// <summary>
+        /// Gets all parameters in the symbol table.
+        /// </summary>
+        /// <returns></returns>
+        public List<Parameter> GetParameters()
+        {
+            List<Parameter> parameters = new();
+            foreach (var dict in ScopeStack)
+            {
+                foreach (var symbol in dict.Values)
+                {
+                    if (symbol is Parameter parameter)
+                    {
+                        parameters.Add(parameter);
+                    }
+                }
+            }
+            return parameters;
+        }
     }
 
 }

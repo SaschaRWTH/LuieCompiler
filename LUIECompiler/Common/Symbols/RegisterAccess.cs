@@ -29,8 +29,8 @@ namespace LUIECompiler.Common.Symbols
 
         public override QubitCode ToQASMCode(RegisterDefinition definition, CodeGenerationContext codeGenContext, ErrorContext context)
         {
-            int index = IndexExpression.Evaluate(codeGenContext.IntegerConstants, codeGenContext.CurrentBlock);
-            int size = Register.Size.Evaluate(codeGenContext.IntegerConstants, codeGenContext.CurrentBlock);
+            int index = IndexExpression.Evaluate(codeGenContext);
+            int size = Register.Size.Evaluate(codeGenContext);
 
             if (index < 0 || index >= size)
             {

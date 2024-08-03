@@ -65,13 +65,17 @@ public class ExpressionTest
         /// <param name="context"></param>
         public override void ExitExpression(LuieParser.ExpressionContext context)
         {
-            Result = context.GetExpression<int>().Evaluate(new(), new()
+            Result = context.GetExpression<int>().Evaluate(new()
             {
-                Parent = null,
+                CurrentBlock = new()
+                {
+                    Parent = null,
+                },
+                SymbolTable = new(),
             });
         }
     }
-    
+
     /// <summary>
     /// Tests addition expression with a basic example.
     /// </summary>
@@ -88,7 +92,7 @@ public class ExpressionTest
         Assert.IsNotNull(result);
 
         Assert.AreEqual(BasicAdditionResult, result);
-    }    
+    }
 
     /// <summary>
     /// Tests subtraction expression with a basic example.

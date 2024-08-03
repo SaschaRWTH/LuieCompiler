@@ -1,4 +1,4 @@
-using LUIECompiler.CodeGeneration.Definitions;
+using LUIECompiler.CodeGeneration.Gates;
 using LUIECompiler.Common;
 
 namespace LUIECompiler.CodeGeneration.Codes
@@ -39,32 +39,12 @@ namespace LUIECompiler.CodeGeneration.Codes
         /// <returns></returns>
         private string GetParameters()
         {
-            // TODO: Add check if too many parameters.
-
             return string.Join(", ", Parameters.Select(param => param.ToCode()));
         }
 
         public override string ToCode()
         {
-            if (Guards.Count == 0)
-            {
-                return $"{Gate} {GetParameters()};";
-            }
-
-            if (NegativeGuards.Count == 0)
-            {
-                return $"ctrl({PositiveGuards.Count}) @ {Gate} {string.Join(", ", PositiveGuards.Select(g => g.ToCode()))}, {GetParameters()};";
-            }
-
-            if (PositiveGuards.Count == 0)
-            {
-                return $"negctrl({NegativeGuards.Count}) @ {Gate} {string.Join(", ", NegativeGuards.Select(g => g.ToCode()))}, {GetParameters()};";
-            }
-
-
-            return $"negctrl({NegativeGuards.Count}) @ ctrl({PositiveGuards.Count}) @" +
-                   $"{Gate} {string.Join(", ", NegativeGuards.Select(g => g.ToCode()))}," +
-                   $"{string.Join(", ", PositiveGuards.Select(g => g.ToCode()))}, {GetParameters()};";
+            return Gate.GenerateCode(GetParameters(), NegativeGuards, PositiveGuards);
         }
 
     }

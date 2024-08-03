@@ -8,7 +8,7 @@ namespace LUIECompiler.CodeGeneration.Statements
         /// <summary>
         /// Guard of the <see cref="Block"/>.
         /// </summary>
-        public required Qubit Guard { get; init; }
+        public required Symbol Guard { get; init; }
 
         /// <summary>
         /// Nexted block of the if statement.

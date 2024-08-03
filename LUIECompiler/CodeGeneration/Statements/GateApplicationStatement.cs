@@ -1,5 +1,6 @@
 using LUIECompiler.CodeGeneration.Codes;
 using LUIECompiler.CodeGeneration.Exceptions;
+using LUIECompiler.CodeGeneration.Gates;
 using LUIECompiler.Common.Symbols;
 
 namespace LUIECompiler.CodeGeneration.Statements
@@ -14,7 +15,7 @@ namespace LUIECompiler.CodeGeneration.Statements
         /// <summary>
         /// Register to which the gate is applied to.
         /// </summary>
-        public required List<Qubit> Parameters { get; init; }
+        public required List<Symbol> Parameters { get; init; }
 
         /// <summary>
         /// Returns the QASM code for the statement.

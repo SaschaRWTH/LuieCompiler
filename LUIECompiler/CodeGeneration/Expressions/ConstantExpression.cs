@@ -8,7 +8,7 @@ namespace LUIECompiler.CodeGeneration.Expressions
     {
         public required T Value { get; init; }
 
-        public override T Evaluate(List<Constant<T>> constants, CodeBlock codeBlock) 
+        public override T Evaluate(CodeGenerationContext context) 
         { 
             return Value;
         }

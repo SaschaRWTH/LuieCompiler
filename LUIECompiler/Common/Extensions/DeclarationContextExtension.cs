@@ -6,7 +6,7 @@ using LUIECompiler.Common.Symbols;
 
 namespace LUIECompiler.Common.Extensions
 {
-    public static class DeclarationContextExtension
+    public static class RegisterDeclarationContextExtension
     {
 
 
@@ -15,12 +15,12 @@ namespace LUIECompiler.Common.Extensions
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public static bool HasSize(this LuieParser.DeclarationContext context)
+        public static bool HasSize(this LuieParser.RegisterDeclarationContext context)
         {
             return context.size != null;
         }
 
-        public static Expression<int> GetSize(this LuieParser.DeclarationContext context)
+        public static Expression<int> GetSize(this LuieParser.RegisterDeclarationContext context)
         {
             return context.size.GetExpression<int>();
         }
@@ -31,7 +31,7 @@ namespace LUIECompiler.Common.Extensions
         /// <param name="context"></param>
         /// <param name="size"> Size of the register. </param>
         /// <returns> True, if a valid <paramref name="size"/> was given, overwise false. </returns>
-        public static bool TryGetSize(this LuieParser.DeclarationContext context, out Expression<int> size)
+        public static bool TryGetSize(this LuieParser.RegisterDeclarationContext context, out Expression<int> size)
         {
             if (context.HasSize())
             {
@@ -53,7 +53,7 @@ namespace LUIECompiler.Common.Extensions
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public static Register GetRegister(this LuieParser.DeclarationContext context)
+        public static Register GetRegister(this LuieParser.RegisterDeclarationContext context)
         {
             string identifier = context.IDENTIFIER().GetText();
             Register register;
