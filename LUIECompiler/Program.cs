@@ -19,7 +19,7 @@ namespace LUIECompiler
             "qubit a;\n" +
             "qubit b;\n" +
             "x a;\n" +
-            "cx a, b;";
+            "reimpl_cx a, b;";
             // "gate hReg(reg) do\n" +
             // "    for i in range(sizeof(reg)) do\n" +
             // "        h reg[i];\n" +

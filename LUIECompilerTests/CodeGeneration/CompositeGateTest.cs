@@ -111,12 +111,12 @@ public class CompositeGateTest
         "qubit a;\n" +
         "qubit b;\n" +
         "x a;\n" +
-        "cx a, b;";
+        "reimpl_cx a, b;";
     public const string BasicIfGateTranslation = 
         "qubit id0;\n" +
         "qubit id1;\n" +
         "x id0;\n" +
-        "cx id0, id1;\n";
+        "ctrl(1) @ x id0, id1;\n";
 
 
     /// <summary>
