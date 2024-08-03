@@ -1,3 +1,4 @@
+using System.Globalization;
 using LUIECompiler.CodeGeneration.Gates;
 
 namespace LuieCompiler.CodeGeneration.Gates
@@ -8,7 +9,7 @@ namespace LuieCompiler.CodeGeneration.Gates
 
         public override string ToCode()
         {
-            return $"p(pi * {Parameter})";
+            return $"p(pi * {Parameter.ToString(CultureInfo.InvariantCulture)})";
         }
     }
 }
