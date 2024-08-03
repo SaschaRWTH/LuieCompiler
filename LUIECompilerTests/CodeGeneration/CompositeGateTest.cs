@@ -118,6 +118,33 @@ public class CompositeGateTest
         "x id0;\n" +
         "ctrl(1) @ x id0, id1;\n";
 
+    public const string IfForCombinationGate = 
+        "gate cx_reg(control, reg) do\n" +
+        "    qif control do\n" +
+        "        for i in range(sizeof(reg)) do\n" +
+        "            x reg[i];\n" +
+        "        end\n" +
+        "    end\n" +
+        "end\n" +
+        "qubit a;\n" +
+        "qubit[10] b;\n" +
+        "x a;\n" +
+        "cx_reg a, b;";
+
+    public const string IfForCombinationGateTranslation =
+        "qubit id0;\n" +
+        "qubit[10] id1;\n" +
+        "x id0;\n" +
+        "ctrl(1) @ x id0, id1[0];\n" +
+        "ctrl(1) @ x id0, id1[1];\n" +
+        "ctrl(1) @ x id0, id1[2];\n" +
+        "ctrl(1) @ x id0, id1[3];\n" +
+        "ctrl(1) @ x id0, id1[4];\n" +
+        "ctrl(1) @ x id0, id1[5];\n" +
+        "ctrl(1) @ x id0, id1[6];\n" +
+        "ctrl(1) @ x id0, id1[7];\n" +
+        "ctrl(1) @ x id0, id1[8];\n" +
+        "ctrl(1) @ x id0, id1[9];\n";
 
     /// <summary>
     /// Tests the code generation for the simple input.
@@ -206,6 +233,7 @@ public class CompositeGateTest
 
         Assert.AreEqual(ApplyGateToRegisterTranslation, code);
     }
+
     /// <summary>
     /// Tests the code generation for a simple for loop inside a gate definition.
     /// </summary>
@@ -222,5 +250,23 @@ public class CompositeGateTest
         Assert.IsNotNull(code);
 
         Assert.AreEqual(BasicIfGateTranslation, code);
+    }
+
+    /// <summary>
+    /// Tests the code generation for a simple for loop inside a gate definition.
+    /// </summary>
+    [TestMethod]
+    public void IfForCombinationGateTest()
+    {
+        var walker = Utils.GetWalker();
+        var parser = Utils.GetParser(IfForCombinationGate);
+
+        var codegen = new CodeGenerationListener();
+        walker.Walk(codegen, parser.parse());
+
+        string? code = codegen.CodeGen.GenerateCode()?.ToString();
+        Assert.IsNotNull(code);
+
+        Assert.AreEqual(IfForCombinationGateTranslation, code);
     }
 }
