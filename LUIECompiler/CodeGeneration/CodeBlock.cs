@@ -93,8 +93,35 @@ namespace LUIECompiler.CodeGeneration
         /// <returns></returns>
         /// <exception cref="InternalException"></exception>
         /// <exception cref="CodeGenerationException"></exception>
-        public Symbol GetSymbol(string identifier)
+        public Symbol GetSymbol(string identifier, CodeGenerationContext context)
         {
+            Symbol? symbol = GetSymbolFromTranslateables(identifier);
+            if(symbol != null)
+            {
+                return symbol;
+            }
+
+            symbol = GetSymbolFromParameters(identifier, context);
+            if(symbol != null)
+            {
+                return symbol;
+            }
+            
+            throw new CodeGenerationException()
+            {
+                // TODO: Fix this error context.
+                Error = new UndefinedError(new(), identifier),
+            };
+        }
+
+        /// <summary>
+        /// Gets the symbol with the given identifier from the definitions.
+        /// </summary>
+        /// <param name="identifier"></param>
+        /// <returns>Returns symbol of the identifier if it exits, null otherwise.</returns>
+        /// <exception cref="InternalException"></exception>
+        private Symbol? GetSymbolFromTranslateables(string identifier)
+        {            
             Symbol? symbol = null;
             try
             {
@@ -115,14 +142,40 @@ namespace LUIECompiler.CodeGeneration
 
             if(Parent == null)
             {
-                throw new CodeGenerationException()
-                {
-                    // TODO: Fix this error context.
-                    Error = new UndefinedError(new ErrorContext(), identifier),
-                };
+                return null;
             }
             
-            return Parent.GetSymbol(identifier);
+            return Parent.GetSymbolFromTranslateables(identifier);
+        }
+
+        /// <summary>
+        /// Gets the symbol with the given identifier from the parameters.
+        /// </summary>
+        /// <param name="identifier"></param>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        /// <exception cref="InternalException"></exception>
+        private Symbol? GetSymbolFromParameters(string identifier, CodeGenerationContext context)
+        {            
+            Parameter? parameter = null;
+            try
+            {
+                parameter = context.ParameterMap.SingleOrDefault(pair => pair.Key.Identifier == identifier).Key;
+            }
+            catch (InvalidOperationException)
+            {
+                throw new InternalException()
+                {
+                    Reason = "Multiple definitions found for the same register. This should have been caught by the semantic analysis and indicates a compiler error.",
+                };
+            }
+
+            if(parameter == null)
+            {
+                return null;
+            }
+
+            return context.GetSymbol(parameter);
         }
 
         /// <summary>

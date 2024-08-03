@@ -11,13 +11,13 @@ namespace LUIECompiler
         {
 
             string input =
-            "gate hTwice(reg) do\n" +
+            "gate h_reg(reg) do\n" +
             "    for i in range(sizeof(reg)) do\n" +
-            "        h reg;\n" +
+            "        h reg[i];\n" +
             "    end\n" +
             "end\n" +
             "qubit[2] b;\n" +
-            "hTwice b;";
+            "h_reg b;";
             // "gate hReg(reg) do\n" +
             // "    for i in range(sizeof(reg)) do\n" +
             // "        h reg[i];\n" +

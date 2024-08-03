@@ -34,7 +34,7 @@ namespace LUIECompiler.CodeGeneration.Expressions
 
             string identifier = parameters[0];
 
-            Symbol parameter = context.CurrentBlock.GetSymbol(identifier);
+            Symbol parameter = context.CurrentBlock.GetSymbol(identifier, context);
             if (parameter is not Register register)
             {
                 throw new CodeGenerationException()
