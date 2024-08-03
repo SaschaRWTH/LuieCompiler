@@ -29,6 +29,15 @@ public class BasicTest
         "ctrl(1) @ h id1, id0;\n" +
         "ctrl(1) @ h id1, id2;\n";
 
+    
+    public const string ParameterizedGate = 
+        "qubit a;\n" +
+        "p(1/8) a;";
+
+    public const string ParameterizedGateTranslation = 
+        "qubit id0;\n" +
+        "p(pi * 0.125) id0;\n";
+
     /// <summary>
     /// Tests the code generation for the simple input.
     /// </summary>
@@ -45,5 +54,23 @@ public class BasicTest
         Assert.IsNotNull(code);
 
         Assert.AreEqual(SimpleInputTranslation, code);
+    }
+
+    /// <summary>
+    /// Tests the code generation for a parameterized gate.
+    /// </summary>
+    [TestMethod]
+    public void ParameterizedGateTest()
+    {
+        var walker = Utils.GetWalker();
+        var parser = Utils.GetParser(ParameterizedGate);
+
+        var codegen = new CodeGenerationListener();
+        walker.Walk(codegen, parser.parse());
+
+        string? code = codegen.CodeGen.GenerateCode()?.ToString();
+        Assert.IsNotNull(code);
+
+        Assert.AreEqual(ParameterizedGateTranslation, code);
     }
 }

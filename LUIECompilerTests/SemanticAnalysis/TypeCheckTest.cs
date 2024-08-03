@@ -63,6 +63,10 @@ public class TypeCheckTest
         "    qubit[sizeof(i)] b;\n" +
         "end";
 
+    public const string ParameterizedGateValid = 
+        "qubit a;\n" +
+        "p(1/8) a;";
+
     /// <summary>
     /// Test that redefinitions in correctly reported in scopes.
     /// </summary>
@@ -148,6 +152,7 @@ public class TypeCheckTest
 
         Assert.IsTrue(!error.ContainsCriticalError);
     }
+
     /// <summary>
     /// Tests that there are errors reported when giving wrong type of arguments.
     /// </summary>
@@ -163,5 +168,21 @@ public class TypeCheckTest
         Assert.IsTrue(error.ContainsCriticalError);
         Assert.AreEqual(1, error.Errors.Count);
         Assert.IsTrue(error.Errors.Any(e => e is TypeError && e.ErrorContext.Line == 3));
+    }
+
+    /// <summary>
+    /// Tests that there no errors reported when using a parameterized gate.
+    /// </summary>
+    [TestMethod]
+    public void CheckParameterizedGateValid()
+    {
+        var walker = Utils.GetWalker();
+        var parser = Utils.GetParser(ParameterizedGateValid);
+        var analysis = new TypeCheckListener();
+        walker.Walk(analysis, parser.parse());
+        var error = analysis.Error;
+
+        Assert.IsFalse(error.ContainsCriticalError);
+        Assert.IsTrue(error.Errors.Count == 0);
     }
 }

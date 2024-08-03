@@ -217,7 +217,7 @@ public class CompositeGateTest
     }
 
     /// <summary>
-    /// Tests the code generation for a simple for loop inside a gate definition.
+    /// Tests the code generation for a for loop based on the size of a given register.
     /// </summary>
     [TestMethod]
     public void ApplyGateToRegisterTest()
@@ -235,7 +235,7 @@ public class CompositeGateTest
     }
 
     /// <summary>
-    /// Tests the code generation for a simple for loop inside a gate definition.
+    /// Tests the code generation for an if statement inside a gate definition.
     /// </summary>
     [TestMethod]
     public void BasicIfGateTest()
@@ -253,7 +253,7 @@ public class CompositeGateTest
     }
 
     /// <summary>
-    /// Tests the code generation for a simple for loop inside a gate definition.
+    /// Tests the code generation for a combination of if and for loop inside a gate definition.
     /// </summary>
     [TestMethod]
     public void IfForCombinationGateTest()
