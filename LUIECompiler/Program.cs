@@ -11,8 +11,9 @@ namespace LUIECompiler
         {
 
             string input =
-            "gate R2(reg) do\n" +
-            "    p(1/2) reg;" +
+            "gate qft(reg) do\n" +
+            "    for i in range(sizeof(reg)) do;" +
+            "    end\n" +
             "end\n" +
             "qubit a;\n" +
             "R2 a;";
@@ -23,6 +24,17 @@ namespace LUIECompiler
             // "end\n" +
             // "qubit[5] b;\n" +
             // "hReg b;";
+
+            using(var reader = new StreamReader("LUIECompiler/examples/qft.luie"))
+            {
+                input = reader.ReadToEnd();
+            }
+            
+            
+            Console.WriteLine("--- LUIE Compiler ---");
+            Console.WriteLine("Using input:");
+            Console.WriteLine(input);
+            Console.WriteLine("---               ---");
 
             try
             {

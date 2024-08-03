@@ -214,24 +214,35 @@ namespace LUIECompiler.SemanticAnalysis
 
         public override void ExitFunction([NotNull] LuieParser.FunctionContext context)
         {
-            string identifier = context.param.Text;
+            FunctionExpression<double> expression = context.GetFunctionExpression<double>();
 
-            Symbol? symbol = Table.GetSymbolInfo(identifier);
-            if (symbol == null)
+            expression.UndefinedIdentifiers(Table).ForEach(identifier =>
             {
                 Error.Report(new UndefinedError(new ErrorContext(context), identifier));
-                return;
-            }
+            });
 
-            // Check type of parameter at generation time
-            if (symbol is Parameter)
+            if(expression is SizeOfFunctionExpression<double> sizeOfFunctionExpression)
             {
-                return;
-            }
+                foreach(string identifier in sizeOfFunctionExpression.Parameter)
+                {
+                    Symbol? symbol = Table.GetSymbolInfo(identifier);
+                    if (symbol is null)
+                    {
+                        Error.Report(new UndefinedError(new ErrorContext(context.Start), identifier));
+                        continue;
+                    }
 
-            if (symbol is not Register)
-            {
-                Error.Report(new TypeError(new ErrorContext(context), identifier, typeof(Register), symbol.GetType()));
+                    // Check type of parameter at generation time
+                    if (symbol is Parameter)
+                    {
+                        continue;
+                    }
+
+                    if (symbol is not Register)
+                    {
+                        Error.Report(new TypeError(new ErrorContext(context.Start), identifier, typeof(Register), symbol.GetType()));
+                    }
+                }
             }
         }
 

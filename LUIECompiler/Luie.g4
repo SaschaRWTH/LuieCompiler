@@ -96,7 +96,12 @@ factor
  ;
 
 function
- : func=FUNCTION '(' param=IDENTIFIER ')'
+ : func=FUNCTION '(' param=functionParameter ')'
+ ;
+
+functionParameter
+ : IDENTIFIER (',' IDENTIFIER)*
+ | expression (',' expression)*
  ;
 
 CONSTANTGATE
@@ -122,9 +127,11 @@ fragment PHASEGATE  : 'p';
 
 FUNCTION
  : SIZEOF
+ | POWER
  ;
 
 fragment SIZEOF : 'sizeof';
+fragment POWER : 'power';
 
 RANGE : 'range';
 

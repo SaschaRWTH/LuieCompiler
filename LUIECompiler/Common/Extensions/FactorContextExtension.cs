@@ -37,11 +37,7 @@ namespace LUIECompiler.Common.Extensions
 
             if(context.func is LuieParser.FunctionContext functionContext)
             {
-                return new FunctionExpression<T>()
-                {
-                    Type = functionContext.GetFunctionType(),
-                    Parameter = functionContext.GetFunctionParameters(),
-                };
+                return functionContext.GetFunctionExpression<T>();
             }
 
             LuieParser.FactorContext? factor = context.factor();
