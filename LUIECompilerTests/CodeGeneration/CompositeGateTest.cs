@@ -102,6 +102,23 @@ public class CompositeGateTest
         "h id0[8];\n" +
         "h id0[9];\n";
 
+    public const string BasicIfGate = 
+        "gate reimpl_cx(control, qbit) do\n" +
+        "    qif control do\n" +
+        "        x qbit;\n" +
+        "    end\n" +
+        "end\n" +
+        "qubit a;\n" +
+        "qubit b;\n" +
+        "x a;\n" +
+        "cx a, b;";
+    public const string BasicIfGateTranslation = 
+        "qubit id0;\n" +
+        "qubit id1;\n" +
+        "x id0;\n" +
+        "cx id0, id1;\n";
+
+
     /// <summary>
     /// Tests the code generation for the simple input.
     /// </summary>
@@ -188,5 +205,22 @@ public class CompositeGateTest
         Assert.IsNotNull(code);
 
         Assert.AreEqual(ApplyGateToRegisterTranslation, code);
+    }
+    /// <summary>
+    /// Tests the code generation for a simple for loop inside a gate definition.
+    /// </summary>
+    [TestMethod]
+    public void BasicIfGateTest()
+    {
+        var walker = Utils.GetWalker();
+        var parser = Utils.GetParser(BasicIfGate);
+
+        var codegen = new CodeGenerationListener();
+        walker.Walk(codegen, parser.parse());
+
+        string? code = codegen.CodeGen.GenerateCode()?.ToString();
+        Assert.IsNotNull(code);
+
+        Assert.AreEqual(BasicIfGateTranslation, code);
     }
 }
