@@ -10,7 +10,12 @@ namespace LUIECompiler.Common.Extensions
         {
             if (context.type?.Text is string type)
             {
-                return FromString(type);
+                return ConstantFromString(type);
+            }
+
+            if(context.parameterizedGate?.Text is string parameterizedGate)
+            {
+                return ParameterizedGateFromString(parameterizedGate, context.param);
             }
 
             string identifier = context.identifier.Text;
@@ -27,14 +32,24 @@ namespace LUIECompiler.Common.Extensions
             return compositeGate;
         }
 
-        private static Gate FromString(string gate)
+        private static Gate ConstantFromString(string gate)
         {
             GateType type = GateTypeExtensions.FromString(gate);
 
             return new()
             {
-                NumberOfArguments = type.GetNumberOfArguments(),
                 Type = type,
+            };
+        }
+
+        private static ParameterizedGate ParameterizedGateFromString(string gate, LuieParser.ExpressionContext expression)
+        {
+            GateType type = GateTypeExtensions.FromString(gate);
+
+            return new()
+            {
+                Type = type,
+                Parameter = expression.GetExpression<double>(),
             };
         }
     }

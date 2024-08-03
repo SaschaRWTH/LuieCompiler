@@ -56,7 +56,7 @@ namespace LUIECompiler.Common
         /// <summary>
         /// The number of parameters the gate requires.
         /// </summary>
-        public required int NumberOfArguments { get; init; }
+        public int NumberOfArguments { get => Type.GetNumberOfArguments(); }
 
         public required GateType Type { get; init; }
 

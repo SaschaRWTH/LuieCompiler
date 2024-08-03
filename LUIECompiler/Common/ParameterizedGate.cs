@@ -9,12 +9,6 @@ namespace LUIECompiler.Common
     {
         public required Expression<double> Parameter { get; init; }
 
-        public ParameterizedGate(GateType type, int numberOfArguments)
-        {
-            Type = type;
-            NumberOfArguments = numberOfArguments;
-        }
-
         public override GateCode ToGateCode(CodeGenerationContext context)
         {
             return Type switch

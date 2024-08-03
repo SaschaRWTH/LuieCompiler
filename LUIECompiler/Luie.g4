@@ -41,6 +41,7 @@ gateapplication
 
 gate 
  : type=CONSTANTGATE
+ | parameterizedGate=PARAMETERIZEDGATE '(' param=expression ')'
  | identifier=IDENTIFIER
  ;
 
@@ -107,12 +108,17 @@ CONSTANTGATE
  | HGATE
  ;
 
+PARAMETERIZEDGATE 
+ : PHASEGATE
+ ;
+
 fragment XGATE  : 'x';
 fragment CXGATE  : 'cx';
 fragment CCXGATE  : 'ccx';
 fragment ZGATE  : 'z';
 fragment YGATE  : 'y';
 fragment HGATE  : 'h';
+fragment PHASEGATE  : 'p';
 
 FUNCTION
  : SIZEOF
