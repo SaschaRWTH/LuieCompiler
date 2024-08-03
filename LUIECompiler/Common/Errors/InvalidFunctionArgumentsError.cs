@@ -8,7 +8,7 @@ namespace LUIECompiler.Common.Errors
         /// <summary>
         /// Gate with the wrong number of arguments.
         /// </summary>
-        public FunctionType Function { get; init; }
+        public string Function { get; init; }
 
         /// <summary>
         /// Required number of arguments.
@@ -20,7 +20,7 @@ namespace LUIECompiler.Common.Errors
         /// </summary>
         public int Given { get; init; }
         
-        public InvalidFunctionArguments(ErrorContext context, FunctionType function, int required, int given)
+        public InvalidFunctionArguments(ErrorContext context, string function, int required, int given)
         {
             Type = ErrorType.Critical;
             ErrorContext = context;

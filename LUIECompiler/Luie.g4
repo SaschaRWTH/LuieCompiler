@@ -40,7 +40,8 @@ gateapplication
  ;
 
 gate 
- : type=GATE
+ : type=CONSTANTGATE
+ | parameterizedGate=PARAMETERIZEDGATE '(' param=expression ')'
  | identifier=IDENTIFIER
  ;
 
@@ -95,10 +96,15 @@ factor
  ;
 
 function
- : func=FUNCTION '(' param=IDENTIFIER ')'
+ : func=FUNCTION '(' param=functionParameter ')'
  ;
 
-GATE
+functionParameter
+ : IDENTIFIER (',' IDENTIFIER)*
+ | expression (',' expression)*
+ ;
+
+CONSTANTGATE
  : XGATE
  | CXGATE
  | CCXGATE
@@ -107,18 +113,25 @@ GATE
  | HGATE
  ;
 
+PARAMETERIZEDGATE 
+ : PHASEGATE
+ ;
+
 fragment XGATE  : 'x';
 fragment CXGATE  : 'cx';
 fragment CCXGATE  : 'ccx';
 fragment ZGATE  : 'z';
 fragment YGATE  : 'y';
 fragment HGATE  : 'h';
+fragment PHASEGATE  : 'p';
 
 FUNCTION
  : SIZEOF
+ | POWER
  ;
 
 fragment SIZEOF : 'sizeof';
+fragment POWER : 'power';
 
 RANGE : 'range';
 

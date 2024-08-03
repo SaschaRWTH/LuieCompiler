@@ -1,6 +1,7 @@
 using LUIECompiler.CodeGeneration.Codes;
 using LUIECompiler.CodeGeneration.Exceptions;
 using LUIECompiler.CodeGeneration.Gates;
+using LUIECompiler.Common;
 using LUIECompiler.Common.Symbols;
 
 namespace LUIECompiler.CodeGeneration.Statements
@@ -23,9 +24,9 @@ namespace LUIECompiler.CodeGeneration.Statements
         /// <returns></returns>
         public override QASMProgram ToQASM(CodeGenerationContext context)
         {
-            return new(new GateCode()
+            return new(new GateApplicationCode()
             {
-                Gate = Gate,
+                Gate = Gate.ToGateCode(context),
                 Guards = [],
                 Parameters = GetParameters(context),
             });

@@ -1,5 +1,4 @@
 using LUIECompiler.CodeGeneration.Exceptions;
-using LUIECompiler.CodeGeneration.Gates;
 using LUIECompiler.Common.Errors;
 using LUIECompiler.Common.Symbols;
 
@@ -7,17 +6,22 @@ namespace LUIECompiler.Common.Extensions
 {
     public static class GateContextExtension
     {
-        public static Gate GetGate(this LuieParser.GateContext context, SymbolTable symbolTable)
+        public static IGate GetGate(this LuieParser.GateContext context, SymbolTable symbolTable)
         {
-            if(context.type?.Text is string type)
+            if (context.type?.Text is string type)
             {
-                return FromString(type);
+                return ConstantFromString(type);
+            }
+
+            if(context.parameterizedGate?.Text is string parameterizedGate)
+            {
+                return ParameterizedGateFromString(parameterizedGate, context.param);
             }
 
             string identifier = context.identifier.Text;
             Symbol? symbol = symbolTable.GetSymbolInfo(identifier);
 
-            if(symbol is not CompositeGate compositeGate)
+            if (symbol is not CompositeGate compositeGate)
             {
                 throw new CodeGenerationException()
                 {
@@ -25,20 +29,27 @@ namespace LUIECompiler.Common.Extensions
                 };
             }
 
-            return new DefinedGate(compositeGate);
+            return compositeGate;
         }
 
-        private static Gate FromString(string gate)
+        private static Gate ConstantFromString(string gate)
         {
-            return gate switch
+            GateType type = GateTypeExtensions.FromString(gate);
+
+            return new()
             {
-                "x" => new XGate(),
-                "y" => new YGate(),
-                "z" => new ZGate(),
-                "h" => new HGate(),
-                "cx" => new ControlledXGate(),
-                "ccx" => new ControlledControlledXGate(),
-                _ => throw new NotImplementedException(),
+                Type = type,
+            };
+        }
+
+        private static ParameterizedGate ParameterizedGateFromString(string gate, LuieParser.ExpressionContext expression)
+        {
+            GateType type = GateTypeExtensions.FromString(gate);
+
+            return new()
+            {
+                Type = type,
+                Parameter = expression.GetExpression<double>(),
             };
         }
     }

@@ -11,17 +11,12 @@ namespace LUIECompiler
         {
 
             string input =
-            "gate cx_reg(control, reg) do\n" +
-            "    qif control do\n" +
-            "        for i in range(sizeof(reg)) do\n" +
-            "            x reg[i];\n" +
-            "        end\n" +
+            "gate qft(reg) do\n" +
+            "    for i in range(sizeof(reg)) do;" +
             "    end\n" +
             "end\n" +
             "qubit a;\n" +
-            "qubit[10] b;\n" +
-            "x a;\n" +
-            "cx_reg a, b;";
+            "R2 a;";
             // "gate hReg(reg) do\n" +
             // "    for i in range(sizeof(reg)) do\n" +
             // "        h reg[i];\n" +
@@ -29,6 +24,17 @@ namespace LUIECompiler
             // "end\n" +
             // "qubit[5] b;\n" +
             // "hReg b;";
+
+            using(var reader = new StreamReader("LUIECompiler/examples/qft.luie"))
+            {
+                input = reader.ReadToEnd();
+            }
+            
+            
+            Console.WriteLine("--- LUIE Compiler ---");
+            Console.WriteLine("Using input:");
+            Console.WriteLine(input);
+            Console.WriteLine("---               ---");
 
             try
             {

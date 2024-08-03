@@ -3,6 +3,7 @@ using Antlr4.Runtime.Misc;
 using Antlr4.Runtime.Tree;
 using LUIECompiler.CodeGeneration;
 using LUIECompiler.CodeGeneration.Exceptions;
+using LUIECompiler.CodeGeneration.Expressions;
 using LUIECompiler.Common;
 using LUIECompiler.Common.Errors;
 using LUIECompiler.Common.Extensions;
@@ -108,9 +109,13 @@ namespace LUIECompiler.SemanticAnalysis
         }
 
         public override void ExitFunction([NotNull] LuieParser.FunctionContext context)
-        {
-            string identifier = context.param.Text;
-            CheckDefinedness(identifier, context);
+        {           
+            FunctionExpression<double> expression = context.GetFunctionExpression<double>();
+
+            expression.UndefinedIdentifiers(Table).ForEach(identifier =>
+            {
+                Error.Report(new UndefinedError(new ErrorContext(context), identifier));
+            });
         }
 
         public override void EnterGateDeclaration([NotNull] LuieParser.GateDeclarationContext context)

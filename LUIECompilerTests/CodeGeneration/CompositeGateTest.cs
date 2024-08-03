@@ -146,6 +146,34 @@ public class CompositeGateTest
         "ctrl(1) @ x id0, id1[8];\n" +
         "ctrl(1) @ x id0, id1[9];\n";
 
+    public const string IfRegisterAccessGate = 
+        "gate c_regx(control, reg) do\n" +
+        "    for i in range(sizeof(control)) do\n" +
+        "       qif control[i] do\n" +
+        "            x reg;\n" +
+        "        end\n" +
+        "    end\n" +
+        "end\n" +
+        "qubit a;\n" +
+        "qubit[10] b;\n" +
+        "x a;\n" +
+        "c_regx b, a;";
+
+    public const string IfRegisterAccessGateTranslation =
+        "qubit id0;\n" +
+        "qubit[10] id1;\n" +
+        "x id0;\n" +
+        "ctrl(1) @ x id1[0], id0;\n" +
+        "ctrl(1) @ x id1[1], id0;\n" +
+        "ctrl(1) @ x id1[2], id0;\n" +
+        "ctrl(1) @ x id1[3], id0;\n" +
+        "ctrl(1) @ x id1[4], id0;\n" +
+        "ctrl(1) @ x id1[5], id0;\n" +
+        "ctrl(1) @ x id1[6], id0;\n" +
+        "ctrl(1) @ x id1[7], id0;\n" +
+        "ctrl(1) @ x id1[8], id0;\n" +
+        "ctrl(1) @ x id1[9], id0;\n";
+
     /// <summary>
     /// Tests the code generation for the simple input.
     /// </summary>
@@ -217,7 +245,7 @@ public class CompositeGateTest
     }
 
     /// <summary>
-    /// Tests the code generation for a simple for loop inside a gate definition.
+    /// Tests the code generation for a for loop based on the size of a given register.
     /// </summary>
     [TestMethod]
     public void ApplyGateToRegisterTest()
@@ -235,7 +263,7 @@ public class CompositeGateTest
     }
 
     /// <summary>
-    /// Tests the code generation for a simple for loop inside a gate definition.
+    /// Tests the code generation for an if statement inside a gate definition.
     /// </summary>
     [TestMethod]
     public void BasicIfGateTest()
@@ -253,7 +281,7 @@ public class CompositeGateTest
     }
 
     /// <summary>
-    /// Tests the code generation for a simple for loop inside a gate definition.
+    /// Tests the code generation for a combination of if and for loop inside a gate definition.
     /// </summary>
     [TestMethod]
     public void IfForCombinationGateTest()
@@ -268,5 +296,23 @@ public class CompositeGateTest
         Assert.IsNotNull(code);
 
         Assert.AreEqual(IfForCombinationGateTranslation, code);
+    }
+
+    /// <summary>
+    /// Tests the code generation for a combination of if and for loop inside a gate definition.
+    /// </summary>
+    [TestMethod]
+    public void IfRegisterAccessGateTest()
+    {
+        var walker = Utils.GetWalker();
+        var parser = Utils.GetParser(IfRegisterAccessGate);
+
+        var codegen = new CodeGenerationListener();
+        walker.Walk(codegen, parser.parse());
+
+        string? code = codegen.CodeGen.GenerateCode()?.ToString();
+        Assert.IsNotNull(code);
+
+        Assert.AreEqual(IfRegisterAccessGateTranslation, code);
     }
 }

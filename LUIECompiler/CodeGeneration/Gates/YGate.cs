@@ -1,14 +1,9 @@
 
 namespace LUIECompiler.CodeGeneration.Gates
 {
-    public class YGate : PredefinedGate
+    public class YGate : GateCode
     {
-        public YGate() 
-        { 
-            NumberOfArguments = 1;
-        }
-
-        protected override string ToCode()
+        public override string ToCode()
         {
             return "y";
         }

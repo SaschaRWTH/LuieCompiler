@@ -6,6 +6,7 @@ using LUIECompiler.CodeGeneration.Statements;
 using LUIECompiler.Common.Errors;
 using LUIECompiler.Common.Extensions;
 using LUIECompiler.Common.Symbols;
+using LUIECompiler.Common;
 
 namespace LUIECompiler.CodeGeneration
 {
@@ -30,12 +31,11 @@ namespace LUIECompiler.CodeGeneration
         public override void ExitGateapplication([NotNull] LuieParser.GateapplicationContext context)
         {
             List<Symbol> parameters = context.GetParameters(CodeGen.Table);
-            Gate gate = context.gate().GetGate(CodeGen.Table);
+            IGate gate = context.gate().GetGate(CodeGen.Table);
 
-            
-            if (gate is DefinedGate definedGate)
+            if (gate is CompositeGate compositeGate)
             {
-                CreateCompositeGate(definedGate, parameters, new ErrorContext(context));
+                CreateCompositeGate(compositeGate, parameters, new ErrorContext(context));
             }
             else
             {
@@ -50,7 +50,7 @@ namespace LUIECompiler.CodeGeneration
         /// <param name="parameters"></param>
         /// <param name="errorContext"></param>
         /// <exception cref="CodeGenerationException"></exception>
-        private void CreatePredefinedGate(Gate gate, List<Symbol> parameters, ErrorContext errorContext)
+        private void CreatePredefinedGate(IGate gate, List<Symbol> parameters, ErrorContext errorContext)
         {
             if (parameters.Count != gate.NumberOfArguments)
             {
@@ -62,7 +62,10 @@ namespace LUIECompiler.CodeGeneration
 
             GateApplicationStatement statement = new()
             {
-                Gate = gate,
+                Gate = gate as Gate ?? throw new InternalException()
+                {
+                    Reason = "Gate was not of type Gate.",
+                },
                 Parameters = parameters,
                 ParentBlock = CodeGen.CurrentBlock,
                 ErrorContext = errorContext,
@@ -76,12 +79,12 @@ namespace LUIECompiler.CodeGeneration
         /// </summary>
         /// <param name="gate"></param>
         /// <param name="parameters"></param>
-        private void CreateCompositeGate(DefinedGate gate, List<Symbol> parameters, ErrorContext errorContext)
+        private void CreateCompositeGate(CompositeGate gate, List<Symbol> parameters, ErrorContext errorContext)
         {
             CompositeGateStatement statement = new()
             {
                 Gate = gate,
-                Parameters = parameters.ToDictionary(parameter => gate.CompositeGate.Parameters[parameters.IndexOf(parameter)]),
+                Parameters = parameters.ToDictionary(parameter => gate.Parameters[parameters.IndexOf(parameter)]),
                 ParentBlock = CodeGen.CurrentBlock,
                 ErrorContext = errorContext,
             };

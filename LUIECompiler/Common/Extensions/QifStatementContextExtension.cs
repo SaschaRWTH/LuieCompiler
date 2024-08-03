@@ -24,7 +24,7 @@ namespace LUIECompiler.Common.Extensions
 
             if(symbol is Parameter parameter)
             {
-                return parameter;
+                return GetGuardParameter(context.register(), parameter);
             }
 
             if (symbol is not Register register)
@@ -49,6 +49,22 @@ namespace LUIECompiler.Common.Extensions
             }
             
             return new RegisterAccess(register, index, new ErrorContext(context));
+        }
+
+        /// <summary>
+        /// Gets the guard parameter of the qif statement.
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="parameter"></param>
+        /// <returns></returns>
+        public static Parameter GetGuardParameter(LuieParser.RegisterContext context, Parameter parameter)
+        {
+            if (!context.TryGetIndexExpression(out Expression<int> index))
+            {
+                return parameter;
+            }
+
+            return new ParameterAccess(parameter, index, new ErrorContext(context));
         }
     }
 }
