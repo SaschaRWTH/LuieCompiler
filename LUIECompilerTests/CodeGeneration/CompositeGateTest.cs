@@ -174,6 +174,55 @@ public class CompositeGateTest
         "ctrl(1) @ x id1[8], id0;\n" +
         "ctrl(1) @ x id1[9], id0;\n";
 
+    public const string RegisterAccessArgForDefinedGateinDefinedGate =
+    @"
+        gate hnew(a) do
+            h a;
+        end
+
+        gate first_h(a) do
+            hnew a[0];
+        end
+        qubit[2] a;
+        first_h a;
+    ";
+
+    public const string RegisterAccessArgForDefinedGateinDefinedGateTranslation =
+        "qubit[2] id0;\n" +
+        "h id0[0];\n";
+
+    public const string DeeplyNestedCalls =
+    @"
+        gate hnew(a) do
+            h a;
+        end
+
+        gate fourth_h(a) do
+            for i in range(sizeof(a)) do
+                hnew a[i];
+            end
+        end
+
+        gate third_h(a) do
+            fourth_h a;
+        end
+
+        gate second_h(a) do
+            third_h a;
+        end
+
+        gate first_h(a) do
+            second_h a;
+        end
+        qubit[2] a;
+        first_h a;
+    ";
+    
+    public const string DeeplyNestedCallsTranslation =
+        "qubit[2] id0;\n" +
+        "h id0[0];\n" +
+        "h id0[1];\n";
+
     /// <summary>
     /// Tests the code generation for the simple input.
     /// </summary>
@@ -314,5 +363,41 @@ public class CompositeGateTest
         Assert.IsNotNull(code);
 
         Assert.AreEqual(IfRegisterAccessGateTranslation, code);
+    }
+
+    /// <summary>
+    /// Tests the code generation for a combination of if and for loop inside a gate definition.
+    /// </summary>
+    [TestMethod]
+    public void RegisterAccessArgForDefinedGateinDefinedGateTest()
+    {
+        var walker = Utils.GetWalker();
+        var parser = Utils.GetParser(RegisterAccessArgForDefinedGateinDefinedGate);
+
+        var codegen = new CodeGenerationListener();
+        walker.Walk(codegen, parser.parse());
+
+        string? code = codegen.CodeGen.GenerateCode()?.ToString();
+        Assert.IsNotNull(code);
+
+        Assert.AreEqual(RegisterAccessArgForDefinedGateinDefinedGateTranslation, code);
+    }
+
+    /// <summary>
+    /// Tests the code generation for a combination of if and for loop inside a gate definition.
+    /// </summary>
+    [TestMethod]
+    public void DeeplyNestedCallsTest()
+    {
+        var walker = Utils.GetWalker();
+        var parser = Utils.GetParser(DeeplyNestedCalls);
+
+        var codegen = new CodeGenerationListener();
+        walker.Walk(codegen, parser.parse());
+
+        string? code = codegen.CodeGen.GenerateCode()?.ToString();
+        Assert.IsNotNull(code);
+
+        Assert.AreEqual(DeeplyNestedCallsTranslation, code);
     }
 }

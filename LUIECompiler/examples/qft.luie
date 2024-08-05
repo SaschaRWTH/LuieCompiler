@@ -2,8 +2,22 @@ gate hnew(a) do
     h a;
 end
 
+gate fourth_h(a) do
+    for i in range(sizeof(a)) do
+        hnew a[i];
+    end
+end
+
+gate third_h(a) do
+    fourth_h a;
+end
+
+gate second_h(a) do
+    third_h a;
+end
+
 gate first_h(a) do
-    hnew a[0];
+    second_h a;
 end
 qubit[2] a;
 first_h a;
