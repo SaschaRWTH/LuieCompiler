@@ -157,6 +157,11 @@ namespace LUIECompiler.CodeGeneration
         private Symbol? GetSymbolFromParameters(string identifier, CodeGenerationContext context)
         {            
             Parameter? parameter = null;
+            Console.WriteLine($"Looking for {identifier}");
+            foreach (var pair in context.ParameterMap)
+            {
+                Console.WriteLine($"Pair = ({pair.Key}, {pair.Value})");
+            }
             try
             {
                 parameter = context.ParameterMap.SingleOrDefault(pair => pair.Key.Identifier == identifier).Key;

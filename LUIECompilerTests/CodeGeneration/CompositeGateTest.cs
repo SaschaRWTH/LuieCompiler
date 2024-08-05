@@ -223,6 +223,26 @@ public class CompositeGateTest
         "h id0[0];\n" +
         "h id0[1];\n";
 
+    public const string TwoCompositeGatesWithSameParameterName =
+    @"
+        gate hnew_1(a) do
+            h a;
+        end
+
+        gate hnew_2(a) do
+            h a;
+        end
+
+        qubit b;
+        hnew_1 b;
+        hnew_2 b;
+    ";
+
+    public const string TwoCompositeGatesWithSameParameterNameTranslation =
+        "qubit id0;\n" +
+        "h id0;\n" +
+        "h id0;\n";
+
     /// <summary>
     /// Tests the code generation for the simple input.
     /// </summary>
@@ -399,5 +419,23 @@ public class CompositeGateTest
         Assert.IsNotNull(code);
 
         Assert.AreEqual(DeeplyNestedCallsTranslation, code);
+    }
+
+    /// <summary>
+    /// Tests the code generation for two composite gates with the same parameter name.
+    /// </summary>
+    [TestMethod]
+    public void TwoCompositeGatesWithSameParameterNameTest()
+    {
+        var walker = Utils.GetWalker();
+        var parser = Utils.GetParser(TwoCompositeGatesWithSameParameterName);
+
+        var codegen = new CodeGenerationListener();
+        walker.Walk(codegen, parser.parse());
+
+        string? code = codegen.CodeGen.GenerateCode()?.ToString();
+        Assert.IsNotNull(code);
+
+        Assert.AreEqual(TwoCompositeGatesWithSameParameterNameTranslation, code);
     }
 }
