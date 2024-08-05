@@ -18,5 +18,9 @@ namespace LUIECompiler.Common.Symbols
             Parameters = parameters;
         }
 
+        public override string ToString()
+        {
+            return $"CompositeGate: {{ Identifier = {Identifier}, Parameters = {Parameters} }}";
+        }
     }
 }

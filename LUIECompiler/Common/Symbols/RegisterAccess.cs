@@ -48,6 +48,11 @@ namespace LUIECompiler.Common.Symbols
                 Identifier = codeGenContext.CurrentBlock.GetUniqueIdentifier(definition),
             };
         }
+
+        public override string ToString()
+        {
+            return $"RegisterAccess: {{ Register = {Register}, Index = {IndexExpression} }}";
+        }
     }
 
 }

@@ -26,5 +26,10 @@ namespace LUIECompiler.CodeGeneration.Expressions
         {
             return [..Operand.UndefinedIdentifiers(table)];
         }
+
+        public override string ToString()
+        {
+            return $"{Operator} {Operand}";
+        }
     }
 }

@@ -14,7 +14,7 @@ namespace LUIECompiler.Common.Symbols
 
         public override string ToString()
         {
-            return $"Qubit: [Identifier = {Identifier}]";
+            return $"Qubit: {{ Identifier = {Identifier} }}";
         }
 
         /// <summary>

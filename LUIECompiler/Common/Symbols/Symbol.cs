@@ -17,6 +17,11 @@ namespace LUIECompiler.Common.Symbols
             Identifier = identifier;
             ErrorContext = errorContext;
         }
+
+        override public string ToString()
+        {
+            return $"Symbol: {{ id={Identifier} }}";
+        }
     }
 
 }

@@ -25,7 +25,7 @@ namespace LUIECompiler.Common.Symbols
 
         public override string ToString()
         {
-            return $"Register: [Identifier = {Identifier}, size = {Size}]";
+            return $"Register: {{ Identifier = {Identifier}, size = {Size} }}";
         }
     }
 

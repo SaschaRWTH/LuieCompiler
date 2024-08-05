@@ -17,5 +17,10 @@ namespace LUIECompiler.CodeGeneration.Expressions
         {
             return new();
         }
+
+        public override string ToString()
+        {
+            return Value.ToString() ?? "null";
+        }
     }
 }

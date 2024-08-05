@@ -60,5 +60,10 @@ namespace LUIECompiler.CodeGeneration.Expressions
 
             return T.CreateChecked(register.Size.Evaluate(context));
         }
+
+        public override string ToString()
+        {
+            return $"sizeof({Parameter[0]})";
+        }
     }
 }

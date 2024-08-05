@@ -40,5 +40,10 @@ namespace LUIECompiler.Common.Symbols
 
             return new RegisterAccess(register, IndexExpression, ErrorContext);
         }
+
+        public override string ToString()
+        {
+            return $"Parameter: {{ id={Identifier}, index={IndexExpression} }}";
+        }
     }
 }

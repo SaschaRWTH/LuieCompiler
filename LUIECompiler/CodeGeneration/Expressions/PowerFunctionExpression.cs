@@ -45,5 +45,10 @@ namespace LUIECompiler.CodeGeneration.Expressions
         {
             throw new NotImplementedException();
         }
+
+        public override string ToString()
+        {
+            return $"power({Parameters[0]}, {Parameters[1]})";
+        }
     }
 }

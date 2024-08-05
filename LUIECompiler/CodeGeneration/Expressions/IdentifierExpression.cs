@@ -33,5 +33,10 @@ namespace LUIECompiler.CodeGeneration.Expressions
             }
             return T.CreateChecked(constant.Value);
         }
+
+        public override string ToString()
+        {
+            return Identifier;
+        }
     }
 }

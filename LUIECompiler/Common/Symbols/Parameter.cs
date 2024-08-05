@@ -50,5 +50,10 @@ namespace LUIECompiler.Common.Symbols
 
             return symbol;
         }
+
+        public override string ToString()
+        {
+            return $"Parameter: {{ id={Identifier} }}";
+        }
     }
 }

@@ -43,5 +43,14 @@ namespace LUIECompiler.CodeGeneration.Expressions
                 _ => throw new NotImplementedException(),
             };
         }
+
+        public override string ToString()
+        {
+            return Type switch
+            {
+                UnaryOperatorType.AdditiveInverse => "-",
+                _ => throw new NotImplementedException(),
+            };
+        }
     }
 }

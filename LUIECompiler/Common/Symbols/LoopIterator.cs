@@ -20,5 +20,10 @@ namespace LUIECompiler.Common.Symbols
             Start = start;
             End = end;
         }
+
+        public override string ToString()
+        {
+            return $"LoopIterator: {{ id={Identifier}, start={Start}, end={End} }}";
+        }
     }
 }

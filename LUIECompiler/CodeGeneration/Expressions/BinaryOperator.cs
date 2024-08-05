@@ -53,5 +53,17 @@ namespace LUIECompiler.CodeGeneration.Expressions
                 _ => throw new NotImplementedException(),
             };
         }
+
+        public override string ToString()
+        {
+            return Type switch
+            {
+                BinaryOperatorType.Add => "+",
+                BinaryOperatorType.Subtract => "-",
+                BinaryOperatorType.Multiply => "*",
+                BinaryOperatorType.Divide => "/",
+                _ => throw new NotImplementedException(),
+            };
+        }
     }
 }

@@ -16,7 +16,7 @@ namespace LUIECompiler.Common.Symbols
 
         public override string ToString()
         {
-            return $"Constant: [Identifier = {Identifier}, Value = {Value}]";
+            return $"Constant: {{ Identifier = {Identifier}, Value = {Value} }}";
         }
     }
 }
