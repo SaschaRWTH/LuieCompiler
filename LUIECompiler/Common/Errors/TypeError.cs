@@ -1,5 +1,8 @@
 namespace LUIECompiler.Common.Errors
 {
+    /// <summary>
+    /// Represents an error where an identifier has the wrong type.
+    /// </summary>
     public class TypeError : CompilationError
     {
         /// <summary>
@@ -17,6 +20,13 @@ namespace LUIECompiler.Common.Errors
         /// </summary>
         public Type GivenType { get; init; }
 
+        /// <summary>
+        /// Creates a new type error.
+        /// </summary>
+        /// <param name="context">Context where the identifier was used.</param>
+        /// <param name="identifier">Identifier with the wrong type.</param>
+        /// <param name="requiredType">Required type in the context.</param>
+        /// <param name="givenType">Type of the identifier.</param>
         public TypeError(ErrorContext context, string identifier, Type requiredType, Type givenType)
         {
             Type = ErrorType.Critical;

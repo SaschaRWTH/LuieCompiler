@@ -8,14 +8,21 @@ using LUIECompiler.Common.Symbols;
 
 namespace LUIECompiler.CodeGeneration.Statements
 {
+    /// <summary>
+    /// Represents an abstract statement in the code generation.
+    /// </summary>
     public abstract class Statement : ITranslateable
     {
+        /// <summary>
+        /// Parent code block in which the statement is executed.
+        /// </summary>
         public required CodeBlock ParentBlock { get; init; }
 
         /// <summary>
         /// Source code line of the statement.
         /// </summary>
         public required ErrorContext ErrorContext { get; init; }
+
         public abstract QASMProgram ToQASM(CodeGenerationContext context);
         
         /// <summary>

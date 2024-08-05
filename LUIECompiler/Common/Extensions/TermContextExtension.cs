@@ -6,6 +6,13 @@ namespace LUIECompiler.Common.Extensions
 {
     public static class TermContextExtension
     {
+        /// <summary>
+        /// Gets the expression from the term with the given <paramref name="context"/>.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        /// <exception cref="InternalException"></exception>
         public static Expression<T> GetExpression<T>(this LuieParser.TermContext context) where T : INumber<T>
         {
             if(context.op is null)

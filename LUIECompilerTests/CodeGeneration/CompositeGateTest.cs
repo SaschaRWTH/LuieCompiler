@@ -366,7 +366,7 @@ public class CompositeGateTest
     }
 
     /// <summary>
-    /// Tests the code generation for a combination of if and for loop inside a gate definition.
+    /// Tests the code generation for a register access as an argument for a defined gate inside a defined gate.
     /// </summary>
     [TestMethod]
     public void RegisterAccessArgForDefinedGateinDefinedGateTest()
@@ -384,7 +384,7 @@ public class CompositeGateTest
     }
 
     /// <summary>
-    /// Tests the code generation for a combination of if and for loop inside a gate definition.
+    /// Tests the code generation deeply nested calls of defined gates.
     /// </summary>
     [TestMethod]
     public void DeeplyNestedCallsTest()

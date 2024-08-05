@@ -2,6 +2,9 @@ using System.Numerics;
 
 namespace LUIECompiler.CodeGeneration.Expressions
 {
+    /// <summary>
+    /// Type of binary operator.
+    /// </summary>
     public enum BinaryOperatorType
     {
         Add,

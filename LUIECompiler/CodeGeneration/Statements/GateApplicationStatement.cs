@@ -1,11 +1,13 @@
 using LUIECompiler.CodeGeneration.Codes;
 using LUIECompiler.CodeGeneration.Exceptions;
-using LUIECompiler.CodeGeneration.Gates;
 using LUIECompiler.Common;
 using LUIECompiler.Common.Symbols;
 
 namespace LUIECompiler.CodeGeneration.Statements
 {
+    /// <summary>
+    /// Represents a (predefined) gate application statement.
+    /// </summary>
     public class GateApplicationStatement : Statement
     {
         /// <summary>

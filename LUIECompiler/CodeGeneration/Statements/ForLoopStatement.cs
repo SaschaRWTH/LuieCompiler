@@ -3,6 +3,9 @@ using LUIECompiler.CodeGeneration.Codes;
 using LUIECompiler.Common.Symbols;
 namespace LUIECompiler.CodeGeneration.Statements
 {
+    /// <summary>
+    /// Represents a for loop.
+    /// </summary>
     public class ForLoopStatement : Statement
     {
         /// <summary>

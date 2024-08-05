@@ -1,15 +1,18 @@
 
-using Antlr4.Runtime;
-
 namespace LUIECompiler.Common.Errors
 {
-
+    /// <summary>
+    /// Error types.
+    /// </summary>
     public enum ErrorType
     {
         Warning,
         Critical,
     }
 
+    /// <summary>
+    /// Represents an abstract error that occured during compilation.
+    /// </summary>
     public abstract class CompilationError
     {
         /// <summary>

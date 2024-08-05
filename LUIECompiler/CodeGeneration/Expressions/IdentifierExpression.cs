@@ -1,12 +1,18 @@
 using System.Numerics;
 using LUIECompiler.CodeGeneration.Exceptions;
 using LUIECompiler.Common;
-using LUIECompiler.Common.Symbols;
 
 namespace LUIECompiler.CodeGeneration.Expressions
 {
+    /// <summary>
+    /// Represents an identifier expression which evaluates to the value of the identifier.
+    /// </summary>
+    /// <typeparam name="T">Type of the identifier value.</typeparam>
     public class IdentifierExpression<T> : Expression<T> where T : INumber<T>
     {
+        /// <summary>
+        /// Identifier of the constant.
+        /// </summary>
         public required string Identifier { get; init; }
 
         public override List<string> UndefinedIdentifiers(SymbolTable table)

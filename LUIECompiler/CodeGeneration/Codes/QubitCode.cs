@@ -12,6 +12,9 @@ namespace LUIECompiler.CodeGeneration.Codes
         /// </summary>
         public required RegisterDefinition Register { get; init; }
 
+        /// <summary>
+        /// Unique identifier of the qubit.
+        /// </summary>
         public required UniqueIdentifier Identifier { get; init; }
     
         /// <summary>

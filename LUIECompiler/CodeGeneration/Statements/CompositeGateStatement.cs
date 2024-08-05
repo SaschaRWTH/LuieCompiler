@@ -1,7 +1,11 @@
 using LUIECompiler.CodeGeneration.Codes;
 using LUIECompiler.Common.Symbols;
 
-namespace LUIECompiler.CodeGeneration.Statements { 
+namespace LUIECompiler.CodeGeneration.Statements
+{
+    /// <summary>
+    /// Represents a composite gate statement.
+    /// </summary>
     public class CompositeGateStatement : Statement
     {
         /// <summary>
@@ -19,18 +23,19 @@ namespace LUIECompiler.CodeGeneration.Statements {
         /// </summary>
         /// <returns></returns>
         public override QASMProgram ToQASM(CodeGenerationContext context)
-        {                
+        {
             Dictionary<Parameter, Symbol> parameterMap = context.ParameterMap;
-            foreach(var parameter in Parameters)
+            foreach (var parameter in Parameters)
             {
                 parameterMap[parameter.Key] = parameter.Value;
             }
-      
-            CodeGenerationContext bodyContext = new CodeGenerationContext(context.IntegerConstants, parameterMap){
+
+            CodeGenerationContext bodyContext = new CodeGenerationContext(context.IntegerConstants, parameterMap)
+            {
                 CurrentBlock = context.CurrentBlock,
                 SymbolTable = context.SymbolTable,
             };
-            
+
             return Gate.Body.ToQASM(bodyContext);
         }
     }

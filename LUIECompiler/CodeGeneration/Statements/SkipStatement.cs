@@ -3,6 +3,9 @@ using LUIECompiler.CodeGeneration.Codes;
 
 namespace LUIECompiler.CodeGeneration.Statements
 {
+    /// <summary>
+    /// Represents a skip statement.
+    /// </summary>
     public class SkipStatement : Statement
     {
         public override QASMProgram ToQASM(CodeGenerationContext context)

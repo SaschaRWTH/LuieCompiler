@@ -3,6 +3,9 @@ using LUIECompiler.Common.Symbols;
 
 namespace LUIECompiler.CodeGeneration.Statements
 {
+    /// <summary>
+    /// Represents an if statement.
+    /// </summary>
     public class QuantumIfStatement : Statement
     {
         /// <summary>

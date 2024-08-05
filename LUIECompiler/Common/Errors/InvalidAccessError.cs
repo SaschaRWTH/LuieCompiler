@@ -13,10 +13,23 @@ namespace LUIECompiler.Common.Errors
         /// </summary>
         public string Identifier { get; init; }
 
+        /// <summary>
+        /// Inde that was used to access the register.
+        /// </summary>
         public int InvalidIndex { get; init; } 
 
+        /// <summary>
+        /// Size of the register that was accessed.
+        /// </summary>
         public int RegisterSize { get; init; }
 
+        /// <summary>
+        /// Creates a new invalid access error.
+        /// </summary>
+        /// <param name="context">Context of the register access.</param>
+        /// <param name="identifier">Identifier of the register that was accessed.</param>
+        /// <param name="invalidIndex">Index that was used to access the register.</param>
+        /// <param name="registerSize">Size of the register that was accessed.</param>
         public InvalidAccessError(ErrorContext context, string identifier, int invalidIndex, int registerSize)
         {
             Type = ErrorType.Critical;

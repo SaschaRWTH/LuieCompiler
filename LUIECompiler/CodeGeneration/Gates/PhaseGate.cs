@@ -3,6 +3,9 @@ using LUIECompiler.CodeGeneration.Gates;
 
 namespace LuieCompiler.CodeGeneration.Gates
 {
+    /// <summary>
+    /// Represents a phase gate.
+    /// </summary>
     public class PhaseGate : GateCode
     {
         public required double Parameter { get; init; } 

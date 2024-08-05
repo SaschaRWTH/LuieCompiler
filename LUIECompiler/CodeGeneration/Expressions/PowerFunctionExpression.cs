@@ -6,16 +6,31 @@ using LUIECompiler.Common.Extensions;
 
 namespace LUIECompiler.CodeGeneration.Expressions
 {
-
+    /// <summary>
+    /// Represents a power function expression.
+    /// </summary>
+    /// <typeparam name="T">Type of the result.</typeparam>
     public class PowerFunctionExpression<T> : FunctionExpression<T> where T : INumber<T>
     {
+        /// <summary>
+        /// List of parameters of the function.
+        /// </summary>
         public List<Expression<T>> Parameters { get; init; }
 
+        /// <summary>
+        /// Creates a power function expression from the given <paramref name="parameters"/>.
+        /// </summary>
+        /// <param name="parameters"></param>
         public PowerFunctionExpression(List<Expression<T>> parameters)
         {
             Parameters = parameters;
         }
 
+        /// <summary>
+        /// Creates a power function expression from the given <paramref name="context"/>.
+        /// </summary>
+        /// <param name="context"></param>
+        /// <exception cref="NotImplementedException"></exception>
         public PowerFunctionExpression(LuieParser.FunctionParameterContext context)
         {
             // TODO: Add error handling for wrong parameters

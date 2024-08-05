@@ -1,13 +1,19 @@
 using System.Numerics;
-using LUIECompiler.CodeGeneration.Exceptions;
-using LUIECompiler.Common;
-using LUIECompiler.Common.Errors;
-using LUIECompiler.Common.Symbols;
 
 namespace LUIECompiler.CodeGeneration.Expressions
 {
+    /// <summary>
+    /// Represents an abstract function expression.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public abstract class FunctionExpression<T> : Expression<T> where T : INumber<T>
     {
+        /// <summary>
+        /// Creates a function expression from the given <paramref name="context"/>.
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
         public static FunctionExpression<T> FromContext(LuieParser.FunctionContext context)
         {
             string function = context.func.Text;

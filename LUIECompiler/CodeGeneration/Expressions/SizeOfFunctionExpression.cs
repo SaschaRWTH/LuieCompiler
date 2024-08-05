@@ -7,15 +7,30 @@ using LUIECompiler.Common.Symbols;
 
 namespace LUIECompiler.CodeGeneration.Expressions
 {
+    /// <summary>
+    /// Represents a sizeof function expression.
+    /// </summary>
+    /// <typeparam name="T">Type of the result.</typeparam>
     public class SizeOfFunctionExpression<T> : FunctionExpression<T> where T : INumber<T>
     {
+        /// <summary>
+        /// List of parameters of the function.
+        /// </summary>
         public List<string> Parameter { get; }
 
+        /// <summary>
+        /// Creates a sizeof function expression from the given <paramref name="parameter"/>.
+        /// </summary>
         public SizeOfFunctionExpression(List<string> parameter)
         {
             Parameter = parameter;
         }
 
+        /// <summary>
+        /// Creates a sizeof function expression from the given <paramref name="context"/>.
+        /// </summary>
+        /// <param name="context"></param>
+        /// <exception cref="NotImplementedException"></exception>
         public SizeOfFunctionExpression(LuieParser.FunctionParameterContext context)
         {
             // TODO: Adjust error handling!
@@ -49,13 +64,6 @@ namespace LUIECompiler.CodeGeneration.Expressions
                 {
                     Error = new TypeError(new ErrorContext(), parameter.Identifier, typeof(Register), parameter.GetType()),
                 };
-            }
-
-            // This is a bad solution, but I can not think of a better one right now.
-            List<Constant<int>> intConstants = new();
-            foreach (var constant in context.IntegerConstants)
-            {
-                intConstants.Add(new Constant<int>(constant.Identifier, int.CreateChecked(constant.Value), constant.ErrorContext));
             }
 
             return T.CreateChecked(register.Size.Evaluate(context));

@@ -2,8 +2,18 @@ using LUIECompiler.CodeGeneration.Codes;
 
 namespace LUIECompiler.CodeGeneration.Gates
 {
+    /// <summary>
+    /// Represents the code for an abstract gate.
+    /// </summary>
     public abstract class GateCode : Code
     {
+        /// <summary>
+        /// Return the code string representation of the gate.
+        /// </summary>
+        /// <param name="parameters"></param>
+        /// <param name="negativeGuards"></param>
+        /// <param name="positiveGuards"></param>
+        /// <returns></returns>
         public string GenerateCode(string parameters, List<GuardCode> negativeGuards, List<GuardCode> positiveGuards)
         {
             

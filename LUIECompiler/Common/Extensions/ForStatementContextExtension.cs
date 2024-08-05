@@ -1,5 +1,3 @@
-using LUIECompiler.CodeGeneration.Exceptions;
-using LUIECompiler.Common.Errors;
 using LUIECompiler.Common.Symbols;
 
 namespace LUIECompiler.Common.Extensions

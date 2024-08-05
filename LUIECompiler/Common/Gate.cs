@@ -4,6 +4,9 @@ using LUIECompiler.CodeGeneration.Gates;
 
 namespace LUIECompiler.Common
 {
+    /// <summary>
+    /// Gate types.
+    /// </summary>
     public enum GateType
     {
         X,
@@ -20,6 +23,11 @@ namespace LUIECompiler.Common
 
     public static class GateTypeExtensions
     {
+        /// <summary>
+        /// Converts a string to the corresponding gate type.
+        /// </summary>
+        /// <param name="gate"></param>
+        /// <returns></returns>
         public static GateType FromString(string gate)
         {
             return gate switch
@@ -35,6 +43,11 @@ namespace LUIECompiler.Common
             };
         }
 
+        /// <summary>
+        /// Gets the number of arguments a gate type requires.
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
         public static int GetNumberOfArguments(this GateType type)
         {
             return type switch
@@ -51,6 +64,9 @@ namespace LUIECompiler.Common
         }
     }
 
+    /// <summary>
+    /// Represents a gate.
+    /// </summary>
     public class Gate : IGate
     {
         /// <summary>
@@ -58,8 +74,17 @@ namespace LUIECompiler.Common
         /// </summary>
         public int NumberOfArguments { get => Type.GetNumberOfArguments(); }
 
+        /// <summary>
+        /// Type of the gate.
+        /// </summary>
         public required GateType Type { get; init; }
 
+        /// <summary>
+        /// Converts the gate to gate code.
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
         public virtual GateCode ToGateCode(CodeGenerationContext context)
         {
             return Type switch
@@ -75,6 +100,9 @@ namespace LUIECompiler.Common
         }
     }
 
+    /// <summary>
+    /// Gate interface.
+    /// </summary>
     public interface IGate
     {
         /// <summary>

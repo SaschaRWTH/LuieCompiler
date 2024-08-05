@@ -1,10 +1,12 @@
 using System.Numerics;
 using LUIECompiler.Common;
-using LUIECompiler.Common.Symbols;
 
 namespace LUIECompiler.CodeGeneration.Expressions
 {
-
+    /// <summary>
+    /// Represents a unary operation expression.
+    /// </summary>
+    /// <typeparam name="T">Type of the result.</typeparam>
     public class UnaryOperationExpression<T> : Expression<T> where T : INumber<T>
     {
         /// <summary>

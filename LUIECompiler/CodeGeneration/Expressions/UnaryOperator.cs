@@ -2,11 +2,18 @@ using System.Numerics;
 
 namespace LUIECompiler.CodeGeneration.Expressions
 {
+    /// <summary>
+    /// Represents a unary operator type.
+    /// </summary>
     public enum UnaryOperatorType
     {
         AdditiveInverse,
     }
 
+    /// <summary>
+    /// Represents a unary operator.
+    /// </summary>
+    /// <typeparam name="T">Type of the result.</typeparam>
     public class UnaryOperator<T> where T : INumber<T>
     {
         /// <summary>

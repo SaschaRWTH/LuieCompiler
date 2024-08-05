@@ -23,6 +23,9 @@ namespace LUIECompiler.CodeGeneration
         /// </summary>
         public required SymbolTable SymbolTable { get; init; }
 
+        /// <summary>
+        /// Maps the parameters to the corresponding symbols for the current context.
+        /// </summary>
         public Dictionary<Parameter, Symbol> ParameterMap { get; } = [];
 
         public CodeGenerationContext()

@@ -6,7 +6,7 @@ using LUIECompiler.Common.Errors;
 namespace LUIECompiler.Common.Symbols
 {
     /// <summary>
-    /// Represents a parameter in the code generation.
+    /// Represents an access to a parameter in the code generation.
     /// </summary>
     public class ParameterAccess : Parameter
     {
@@ -20,6 +20,12 @@ namespace LUIECompiler.Common.Symbols
         /// </summary>
         public Parameter Parameter { get; }
 
+        /// <summary>
+        /// Creates a new parameter access.
+        /// </summary>
+        /// <param name="parameter">Parameter being accessed.</param>
+        /// <param name="indexExpression">Expression that evaluates to the index of the qubit in the <see cref="Register"/>.</param>
+        /// <param name="errorContext">Context of the parameter access.</param>
         public ParameterAccess(Parameter parameter, Expression<int> indexExpression, ErrorContext errorContext) : base(parameter.Identifier, errorContext) 
         { 
             Parameter = parameter;

@@ -1,4 +1,3 @@
-using LUIECompiler.CodeGeneration.Exceptions;
 using LUIECompiler.CodeGeneration.Expressions;
 using LUIECompiler.Common.Errors;
 using LUIECompiler.Common.Symbols;
@@ -8,8 +7,6 @@ namespace LUIECompiler.Common.Extensions
 {
     public static class RegisterDeclarationContextExtension
     {
-
-
         /// <summary>
         /// Checks whether a size is given in the context.
         /// </summary>
@@ -20,6 +17,11 @@ namespace LUIECompiler.Common.Extensions
             return context.size != null;
         }
 
+        /// <summary>
+        /// Gets the size of the register definition.
+        /// </summary>
+        /// <param name="context"></param>
+        /// <returns></returns>
         public static Expression<int> GetSize(this LuieParser.RegisterDeclarationContext context)
         {
             return context.size.GetExpression<int>();

@@ -6,6 +6,13 @@ namespace LUIECompiler.Common.Extensions
 {
     public static class GateContextExtension
     {
+        /// <summary>
+        /// Get the gate from the gate context.
+        /// </summary>
+        /// <param name="context"></param>
+        /// <param name="symbolTable"></param>
+        /// <returns></returns>
+        /// <exception cref="CodeGenerationException"></exception>
         public static IGate GetGate(this LuieParser.GateContext context, SymbolTable symbolTable)
         {
             if (context.type?.Text is string type)
@@ -32,6 +39,11 @@ namespace LUIECompiler.Common.Extensions
             return compositeGate;
         }
 
+        /// <summary>
+        /// Gets a predefined gate from a string.
+        /// </summary>
+        /// <param name="gate"></param>
+        /// <returns></returns>
         private static Gate ConstantFromString(string gate)
         {
             GateType type = GateTypeExtensions.FromString(gate);
@@ -42,6 +54,12 @@ namespace LUIECompiler.Common.Extensions
             };
         }
 
+        /// <summary>
+        /// Gets a parameterized gate from a string.
+        /// </summary>
+        /// <param name="gate"></param>
+        /// <param name="expression"></param>
+        /// <returns></returns>
         private static ParameterizedGate ParameterizedGateFromString(string gate, LuieParser.ExpressionContext expression)
         {
             GateType type = GateTypeExtensions.FromString(gate);

@@ -3,6 +3,9 @@ using LUIECompiler.Common.Errors;
 
 namespace LUIECompiler.Common.Symbols
 {
+    /// <summary>
+    /// Represents a loop iterator.
+    /// </summary>
     public class LoopIterator : Symbol
     {
         /// <summary>
@@ -15,6 +18,13 @@ namespace LUIECompiler.Common.Symbols
         /// </summary>
         public Expression<int> End { get; init; }
 
+        /// <summary>
+        /// Creates a new loop iterator.
+        /// </summary>
+        /// <param name="identifier">Identifier of the loop iterator.</param>
+        /// <param name="start">Start value of the loop.</param>
+        /// <param name="end">End value of the loop.</param>
+        /// <param name="errorContext">Context of the loop iterator definition.</param>
         public LoopIterator(string identifier, Expression<int> start, Expression<int> end, ErrorContext errorContext) : base(identifier, errorContext)
         {
             Start = start;

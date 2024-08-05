@@ -10,10 +10,15 @@ namespace LUIECompiler.Common.Symbols
     /// </summary>
     public class Parameter : Symbol
     {
+        /// <summary>
+        /// Creates a new parameter.
+        /// </summary>
+        /// <param name="identifier">Identifier of the parameter.</param>
+        /// <param name="errorContext">Context of the parameter definition.</param>
         public Parameter(string identifier, ErrorContext errorContext) : base(identifier, errorContext) { }
 
         /// <summary>
-        /// Mapps the parameter to the register in the given context.
+        /// Maps the parameter to the register in the given context.
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>

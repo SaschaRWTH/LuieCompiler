@@ -1,5 +1,4 @@
 using System.Numerics;
-using LUIECompiler.CodeGeneration.Exceptions;
 using LUIECompiler.CodeGeneration.Expressions;
 
 namespace LUIECompiler.Common.Extensions
