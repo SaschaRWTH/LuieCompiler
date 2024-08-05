@@ -40,6 +40,12 @@ public class GeneralTest
 
     public const string QFTGate =
         @"
+            gate swap(a, b) do
+                cx a, b;
+                cx b, a;
+                cx a, b;
+            end
+
             gate qft(reg) do
                 for i in range(sizeof(reg)) do
                     h reg[i];
@@ -48,6 +54,9 @@ public class GeneralTest
                             p(1/(power(2, (j + 1)))) reg[i];
                         end
                     end
+                end
+                for j in range(sizeof(reg) / 2) do
+                    swap reg[j], reg[sizeof(reg) - (j + 1)];
                 end
             end
             qubit[5] a;
@@ -69,7 +78,13 @@ public class GeneralTest
         "ctrl(1) @ p(pi * 0.25) id0[4], id0[2];\n" +
         "h id0[3];\n" +
         "ctrl(1) @ p(pi * 0.5) id0[4], id0[3];\n" +
-        "h id0[4];\n";
+        "h id0[4];\n" +
+        "cx id0[0], id0[4];\n" +
+        "cx id0[4], id0[0];\n" +
+        "cx id0[0], id0[4];\n" +
+        "cx id0[1], id0[3];\n" +
+        "cx id0[3], id0[1];\n" +
+        "cx id0[1], id0[3];\n";
         
 
 
