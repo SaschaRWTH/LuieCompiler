@@ -25,7 +25,7 @@ namespace LUIECompiler
             // "qubit[5] b;\n" +
             // "hReg b;";
 
-            using(var reader = new StreamReader("LUIECompiler/examples/qft.luie"))
+            using(var reader = new StreamReader("examples/qft.luie"))
             {
                 input = reader.ReadToEnd();
             }
