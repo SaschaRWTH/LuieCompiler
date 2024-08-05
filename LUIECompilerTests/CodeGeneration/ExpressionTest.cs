@@ -33,6 +33,15 @@ public class ExpressionTest
     public const string PowerExample = "power(2, 5)";
     public const int PowerExampleResult = 32;
 
+    public const string MinExample = "min(2, 5)";
+    public const int MinResult = 2;
+
+    public const string MaxExample = "max(2, 5)";
+    public const int MaxResult = 5;
+
+    public const string MinMaxExample = "max(min(4, max(0, 100)), 3)";
+    public const int MinMaxResult = 4;
+
     public const string SizeOfFunctionExpressionInput =
         "qubit[3] a;\n" +
         "qubit[sizeof(a)] b;\n" +
@@ -275,4 +284,60 @@ public class ExpressionTest
 
         Assert.AreEqual(SizeOfAccessTranslation, result);
     }
+
+    
+    /// <summary>
+    /// Tests the min function.
+    /// </summary>
+    [TestMethod]
+    public void MinTest()
+    {
+        var walker = Utils.GetWalker();
+        var parser = Utils.GetParser(MinExample);
+
+        var codegen = new ExpressionListener();
+        walker.Walk(codegen, parser.expression());
+
+        int? result = codegen.Result;
+        Assert.IsNotNull(result);
+
+        Assert.AreEqual(MinResult, result);
+    }
+    
+    /// <summary>
+    /// Tests the min function.
+    /// </summary>
+    [TestMethod]
+    public void MaxTest()
+    {
+        var walker = Utils.GetWalker();
+        var parser = Utils.GetParser(MaxExample);
+
+        var codegen = new ExpressionListener();
+        walker.Walk(codegen, parser.expression());
+
+        int? result = codegen.Result;
+        Assert.IsNotNull(result);
+
+        Assert.AreEqual(MaxResult, result);
+    }
+    
+    /// <summary>
+    /// Tests the min function.
+    /// </summary>
+    [TestMethod]
+    public void MinMaxTest()
+    {
+        var walker = Utils.GetWalker();
+        var parser = Utils.GetParser(MinMaxExample);
+
+        var codegen = new ExpressionListener();
+        walker.Walk(codegen, parser.expression());
+
+        int? result = codegen.Result;
+        Assert.IsNotNull(result);
+
+        Assert.AreEqual(MinMaxResult, result);
+    }
+
 }
