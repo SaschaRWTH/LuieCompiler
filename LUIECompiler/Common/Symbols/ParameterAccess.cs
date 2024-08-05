@@ -41,9 +41,20 @@ namespace LUIECompiler.Common.Symbols
             return new RegisterAccess(register, IndexExpression, ErrorContext);
         }
 
+        public override Symbol GetSymbol(CodeGenerationContext context)
+        {
+            Register register = Parameter.GetSymbol(context) as Register ?? throw new CodeGenerationException()
+            {
+                Error = new TypeError(ErrorContext, Identifier, typeof(Register), Parameter.GetSymbol(context).GetType()),
+            };
+
+            return register.ToRegisterAccess(IndexExpression, ErrorContext);
+             
+        }
+
         public override string ToString()
         {
-            return $"Parameter: {{ id={Identifier}, index={IndexExpression} }}";
+            return $"Parameter = {{ id={Identifier}, index={IndexExpression}, Hash={GetHashCode()}, Parameter={Parameter} }}";
         }
     }
 }

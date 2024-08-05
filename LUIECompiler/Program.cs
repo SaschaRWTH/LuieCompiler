@@ -30,7 +30,6 @@ namespace LUIECompiler
                 input = reader.ReadToEnd();
             }
             
-            
             Console.WriteLine("--- LUIE Compiler ---");
             Console.WriteLine("Using input:");
             Console.WriteLine(input);

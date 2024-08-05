@@ -106,7 +106,7 @@ namespace LUIECompiler.Common.Extensions
             {
                 return parameter;
             }
-
+            
             return new ParameterAccess(parameter, index, new ErrorContext(context));
         }
     }

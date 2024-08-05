@@ -27,6 +27,11 @@ namespace LUIECompiler.Common.Symbols
         {
             return $"Register: {{ Identifier = {Identifier}, size = {Size} }}";
         }
+
+        public RegisterAccess ToRegisterAccess(Expression<int> indexExpression, ErrorContext? errorContext = null)
+        {
+            return new RegisterAccess(this, indexExpression, errorContext ?? ErrorContext);
+        }
     }
 
 }

@@ -1,5 +1,4 @@
 using LUIECompiler.CodeGeneration.Codes;
-using LUIECompiler.CodeGeneration.Gates;
 using LUIECompiler.Common.Symbols;
 
 namespace LUIECompiler.CodeGeneration.Statements { 
@@ -20,12 +19,13 @@ namespace LUIECompiler.CodeGeneration.Statements {
         /// </summary>
         /// <returns></returns>
         public override QASMProgram ToQASM(CodeGenerationContext context)
-        {
+        {                
             Dictionary<Parameter, Symbol> parameterMap = context.ParameterMap;
             foreach(var parameter in Parameters)
             {
                 parameterMap[parameter.Key] = parameter.Value;
             }
+      
             CodeGenerationContext bodyContext = new CodeGenerationContext(context.IntegerConstants, parameterMap){
                 CurrentBlock = context.CurrentBlock,
                 SymbolTable = context.SymbolTable,

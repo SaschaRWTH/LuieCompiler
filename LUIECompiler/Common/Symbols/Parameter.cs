@@ -32,7 +32,7 @@ namespace LUIECompiler.Common.Symbols
         /// <param name="context"></param>
         /// <returns></returns>
         /// <exception cref="CodeGenerationException"></exception>
-        public Symbol GetSymbol(CodeGenerationContext context)
+        public virtual Symbol GetSymbol(CodeGenerationContext context)
         {
             if (!context.ParameterMap.TryGetValue(this, out Symbol? symbol))
             {
@@ -53,7 +53,7 @@ namespace LUIECompiler.Common.Symbols
 
         public override string ToString()
         {
-            return $"Parameter: {{ id={Identifier} }}";
+            return $"Parameter = {{ id={Identifier}, Hash={GetHashCode()} }}";
         }
     }
 }
