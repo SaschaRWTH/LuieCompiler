@@ -58,7 +58,12 @@ namespace LUIECompiler.CodeGeneration.Expressions
 
         public override List<string> UndefinedIdentifiers(SymbolTable table)
         {
-            throw new NotImplementedException();
+            List<string> result = new List<string>();
+            foreach (var parameter in Parameters)
+            {
+                result.AddRange(parameter.UndefinedIdentifiers(table));
+            }
+            return result;
         }
 
         public override string ToString()
