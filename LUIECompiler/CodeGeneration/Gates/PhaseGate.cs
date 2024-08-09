@@ -1,4 +1,5 @@
 using System.Globalization;
+using LUIECompiler.CodeGeneration.Codes;
 using LUIECompiler.CodeGeneration.Gates;
 
 namespace LuieCompiler.CodeGeneration.Gates
@@ -8,7 +9,12 @@ namespace LuieCompiler.CodeGeneration.Gates
     /// </summary>
     public class PhaseGate : GateCode
     {
-        public required double Parameter { get; init; } 
+        public required double Parameter { get; init; }
+
+        public override bool SemanticallyEqual(Code code)
+        {
+            return code is PhaseGate;
+        }
 
         public override string ToCode()
         {

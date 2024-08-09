@@ -47,5 +47,32 @@ namespace LUIECompiler.CodeGeneration.Codes
             return Gate.GenerateCode(GetParameters(), NegativeGuards, PositiveGuards);
         }
 
+        public override bool SemanticallyEqual(Code code)
+        {
+            if (code is not GateApplicationCode gateCode)
+            {
+
+                return false;
+            }
+
+            foreach(QubitCode param in Parameters)
+            {
+                // TODO: Check is this check is correct
+                if (!gateCode.Parameters.Any(p => p.SemanticallyEqual(param)))
+                {
+                    return false;
+                }
+            }
+
+            foreach(GuardCode guard in Guards)
+            {
+                if (!gateCode.Guards.Any(g => g.SemanticallyEqual(guard)))
+                {
+                    return false;
+                }
+            }
+
+            return Gate.SemanticallyEqual(gateCode.Gate);
+        }
     }
 }

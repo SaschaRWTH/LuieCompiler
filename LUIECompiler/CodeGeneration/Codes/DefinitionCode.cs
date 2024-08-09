@@ -19,6 +19,16 @@ namespace LUIECompiler.CodeGeneration.Codes
         /// </summary>
         public required int Size { get; init; }
 
+        public override bool SemanticallyEqual(Code code)
+        {
+            if (code is not DefinitionCode definitionCode)
+            {
+                return false;
+            }
+
+            return Identifier == definitionCode.Identifier;
+        }
+
         public override string ToCode()
         {
             if (Size == 1)
@@ -28,5 +38,7 @@ namespace LUIECompiler.CodeGeneration.Codes
 
             return $"qubit[{Size}] {Identifier.Identifier};";
         }
+
+        
     }
 }

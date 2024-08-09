@@ -1,4 +1,6 @@
 
+using LUIECompiler.CodeGeneration.Codes;
+
 namespace LUIECompiler.CodeGeneration.Gates
 {
     /// <summary>
@@ -6,6 +8,10 @@ namespace LUIECompiler.CodeGeneration.Gates
     /// </summary>
     public class XGate : GateCode
     {
+        public override bool SemanticallyEqual(Code code)
+        {
+            return code is XGate;
+        }
 
         public override string ToCode()
         {

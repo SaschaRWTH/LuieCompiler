@@ -9,7 +9,7 @@ namespace LUIECompiler.CodeGeneration.Codes
         /// Index in the register to access.
         /// </summary>
         public required int Index { get; init; }
-    
+
         /// <summary>
         /// Unique identifier of the register.
         /// </summary>
@@ -18,6 +18,15 @@ namespace LUIECompiler.CodeGeneration.Codes
         public override string ToCode()
         {
             return $"{Identifier.Identifier}[{Index}]";
-        } 
+        }
+
+        public override bool SemanticallyEqual(Code code)
+        {
+            if (code is not RegisterAccessCode regAccess)
+            {
+                return false;
+            }
+            return base.SemanticallyEqual(code) && regAccess.Index == Index;
+        }
     }
 }
