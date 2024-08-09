@@ -1,3 +1,4 @@
+using System.Reflection.Metadata;
 using LUIECompiler.CodeGeneration.Gates;
 using LUIECompiler.Common;
 
@@ -55,24 +56,49 @@ namespace LUIECompiler.CodeGeneration.Codes
                 return false;
             }
 
-            foreach(QubitCode param in Parameters)
-            {
-                // TODO: Check is this check is correct
-                if (!gateCode.Parameters.Any(p => p.SemanticallyEqual(param)))
-                {
-                    return false;
-                }
-            }
+            CheckParameterSemanticEquality(gateCode.Parameters);
 
-            foreach(GuardCode guard in Guards)
+            // Guards are independent of order and amounts (i.e. ctrl(2) @ q, q = ctrl(1) @ q)
+            // Therefore we only need to check mutually inclusivity of semantically equal guards
+            foreach (GuardCode guard in Guards)
             {
                 if (!gateCode.Guards.Any(g => g.SemanticallyEqual(guard)))
                 {
                     return false;
                 }
             }
+            foreach (GuardCode guard in gateCode.Guards)
+            {
+                if (!Guards.Any(g => g.SemanticallyEqual(guard)))
+                {
+                    return false;
+                }
+            }
 
             return Gate.SemanticallyEqual(gateCode.Gate);
+        }
+
+        /// <summary>
+        /// Checks if the parameters of the gate application are semantically equal to the <paramref name="parameter"/>.
+        /// </summary>
+        /// <param name="parameter"></param>
+        /// <returns></returns>
+        protected bool CheckParameterSemanticEquality(List<QubitCode> parameter)
+        {
+            if (parameter.Count != Parameters.Count)
+            {
+                return false;
+            }
+
+            for (int i = 0; i < Parameters.Count; i++)
+            {
+                if (!Parameters[i].SemanticallyEqual(parameter[i]))
+                {
+                    return false;
+                }
+            }
+
+            return true;
         }
     }
 }
