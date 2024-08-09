@@ -1,6 +1,5 @@
 using Antlr4.Runtime.Misc;
 using LUIECompiler.CodeGeneration;
-using LUIECompiler.CodeGeneration.Gates;
 using LUIECompiler.CodeGeneration.Expressions;
 using LUIECompiler.Common;
 using LUIECompiler.Common.Errors;

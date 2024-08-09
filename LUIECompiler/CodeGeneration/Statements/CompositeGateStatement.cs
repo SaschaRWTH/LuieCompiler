@@ -24,7 +24,11 @@ namespace LUIECompiler.CodeGeneration.Statements
         /// <returns></returns>
         public override QASMProgram ToQASM(CodeGenerationContext context)
         {
-            Dictionary<Parameter, Symbol> parameterMap = context.ParameterMap;
+            Dictionary<Parameter, Symbol> parameterMap = [];
+            foreach(var parameter in context.ParameterMap)
+            {
+                parameterMap[parameter.Key] = parameter.Value;
+            }
             foreach (var parameter in Parameters)
             {
                 parameterMap[parameter.Key] = parameter.Value;

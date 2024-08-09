@@ -16,5 +16,19 @@ namespace LUIECompiler.CodeGeneration.Definitions
         {
             Identifier = table.UniqueIdentifier;
         }
+
+        public override bool Equals(object? obj)
+        {
+            if (obj is not UniqueIdentifier identifier)
+            {
+                return false;
+            }
+            return Identifier == identifier.Identifier;
+        }
+
+        public override int GetHashCode()
+        {
+            return Identifier.GetHashCode();
+        }
     }
 }

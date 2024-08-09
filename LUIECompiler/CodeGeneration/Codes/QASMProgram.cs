@@ -1,4 +1,5 @@
-using LUIECompiler.Common;
+
+using LUIECompiler.Optimization;
 
 namespace LUIECompiler.CodeGeneration.Codes
 {
@@ -106,6 +107,21 @@ namespace LUIECompiler.CodeGeneration.Codes
                 code += $"{line.ToCode()}\n";
             }
             return code;
+        }
+
+        /// <summary>
+        /// Optimizes the program and returns the number by which the gate count was reduced.
+        /// </summary>
+        /// <returns></returns>
+        public int Optimize()
+        {
+            int gateCount = Code.Count(c => c is GateApplicationCode);
+
+            OptimizationHandler handler = new(this);
+
+            handler.OptimizeSingleQubitNullGates();
+
+            return gateCount - Code.Count(c => c is GateApplicationCode);
         }
     }
 }

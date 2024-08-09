@@ -128,10 +128,14 @@ fragment PHASEGATE  : 'p';
 FUNCTION
  : SIZEOF
  | POWER
+ | MIN
+ | MAX
  ;
 
 fragment SIZEOF : 'sizeof';
 fragment POWER : 'power';
+fragment MIN : 'min';
+fragment MAX : 'max';
 
 RANGE : 'range';
 

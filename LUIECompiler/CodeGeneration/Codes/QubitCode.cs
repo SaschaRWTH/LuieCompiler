@@ -25,5 +25,15 @@ namespace LUIECompiler.CodeGeneration.Codes
         {
             return Identifier.Identifier;
         } 
+
+        public override bool SemanticallyEqual(Code code)
+        {
+            if (code is not QubitCode qubitCode)
+            {
+                return false;
+            }
+
+            return Identifier == qubitCode.Identifier;
+        }
     }
 }

@@ -1,6 +1,6 @@
 
 using LUIECompiler.CodeGeneration;
-using LUIECompiler.CodeGeneration.Gates;
+using LUIECompiler.CodeGeneration.Codes;
 
 namespace LUIECompiler.Common
 {
@@ -62,6 +62,21 @@ namespace LUIECompiler.Common
                 _ => 0,
             };
         }
+
+        public static string ToCode(this GateType type)
+        {
+            return type switch
+            {
+                GateType.X => "x",
+                GateType.Y => "y",
+                GateType.Z => "z",
+                GateType.H => "h",
+                GateType.CX => "cx",
+                GateType.CCX => "ccx",
+                GateType.P => "p",
+                _ => throw new NotImplementedException(),
+            };
+        }
     }
 
     /// <summary>
@@ -84,19 +99,9 @@ namespace LUIECompiler.Common
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        /// <exception cref="NotImplementedException"></exception>
         public virtual GateCode ToGateCode(CodeGenerationContext context)
         {
-            return Type switch
-            {
-                GateType.X => new XGate(),
-                GateType.Y => new YGate(),
-                GateType.Z => new ZGate(),
-                GateType.H => new HGate(),
-                GateType.CX => new ControlledXGate(),
-                GateType.CCX => new ControlledControlledXGate(),
-                _ => throw new NotImplementedException()
-            };
+            return new GateCode(Type);
         }
     }
 
