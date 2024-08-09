@@ -10,5 +10,10 @@ namespace LUIECompiler.Optimization
         {
             Program = program;
         }
+
+        public void OptimizeSingleQubitNullGates()
+        {
+            
+        }
     }
 }

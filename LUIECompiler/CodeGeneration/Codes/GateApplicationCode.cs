@@ -1,6 +1,3 @@
-using System.Reflection.Metadata;
-using LUIECompiler.CodeGeneration.Gates;
-using LUIECompiler.Common;
 
 namespace LUIECompiler.CodeGeneration.Codes
 {
@@ -45,7 +42,27 @@ namespace LUIECompiler.CodeGeneration.Codes
 
         public override string ToCode()
         {
-            return Gate.GenerateCode(GetParameters(), NegativeGuards, PositiveGuards);
+            string parameters = GetParameters();
+
+            if (NegativeGuards.Count == 0 && PositiveGuards.Count == 0)
+            {
+                return $"{Gate.ToCode()} {parameters};";
+            }
+
+            if (NegativeGuards.Count == 0)
+            {
+                return $"ctrl({PositiveGuards.Count}) @ {Gate.ToCode()} {string.Join(", ", PositiveGuards.Select(g => g.ToCode()))}, {parameters};";
+            }
+
+            if (PositiveGuards.Count == 0)
+            {
+                return $"negctrl({NegativeGuards.Count}) @ {Gate.ToCode()} {string.Join(", ", NegativeGuards.Select(g => g.ToCode()))}, {parameters};";
+            }
+
+
+            return $"negctrl({NegativeGuards.Count}) @ ctrl({PositiveGuards.Count}) @" +
+                   $"{Gate.ToCode()} {string.Join(", ", NegativeGuards.Select(g => g.ToCode()))}," +
+                   $"{string.Join(", ", PositiveGuards.Select(g => g.ToCode()))}, {parameters};";
         }
 
         public override bool SemanticallyEqual(Code code)
