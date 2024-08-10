@@ -109,19 +109,29 @@ namespace LUIECompiler.CodeGeneration.Codes
             return code;
         }
 
+        public QASMProgram ShallowCopy()
+        {
+            return new()
+            {
+                Code = [.. Code],
+            };
+        }
+
         /// <summary>
         /// Optimizes the program and returns the number by which the gate count was reduced.
         /// </summary>
         /// <returns></returns>
-        public int Optimize()
+        public QASMProgram Optimize()
         {
             int gateCount = Code.Count(c => c is GateApplicationCode);
+            Console.WriteLine($"Optimizing program with {gateCount} gates.");
 
             OptimizationHandler handler = new(this);
 
-            handler.OptimizeSingleQubitNullGates();
+            QASMProgram program = handler.OptimizeSingleQubitNullGates();
 
-            return gateCount - Code.Count(c => c is GateApplicationCode);
+            Console.WriteLine($"Optimized, {gateCount} gates left.");
+            return program;
         }
     }
 }

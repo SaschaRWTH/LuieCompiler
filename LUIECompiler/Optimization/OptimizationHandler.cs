@@ -10,14 +10,22 @@ namespace LUIECompiler.Optimization
 
         public OptimizationHandler(QASMProgram program)
         {
-            Program = program;
+            Program = program.ShallowCopy();
         }
 
-        public void OptimizeSingleQubitNullGates()
+        public QASMProgram OptimizeSingleQubitNullGates()
         {
             HoistDefinitions();
             List<QASMSubsequence> independentSequences = FindIndependentSequences();
             ApplyRules(NullGateRule.NullGateRules, NullGateRule.MaxRuleLength, independentSequences);
+
+            Console.WriteLine("Optimized code:");
+            foreach (Code c in Program.Code)
+            {
+                Console.WriteLine(c);
+            }
+
+            return Program;
         }
 
         /// <summary>
@@ -55,12 +63,13 @@ namespace LUIECompiler.Optimization
 
                 if (!independent.IndependentOf(gateCode))
                 {
-                    independentSequences.Add(independent);
+                    independent.Code.Add(gateCode);
                 }
                 else
                 {
                     independent = new(i, Program);
                     independentSequences.Add(independent);
+                    independent.Code.Add(gateCode);
                 }
             }
 
@@ -70,13 +79,15 @@ namespace LUIECompiler.Optimization
         public void ApplyRules(IEnumerable<IRule> rules, int maxDepth, List<QASMSubsequence> independentSequences)
         {
             List<CodeSequence> code = [];
-            foreach(QASMSubsequence subsequence in independentSequences)
+            foreach (QASMSubsequence subsequence in independentSequences)
             {
                 CodeSequence optimized = ApplyRules(rules, maxDepth, subsequence.ToCodeSequence());
                 code.Add(optimized);
             }
+
             List<Code> optimizedCode = Program.Code.Where(c => c is DefinitionCode).ToList();
             optimizedCode.AddRange(code.SelectMany(c => c.Code));
+
             Program.Code = optimizedCode;
         }
 
@@ -96,7 +107,10 @@ namespace LUIECompiler.Optimization
             while (tryAgain)
             {
                 tryAgain = result.ApplyRules(rules, maxDepth, out CodeSequence optimized);
-                result = optimized;
+                if (tryAgain)
+                {
+                    result = optimized;
+                }
             }
 
             return result;

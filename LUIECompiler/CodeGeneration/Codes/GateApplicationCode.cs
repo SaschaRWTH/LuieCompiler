@@ -167,5 +167,10 @@ namespace LUIECompiler.CodeGeneration.Codes
 
             return !Parameters.Any(p => code.Parameters.Any(p.SemanticallyEqual));
         }
+
+        public override string ToString()
+        {
+            return $"GateApplicationCode: {Gate.ToCode()}";
+        }
     }
 }

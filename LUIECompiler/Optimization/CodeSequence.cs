@@ -88,8 +88,8 @@ namespace LUIECompiler.Optimization
                 return new CodeSubsequence(this);
             }
 
-            int cappedCount = Math.Min(count, (Code.Count - 1) - index);
-            return new CodeSubsequence(this, cappedCount, Code.GetRange(index, cappedCount));
+            int cappedCount = Math.Min(count, Code.Count - index);
+            return new CodeSubsequence(this, index, Code.GetRange(index, cappedCount));
         }
 
         /// <summary>
@@ -104,8 +104,8 @@ namespace LUIECompiler.Optimization
             optimized = new();
             for(int i = 0; i < Count; i++)
             {   
-                // Start at 1, a subsequence of length 0 cannot be optimized.
-                for(int j = 1; j < maxDepth && i + j < Count; j++)
+                // Start at 2, a subsequence of length 0 or 1 cannot be optimized.
+                for(int j = 2; j <= maxDepth && i + j <= Count; j++)
                 {
                     CodeSubsequence subSequence = GetSubSequence(i, j);
                     if(subSequence.TryApplyRules(rules, out CodeSequence optimizedSeq))
@@ -118,9 +118,13 @@ namespace LUIECompiler.Optimization
             return false;
         }
 
-        public QASMProgram ToQASMProgram()
+        public override string ToString()
         {
-            return new(Code);
+            string str = $"CodeSequence (Count = {Count}): \n";
+            str += "{\n\t";
+            str += string.Join(",\n\t ", Code.Select(c => c.ToString()));
+            str += "\r}";
+            return str;
         }
     }
 }
