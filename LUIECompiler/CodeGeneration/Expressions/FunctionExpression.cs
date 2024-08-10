@@ -21,6 +21,8 @@ namespace LUIECompiler.CodeGeneration.Expressions
             {
                 "sizeof" => new SizeOfFunctionExpression<T>(context.param),
                 "power" => new PowerFunctionExpression<T>(context.param),
+                "min" => new MinimumFunctionExpression<T>(context.param),
+                "max" => new MaximumFunctionExpression<T>(context.param),
                 _ => throw new NotImplementedException(),
             };
         } 

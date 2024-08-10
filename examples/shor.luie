@@ -1,3 +1,17 @@
+gate h_reg(reg) do
+    for i in range(sizeof(reg)) do
+        h reg[i];
+    end
+end
+
+// Applies the unitary operator U_f to a register of qubits,
+// where f(x) = x mod 2
+gate u_f(reg, out) do
+    for i in range(min(sizeof(reg), sizeof(out)) - 1) do
+        cx reg[i+1], out[i+1];
+    end
+end
+
 // Swaps the values of two qubits
 gate swap(a, b) do
     cx a, b;
@@ -21,4 +35,10 @@ gate qft(reg) do
 end
 
 qubit[5] a;
+qubit[5] out;
+
+h_reg a;
+
+u_f a, out;
+
 qft a;

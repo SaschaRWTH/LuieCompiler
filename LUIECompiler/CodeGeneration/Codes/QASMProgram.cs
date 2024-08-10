@@ -1,4 +1,5 @@
-using LUIECompiler.Common;
+
+using LUIECompiler.Optimization;
 
 namespace LUIECompiler.CodeGeneration.Codes
 {
@@ -7,7 +8,7 @@ namespace LUIECompiler.CodeGeneration.Codes
         /// <summary>
         /// List of all code lines/entries in the program. 
         /// </summary>
-        public List<Code> Code { get; init; } = [];
+        public List<Code> Code { get; set; } = [];
 
         /// <summary>
         /// Creates an empty instance of <see cref="QASMProgram"/>.
@@ -106,6 +107,31 @@ namespace LUIECompiler.CodeGeneration.Codes
                 code += $"{line.ToCode()}\n";
             }
             return code;
+        }
+
+        public QASMProgram ShallowCopy()
+        {
+            return new()
+            {
+                Code = [.. Code],
+            };
+        }
+
+        /// <summary>
+        /// Optimizes the program and returns the number by which the gate count was reduced.
+        /// </summary>
+        /// <returns></returns>
+        public QASMProgram Optimize()
+        {
+            int gateCount = Code.Count(c => c is GateApplicationCode);
+            Console.WriteLine($"Optimizing program with {gateCount} gates.");
+
+            OptimizationHandler handler = new(this);
+
+            QASMProgram program = handler.OptimizeSingleQubitNullGates();
+
+            Console.WriteLine($"Optimized, {gateCount} gates left.");
+            return program;
         }
     }
 }
