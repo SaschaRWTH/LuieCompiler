@@ -90,7 +90,7 @@ namespace LUIECompiler.Optimization.Rules
 
             for (int i = 0; i < NullGateCombination.Length; i++)
             {
-                if(code.Codes[i] is not GateApplicationCode gateApplicationCode)
+                if(code.Code[i] is not GateApplicationCode gateApplicationCode)
                 {
                     throw new InternalException()
                     {

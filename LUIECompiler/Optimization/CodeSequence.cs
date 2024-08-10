@@ -11,14 +11,14 @@ namespace LUIECompiler.Optimization
         /// <summary>
         /// List of codes in the sequence.
         /// </summary>
-        public List<Code> Codes { get; }
+        public List<Code> Code { get; }
 
         /// <summary>
         /// Indicates whether the sequence is empty.
         /// </summary>
         public bool IsEmpty
         {
-            get => Codes.Count == 0;
+            get => Code.Count == 0;
         }
 
         /// <summary>
@@ -26,7 +26,7 @@ namespace LUIECompiler.Optimization
         /// </summary>
         public int Count
         {
-            get => Codes.Count;
+            get => Code.Count;
         }
 
         /// <summary>
@@ -34,7 +34,7 @@ namespace LUIECompiler.Optimization
         /// </summary>
         public bool OnlyGatesApplications
         {
-            get => Codes.All(code => code is GateApplicationCode);
+            get => Code.All(code => code is GateApplicationCode);
         }
 
         /// <summary>
@@ -48,7 +48,7 @@ namespace LUIECompiler.Optimization
                 {
                     return true;
                 }
-                return Codes.All(code => code.SemanticallyEqual(Codes[0]));
+                return Code.All(code => code.SemanticallyEqual(Code[0]));
             }
         }
 
@@ -57,7 +57,7 @@ namespace LUIECompiler.Optimization
         /// </summary>
         public CodeSequence()
         {
-            Codes = [];
+            Code = [];
         }
 
 
@@ -67,7 +67,7 @@ namespace LUIECompiler.Optimization
         /// <param name="codes">Sequence of codes.</param>
         public CodeSequence(List<Code> codes)
         {
-            Codes = codes;
+            Code = codes;
         }
 
         /// <summary>
@@ -78,7 +78,7 @@ namespace LUIECompiler.Optimization
         /// <returns></returns>
         public CodeSubsequence GetSubSequence(int index, int count)
         {
-            if (index < 0 || index >= Codes.Count)
+            if (index < 0 || index >= Code.Count)
             {
                 return new CodeSubsequence(this);
             }
@@ -88,8 +88,8 @@ namespace LUIECompiler.Optimization
                 return new CodeSubsequence(this);
             }
 
-            int cappedCount = Math.Min(count, (Codes.Count - 1) - index);
-            return new CodeSubsequence(this, cappedCount, Codes.GetRange(index, cappedCount));
+            int cappedCount = Math.Min(count, (Code.Count - 1) - index);
+            return new CodeSubsequence(this, cappedCount, Code.GetRange(index, cappedCount));
         }
 
         /// <summary>
@@ -116,6 +116,11 @@ namespace LUIECompiler.Optimization
                 }
             }
             return false;
+        }
+
+        public QASMProgram ToQASMProgram()
+        {
+            return new(Code);
         }
     }
 }

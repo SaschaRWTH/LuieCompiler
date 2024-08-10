@@ -8,7 +8,7 @@ namespace LUIECompiler.CodeGeneration.Codes
         /// <summary>
         /// List of all code lines/entries in the program. 
         /// </summary>
-        public List<Code> Code { get; init; } = [];
+        public List<Code> Code { get; set; } = [];
 
         /// <summary>
         /// Creates an empty instance of <see cref="QASMProgram"/>.

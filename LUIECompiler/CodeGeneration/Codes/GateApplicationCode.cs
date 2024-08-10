@@ -117,5 +117,55 @@ namespace LUIECompiler.CodeGeneration.Codes
 
             return true;
         }
+
+        /// <summary>
+        /// Checks if the gate application is independent of the <paramref name="code"/>.
+        /// </summary>
+        /// <param name="code"></param>
+        /// <returns></returns>
+        public bool AreIndependent(GateApplicationCode code)
+        {
+            return IndependentGuards(code) && IndependentParameters(code);
+        }
+
+        /// <summary>
+        /// Checks if the guards of the gate application are independent of the <paramref name="code"/>.
+        /// </summary>
+        /// <param name="code"></param>
+        /// <returns></returns>
+        public bool IndependentGuards(GateApplicationCode code)
+        {
+            if (code.Guards.Count == 0)
+            {
+                return true;
+            }
+
+            if (Guards.Count == 0)
+            {
+                return true;
+            }
+
+            return !Guards.Any(g => code.Guards.Any(g.SemanticallyEqual));
+        }
+
+        /// <summary>
+        /// Checks if the parameters of the gate application are independent of the <paramref name="code"/>.
+        /// </summary>
+        /// <param name="code"></param>
+        /// <returns></returns>
+        public bool IndependentParameters(GateApplicationCode code)
+        {
+            if (code.Parameters.Count == 0)
+            {
+                return true;
+            }
+
+            if (Parameters.Count == 0)
+            {
+                return true;
+            }
+
+            return !Parameters.Any(p => code.Parameters.Any(p.SemanticallyEqual));
+        }
     }
 }

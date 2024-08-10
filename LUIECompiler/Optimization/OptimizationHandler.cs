@@ -1,5 +1,5 @@
-using System.Security.Cryptography.X509Certificates;
 using LUIECompiler.CodeGeneration.Codes;
+using LUIECompiler.CodeGeneration.Exceptions;
 using LUIECompiler.Optimization.Rules;
 
 namespace LUIECompiler.Optimization
@@ -15,12 +15,69 @@ namespace LUIECompiler.Optimization
 
         public void OptimizeSingleQubitNullGates()
         {
-            throw new NotImplementedException();
+            HoistDefinitions();
+            List<QASMSubsequence> independentSequences = FindIndependentSequences();
+            ApplyRules(NullGateRule.NullGateRules, NullGateRule.MaxRuleLength, independentSequences);
         }
 
-        public void ApplyRules(IEnumerable<IRule> rules, int maxDepth, List<CodeSequence> independentSequences)
+        /// <summary>
+        /// Hoists all definitions to the top of the program so that they can be ignored while optimizing.
+        /// </summary>
+        public void HoistDefinitions()
         {
-            throw new NotImplementedException();
+            IEnumerable<Code> definitions = Program.Code.Where(c => c is DefinitionCode);
+            IEnumerable<Code> gateApplications = Program.Code.Where(c => c is GateApplicationCode);
+
+            Program.Code = definitions.Concat(gateApplications).ToList();
+        }
+
+        /// <summary>
+        /// Finds all independent sequences in the program.
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="InternalException"></exception>
+        public List<QASMSubsequence> FindIndependentSequences()
+        {
+            List<QASMSubsequence> independentSequences = [];
+            // Can only work correctly if the definitions were hoisted previously.
+            int startIndex = Program.Code.FindIndex(c => c is GateApplicationCode);
+            QASMSubsequence independent = new(startIndex, Program);
+            independentSequences.Add(independent);
+            for (int i = startIndex; i < Program.Code.Count; i++)
+            {
+                if (Program.Code[i] is not GateApplicationCode gateCode)
+                {
+                    throw new InternalException()
+                    {
+                        Reason = "Code is not a gate application code. Any definition should have been hoisted previously."
+                    };
+                }
+
+                if (!independent.IndependentOf(gateCode))
+                {
+                    independentSequences.Add(independent);
+                }
+                else
+                {
+                    independent = new(i, Program);
+                    independentSequences.Add(independent);
+                }
+            }
+
+            return independentSequences;
+        }
+
+        public void ApplyRules(IEnumerable<IRule> rules, int maxDepth, List<QASMSubsequence> independentSequences)
+        {
+            List<CodeSequence> code = [];
+            foreach(QASMSubsequence subsequence in independentSequences)
+            {
+                CodeSequence optimized = ApplyRules(rules, maxDepth, subsequence.ToCodeSequence());
+                code.Add(optimized);
+            }
+            List<Code> optimizedCode = Program.Code.Where(c => c is DefinitionCode).ToList();
+            optimizedCode.AddRange(code.SelectMany(c => c.Code));
+            Program.Code = optimizedCode;
         }
 
         /// <summary>

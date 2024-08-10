@@ -29,9 +29,9 @@ namespace LUIECompiler.Optimization
         /// <returns></returns>
         public CodeSequence Replace(CodeSequence replacement)
         {
-            List<Code> codes = [.. Parent.Codes];
+            List<Code> codes = [.. Parent.Code];
             codes.RemoveRange(StartIndex, Count);
-            codes.InsertRange(StartIndex, replacement.Codes);
+            codes.InsertRange(StartIndex, replacement.Code);
             return new CodeSequence(codes);
         }
 
