@@ -118,6 +118,15 @@ namespace LUIECompiler.Optimization.Sequences
             return false;
         }
 
+        /// <summary>
+        /// Adds the given <paramref name="code"/> to the sequence.
+        /// </summary>
+        /// <param name="code">Code to add to the sequence.</param>                   
+        public void AddCode(Code code)
+        {
+            Code.Add(code);
+        }
+
         public override string ToString()
         {
             string str = $"CodeSequence (Count = {Count}): \n";
@@ -125,6 +134,22 @@ namespace LUIECompiler.Optimization.Sequences
             str += string.Join(",\n\t ", Code.Select(c => c.ToString()));
             str += "\r}";
             return str;
+        }
+
+        
+        /// <summary>
+        /// Checks whether a given <paramref name="code"/> is independent on the subsequence.
+        /// </summary>
+        /// <param name="code"></param>
+        /// <returns></returns>
+        public bool IndependentOf(GateApplicationCode code)
+        {
+            if(Code.Count == 0)
+            {
+                return false;
+            }
+
+            return Code.All(c => c is GateApplicationCode gateCode && gateCode.AreIndependent(code));
         }
     }
 }

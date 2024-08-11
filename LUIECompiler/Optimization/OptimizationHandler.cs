@@ -16,8 +16,8 @@ namespace LUIECompiler.Optimization
 
         public QASMProgram OptimizeSingleQubitNullGates()
         {
-            HoistDefinitions();
-            List<QASMSubsequence> independentSequences = FindIndependentSequences();
+            IEnumerable<Code> gateApplications = HoistDefinitions();
+            IndependentSequenceSet independentSequences = new(gateApplications);
             ApplyRules(NullGateRule.NullGateRules, NullGateRule.MaxRuleLength, independentSequences);
 
             Console.WriteLine("Optimized code:");
@@ -32,12 +32,14 @@ namespace LUIECompiler.Optimization
         /// <summary>
         /// Hoists all definitions to the top of the program so that they can be ignored while optimizing.
         /// </summary>
-        public void HoistDefinitions()
+        /// <returns>An enumerable of all gate applications.</returns>
+        public IEnumerable<Code> HoistDefinitions()
         {
             IEnumerable<Code> definitions = Program.Code.Where(c => c is DefinitionCode);
             IEnumerable<Code> gateApplications = Program.Code.Where(c => c is GateApplicationCode);
 
             Program.Code = definitions.Concat(gateApplications).ToList();
+            return gateApplications;
         }
 
         /// <summary>
@@ -77,12 +79,20 @@ namespace LUIECompiler.Optimization
             return independentSequences;
         }
 
-        public void ApplyRules(IEnumerable<IRule> rules, int maxDepth, List<QASMSubsequence> independentSequences)
+        /// <summary>
+        /// Applies the given <paramref name="rules"/> to the given <paramref name="independentSequences"/>.
+        /// </summary>
+        /// <param name="rules"></param>
+        /// <param name="maxDepth"></param>
+        /// <param name="independentSequences"></param>
+        public void ApplyRules(IEnumerable<IRule> rules, int maxDepth, IndependentSequenceSet independentSequences)
         {
             List<CodeSequence> code = [];
-            foreach (QASMSubsequence subsequence in independentSequences)
+            foreach (CodeSequence codeSeq in independentSequences)
             {
-                CodeSequence optimized = ApplyRules(rules, maxDepth, subsequence.ToCodeSequence());
+                Console.WriteLine("Optimizing code sequence:");
+                Console.WriteLine(codeSeq);
+                CodeSequence optimized = ApplyRules(rules, maxDepth, codeSeq);
                 code.Add(optimized);
             }
 
