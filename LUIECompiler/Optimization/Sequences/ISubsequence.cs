@@ -1,4 +1,4 @@
-namespace LUIECompiler.Optimization
+namespace LUIECompiler.Optimization.Sequences
 {
     public interface ISubsequence<T>
     {

@@ -1,7 +1,7 @@
 using LUIECompiler.CodeGeneration.Codes;
 using LUIECompiler.Optimization.Rules;
 
-namespace LUIECompiler.Optimization
+namespace LUIECompiler.Optimization.Sequences
 {
     public class CodeSubsequence : CodeSequence, ISubsequence<CodeSequence>
     {

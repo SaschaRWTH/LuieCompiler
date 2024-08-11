@@ -1,7 +1,7 @@
 using LUIECompiler.CodeGeneration.Codes;
 using LUIECompiler.Optimization.Rules;
 
-namespace LUIECompiler.Optimization
+namespace LUIECompiler.Optimization.Sequences
 {
     /// <summary>
     /// Represents a sequence of codes used for code optimization.

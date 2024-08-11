@@ -1,6 +1,7 @@
 using LUIECompiler.CodeGeneration.Codes;
 using LUIECompiler.CodeGeneration.Exceptions;
 using LUIECompiler.Common;
+using LUIECompiler.Optimization.Sequences;
 
 namespace LUIECompiler.Optimization.Rules
 {

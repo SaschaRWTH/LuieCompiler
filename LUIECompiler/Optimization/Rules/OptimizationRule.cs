@@ -1,4 +1,6 @@
 
+using LUIECompiler.Optimization.Sequences;
+
 namespace LUIECompiler.Optimization.Rules
 {
     /// <summary>

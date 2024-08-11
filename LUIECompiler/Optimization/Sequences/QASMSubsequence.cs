@@ -1,6 +1,6 @@
 using LUIECompiler.CodeGeneration.Codes;
 
-namespace LUIECompiler.Optimization
+namespace LUIECompiler.Optimization.Sequences
 {
     public class QASMSubsequence : QASMProgram, ISubsequence<QASMProgram>
     {
