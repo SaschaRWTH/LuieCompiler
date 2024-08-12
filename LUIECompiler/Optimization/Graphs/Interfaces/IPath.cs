@@ -6,6 +6,11 @@ namespace LUIECompiler.Optimization.Graphs.Interfaces
     public interface IPath
     {
         /// <summary>
+        /// Gets the nodes transversed by the path.
+        /// </summary>
+        public List<INode> Nodes { get; }
+        
+        /// <summary>
         /// Gets the vertices transversed by the path.
         /// </summary>
         public List<IVertex> Vertices { get; }

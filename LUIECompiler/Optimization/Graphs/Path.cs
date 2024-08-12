@@ -7,6 +7,13 @@ namespace LUIECompiler.Optimization.Graphs
     {
         public List<IVertex> Vertices { get; } = [];
 
+        public List<INode> Nodes =>
+        [
+            Start,
+            .. InnerNodes,
+            End
+        ];
+
         public INode Start
         {
             get
@@ -48,6 +55,37 @@ namespace LUIECompiler.Optimization.Graphs
                     yield return Vertices[i].End;
                 }
             }
+        }
+
+
+        /// <summary>
+        /// Creates a new path. Uses the wire of the qubit and the start and end nodes.
+        /// </summary>
+        /// <param name="qubit"></param>
+        /// <param name="start"></param>
+        /// <param name="end"></param>
+        public Path(GraphQubit qubit, INode start, INode end)
+        {
+            IVertex current = GetQubitVertex(qubit, start.OutputVertices);
+            Vertices.Add(current);
+            while(current.End != end)
+            {
+                current = GetQubitVertex(qubit, current.End.OutputVertices);
+                Vertices.Add(current);
+            }
+        }
+
+        /// <summary>
+        /// Gets the vertex of the qubit in the given enumerable vertices.
+        /// </summary>
+        /// <param name="qubit"></param>
+        /// <param name="vertices"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException"></exception>
+        public IVertex GetQubitVertex(GraphQubit qubit, IEnumerable<IVertex> vertices)
+        {
+            return vertices.FirstOrDefault(v => v is CircuitVertex qubitVertex && qubitVertex.Qubit == qubit) ??
+                   throw new ArgumentException("Enumerable does not contain a vertex of the qubit.");
         }
 
         /// <summary>
