@@ -58,11 +58,30 @@ namespace LUIECompiler.Optimization.Graphs
         {
             foreach (GateApplicationCode gate in code)
             {
-                var guardIds = gate.Guards.Select(p => p.Qubit.Identifier);
-                var parameterIds = gate.Parameters.Select(p => p.Identifier);
-                List<GraphQubit> qubits = GetQubits(guardIds.Concat(parameterIds));
+                HashSet<UniqueIdentifier> identifiers = GetIdentifiersFromGate(gate);
+                List<GraphQubit> qubits = GetQubits(identifiers);
                 new GateNode(this, gate.Gate.GateType, qubits);
             }
+        }
+
+        /// <summary>
+        /// Gets the identifiers used by the given <paramref name="gate"/>.
+        /// </summary>
+        /// <param name="gate"></param>
+        /// <returns></returns>
+        public HashSet<UniqueIdentifier> GetIdentifiersFromGate(GateApplicationCode gate)
+        {
+            // Use a hashset to avoid duplicates
+            HashSet<UniqueIdentifier> identifiers = new();
+            foreach (var guard in gate.Guards)
+            {
+                identifiers.Add(guard.Qubit.Identifier);
+            }
+            foreach (var parameter in gate.Parameters)
+            {
+                identifiers.Add(parameter.Identifier);
+            }
+            return identifiers;
         }
 
         /// <summary>
@@ -73,11 +92,9 @@ namespace LUIECompiler.Optimization.Graphs
         /// <exception cref="ArgumentException"></exception>
         public List<GraphQubit> GetQubits(IEnumerable<UniqueIdentifier> identifiers)
         {
-            var qubits = Qubits.Where(q => identifiers.Contains(q.Identifier)).ToList(); 
+            var qubits = Qubits.Where(q => identifiers.Contains(q.Identifier)).ToList();
 
-            // TODO: This will fail if a qubit is used as parameter or guard
-            // multiple times.
-            if(qubits.Count != identifiers.Count())
+            if (qubits.Count != identifiers.Count())
             {
                 throw new ArgumentException("Not all qubits were found in the graph");
             }

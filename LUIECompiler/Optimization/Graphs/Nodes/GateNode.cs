@@ -1,6 +1,5 @@
 
 using LUIECompiler.Common;
-using LUIECompiler.Optimization.Graphs.Interfaces;
 
 namespace LUIECompiler.Optimization.Graphs.Nodes
 {
