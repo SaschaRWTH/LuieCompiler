@@ -22,8 +22,6 @@ namespace LUIECompiler.Optimization.Graphs
             End = end;
             Graph = graph;
 
-            Console.WriteLine($"Vertex created: {this}");
-
             Start.AddOutput(this);
             End.AddInput(this);
         }

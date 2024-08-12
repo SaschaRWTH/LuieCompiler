@@ -19,7 +19,58 @@ public class GraphCreationTest
         x a;
     ";
 
-    public const string QFTInput =
+    public readonly List<QubitTestPath> SimpleInputPaths = 
+    [
+        new()
+        {
+            Identifier = "id0",
+            Path = new List<GateType>
+            {
+                GateType.H,
+                GateType.Z
+            }
+        },
+        new()
+        {
+            Identifier = "id1",
+            Path = new List<GateType>
+            {
+                GateType.X
+            }
+        }
+    ];
+    public const string SimpleRegister =
+    @"
+        qubit[2] c;
+        h c[0];
+        z c[0];
+        x c[1];
+    ";
+
+    public readonly List<QubitTestPath> SimpleRegisterPaths = 
+    [
+        new()
+        {
+            Identifier = "id0",
+            Index = 0,
+            Path = new List<GateType>
+            {
+                GateType.H,
+                GateType.Z
+            }
+        },
+        new()
+        {
+            Identifier = "id0",
+            Index = 1,
+            Path = new List<GateType>
+            {
+                GateType.X
+            }
+        }
+    ];
+    
+    public const string QFT =
     @"
         // Swaps the values of two qubits
         gate swap(a, b) do
@@ -48,9 +99,89 @@ public class GraphCreationTest
         qft a;
     ";
 
+    public readonly List<QubitTestPath> QFTPaths = 
+    [
+        new()
+        {
+            Identifier = "id0",
+            Index = 0,
+            Path = 
+            [
+                GateType.H,
+                GateType.P,
+                GateType.P,
+                GateType.P,
+                GateType.P,
+                GateType.CX,
+                GateType.CX,
+                GateType.CX,
+            ]
+        },
+        new()
+        {
+            Identifier = "id0",
+            Index = 1,
+            Path = 
+            [
+                GateType.P,
+                GateType.H,
+                GateType.P,
+                GateType.P,
+                GateType.P,
+                GateType.CX,
+                GateType.CX,
+                GateType.CX,
+            ]
+        },
+        new()
+        {
+            Identifier = "id0",
+            Index = 2,
+            Path = 
+            [
+                GateType.P,
+                GateType.P,
+                GateType.H,
+                GateType.P,
+                GateType.P,
+            ]
+        },
+        new()
+        {
+            Identifier = "id0",
+            Index = 3,
+            Path = 
+            [
+                GateType.P,
+                GateType.P,
+                GateType.P,
+                GateType.H,
+                GateType.P,
+                GateType.CX,
+                GateType.CX,
+                GateType.CX
+            ]
+        },
+        new()
+        {
+            Identifier = "id0",
+            Index = 4,
+            Path = 
+            [
+                GateType.P,
+                GateType.P,
+                GateType.P,
+                GateType.P,
+                GateType.H,
+                GateType.CX,
+                GateType.CX,
+                GateType.CX
+            ]
+        }
+    ];
 
     [TestMethod]
-    public void SimpleXXNullGateTest()
+    public void SimpleInputTest()
     {
         var walker = Utils.GetWalker();
         var parser = Utils.GetParser(SimpleInput);
@@ -63,32 +194,70 @@ public class GraphCreationTest
 
         CircuitGraph graph = new(program);
 
-        Assert.AreEqual(2, graph.Qubits.Count);
-
-        var c = graph.Qubits[0];
-        var a = graph.Qubits[1];
-
-        Assert.AreEqual("id0", c.Identifier.Identifier);
-        Assert.AreEqual("id1", a.Identifier.Identifier);
-
-        var hc = CheckGateNode(c.Start, GateType.H);
-        Assert.IsNotNull(hc);
-
-        var xa = CheckGateNode(a.Start, GateType.X);
-        Assert.IsNotNull(xa);
-
-        var zhc = CheckGateNode(hc, GateType.Z);
-        Assert.IsNotNull(zhc);
+        CheckCircut(graph, SimpleInputPaths);
     }
 
-    public GateNode? CheckGateNode(INode parent, GateType gateType)
+    [TestMethod]
+    public void SimpleRegisterTest()
     {
-        Assert.AreEqual(1, parent.OutputVertices.Count);
-        var cNode = parent.OutputVertices[0].End;
-        Assert.IsTrue(cNode is GateNode);
-        Assert.AreEqual(gateType, (cNode as GateNode)?.Gate);
+        var walker = Utils.GetWalker();
+        var parser = Utils.GetParser(SimpleRegister);
 
-        return cNode as GateNode;
+        var codegen = new CodeGenerationListener();
+        walker.Walk(codegen, parser.parse());
+
+        QASMProgram program = codegen.CodeGen.GenerateCode();
+        Assert.IsNotNull(program);
+
+        CircuitGraph graph = new(program);
+
+        CheckCircut(graph, SimpleRegisterPaths);
+    }
+
+    [TestMethod]
+    public void QFTCircuitTest()
+    {
+        var walker = Utils.GetWalker();
+        var parser = Utils.GetParser(QFT);
+
+        var codegen = new CodeGenerationListener();
+        walker.Walk(codegen, parser.parse());
+
+        QASMProgram program = codegen.CodeGen.GenerateCode();
+        Assert.IsNotNull(program);
+
+        CircuitGraph graph = new(program);
+
+        CheckCircut(graph, QFTPaths);
+    }
+
+    
+    public void CheckCircut(CircuitGraph graph, List<QubitTestPath> paths)
+    {
+        foreach (var path in paths)
+        {
+            GraphQubit qubit;
+            if (path.Index != -1)
+            {
+                qubit = graph.GetGraphQubit(path.Identifier, path.Index);
+            }
+            else
+            {
+                qubit = graph.GetGraphQubit(path.Identifier);
+            }
+            CheckPath(qubit.GetPath(), path.Path);
+        }
+    }
+
+    public void CheckPath(LUIECompiler.Optimization.Graphs.Path circuitPath, List<GateType> path)
+    {
+        IEnumerable<INode> nodes = circuitPath.InnerNodes;
+        for(int i = 0; i < path.Count; i++)
+        {
+            var gateNode = nodes.ElementAt(i) as GateNode;
+            Assert.IsNotNull(gateNode);
+            Assert.AreEqual(path[i], gateNode.Gate);
+        }
     }
 
     /// <summary>
@@ -98,7 +267,7 @@ public class GraphCreationTest
     public void EachQubitSinglePathTest()
     {
         var walker = Utils.GetWalker();
-        var parser = Utils.GetParser(QFTInput);
+        var parser = Utils.GetParser(QFT);
 
         var codegen = new CodeGenerationListener();
         walker.Walk(codegen, parser.parse());
@@ -128,4 +297,11 @@ public class GraphCreationTest
         }
     }
 
+    public class QubitTestPath
+    {
+        public required string Identifier { get; init; }
+        public required List<GateType> Path { get; init; }
+
+        public int Index { get; init; } = -1;
+    }
 }

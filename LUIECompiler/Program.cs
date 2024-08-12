@@ -27,10 +27,10 @@ namespace LUIECompiler
             // "qubit[5] b;\n" +
             // "hReg b;";
 
-            // using(var reader = new StreamReader("examples/qft.luie"))
-            // {
-            //     input = reader.ReadToEnd();
-            // }
+            using(var reader = new StreamReader("examples/qft.luie"))
+            {
+                input = reader.ReadToEnd();
+            }
             
             Console.WriteLine("--- LUIE Compiler ---");
             Console.WriteLine("Using input:");

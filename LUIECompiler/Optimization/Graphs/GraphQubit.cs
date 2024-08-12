@@ -66,5 +66,43 @@ namespace LUIECompiler.Optimization.Graphs
 
             Graph.ReplacePath(new([last]), new([input, output]));
         }
+
+        /// <summary>
+        /// Gets the path of the qubit.
+        /// </summary>
+        /// <returns></returns>
+        public Path GetPath()
+        {
+            return new(TracePath());
+        }
+
+        /// <summary>
+        /// Traces the path of the qubit.
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="InternalException"></exception>
+        public IEnumerable<IVertex> TracePath()
+        {
+            IVertex current = Start.OutputVertex ?? throw new InternalException
+            {
+                Reason = "Input node must have exactly one output vertex",
+            };
+            yield return current;
+
+
+            while (current.End is not OutputNode)
+            {
+                INode nextNode = current.End;
+
+                current = nextNode.OutputVertices.OfType<CircuitVertex>().SingleOrDefault(v => v.Qubit == this) ??
+                    throw new InternalException
+                    {
+                        Reason = "Output node must have exactly one output vertex",
+                    };
+
+
+                yield return current;
+            }
+        }
     }
 }

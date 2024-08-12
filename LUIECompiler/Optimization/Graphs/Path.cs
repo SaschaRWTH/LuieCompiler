@@ -57,8 +57,7 @@ namespace LUIECompiler.Optimization.Graphs
         /// <exception cref="ArgumentException"></exception>
         public Path(IEnumerable<IVertex> vertices)
         {
-            Vertices.AddRange(vertices);
-
+            Vertices = vertices.ToList();      
             if (Vertices.Count == 0)
             {
                 throw new ArgumentException("The path is empty.");

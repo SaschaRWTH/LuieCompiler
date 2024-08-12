@@ -45,7 +45,26 @@ namespace LUIECompiler.Optimization.Graphs
         {
             foreach (DefinitionCode definition in code)
             {
+                CreateQubits(definition);
+            }
+        }
+
+        /// <summary>
+        /// Creates the qubits of the graph.
+        /// </summary>
+        /// <param name="definition"></param>
+        public void CreateQubits(DefinitionCode definition)
+        {
+            if (definition.Size == 1)
+            {
                 GraphQubit qubit = new(this, definition.Identifier);
+                Qubits.Add(qubit);
+                return;
+            }
+            
+            for (int i = 0; i < definition.Size; i++)
+            {
+                GraphRegisterAccess qubit = new(this, definition.Identifier, i);
                 Qubits.Add(qubit);
             }
         }
@@ -58,9 +77,9 @@ namespace LUIECompiler.Optimization.Graphs
         {
             foreach (GateApplicationCode gate in code)
             {
-                HashSet<UniqueIdentifier> identifiers = GetIdentifiersFromGate(gate);
-                List<GraphQubit> qubits = GetQubits(identifiers);
-                new GateNode(this, gate.Gate.GateType, qubits);
+                HashSet<QubitCode> qubits = GetQubitsFromGate(gate);
+                List<GraphQubit> graphQubits = qubits.Select(GraphQubitFromQubitCode).ToList();
+                new GateNode(this, gate, graphQubits);
             }
         }
 
@@ -69,37 +88,51 @@ namespace LUIECompiler.Optimization.Graphs
         /// </summary>
         /// <param name="gate"></param>
         /// <returns></returns>
-        public HashSet<UniqueIdentifier> GetIdentifiersFromGate(GateApplicationCode gate)
+        public HashSet<QubitCode> GetQubitsFromGate(GateApplicationCode gate)
         {
             // Use a hashset to avoid duplicates
-            HashSet<UniqueIdentifier> identifiers = new();
+            HashSet<QubitCode> identifiers = new();
             foreach (var guard in gate.Guards)
             {
-                identifiers.Add(guard.Qubit.Identifier);
+                identifiers.Add(guard.Qubit);
             }
             foreach (var parameter in gate.Parameters)
             {
-                identifiers.Add(parameter.Identifier);
+                identifiers.Add(parameter);
             }
             return identifiers;
         }
 
         /// <summary>
-        /// Gets the qubits with the given <paramref name="identifiers"/>.
+        /// Gets the graph qubit from the given <paramref name="code"/>.
         /// </summary>
-        /// <param name="identifiers"></param>
+        /// <param name="code"></param>
         /// <returns></returns>
-        /// <exception cref="ArgumentException"></exception>
-        public List<GraphQubit> GetQubits(IEnumerable<UniqueIdentifier> identifiers)
+        public GraphQubit GraphQubitFromQubitCode(QubitCode code)
         {
-            var qubits = Qubits.Where(q => identifiers.Contains(q.Identifier)).ToList();
-
-            if (qubits.Count != identifiers.Count())
+            if(code is RegisterAccessCode registerAccessCode)
             {
-                throw new ArgumentException("Not all qubits were found in the graph");
+                return GetGraphQubit(code.Identifier.Identifier, registerAccessCode.Index);
             }
 
-            return qubits;
+            return GetGraphQubit(code.Identifier.Identifier);
+        }
+
+        /// <summary>
+        /// Gets the graph qubit with the given <paramref name="identifier"/>.
+        /// </summary>
+        /// <param name="identifier"></param>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        public GraphQubit GetGraphQubit(string identifier, int index = -1)
+        {
+            if(index != -1)
+            {
+                return Qubits.OfType<GraphRegisterAccess>().Single(
+                    q => q.Identifier.Identifier == identifier 
+                    && q.Index == index);
+            }
+            return Qubits.Single(q => q.Identifier.Identifier == identifier);
         }
 
     }

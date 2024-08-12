@@ -1,4 +1,5 @@
 
+using LUIECompiler.CodeGeneration.Codes;
 using LUIECompiler.Common;
 
 namespace LUIECompiler.Optimization.Graphs.Nodes
@@ -11,7 +12,9 @@ namespace LUIECompiler.Optimization.Graphs.Nodes
         /// <summary>
         /// The type of the gate.
         /// </summary>
-        public GateType Gate { get; }
+        public GateType Gate => GateCode.Gate.GateType;
+
+        public GateApplicationCode GateCode { get; }        
 
         /// <summary>
         /// Creates a new gate node.
@@ -19,9 +22,9 @@ namespace LUIECompiler.Optimization.Graphs.Nodes
         /// <param name="graph"></param>
         /// <param name="gate"></param>
         /// <param name="qubits"></param>
-        public GateNode(CircuitGraph graph, GateType gate, List<GraphQubit> qubits): base(graph)
+        public GateNode(CircuitGraph graph, GateApplicationCode gate, List<GraphQubit> qubits): base(graph)
         {
-            Gate = gate;
+            GateCode = gate;
             
             foreach(GraphQubit qubit in qubits)
             {
