@@ -1,4 +1,6 @@
 
+using LUIECompiler.Optimization.Graphs.Interfaces;
+
 namespace LUIECompiler.Optimization.Graphs.Nodes
 {
     public abstract class Node : INode
@@ -13,12 +15,12 @@ namespace LUIECompiler.Optimization.Graphs.Nodes
             Graph = graph;
         }
 
-        public void AddInput(IVertex vertex)
+        public virtual void AddInput(IVertex vertex)
         {
             InputVertices.Add(vertex);
         }
         
-        public void AddOutput(IVertex vertex)
+        public virtual void AddOutput(IVertex vertex)
         {
             OutputVertices.Add(vertex);
         }

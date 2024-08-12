@@ -1,5 +1,6 @@
 
 using LUIECompiler.Common;
+using LUIECompiler.Optimization.Graphs.Interfaces;
 
 namespace LUIECompiler.Optimization.Graphs.Nodes
 {
@@ -19,6 +20,11 @@ namespace LUIECompiler.Optimization.Graphs.Nodes
             {
                 qubit.AddGateNode(this);
             }
+        }
+
+        public override string ToString()
+        {
+            return $"GateNode = {{ Gate = {Gate}, Inputs = {InputVertices.Count}, Outputs = {OutputVertices.Count} }}";
         }
 
     }

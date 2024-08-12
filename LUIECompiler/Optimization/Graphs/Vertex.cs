@@ -1,4 +1,4 @@
-using LUIECompiler.Optimization.Graphs.Nodes;
+using LUIECompiler.Optimization.Graphs.Interfaces;
 
 namespace LUIECompiler.Optimization.Graphs
 {
@@ -16,9 +16,16 @@ namespace LUIECompiler.Optimization.Graphs
             End = end;
             Graph = graph;
 
+            Console.WriteLine($"Vertex created: {this}");
+
             Start.AddOutput(this);
             End.AddInput(this);
         }
 
+
+        public override string ToString()
+        {
+            return $"Vertex = {{ Start = {Start}, End = {End} }}";
+        }
     }
 }

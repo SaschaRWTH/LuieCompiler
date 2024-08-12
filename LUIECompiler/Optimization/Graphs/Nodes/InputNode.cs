@@ -1,22 +1,37 @@
 
 using LUIECompiler.CodeGeneration.Exceptions;
+using LUIECompiler.Optimization.Graphs.Interfaces;
 
 namespace LUIECompiler.Optimization.Graphs.Nodes
 {
     public class InputNode : Node
     {
         public override List<IVertex> InputVertices => [];
-        public override List<IVertex> OutputVertices { get; } = [];
+        public override List<IVertex> OutputVertices => OutputVertex == null ? [] : [OutputVertex];
         
+        public IVertex? OutputVertex;
+
         public InputNode(IGraph graph) : base(graph)
         {
 
         }
 
+        public override void AddInput(IVertex vertex)
+        {
+            throw new InternalException()
+            {
+                Reason = "Input node cannot have input vertex",
+            };
+        }
+
+        public override void AddOutput(IVertex vertex)
+        {
+            OutputVertex = vertex;
+        }
 
         public IVertex GetVertex()
         {
-            if(OutputVertices.Count != 1)
+            if(OutputVertex == null)
             {
                 throw new InternalException()
                 {
@@ -24,7 +39,12 @@ namespace LUIECompiler.Optimization.Graphs.Nodes
                 };
             }
 
-            return OutputVertices[0];
+            return OutputVertex;
+        }
+
+        public override string ToString()
+        {
+            return "InputNode";
         }
     }
 }

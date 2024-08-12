@@ -1,6 +1,4 @@
-using LUIECompiler.Optimization.Graphs.Nodes;
-
-namespace LUIECompiler.Optimization.Graphs
+namespace LUIECompiler.Optimization.Graphs.Interfaces
 {
     public interface IGraph
     {
@@ -9,7 +7,11 @@ namespace LUIECompiler.Optimization.Graphs
 
         public void AddNode(INode node);
 
+        public void RemoveNode(INode node);
+
         public void AddVertex(IVertex vertex);
+
+        public void RemoveVertex(IVertex vertex);
 
         public void ReplacePath(Path old, Path replacement);
     }

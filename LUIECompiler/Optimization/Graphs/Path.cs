@@ -1,5 +1,5 @@
 using LUIECompiler.CodeGeneration.Exceptions;
-using LUIECompiler.Optimization.Graphs.Nodes;
+using LUIECompiler.Optimization.Graphs.Interfaces;
 
 namespace LUIECompiler.Optimization.Graphs
 {
@@ -35,7 +35,7 @@ namespace LUIECompiler.Optimization.Graphs
                     };
                 }
 
-                return Vertices[^1].Start;
+                return Vertices[^1].End;
             }
         }
 

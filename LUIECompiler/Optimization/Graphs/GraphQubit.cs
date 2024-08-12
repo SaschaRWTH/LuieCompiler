@@ -1,3 +1,4 @@
+using LUIECompiler.Optimization.Graphs.Interfaces;
 using LUIECompiler.Optimization.Graphs.Nodes;
 
 namespace LUIECompiler.Optimization.Graphs

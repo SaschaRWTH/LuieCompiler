@@ -1,4 +1,4 @@
-namespace LUIECompiler.Optimization.Graphs.Nodes
+namespace LUIECompiler.Optimization.Graphs.Interfaces
 {
     public interface INode
     {

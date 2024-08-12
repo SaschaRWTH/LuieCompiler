@@ -3,10 +3,8 @@ using LUIECompiler.Optimization.Graphs.Nodes;
 
 namespace LUIECompiler.Optimization.Graphs
 {
-    public class CircuitGraph : IGraph
+    public class CircuitGraph : Graph
     {
-        public List<INode> Nodes { get; } = [];
-        public List<IVertex> Vertices { get; } = [];
 
         public List<InputNode> InputNodes => Nodes.OfType<InputNode>().ToList();
 
@@ -48,7 +46,7 @@ namespace LUIECompiler.Optimization.Graphs
             var qubits = Qubits.Where(q => identifiers.Contains(q.Identifier)).ToList(); 
 
             // TODO: This will fail if a qubit is used as parameter or guard
-            // multiple times 
+            // multiple times.
             if(qubits.Count != identifiers.Count())
             {
                 throw new ArgumentException("Not all qubits were found in the graph");
@@ -57,42 +55,5 @@ namespace LUIECompiler.Optimization.Graphs
             return qubits;
         }
 
-        public void AddNode(INode node)
-        {
-            Nodes.Add(node);
-        }
-
-        public void AddVertex(IVertex vertex)
-        {
-            Vertices.Add(vertex);
-        }
-
-        public void ReplacePath(Path old, Path replacement)
-        {
-            if (old.Start != replacement.Start || old.End != replacement.End)
-            {
-                throw new ArgumentException("Old path start/end nodes do not match replacement start/end nodes");
-            }
-
-            foreach (INode node in old.InnerNodes)
-            {
-                Nodes.Remove(node);
-            }
-
-            foreach (INode node in replacement.InnerNodes)
-            {
-                Nodes.Add(node);
-            }
-
-            foreach (IVertex vertex in old.Vertices)
-            {
-                Vertices.Remove(vertex);
-            }
-
-            foreach (IVertex vertex in replacement.Vertices)
-            {
-                Vertices.Add(vertex);
-            }
-        }
     }
 }
