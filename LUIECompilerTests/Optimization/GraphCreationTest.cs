@@ -19,6 +19,35 @@ public class GraphCreationTest
         x a;
     ";
 
+    public const string QFTInput =
+    @"
+        // Swaps the values of two qubits
+        gate swap(a, b) do
+            cx a, b;
+            cx b, a;
+            cx a, b;
+        end
+
+        // Performs a discrete Fourier transform on a register of qubits
+        gate qft(reg) do
+            for i in range(sizeof(reg)) do
+                h reg[i];
+                for j in range(sizeof(reg) - (i + 1)) do
+                    qif reg[j + (i + 1)] do
+                        p(1/(power(2, (j + 1)))) reg[i];
+                    end
+                end
+            end
+            for j in range(sizeof(reg) / 2) do
+                swap reg[j], reg[sizeof(reg) - (j + 1)];
+            end
+        end
+
+
+        qubit[5] a;
+        qft a;
+    ";
+
 
     [TestMethod]
     public void SimpleXXNullGateTest()
@@ -39,8 +68,8 @@ public class GraphCreationTest
         var c = graph.Qubits[0];
         var a = graph.Qubits[1];
 
-        Assert.AreEqual("id0", c.Identifier);
-        Assert.AreEqual("id1", a.Identifier);
+        Assert.AreEqual("id0", c.Identifier.Identifier);
+        Assert.AreEqual("id1", a.Identifier.Identifier);
 
         var hc = CheckGateNode(c.Start, GateType.H);
         Assert.IsNotNull(hc);
@@ -61,4 +90,42 @@ public class GraphCreationTest
 
         return cNode as GateNode;
     }
+
+    /// <summary>
+    /// Tests that for each qubit there exists exactly one path.
+    /// </summary>
+    [TestMethod]
+    public void EachQubitSinglePathTest()
+    {
+        var walker = Utils.GetWalker();
+        var parser = Utils.GetParser(QFTInput);
+
+        var codegen = new CodeGenerationListener();
+        walker.Walk(codegen, parser.parse());
+
+        QASMProgram program = codegen.CodeGen.GenerateCode();
+        Assert.IsNotNull(program);
+
+        CircuitGraph graph = new(program);
+
+        foreach (var qubit in graph.Qubits)
+        {
+            CheckQubitPath(qubit);
+        }
+    }
+
+    public void CheckQubitPath(GraphQubit qubit)
+    {
+        Assert.IsNotNull(qubit.Start);
+        Assert.IsNotNull(qubit.End);
+
+        INode current = qubit.Start;
+        while(current != qubit.End)
+        {
+            var outV = current.OutputVertices.OfType<CircuitVertex>();
+            Assert.IsTrue(outV.Count(v => v.Qubit == qubit) == 1);
+            current = outV.Single(v => v.Qubit == qubit).End;
+        }
+    }
+
 }

@@ -2,6 +2,9 @@ using LUIECompiler.Optimization.Graphs.Interfaces;
 
 namespace LUIECompiler.Optimization.Graphs
 {
+    /// <summary>
+    /// Represents a graph.
+    /// </summary>
     public class Graph : IGraph
     {
         public List<INode> Nodes { get; } = [];

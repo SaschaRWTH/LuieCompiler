@@ -1,4 +1,5 @@
 using LUIECompiler.CodeGeneration.Codes;
+using LUIECompiler.CodeGeneration.Definitions;
 using LUIECompiler.Optimization.Graphs.Nodes;
 
 namespace LUIECompiler.Optimization.Graphs
@@ -44,7 +45,7 @@ namespace LUIECompiler.Optimization.Graphs
         {
             foreach (DefinitionCode definition in code)
             {
-                GraphQubit qubit = new(this, definition.Identifier.Identifier);
+                GraphQubit qubit = new(this, definition.Identifier);
                 Qubits.Add(qubit);
             }
         }
@@ -57,8 +58,8 @@ namespace LUIECompiler.Optimization.Graphs
         {
             foreach (GateApplicationCode gate in code)
             {
-                var guardIds = gate.Guards.Select(p => p.Qubit.Identifier.Identifier);
-                var parameterIds = gate.Parameters.Select(p => p.Identifier.Identifier);
+                var guardIds = gate.Guards.Select(p => p.Qubit.Identifier);
+                var parameterIds = gate.Parameters.Select(p => p.Identifier);
                 List<GraphQubit> qubits = GetQubits(guardIds.Concat(parameterIds));
                 new GateNode(this, gate.Gate.GateType, qubits);
             }
@@ -70,7 +71,7 @@ namespace LUIECompiler.Optimization.Graphs
         /// <param name="identifiers"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentException"></exception>
-        public List<GraphQubit> GetQubits(IEnumerable<string> identifiers)
+        public List<GraphQubit> GetQubits(IEnumerable<UniqueIdentifier> identifiers)
         {
             var qubits = Qubits.Where(q => identifiers.Contains(q.Identifier)).ToList(); 
 
