@@ -1,3 +1,4 @@
+using LUIECompiler.CodeGeneration.Exceptions;
 using LUIECompiler.Optimization.Graphs.Interfaces;
 using LUIECompiler.Optimization.Graphs.Nodes;
 
@@ -13,7 +14,7 @@ namespace LUIECompiler.Optimization.Graphs
 
         public string Identifier { get; }
 
-        public GraphQubit(IGraph graph, string identifier)
+        public GraphQubit(CircuitGraph graph, string identifier)
         {
             Graph = graph;
             Identifier = identifier;
@@ -29,7 +30,10 @@ namespace LUIECompiler.Optimization.Graphs
 
         public void AddGateNode(GateNode node)
         {
-            IVertex last = End.GetVertex();
+            IVertex last = End.InputVertex ?? throw new InternalException   
+            {
+                Reason = "Output node must have exactly one output vertex",
+            };
 
             IVertex input = new Vertex(Graph, last.Start, node);
             IVertex output = new Vertex(Graph, node, last.End);

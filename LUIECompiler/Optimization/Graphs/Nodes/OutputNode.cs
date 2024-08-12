@@ -4,14 +4,24 @@ using LUIECompiler.Optimization.Graphs.Interfaces;
 
 namespace LUIECompiler.Optimization.Graphs.Nodes
 {
+    /// <summary>
+    /// Represents an output node in a quantum circuit graph.
+    /// </summary>
     public class OutputNode : Node
     {
         public override List<IVertex> InputVertices => InputVertex == null ? [] : [InputVertex];
         public override List<IVertex> OutputVertices => [];
 
+        /// <summary>
+        /// The input vertex of the node.
+        /// </summary>
         public IVertex? InputVertex;
 
-        public OutputNode(IGraph graph) : base(graph)
+        /// <summary>
+        /// Creates a new output node.
+        /// </summary>
+        /// <param name="graph"></param>
+        public OutputNode(CircuitGraph graph) : base(graph)
         {
         }
         public override void AddOutput(IVertex vertex)
@@ -25,19 +35,6 @@ namespace LUIECompiler.Optimization.Graphs.Nodes
         public override void AddInput(IVertex vertex)
         {
             InputVertex = vertex;
-        }
-
-        public IVertex GetVertex()
-        {
-            if(InputVertex == null)
-            {
-                throw new InternalException()
-                {
-                    Reason = "Output node must have exactly one output vertex",
-                };
-            }
-
-            return InputVertex;
         }
         
         public override string ToString()

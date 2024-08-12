@@ -10,6 +10,12 @@ namespace LUIECompiler.Optimization.Graphs
 
         public INode End { get; }
 
+        /// <summary>
+        /// Creates a new vertex.
+        /// </summary>
+        /// <param name="graph"></param>
+        /// <param name="start"></param>
+        /// <param name="end"></param>
         public Vertex(IGraph graph, INode start, INode end)
         {
             Start = start;

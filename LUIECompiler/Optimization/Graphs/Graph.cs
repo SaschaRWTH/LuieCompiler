@@ -4,7 +4,6 @@ namespace LUIECompiler.Optimization.Graphs
 {
     public class Graph : IGraph
     {
-
         public List<INode> Nodes { get; } = [];
         public List<IVertex> Vertices { get; } = [];
 

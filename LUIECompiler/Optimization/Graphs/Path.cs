@@ -50,6 +50,11 @@ namespace LUIECompiler.Optimization.Graphs
             }
         }
 
+        /// <summary>
+        /// Creates a new path.
+        /// </summary>
+        /// <param name="vertices"></param>
+        /// <exception cref="ArgumentException"></exception>
         public Path(IEnumerable<IVertex> vertices)
         {
             Vertices.AddRange(vertices);
@@ -65,6 +70,10 @@ namespace LUIECompiler.Optimization.Graphs
             }
         }
 
+        /// <summary>
+        /// Indicates whether the path is uninterrupted.
+        /// </summary>
+        /// <returns></returns>
         public bool IsUnInterrupted()
         {
             for (int i = 0; i < Vertices.Count - 1; i++)
@@ -75,11 +84,6 @@ namespace LUIECompiler.Optimization.Graphs
                 }
             }
             return true;
-        }
-
-        public void AddVertex(IVertex vertex)
-        {
-            Vertices.Add(vertex);
         }
     }
 }
