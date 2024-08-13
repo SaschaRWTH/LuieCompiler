@@ -16,6 +16,16 @@ namespace LUIECompiler.Optimization.Graphs.Interfaces
         public List<IVertex> OutputVertices { get; }
 
         /// <summary>
+        /// Gets the direct predecessors of the node.
+        /// </summary>
+        public IEnumerable<INode> Predecessors { get; }
+
+        /// <summary>
+        /// Gets the direct successors of the node.
+        /// </summary>
+        public IEnumerable<INode> Successors { get; }
+
+        /// <summary>
         /// Gets the graph the node is in.
         /// </summary>
         public IGraph Graph { get; }

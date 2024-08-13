@@ -1,5 +1,8 @@
 using LUIECompiler.CodeGeneration;
 using LUIECompiler.CodeGeneration.Codes;
+using LUIECompiler.CodeGeneration.Exceptions;
+using LUIECompiler.Common.Symbols;
+using LUIECompiler.Optimization.Graphs.Interfaces;
 using LUIECompiler.Optimization.Graphs.Nodes;
 using LUIECompiler.Optimization.Rules;
 
@@ -153,7 +156,7 @@ namespace LUIECompiler.Optimization.Graphs
         /// <param name="maxDepth"></param>
         public void ApplyOptimizationRules(IEnumerable<OptimizationRule> rules, int maxDepth)
         {
-            foreach(GraphQubit qubit in Qubits)
+            foreach (GraphQubit qubit in Qubits)
             {
                 ApplyOptimizationRules(rules, maxDepth, qubit);
             }
@@ -176,7 +179,74 @@ namespace LUIECompiler.Optimization.Graphs
 
         public QASMProgram ToQASM()
         {
-            throw new NotImplementedException();
+            if (Qubits.Count == 0)
+            {
+                return new QASMProgram();
+            }
+
+            List<Code> code = [];
+
+            Dictionary<GraphQubit, INode> qubitToNode = new();
+            foreach (GraphQubit qubit in Qubits)
+            {
+                qubitToNode[qubit] = qubit.Start.OutputVertex?.End ?? throw new InternalException()
+                {
+                    Reason = $"Start node of qubit {qubit} does not have an output vertex."
+                };
+            }
+
+            GraphQubit current = Qubits.First();
+            while (qubitToNode.Any(pair => pair.Key.End != pair.Value))
+            {
+                if (qubitToNode[current] is not GateNode gateNode)
+                {
+                    current = Qubits.FirstOrDefault(q => qubitToNode[q] is GateNode) ?? throw new InternalException()
+                    {
+                        Reason = "No remaining gate node found, but not all qubits at end nodes."
+                    };
+                    continue;
+                }
+
+                List<INode> predecessors = gateNode.Predecessors.ToList();
+                // If gate only operates on one qubit, it can allways be translated 
+                // (not dependent on other gates to have been executed on other wires)
+                if (predecessors.Count <= 1)
+                {
+                    code.Add(gateNode.GateCode);
+                    qubitToNode[current] = gateNode.GetOutVertex(current).End;
+                    continue;
+                }
+                IEnumerable<GraphQubit> qubits = gateNode.Qubits;
+
+                // Checks that all predecessors are gate nodes
+                foreach(GraphQubit qubit in qubits)
+                {
+                    if (qubitToNode[qubit] is not GateNode qubitNode)
+                    {
+                        throw new InternalException()
+                        {
+                            Reason = "Qubit node is not a gate node. It should not be possible to reach this state."
+                        };
+                    }
+                    
+                    // If the qubit is not at the current node, 
+                    if(qubitNode != gateNode)
+                    {
+                        current = qubit;
+                        continue;
+                    }
+                }
+
+                // Add gate to translation
+                code.Add(gateNode.GateCode);
+
+                // Move each qubit to the next node
+                foreach(GraphQubit qubit in qubits)
+                {
+                    qubitToNode[qubit] = gateNode.GetOutVertex(qubit).End;
+                }
+            }
+            return new QASMProgram(code);
         }
     }
 }

@@ -19,6 +19,11 @@ namespace LUIECompiler.Optimization.Graphs.Nodes
         public GateApplicationCode GateCode { get; }
 
         /// <summary>
+        /// Gets the qubits of the gate.
+        /// </summary>
+        public List<GraphQubit> Qubits { get; }
+
+        /// <summary>
         /// Creates a new gate node.
         /// </summary>
         /// <param name="graph"></param>
@@ -26,6 +31,7 @@ namespace LUIECompiler.Optimization.Graphs.Nodes
         /// <param name="qubits"></param>
         public GateNode(CircuitGraph graph, GateApplicationCode gate, List<GraphQubit> qubits) : base(graph)
         {
+            Qubits = qubits;
             GateCode = gate;
 
             foreach (GraphQubit qubit in qubits)
@@ -44,13 +50,7 @@ namespace LUIECompiler.Optimization.Graphs.Nodes
         /// </summary>
         public void Remove()
         {
-            CircuitGraph graph = Graph as CircuitGraph  ?? throw new InternalException()
-            {
-                Reason = "The graph is not a CircuitGraph."
-            };
-            IEnumerable<GraphQubit> qubits = graph.GraphQubitFromGateCode(GateCode);
-
-            foreach (GraphQubit qubit in qubits)
+            foreach (GraphQubit qubit in Qubits)
             {
                 CircuitVertex inVertex = GetInVertex(qubit) as CircuitVertex ?? throw new InternalException()
                 {

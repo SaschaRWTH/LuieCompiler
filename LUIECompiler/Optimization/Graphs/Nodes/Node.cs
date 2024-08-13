@@ -1,4 +1,5 @@
 
+using LUIECompiler.CodeGeneration.Exceptions;
 using LUIECompiler.Optimization.Graphs.Interfaces;
 
 namespace LUIECompiler.Optimization.Graphs.Nodes
@@ -22,6 +23,28 @@ namespace LUIECompiler.Optimization.Graphs.Nodes
         /// Gets the graph the node is in.
         /// </summary>
         public IGraph Graph { get; }
+
+        public IEnumerable<INode> Predecessors 
+        {
+            get
+            {
+                foreach (IVertex vertex in InputVertices)
+                {
+                    yield return vertex.Start;
+                }
+            }
+        }
+
+        public IEnumerable<INode> Successors
+        {
+            get
+            {
+                foreach (IVertex vertex in OutputVertices)
+                {
+                    yield return vertex.Start;
+                }
+            }
+        }
 
         /// <summary>
         /// Creates a new node.
@@ -64,7 +87,19 @@ namespace LUIECompiler.Optimization.Graphs.Nodes
         /// </summary>
         /// <param name="qubit"></param>
         /// <returns></returns>
-        public IVertex? GetOutVertex(GraphQubit qubit)
+        public IVertex GetOutVertex(GraphQubit qubit)
+        {
+            return OutputVertices.OfType<CircuitVertex>().FirstOrDefault(v => v.Qubit == qubit) ?? throw new InternalException()
+            {
+                Reason = $"No output vertex found for qubit {qubit}."
+            };
+        }
+        /// <summary>
+        /// Gets the input vertex of the given qubit.
+        /// </summary>
+        /// <param name="qubit"></param>
+        /// <returns></returns>
+        public IVertex? GetOutVertexOrDefault(GraphQubit qubit)
         {
             return OutputVertices.OfType<CircuitVertex>().FirstOrDefault(v => v.Qubit == qubit);
         }
