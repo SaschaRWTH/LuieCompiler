@@ -1,5 +1,6 @@
 using LUIECompiler.CodeGeneration;
 using LUIECompiler.CodeGeneration.Codes;
+using LUIECompiler.CodeGeneration.Definitions;
 using LUIECompiler.CodeGeneration.Exceptions;
 using LUIECompiler.Common.Symbols;
 using LUIECompiler.Optimization.Graphs.Interfaces;
@@ -177,6 +178,11 @@ namespace LUIECompiler.Optimization.Graphs
             }
         }
 
+        /// <summary>
+        /// Translates the graph to a QASM program.
+        /// </summary>
+        /// <returns></returns>
+        /// <exception cref="InternalException"></exception>
         public QASMProgram ToQASM()
         {
             if (Qubits.Count == 0)
@@ -184,7 +190,7 @@ namespace LUIECompiler.Optimization.Graphs
                 return new QASMProgram();
             }
 
-            List<Code> code = [];
+            List<Code> code = [ ..GetDefinitions()];
 
             Dictionary<GraphQubit, INode> qubitToNode = new();
             foreach (GraphQubit qubit in Qubits)
@@ -222,7 +228,7 @@ namespace LUIECompiler.Optimization.Graphs
 
                 // Checks that all predecessors are gate nodes
                 bool continueLoop = false;
-                foreach(GraphQubit qubit in qubits)
+                foreach (GraphQubit qubit in qubits)
                 {
                     if (qubitToNode[qubit] is not GateNode qubitNode)
                     {
@@ -231,16 +237,16 @@ namespace LUIECompiler.Optimization.Graphs
                             Reason = "Qubit node is not a gate node. It should not be possible to reach this state."
                         };
                     }
-                    
+
                     // If the qubit is not at the current node
-                    if(qubitNode != gateNode)
+                    if (qubitNode != gateNode)
                     {
                         current = qubit;
                         continueLoop = true;
                         break;
                     }
                 }
-                if(continueLoop)
+                if (continueLoop)
                 {
                     continue;
                 }
@@ -249,12 +255,42 @@ namespace LUIECompiler.Optimization.Graphs
                 code.Add(gateNode.GateCode);
 
                 // Move each qubit to the next node
-                foreach(GraphQubit qubit in qubits)
+                foreach (GraphQubit qubit in qubits)
                 {
                     qubitToNode[qubit] = gateNode.GetOutVertex(qubit).End;
                 }
             }
             return new QASMProgram(code);
+        }
+
+        /// <summary>
+        /// Gets a list of definitions code of the graph.
+        /// </summary>
+        /// <returns></returns>
+        public List<DefinitionCode> GetDefinitions()
+        {
+            Dictionary<UniqueIdentifier, IEnumerable<GraphQubit>> identifierMap = [];
+            foreach(GraphQubit qubit in Qubits)
+            {
+                if (!identifierMap.ContainsKey(qubit.Identifier))
+                {
+                    identifierMap[qubit.Identifier] = [];
+                }
+                identifierMap[qubit.Identifier] = identifierMap[qubit.Identifier].Append(qubit);
+            }
+
+            List<DefinitionCode> definitions = [];
+
+            foreach(var pair in identifierMap)
+            {
+                definitions.Add(new DefinitionCode()
+                {
+                    Identifier = pair.Key,
+                    Size = pair.Value.Count()
+                });
+            }
+
+            return definitions;
         }
     }
 }

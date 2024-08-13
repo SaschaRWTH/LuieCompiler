@@ -36,7 +36,6 @@ namespace LUIECompiler.CodeGeneration.Definitions
 
             return new(new DefinitionCode()
             {
-                Register = this,
                 Size = size,
                 Identifier = context.CurrentBlock.GetUniqueIdentifier(this),
             });

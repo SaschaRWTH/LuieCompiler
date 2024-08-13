@@ -365,6 +365,31 @@ public class CircuitGraphTest
 
         CheckCircut(graph, QFTFirstCXRemovedPaths);
     }
+    
+    [TestMethod]
+    public void QFTGraphTranslationTest()
+    {
+        var walker = Utils.GetWalker();
+        var parser = Utils.GetParser(QFT);
+
+        var codegen = new CodeGenerationListener();
+        walker.Walk(codegen, parser.parse());
+
+        QASMProgram program = codegen.CodeGen.GenerateCode();
+        Assert.IsNotNull(program);
+
+        CircuitGraph graph = new(program);
+
+        CheckCircut(graph, QFTPaths);
+
+        QASMProgram translated = graph.ToQASM();
+        Console.WriteLine(translated);
+        CircuitGraph translatedGraph = new(translated);
+
+        CheckCircut(translatedGraph, QFTPaths);
+
+    }
+
 
     
     public void CheckCircut(CircuitGraph graph, List<QubitTestPath> paths)
