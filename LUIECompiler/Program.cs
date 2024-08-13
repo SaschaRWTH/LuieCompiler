@@ -1,7 +1,9 @@
 ﻿using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
 using LUIECompiler.CodeGeneration;
+using LUIECompiler.CodeGeneration.Codes;
 using LUIECompiler.CodeGeneration.Exceptions;
+using LUIECompiler.Optimization.Graphs;
 
 namespace LUIECompiler
 {
@@ -10,13 +12,13 @@ namespace LUIECompiler
         static void Main(string[] args)
         {
 
-            string input =
-            "gate qft(reg) do\n" +
-            "    for i in range(sizeof(reg)) do;" +
-            "    end\n" +
-            "end\n" +
-            "qubit a;\n" +
-            "R2 a;";
+            string input = 
+            @"
+                qubit[5] q;
+                for i in range(sizeof(q)) do
+                    h q[i];
+                end
+            ";
             // "gate hReg(reg) do\n" +
             // "    for i in range(sizeof(reg)) do\n" +
             // "        h reg[i];\n" +
@@ -61,7 +63,17 @@ namespace LUIECompiler
                 // Console.WriteLine($" if block  hash: {codegen.CodeGen.MainBlock.Statements.Where(s => s is QuantumIfStatement).Cast<QuantumIfStatement>().ToList()[0].Block.GetHashCode()}");
                 // Console.WriteLine($" if statements in main count: {codegen.CodeGen.MainBlock.Statements.Where(s => s is QuantumIfStatement).Count()}");
 
-                Console.WriteLine(codegen.CodeGen.GenerateCode());
+
+                QASMProgram program = codegen.CodeGen.GenerateCode();
+                Console.WriteLine("Generated program:");
+                Console.WriteLine(program);
+
+                Console.WriteLine("Creating Graph:");
+                CircuitGraph graph = new(program);
+
+
+                Console.WriteLine("Graph to code:");
+                Console.WriteLine(graph.ToQASM());
             }
             catch (InternalException e)
             {

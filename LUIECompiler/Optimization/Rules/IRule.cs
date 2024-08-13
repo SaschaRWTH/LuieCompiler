@@ -1,4 +1,4 @@
-using LUIECompiler.Optimization.Sequences;
+using LUIECompiler.Optimization.Graphs;
 
 namespace LUIECompiler.Optimization.Rules
 {
@@ -13,17 +13,17 @@ namespace LUIECompiler.Optimization.Rules
         public static int MaxRuleDepth { get; }
 
         /// <summary>
-        /// Checks if the rule is applicable to the given <paramref name="code"/>.
+        /// Checks if the rule is applicable to the given <paramref name="path"/>.
         /// </summary>
-        /// <param name="code"></param>
+        /// <param name="path"></param>
         /// <returns></returns>
-        public abstract bool IsApplicable(CodeSequence code);
+        public abstract bool IsApplicable(WirePath path);
 
         /// <summary>
-        /// Applies the rule to the given <paramref name="code"/>.
+        /// Applies the rule to the given <paramref name="path"/>.
         /// </summary>
-        /// <param name="code"></param>
+        /// <param name="path"></param>
         /// <returns></returns>
-        public abstract CodeSequence Apply(CodeSequence code);
+        public abstract void Apply(WirePath path);
     }
 }
