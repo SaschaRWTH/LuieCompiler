@@ -3,7 +3,10 @@ using LUIECompiler.Optimization.Graphs.Interfaces;
 
 namespace LUIECompiler.Optimization.Graphs
 {
-    public class Path : IPath
+    /// <summary>
+    /// Represents a path on a qubit wire.
+    /// </summary>
+    public class WirePath : IPath
     {
         public List<IVertex> Vertices { get; } = [];
 
@@ -64,7 +67,7 @@ namespace LUIECompiler.Optimization.Graphs
         /// <param name="qubit"></param>
         /// <param name="start"></param>
         /// <param name="end"></param>
-        public Path(GraphQubit qubit, INode start, INode end)
+        public WirePath(GraphQubit qubit, INode start, INode end)
         {
             IVertex current = GetQubitVertex(qubit, start.OutputVertices);
             Vertices.Add(current);
@@ -93,7 +96,7 @@ namespace LUIECompiler.Optimization.Graphs
         /// </summary>
         /// <param name="vertices"></param>
         /// <exception cref="ArgumentException"></exception>
-        public Path(IEnumerable<IVertex> vertices)
+        public WirePath(IEnumerable<IVertex> vertices)
         {
             Vertices = vertices.ToList();      
             if (Vertices.Count == 0)

@@ -1,6 +1,8 @@
 
 using LUIECompiler.CodeGeneration.Codes;
+using LUIECompiler.CodeGeneration.Exceptions;
 using LUIECompiler.Common;
+using LUIECompiler.Optimization.Graphs.Interfaces;
 
 namespace LUIECompiler.Optimization.Graphs.Nodes
 {
@@ -14,7 +16,7 @@ namespace LUIECompiler.Optimization.Graphs.Nodes
         /// </summary>
         public GateType Gate => GateCode.Gate.GateType;
 
-        public GateApplicationCode GateCode { get; }        
+        public GateApplicationCode GateCode { get; }
 
         /// <summary>
         /// Creates a new gate node.
@@ -22,11 +24,11 @@ namespace LUIECompiler.Optimization.Graphs.Nodes
         /// <param name="graph"></param>
         /// <param name="gate"></param>
         /// <param name="qubits"></param>
-        public GateNode(CircuitGraph graph, GateApplicationCode gate, List<GraphQubit> qubits): base(graph)
+        public GateNode(CircuitGraph graph, GateApplicationCode gate, List<GraphQubit> qubits) : base(graph)
         {
             GateCode = gate;
-            
-            foreach(GraphQubit qubit in qubits)
+
+            foreach (GraphQubit qubit in qubits)
             {
                 qubit.AddGateNode(this);
             }
@@ -37,5 +39,30 @@ namespace LUIECompiler.Optimization.Graphs.Nodes
             return $"GateNode = {{ Gate = {Gate}, Inputs = {InputVertices.Count}, Outputs = {OutputVertices.Count} }}";
         }
 
+        /// <summary>
+        /// Removes the node from the graph.
+        /// </summary>
+        public void Remove()
+        {
+            CircuitGraph graph = Graph as CircuitGraph  ?? throw new InternalException()
+            {
+                Reason = "The graph is not a CircuitGraph."
+            };
+            IEnumerable<GraphQubit> qubits = graph.GraphQubitFromGateCode(GateCode);
+
+            foreach (GraphQubit qubit in qubits)
+            {
+                CircuitVertex inVertex = GetInVertex(qubit) as CircuitVertex ?? throw new InternalException()
+                {
+                    Reason = $"The input vertex is missing for qubit {qubit} or is not a Circuit Vertex."
+                };
+                IVertex outVertex = GetInVertex(qubit) ?? throw new InternalException()
+                {
+                    Reason = $"The output vertex is missing for qubit {qubit}."
+                };
+
+                inVertex.ExtendTo(outVertex.End);
+            }
+        }
     }
 }

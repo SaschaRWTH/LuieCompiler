@@ -44,6 +44,6 @@ namespace LUIECompiler.Optimization.Graphs.Interfaces
         /// </summary>
         /// <param name="old"></param>
         /// <param name="replacement"></param>
-        public void ReplacePath(Path old, Path replacement);
+        public void ReplacePath(WirePath old, WirePath replacement);
     }
 }

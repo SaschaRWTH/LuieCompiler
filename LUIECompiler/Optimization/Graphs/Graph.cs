@@ -39,7 +39,7 @@ namespace LUIECompiler.Optimization.Graphs
         }
 
 
-        public void ReplacePath(Path old, Path replacement)
+        public void ReplacePath(WirePath old, WirePath replacement)
         {
             if (old.Start != replacement.Start || old.End != replacement.End)
             {

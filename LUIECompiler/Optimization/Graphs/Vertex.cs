@@ -6,9 +6,9 @@ namespace LUIECompiler.Optimization.Graphs
     {
         public IGraph Graph { get; }
 
-        public INode Start { get; }
+        public INode Start { get; protected set; }
 
-        public INode End { get; }
+        public INode End { get; protected set; }
 
         /// <summary>
         /// Creates a new vertex.

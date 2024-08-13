@@ -71,7 +71,7 @@ namespace LUIECompiler.Optimization.Graphs
         /// Gets the path of the qubit.
         /// </summary>
         /// <returns></returns>
-        public Path GetPath()
+        public WirePath GetPath()
         {
             return new(TracePath());
         }

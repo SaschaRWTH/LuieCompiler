@@ -103,6 +103,15 @@ namespace LUIECompiler.Optimization.Graphs
         }
 
         /// <summary>
+        /// Gets the graph qubits used in the gate <paramref name="code"/>.
+        /// </summary>
+        /// <param name="code"></param>
+        /// <returns></returns>
+        public IEnumerable<GraphQubit> GraphQubitFromGateCode(GateApplicationCode code)
+        {
+            return GetQubitsFromGate(code).Select(q => GraphQubitFromQubitCode(q));
+        }
+        /// <summary>
         /// Gets the graph qubit from the given <paramref name="code"/>.
         /// </summary>
         /// <param name="code"></param>

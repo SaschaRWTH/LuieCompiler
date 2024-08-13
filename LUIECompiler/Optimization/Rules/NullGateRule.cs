@@ -1,7 +1,6 @@
-using LUIECompiler.CodeGeneration.Codes;
 using LUIECompiler.CodeGeneration.Exceptions;
 using LUIECompiler.Common;
-using LUIECompiler.Optimization.Sequences;
+using LUIECompiler.Optimization.Graphs;
 
 namespace LUIECompiler.Optimization.Rules
 {
@@ -62,13 +61,14 @@ namespace LUIECompiler.Optimization.Rules
         /// </summary>
         /// <param name="code"></param>
         /// <returns></returns>
-        public override CodeSequence Apply(CodeSequence code)
+        public override WirePath Apply(WirePath code)
         {
-            if (!IsApplicable(code))
-            {
-                return code;
-            }
-            return new();
+            throw new NotImplementedException();
+            // if (!IsApplicable(code))
+            // {
+            //     return code;
+            // }
+            // return new();
         }
 
         /// <summary>
@@ -77,35 +77,36 @@ namespace LUIECompiler.Optimization.Rules
         /// <param name="code"></param>
         /// <returns></returns>
         /// <exception cref="InternalException"></exception>
-        public override bool IsApplicable(CodeSequence code)
+        public override bool IsApplicable(WirePath code)
         {
-            if (code.IsEmpty || !code.OnlyGatesApplications)
-            {
-                return false;
-            }
+            throw new NotImplementedException();
+            // if (code.IsEmpty || !code.OnlyGatesApplications)
+            // {
+            //     return false;
+            // }
 
-            if (code.Count != NullGateCombination.Length)
-            {
-                return false;
-            }
+            // if (code.Count != NullGateCombination.Length)
+            // {
+            //     return false;
+            // }
 
-            for (int i = 0; i < NullGateCombination.Length; i++)
-            {
-                if(code.Code[i] is not GateApplicationCode gateApplicationCode)
-                {
-                    throw new InternalException()
-                    {
-                        Reason = "'code.OnlyGatesApplications' was already check, it should not be possible that a code is not a GateApplicationCode."
-                    };
-                }
+            // for (int i = 0; i < NullGateCombination.Length; i++)
+            // {
+            //     if(code.Code[i] is not GateApplicationCode gateApplicationCode)
+            //     {
+            //         throw new InternalException()
+            //         {
+            //             Reason = "'code.OnlyGatesApplications' was already check, it should not be possible that a code is not a GateApplicationCode."
+            //         };
+            //     }
 
-                if (gateApplicationCode.Gate.GateType != NullGateCombination[i])
-                {
-                    return false;
-                }
-            }
+            //     if (gateApplicationCode.Gate.GateType != NullGateCombination[i])
+            //     {
+            //         return false;
+            //     }
+            // }
 
-            return true;
+            // return true;
         }
     }
 }

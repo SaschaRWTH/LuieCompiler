@@ -21,7 +21,7 @@ namespace LUIECompiler.Optimization.Graphs.Nodes
         /// <summary>
         /// Gets the graph the node is in.
         /// </summary>
-        public IGraph Graph{ get; }
+        public IGraph Graph { get; }
 
         /// <summary>
         /// Creates a new node.
@@ -40,7 +40,7 @@ namespace LUIECompiler.Optimization.Graphs.Nodes
         {
             InputVertices.Add(vertex);
         }
-        
+
         /// <summary>
         /// Adds an output vertex to the node.
         /// </summary>
@@ -48,6 +48,25 @@ namespace LUIECompiler.Optimization.Graphs.Nodes
         public virtual void AddOutput(IVertex vertex)
         {
             OutputVertices.Add(vertex);
+        }
+
+        /// <summary>
+        /// Gets the input vertex of the given qubit.
+        /// </summary>
+        /// <param name="qubit"></param>
+        /// <returns></returns>
+        public IVertex? GetInVertex(GraphQubit qubit)
+        {
+            return InputVertices.OfType<CircuitVertex>().FirstOrDefault(v => v.Qubit == qubit);
+        }
+        /// <summary>
+        /// Gets the input vertex of the given qubit.
+        /// </summary>
+        /// <param name="qubit"></param>
+        /// <returns></returns>
+        public IVertex? GetOutVertex(GraphQubit qubit)
+        {
+            return OutputVertices.OfType<CircuitVertex>().FirstOrDefault(v => v.Qubit == qubit);
         }
     }
 }
