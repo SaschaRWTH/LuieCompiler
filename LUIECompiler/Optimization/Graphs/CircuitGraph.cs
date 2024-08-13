@@ -196,6 +196,7 @@ namespace LUIECompiler.Optimization.Graphs
             }
 
             GraphQubit current = Qubits.First();
+            // Continue loop while not all qubits are translated
             while (qubitToNode.Any(pair => pair.Key.End != pair.Value))
             {
                 if (qubitToNode[current] is not GateNode gateNode)
@@ -210,6 +211,7 @@ namespace LUIECompiler.Optimization.Graphs
                 List<INode> predecessors = gateNode.Predecessors.ToList();
                 // If gate only operates on one qubit, it can allways be translated 
                 // (not dependent on other gates to have been executed on other wires)
+                // This is technically a special case of the following, but it is easier to handle it separately
                 if (predecessors.Count <= 1)
                 {
                     code.Add(gateNode.GateCode);
@@ -219,6 +221,7 @@ namespace LUIECompiler.Optimization.Graphs
                 IEnumerable<GraphQubit> qubits = gateNode.Qubits;
 
                 // Checks that all predecessors are gate nodes
+                bool continueLoop = false;
                 foreach(GraphQubit qubit in qubits)
                 {
                     if (qubitToNode[qubit] is not GateNode qubitNode)
@@ -229,12 +232,17 @@ namespace LUIECompiler.Optimization.Graphs
                         };
                     }
                     
-                    // If the qubit is not at the current node, 
+                    // If the qubit is not at the current node
                     if(qubitNode != gateNode)
                     {
                         current = qubit;
-                        continue;
+                        continueLoop = true;
+                        break;
                     }
+                }
+                if(continueLoop)
+                {
+                    continue;
                 }
 
                 // Add gate to translation

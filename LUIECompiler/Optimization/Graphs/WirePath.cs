@@ -142,12 +142,6 @@ namespace LUIECompiler.Optimization.Graphs
                 throw new ArgumentException("The path is interrupted.");
             }
 
-            Console.WriteLine("Write all the vertices in the path");
-            foreach (var vertex in Vertices)
-            {
-                Console.WriteLine(vertex);
-            }
-
             if (Vertices[0] is not CircuitVertex startVertex)
             {
                 throw new ArgumentException("The path does not start with a qubit vertex.");

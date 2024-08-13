@@ -70,7 +70,10 @@ namespace LUIECompiler
 
                 Console.WriteLine("Creating Graph:");
                 CircuitGraph graph = new(program);
-                
+
+
+                Console.WriteLine("Graph to code:");
+                Console.WriteLine(graph.ToQASM());
             }
             catch (InternalException e)
             {

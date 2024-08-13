@@ -10,5 +10,10 @@ namespace LUIECompiler.Optimization.Graphs
         {
             Index = index;
         }
+
+        override public string ToString()
+        {
+            return $"{Identifier}[{Index}]";
+        }
     }
 }
