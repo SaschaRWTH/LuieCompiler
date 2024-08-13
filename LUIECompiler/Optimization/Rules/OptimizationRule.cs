@@ -20,7 +20,7 @@ namespace LUIECompiler.Optimization.Rules
         /// </summary>
         /// <param name="code"></param>
         /// <returns></returns>
-        public abstract WirePath Apply(WirePath code);
+        public abstract void Apply(WirePath code);
     }
 
 }

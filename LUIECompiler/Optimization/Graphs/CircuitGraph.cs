@@ -111,6 +111,7 @@ namespace LUIECompiler.Optimization.Graphs
         {
             return GetQubitsFromGate(code).Select(q => GraphQubitFromQubitCode(q));
         }
+        
         /// <summary>
         /// Gets the graph qubit from the given <paramref name="code"/>.
         /// </summary>

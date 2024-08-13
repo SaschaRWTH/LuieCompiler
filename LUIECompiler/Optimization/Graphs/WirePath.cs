@@ -1,4 +1,5 @@
 using LUIECompiler.CodeGeneration.Exceptions;
+using LUIECompiler.Common.Symbols;
 using LUIECompiler.Optimization.Graphs.Interfaces;
 
 namespace LUIECompiler.Optimization.Graphs
@@ -16,6 +17,8 @@ namespace LUIECompiler.Optimization.Graphs
             .. InnerNodes,
             End
         ];
+
+        public int Length => Nodes.Count;
 
         public INode Start
         {
@@ -60,6 +63,10 @@ namespace LUIECompiler.Optimization.Graphs
             }
         }
 
+        /// <summary>
+        /// The qubit of the wire the path is part of.
+        /// </summary>
+        public GraphQubit Qubit { get; }
 
         /// <summary>
         /// Creates a new path. Uses the wire of the qubit and the start and end nodes.
@@ -69,12 +76,36 @@ namespace LUIECompiler.Optimization.Graphs
         /// <param name="end"></param>
         public WirePath(GraphQubit qubit, INode start, INode end)
         {
+            Qubit = qubit;
+
             IVertex current = GetQubitVertex(qubit, start.OutputVertices);
             Vertices.Add(current);
             while(current.End != end)
             {
                 current = GetQubitVertex(qubit, current.End.OutputVertices);
                 Vertices.Add(current);
+            }
+        }
+
+        /// <summary>
+        /// Creates a new path with maximum length <paramref name="maxLength"/>. Uses the wire of the qubit and the start and end nodes.
+        /// </summary>
+        /// <param name="qubit"></param>
+        /// <param name="start"></param>
+        /// <param name="end"></param>
+        /// <param name="maxLength">Maximum length of the path. A path needs to be at least 2 long.</param>
+        public WirePath(GraphQubit qubit, INode start, INode end, int maxLength)
+        {
+            Qubit = qubit;
+
+            IVertex current = GetQubitVertex(qubit, start.OutputVertices);
+            Vertices.Add(current);
+            int length = 2;
+            while(current.End != end || Length < maxLength)
+            {
+                current = GetQubitVertex(qubit, current.End.OutputVertices);
+                Vertices.Add(current);
+                length++;
             }
         }
 
@@ -98,15 +129,41 @@ namespace LUIECompiler.Optimization.Graphs
         /// <exception cref="ArgumentException"></exception>
         public WirePath(IEnumerable<IVertex> vertices)
         {
-            Vertices = vertices.ToList();      
+            Vertices = vertices.ToList();
+
             if (Vertices.Count == 0)
             {
                 throw new ArgumentException("The path is empty.");
-            }
+            }            
 
             if (!IsUnInterrupted())
             {
                 throw new ArgumentException("The path is interrupted.");
+            }
+
+            Console.WriteLine("Write all the vertices in the path");
+            foreach (var vertex in Vertices)
+            {
+                Console.WriteLine(vertex);
+            }
+
+            if (Vertices[0] is not CircuitVertex startVertex)
+            {
+                throw new ArgumentException("The path does not start with a qubit vertex.");
+            }
+            Qubit = startVertex.Qubit;
+
+            foreach(IVertex vertex in Vertices)
+            {
+                if (vertex is not CircuitVertex qubitVertex)
+                {
+                    throw new ArgumentException("The path contains a vertex that is not a qubit vertex.");
+                }
+
+                if (Qubit != qubitVertex.Qubit)
+                {
+                    throw new ArgumentException("The path contains vertices of different qubits.");
+                }
             }
         }
 
@@ -124,6 +181,23 @@ namespace LUIECompiler.Optimization.Graphs
                 }
             }
             return true;
+        }
+
+        /// <summary>
+        /// Gets all subpaths of the path upto a maximum length of <paramref name="maxLength"/>.
+        /// </summary>
+        /// <param name="qubit"></param>
+        /// <param name="maxLength"></param>
+        /// <returns></returns>
+        public IEnumerable<IPath> GetSubPaths(int maxLength)
+        {
+            foreach(INode node in Nodes)
+            {
+                for(int length = 2; length <= maxLength; length++)
+                {
+                    yield return new WirePath(Qubit, node, End, length);
+                }
+            }
         }
     }
 }

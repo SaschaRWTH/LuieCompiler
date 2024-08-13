@@ -24,6 +24,6 @@ namespace LUIECompiler.Optimization.Rules
         /// </summary>
         /// <param name="code"></param>
         /// <returns></returns>
-        public abstract WirePath Apply(WirePath path);
+        public abstract void Apply(WirePath path);
     }
 }
