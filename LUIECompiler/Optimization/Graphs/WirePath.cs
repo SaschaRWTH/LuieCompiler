@@ -1,6 +1,7 @@
 using LUIECompiler.CodeGeneration.Exceptions;
 using LUIECompiler.Common.Symbols;
 using LUIECompiler.Optimization.Graphs.Interfaces;
+using LUIECompiler.Optimization.Rules;
 
 namespace LUIECompiler.Optimization.Graphs
 {
@@ -196,6 +197,17 @@ namespace LUIECompiler.Optimization.Graphs
                 for(int length = 2; length <= maxLength; length++)
                 {
                     yield return new WirePath(Qubit, node, End, length);
+                }
+            }
+        }
+
+        public void ApplyOptimizationRules(IEnumerable<OptimizationRule> rules)
+        {
+            foreach (OptimizationRule rule in rules)
+            {
+                if (rule.IsApplicable(this))
+                {
+                    rule.Apply(this);
                 }
             }
         }

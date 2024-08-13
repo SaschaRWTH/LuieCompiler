@@ -1,5 +1,7 @@
+using LUIECompiler.CodeGeneration;
 using LUIECompiler.CodeGeneration.Codes;
 using LUIECompiler.Optimization.Graphs.Nodes;
+using LUIECompiler.Optimization.Rules;
 
 namespace LUIECompiler.Optimization.Graphs
 {
@@ -60,7 +62,7 @@ namespace LUIECompiler.Optimization.Graphs
                 Qubits.Add(qubit);
                 return;
             }
-            
+
             for (int i = 0; i < definition.Size; i++)
             {
                 GraphRegisterAccess qubit = new(this, definition.Identifier, i);
@@ -111,7 +113,7 @@ namespace LUIECompiler.Optimization.Graphs
         {
             return GetQubitsFromGate(code).Select(q => GraphQubitFromQubitCode(q));
         }
-        
+
         /// <summary>
         /// Gets the graph qubit from the given <paramref name="code"/>.
         /// </summary>
@@ -119,7 +121,7 @@ namespace LUIECompiler.Optimization.Graphs
         /// <returns></returns>
         public GraphQubit GraphQubitFromQubitCode(QubitCode code)
         {
-            if(code is RegisterAccessCode registerAccessCode)
+            if (code is RegisterAccessCode registerAccessCode)
             {
                 return GetGraphQubit(code.Identifier.Identifier, registerAccessCode.Index);
             }
@@ -135,14 +137,46 @@ namespace LUIECompiler.Optimization.Graphs
         /// <returns></returns>
         public GraphQubit GetGraphQubit(string identifier, int index = -1)
         {
-            if(index != -1)
+            if (index != -1)
             {
                 return Qubits.OfType<GraphRegisterAccess>().Single(
-                    q => q.Identifier.Identifier == identifier 
+                    q => q.Identifier.Identifier == identifier
                     && q.Index == index);
             }
             return Qubits.Single(q => q.Identifier.Identifier == identifier);
         }
 
+        /// <summary>
+        /// Applies the given <paramref name="rules"/> to the graph.
+        /// </summary>
+        /// <param name="rules"></param>
+        /// <param name="maxDepth"></param>
+        public void ApplyOptimizationRules(IEnumerable<OptimizationRule> rules, int maxDepth)
+        {
+            foreach(GraphQubit qubit in Qubits)
+            {
+                ApplyOptimizationRules(rules, maxDepth, qubit);
+            }
+        }
+
+        /// <summary>
+        /// Applies the given <paramref name="rules"/> to the given <paramref name="qubit"/>.
+        /// </summary>
+        /// <param name="rules"></param>
+        /// <param name="maxDepth"></param>
+        /// <param name="qubit"></param>
+        public void ApplyOptimizationRules(IEnumerable<OptimizationRule> rules, int maxDepth, GraphQubit qubit)
+        {
+            WirePath path = new WirePath(qubit, qubit.Start, qubit.End);
+            foreach (WirePath subpath in path.GetSubPaths(maxDepth))
+            {
+                subpath.ApplyOptimizationRules(rules);
+            }
+        }
+
+        public QASMProgram ToQASM()
+        {
+            throw new NotImplementedException();
+        }
     }
 }

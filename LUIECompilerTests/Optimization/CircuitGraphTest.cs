@@ -8,7 +8,7 @@ using LUIECompiler.Optimization.Graphs.Nodes;
 namespace LUIECompilerTests.Optimization;
 
 [TestClass, TestCategory("Optimization")]
-public class GraphCreationTest
+public class CircuitGraphTest
 {
     public const string SimpleInput =
     @"
@@ -24,19 +24,38 @@ public class GraphCreationTest
         new()
         {
             Identifier = "id0",
-            Path = new List<GateType>
-            {
+            Path =
+            [
                 GateType.H,
                 GateType.Z
-            }
+            ]
         },
         new()
         {
             Identifier = "id1",
-            Path = new List<GateType>
-            {
+            Path =
+            [
                 GateType.X
-            }
+            ]
+        }
+    ];
+    public readonly List<QubitTestPath> SimpleInputZRemovedPaths = 
+    [
+        new()
+        {
+            Identifier = "id0",
+            Path =
+            [
+                GateType.H
+            ]
+        },
+        new()
+        {
+            Identifier = "id1",
+            Path =
+            [
+                GateType.X
+            ]
         }
     ];
     public const string SimpleRegister =
@@ -53,20 +72,20 @@ public class GraphCreationTest
         {
             Identifier = "id0",
             Index = 0,
-            Path = new List<GateType>
-            {
+            Path =
+            [
                 GateType.H,
                 GateType.Z
-            }
+            ]
         },
         new()
         {
             Identifier = "id0",
             Index = 1,
-            Path = new List<GateType>
-            {
+            Path =
+            [
                 GateType.X
-            }
+            ]
         }
     ];
     
@@ -179,6 +198,84 @@ public class GraphCreationTest
             ]
         }
     ];
+    public readonly List<QubitTestPath> QFTFirstCXRemovedPaths = 
+    [
+        new()
+        {
+            Identifier = "id0",
+            Index = 0,
+            Path = 
+            [
+                GateType.H,
+                GateType.P,
+                GateType.P,
+                GateType.P,
+                GateType.P,
+                GateType.CX,
+                GateType.CX,
+            ]
+        },
+        new()
+        {
+            Identifier = "id0",
+            Index = 1,
+            Path = 
+            [
+                GateType.P,
+                GateType.H,
+                GateType.P,
+                GateType.P,
+                GateType.P,
+                GateType.CX,
+                GateType.CX,
+                GateType.CX,
+            ]
+        },
+        new()
+        {
+            Identifier = "id0",
+            Index = 2,
+            Path = 
+            [
+                GateType.P,
+                GateType.P,
+                GateType.H,
+                GateType.P,
+                GateType.P,
+            ]
+        },
+        new()
+        {
+            Identifier = "id0",
+            Index = 3,
+            Path = 
+            [
+                GateType.P,
+                GateType.P,
+                GateType.P,
+                GateType.H,
+                GateType.P,
+                GateType.CX,
+                GateType.CX,
+                GateType.CX
+            ]
+        },
+        new()
+        {
+            Identifier = "id0",
+            Index = 4,
+            Path = 
+            [
+                GateType.P,
+                GateType.P,
+                GateType.P,
+                GateType.P,
+                GateType.H,
+                GateType.CX,
+                GateType.CX
+            ]
+        }
+    ];
 
     [TestMethod]
     public void SimpleInputTest()
@@ -195,6 +292,25 @@ public class GraphCreationTest
         CircuitGraph graph = new(program);
 
         CheckCircut(graph, SimpleInputPaths);
+    }
+
+    [TestMethod]
+    public void NodeRemovalSimpleInputTest()
+    {
+        var walker = Utils.GetWalker();
+        var parser = Utils.GetParser(SimpleInput);
+
+        var codegen = new CodeGenerationListener();
+        walker.Walk(codegen, parser.parse());
+
+        QASMProgram program = codegen.CodeGen.GenerateCode();
+        Assert.IsNotNull(program);
+
+        CircuitGraph graph = new(program);
+
+        CheckCircut(graph, SimpleInputPaths);
+        graph.Nodes.OfType<GateNode>().Single(n => n.Gate == GateType.Z).Remove();
+        CheckCircut(graph, SimpleInputZRemovedPaths);
     }
 
     [TestMethod]
@@ -229,6 +345,25 @@ public class GraphCreationTest
         CircuitGraph graph = new(program);
 
         CheckCircut(graph, QFTPaths);
+    }
+
+    [TestMethod]
+    public void RemovedGateQFTCircuitTest()
+    {
+        var walker = Utils.GetWalker();
+        var parser = Utils.GetParser(QFT);
+
+        var codegen = new CodeGenerationListener();
+        walker.Walk(codegen, parser.parse());
+
+        QASMProgram program = codegen.CodeGen.GenerateCode();
+        Assert.IsNotNull(program);
+
+        CircuitGraph graph = new(program);
+
+        graph.Nodes.OfType<GateNode>().First(n => n.Gate == GateType.CX).Remove();
+
+        CheckCircut(graph, QFTFirstCXRemovedPaths);
     }
 
     
