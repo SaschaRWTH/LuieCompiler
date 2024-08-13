@@ -122,17 +122,28 @@ namespace LUIECompiler.Optimization.Rules
         /// <returns></returns>
         public bool OperateOnSameQubit(WirePath path)
         {
+            // Casting to GateNode
             if (path.Nodes[0] is not GateNode baseGate)
             {
                 return false;
             }
             for (int i = 1; i < NullGateCombination.Length; i++)
             {
+                // Casting to GateNode
                 if (path.Nodes[i] is not GateNode gateNode)
                 {
                     return false;
                 }
 
+                // Check if the gates have the same amount of parameters.
+                if (baseGate.GateCode.Parameters.Count != gateNode.GateCode.Parameters.Count)
+                {
+                    return false;
+                }
+
+                // Check mutually inclusive semantical equality of the guards.
+                // For guards, the order does not matter.
+                // Check if for any guard in the base gate, there exists a semantically equal guard in the current gate.
                 foreach (var qubit in baseGate.GateCode.Guards)
                 {
                     if (!gateNode.GateCode.Guards.Any(guard => guard.SemanticallyEqual(qubit)))
@@ -140,12 +151,16 @@ namespace LUIECompiler.Optimization.Rules
                         return false;
                     }
                 }
-
-                if (baseGate.GateCode.Parameters.Count != gateNode.GateCode.Parameters.Count)
+                // Check if for any guard in the current gate, there exists a semantically equal guard in the base gate.
+                foreach (var qubit in gateNode.GateCode.Guards)
                 {
-                    return false;
+                    if (!baseGate.GateCode.Guards.Any(guard => guard.SemanticallyEqual(qubit)))
+                    {
+                        return false;
+                    }
                 }
 
+                // Check if all parameters are semantically equal.
                 for (int j = 0; j < baseGate.GateCode.Parameters.Count; j++)
                 {
                     if (!baseGate.GateCode.Parameters[j].SemanticallyEqual(gateNode.GateCode.Parameters[j]))
