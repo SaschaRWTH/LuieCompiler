@@ -52,17 +52,20 @@ namespace LUIECompiler.Optimization.Graphs.Nodes
         {
             foreach (GraphQubit qubit in Qubits)
             {
+                Console.WriteLine($"Removing gate {Gate} from qubit {qubit}");
                 CircuitVertex inVertex = GetInVertex(qubit) as CircuitVertex ?? throw new InternalException()
                 {
                     Reason = $"The input vertex is missing for qubit {qubit} or is not a Circuit Vertex."
                 };
-                IVertex outVertex = GetInVertex(qubit) ?? throw new InternalException()
+                IVertex outVertex = GetOutVertex(qubit) ?? throw new InternalException()
                 {
                     Reason = $"The output vertex is missing for qubit {qubit}."
                 };
 
                 inVertex.ExtendTo(outVertex.End);
             }
+
+            Graph.RemoveNode(this);
         }
     }
 }

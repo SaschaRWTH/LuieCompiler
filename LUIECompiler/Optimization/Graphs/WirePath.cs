@@ -81,7 +81,7 @@ namespace LUIECompiler.Optimization.Graphs
 
             IVertex current = GetQubitVertex(qubit, start.OutputVertices);
             Vertices.Add(current);
-            while(current.End != end)
+            while (current.End != end)
             {
                 current = GetQubitVertex(qubit, current.End.OutputVertices);
                 Vertices.Add(current);
@@ -102,7 +102,7 @@ namespace LUIECompiler.Optimization.Graphs
             IVertex current = GetQubitVertex(qubit, start.OutputVertices);
             Vertices.Add(current);
             int length = 2;
-            while(current.End != end || Length < maxLength)
+            while (current.End != end && length < maxLength)
             {
                 current = GetQubitVertex(qubit, current.End.OutputVertices);
                 Vertices.Add(current);
@@ -135,7 +135,7 @@ namespace LUIECompiler.Optimization.Graphs
             if (Vertices.Count == 0)
             {
                 throw new ArgumentException("The path is empty.");
-            }            
+            }
 
             if (!IsUnInterrupted())
             {
@@ -148,7 +148,7 @@ namespace LUIECompiler.Optimization.Graphs
             }
             Qubit = startVertex.Qubit;
 
-            foreach(IVertex vertex in Vertices)
+            foreach (IVertex vertex in Vertices)
             {
                 if (vertex is not CircuitVertex qubitVertex)
                 {
@@ -186,11 +186,20 @@ namespace LUIECompiler.Optimization.Graphs
         /// <returns></returns>
         public IEnumerable<IPath> GetSubPaths(int maxLength)
         {
-            foreach(INode node in Nodes)
+            foreach (INode node in Nodes)
             {
-                for(int length = 2; length <= maxLength; length++)
+                for (int length = 2; length <= maxLength; length++)
                 {
-                    yield return new WirePath(Qubit, node, End, length);
+                    WirePath? path;
+                    try
+                    {
+                        path = new WirePath(Qubit, node, End, length);
+                    }
+                    catch (ArgumentException)
+                    {
+                        break;
+                    }
+                    yield return path;
                 }
             }
         }
@@ -204,6 +213,11 @@ namespace LUIECompiler.Optimization.Graphs
                     rule.Apply(this);
                 }
             }
+        }
+
+        public override string ToString()
+        {
+            return $"Start = {Start}, End = {End}, Length = {Length}";
         }
     }
 }

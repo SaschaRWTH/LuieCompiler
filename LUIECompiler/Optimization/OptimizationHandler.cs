@@ -18,7 +18,7 @@ namespace LUIECompiler.Optimization
             CircuitGraph graph = new(Program);
             
             graph.ApplyOptimizationRules(NullGateRule.NullGateRules, NullGateRule.MaxRuleLength);
-          
+            
             return graph.ToQASM();
         }
 

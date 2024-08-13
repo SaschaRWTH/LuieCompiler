@@ -1,8 +1,6 @@
-using LUIECompiler.CodeGeneration;
 using LUIECompiler.CodeGeneration.Codes;
 using LUIECompiler.CodeGeneration.Definitions;
 using LUIECompiler.CodeGeneration.Exceptions;
-using LUIECompiler.Common.Symbols;
 using LUIECompiler.Optimization.Graphs.Interfaces;
 using LUIECompiler.Optimization.Graphs.Nodes;
 using LUIECompiler.Optimization.Rules;

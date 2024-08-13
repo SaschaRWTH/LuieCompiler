@@ -409,7 +409,7 @@ public class CircuitGraphTest
         }
     }
 
-    public void CheckPath(LUIECompiler.Optimization.Graphs.WirePath circuitPath, List<GateType> path)
+    public void CheckPath(WirePath circuitPath, List<GateType> path)
     {
         IEnumerable<INode> nodes = circuitPath.InnerNodes;
         for(int i = 0; i < path.Count; i++)

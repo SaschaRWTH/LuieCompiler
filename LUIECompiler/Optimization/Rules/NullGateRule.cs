@@ -157,5 +157,10 @@ namespace LUIECompiler.Optimization.Rules
 
             return true;
         }
+
+        public override string ToString()
+        {
+            return $"NullGateRule: {string.Join(", ", NullGateCombination)}";
+        }
     }
 }
