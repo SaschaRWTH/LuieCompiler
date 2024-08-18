@@ -31,6 +31,23 @@ namespace LUIECompiler.Optimization.Graphs
         public UniqueIdentifier Identifier { get; }
 
         /// <summary>
+        /// Indicates whether the qubit can be removed from the graph.
+        /// A qubit can be removed if no gates are applied to it.
+        /// </summary>
+        public virtual bool CanBeRemoved
+        {
+            get
+            {           
+                IVertex vertex = Start.OutputVertex ?? throw new InternalException
+                {
+                    Reason = "Input node must have exactly one output vertex",
+                };
+
+                return vertex.Start == Start && vertex.End == End;
+            }
+        }
+
+        /// <summary>
         /// Creates a new qubit.
         /// </summary>
         /// <param name="graph"></param>
@@ -56,7 +73,7 @@ namespace LUIECompiler.Optimization.Graphs
         /// <exception cref="InternalException"></exception>
         public void AddGateNode(GateNode node)
         {
-            IVertex last = End.InputVertex ?? throw new InternalException   
+            IVertex last = End.InputVertex ?? throw new InternalException
             {
                 Reason = "Output node must have exactly one output vertex",
             };
@@ -103,6 +120,38 @@ namespace LUIECompiler.Optimization.Graphs
 
                 yield return current;
             }
+        }
+
+        /// <summary>
+        /// Removes the qubit from the graph if possible.
+        /// </summary>
+        /// <exception cref="InternalException"></exception>
+        public void Remove()
+        {
+            if(!CanBeRemoved)
+            {
+                return;
+            }
+
+            IVertex vertex = Start.OutputVertex ?? throw new InternalException
+            {
+                Reason = "Input node must have exactly one output vertex",
+            };
+
+            if(Graph is not CircuitGraph circuitGraph)
+            {
+                throw new InternalException
+                {
+                    Reason = "Graph must be a circuit graph",
+                };
+            }
+
+            circuitGraph.RemoveVertex(vertex);
+
+            circuitGraph.RemoveNode(Start);
+            circuitGraph.RemoveNode(End);
+
+            circuitGraph.Qubits.Remove(this);  
         }
     }
 }

@@ -118,6 +118,18 @@ public class CircuitGraphTest
         qft a;
     ";
 
+    public const string UnusedQubits = @"
+        qubit a;
+        qubit b;
+        qubit c;
+        qubit d;
+
+        h b;
+        x d;
+        z b;
+        x d;
+    ";
+
     public readonly List<QubitTestPath> QFTPaths = 
     [
         new()
@@ -388,6 +400,33 @@ public class CircuitGraphTest
 
         CheckCircut(translatedGraph, QFTPaths);
 
+    }
+    
+    [TestMethod]
+    public void UnusedQubitsTest()
+    {
+        var walker = Utils.GetWalker();
+        var parser = Utils.GetParser(UnusedQubits);
+
+        var codegen = new CodeGenerationListener();
+        walker.Walk(codegen, parser.parse());
+
+        QASMProgram program = codegen.CodeGen.GenerateCode();
+        Assert.IsNotNull(program);
+
+        CircuitGraph graph = new(program);
+
+        Assert.AreEqual(4, graph.Qubits.Count);
+
+        graph.RemoveUnusedQubits();
+
+        Assert.AreEqual(2, graph.Qubits.Count);
+        
+        Assert.IsTrue(!graph.Qubits.Any(q => q.Identifier.Identifier == "id0"));
+        Assert.IsTrue(!graph.Qubits.Any(q => q.Identifier.Identifier == "id2"));
+
+        Assert.IsTrue(graph.Qubits.Any(q => q.Identifier.Identifier == "id1"));
+        Assert.IsTrue(graph.Qubits.Any(q => q.Identifier.Identifier == "id3"));
     }
 
 

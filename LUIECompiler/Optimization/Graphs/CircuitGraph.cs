@@ -149,6 +149,18 @@ namespace LUIECompiler.Optimization.Graphs
         }
 
         /// <summary>
+        /// Removes all unused qubits from the graph.
+        /// </summary>
+        public void RemoveUnusedQubits()
+        {
+            List<GraphQubit> unusedQubits = Qubits.Where(q => q.CanBeRemoved).ToList();
+            foreach (GraphQubit qubit in unusedQubits)
+            {
+                qubit.Remove();
+            }
+        }
+
+        /// <summary>
         /// Applies the given <paramref name="rules"/> to the graph.
         /// </summary>
         /// <param name="rules"></param>
@@ -188,7 +200,7 @@ namespace LUIECompiler.Optimization.Graphs
                 return new QASMProgram();
             }
 
-            List<Code> code = [ ..GetDefinitions()];
+            List<Code> code = [.. GetDefinitions()];
 
             Dictionary<GraphQubit, INode> qubitToNode = new();
             foreach (GraphQubit qubit in Qubits)
@@ -268,7 +280,7 @@ namespace LUIECompiler.Optimization.Graphs
         public List<DefinitionCode> GetDefinitions()
         {
             Dictionary<UniqueIdentifier, IEnumerable<GraphQubit>> identifierMap = [];
-            foreach(GraphQubit qubit in Qubits)
+            foreach (GraphQubit qubit in Qubits)
             {
                 if (!identifierMap.ContainsKey(qubit.Identifier))
                 {
@@ -279,7 +291,7 @@ namespace LUIECompiler.Optimization.Graphs
 
             List<DefinitionCode> definitions = [];
 
-            foreach(var pair in identifierMap)
+            foreach (var pair in identifierMap)
             {
                 definitions.Add(new DefinitionCode()
                 {
