@@ -116,6 +116,7 @@ public class NullGateOptimizationTest
         x a;
         z c;
     ";
+
     public const string InterruptedZZNullGateTranslation =
         "qubit id0;\n" +
         "qubit id1;\n" +
@@ -128,6 +129,46 @@ public class NullGateOptimizationTest
         "qubit id1;\n" +
         "x id1;\n";
 
+    public const string ControlledNullGates =
+    @"
+        qubit a;
+        qubit b;
+        qubit c;
+        qubit d;
+        qif a do
+            h b;
+            x c;
+            z d;
+        end
+        h c;
+        qif a do
+            z d;
+            h b;
+            x c;
+        end
+    ";
+
+    public const string ControlledNullGatesTranslation =
+        "qubit id0;\n" +
+        "qubit id1;\n" +
+        "qubit id2;\n" +
+        "qubit id3;\n" +
+        "ctrl(1) @ h id0, id1;\n" +
+        "ctrl(1) @ x id0, id2;\n" +
+        "ctrl(1) @ z id0, id3;\n" +
+        "h id2;\n" +
+        "ctrl(1) @ z id0, id3;\n" +
+        "ctrl(1) @ h id0, id1;\n" +
+        "ctrl(1) @ x id0, id2;\n";
+
+    public const string ControlledNullGatesOptimizated =
+        "qubit id0;\n" +
+        "qubit id1;\n" +
+        "qubit id2;\n" +
+        "qubit id3;\n" +
+        "ctrl(1) @ x id0, id2;\n" +
+        "h id2;\n" +
+        "ctrl(1) @ x id0, id2;\n";
 
     [TestMethod]
     public void SimpleHHNullGateTest()
@@ -282,6 +323,32 @@ public class NullGateOptimizationTest
         Assert.IsNotNull(optimizedCode);
 
         Assert.AreEqual(InterruptedZZNullGateOptimizated, optimizedCode);
+
+    }
+    
+    [TestMethod]
+    public void ControlledNullGatesTest()
+    {
+        var walker = Utils.GetWalker();
+        var parser = Utils.GetParser(ControlledNullGates);
+
+        var codegen = new CodeGenerationListener();
+        walker.Walk(codegen, parser.parse());
+
+        QASMProgram program = codegen.CodeGen.GenerateCode();
+        Assert.IsNotNull(program);
+
+        string code = program.ToString();
+        Assert.IsNotNull(code);
+
+        Assert.AreEqual(ControlledNullGatesTranslation, code);
+
+        QASMProgram optimized = program.Optimize();
+
+        string optimizedCode = optimized.ToString();
+        Assert.IsNotNull(optimizedCode);
+
+        Assert.AreEqual(ControlledNullGatesOptimizated, optimizedCode);
 
     }
 
