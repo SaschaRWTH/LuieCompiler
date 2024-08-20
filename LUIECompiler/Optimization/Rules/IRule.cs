@@ -10,7 +10,7 @@ namespace LUIECompiler.Optimization.Rules
         /// <summary>
         /// Indicates the maximum length of code sequences to check.
         /// </summary>
-        public static int MaxRuleDepth { get; }
+        public int MaxRuleDepth { get; }
 
         /// <summary>
         /// Checks if the rule is applicable to the given <paramref name="path"/>.

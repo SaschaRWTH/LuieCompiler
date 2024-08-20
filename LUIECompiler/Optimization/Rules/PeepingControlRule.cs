@@ -10,10 +10,7 @@ namespace LUIECompiler.Optimization.Rules
     /// </summary>
     public class PeepingControlRule : OptimizationRule
     {
-        public static int MaxRuleLength
-        {
-            get => 1;
-        }
+        public override int MaxRuleDepth => 1;
 
         public static readonly PeepingControlRule Rule = new();
 

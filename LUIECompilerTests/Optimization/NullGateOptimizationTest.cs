@@ -1,5 +1,6 @@
 using LUIECompiler.CodeGeneration;
 using LUIECompiler.CodeGeneration.Codes;
+using LUIECompiler.Optimization;
 
 namespace LUIECompilerTests.Optimization;
 
@@ -232,7 +233,7 @@ public class NullGateOptimizationTest
 
         Assert.AreEqual(SimpleHHNullGateTranslation, code);
 
-        QASMProgram optimized = program.Optimize();
+        QASMProgram optimized = program.Optimize(OptimizationType.NullGate);
 
         string optimizedCode = optimized.ToString();
         Assert.IsNotNull(optimizedCode);
@@ -258,7 +259,7 @@ public class NullGateOptimizationTest
 
         Assert.AreEqual(SimpleXXNullGateTranslation, code);
 
-        QASMProgram optimized = program.Optimize();
+        QASMProgram optimized = program.Optimize(OptimizationType.NullGate);
 
         string optimizedCode = optimized.ToString();
         Assert.IsNotNull(optimizedCode);
@@ -284,7 +285,7 @@ public class NullGateOptimizationTest
 
         Assert.AreEqual(SimpleZZNullGateTranslation, code);
 
-        QASMProgram optimized = program.Optimize();
+        QASMProgram optimized = program.Optimize(OptimizationType.NullGate);
 
         string optimizedCode = optimized.ToString();
         Assert.IsNotNull(optimizedCode);
@@ -310,7 +311,7 @@ public class NullGateOptimizationTest
 
         Assert.AreEqual(InterruptedHHNullGateTranslation, code);
 
-        QASMProgram optimized = program.Optimize();
+        QASMProgram optimized = program.Optimize(OptimizationType.NullGate);
 
         string optimizedCode = optimized.ToString();
         Assert.IsNotNull(optimizedCode);
@@ -336,7 +337,7 @@ public class NullGateOptimizationTest
 
         Assert.AreEqual(InterruptedXXNullGateTranslation, code);
 
-        QASMProgram optimized = program.Optimize();
+        QASMProgram optimized = program.Optimize(OptimizationType.NullGate);
 
         string optimizedCode = optimized.ToString();
         Assert.IsNotNull(optimizedCode);
@@ -362,7 +363,7 @@ public class NullGateOptimizationTest
 
         Assert.AreEqual(InterruptedZZNullGateTranslation, code);
 
-        QASMProgram optimized = program.Optimize();
+        QASMProgram optimized = program.Optimize(OptimizationType.NullGate);
 
         string optimizedCode = optimized.ToString();
         Assert.IsNotNull(optimizedCode);
@@ -388,7 +389,7 @@ public class NullGateOptimizationTest
 
         Assert.AreEqual(ControlledNullGatesTranslation, code);
 
-        QASMProgram optimized = program.Optimize();
+        QASMProgram optimized = program.Optimize(OptimizationType.NullGate);
 
         string optimizedCode = optimized.ToString();
         Assert.IsNotNull(optimizedCode);
@@ -414,7 +415,7 @@ public class NullGateOptimizationTest
 
         Assert.AreEqual(NullGateImpossibleTranslation, code);
 
-        QASMProgram optimized = program.Optimize();
+        QASMProgram optimized = program.Optimize(OptimizationType.NullGate);
 
         string optimizedCode = optimized.ToString();
         Assert.IsNotNull(optimizedCode);
@@ -440,7 +441,7 @@ public class NullGateOptimizationTest
 
         Assert.AreEqual(NullGateWithNullGateInbetweenTranslation, code);
 
-        QASMProgram optimized = program.Optimize();
+        QASMProgram optimized = program.Optimize(OptimizationType.NullGate);
 
         string optimizedCode = optimized.ToString();
         Assert.IsNotNull(optimizedCode);

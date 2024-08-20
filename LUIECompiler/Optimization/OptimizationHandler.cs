@@ -1,6 +1,5 @@
 using LUIECompiler.CodeGeneration.Codes;
 using LUIECompiler.Optimization.Graphs;
-using LUIECompiler.Optimization.Rules;
 
 namespace LUIECompiler.Optimization
 {
@@ -13,7 +12,7 @@ namespace LUIECompiler.Optimization
             Program = program.ShallowCopy();
         }
 
-        public QASMProgram OptimizeSingleQubitNullGates()
+        public QASMProgram OptimizeSingleQubitNullGates(OptimizationType optimizationType)
         {
             CircuitGraph graph = new(Program);
 
@@ -21,7 +20,8 @@ namespace LUIECompiler.Optimization
             while (changed)
             {
                 changed = false;
-                changed |= graph.ApplyOptimizationRules(NullGateRule.NullGateRules, NullGateRule.MaxRuleLength);
+                var rules = optimizationType.GetRules();
+                changed |= graph.ApplyOptimizationRules(rules, rules.Max(rule => rule.MaxRuleDepth));
             }
 
             return graph.ToQASM();

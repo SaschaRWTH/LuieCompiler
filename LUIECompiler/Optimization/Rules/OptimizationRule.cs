@@ -9,6 +9,11 @@ namespace LUIECompiler.Optimization.Rules
     public abstract class OptimizationRule : IRule
     {
         /// <summary>
+        /// Indicates the maximum length of code sequences to check.
+        /// </summary>
+        public abstract int MaxRuleDepth { get; }
+
+        /// <summary>
         /// Checks if the optimization rule is applicable to the given <paramref name="code"/>.
         /// </summary>
         /// <param name="code"></param>

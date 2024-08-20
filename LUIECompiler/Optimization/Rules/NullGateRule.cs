@@ -12,13 +12,7 @@ namespace LUIECompiler.Optimization.Rules
     /// </summary>
     public class NullGateRule : OptimizationRule
     {
-        /// <summary>
-        /// Indicates the maximum length of code sequences to check.
-        /// </summary>
-        public static int MaxRuleLength
-        {
-            get => NullGateRules.Max(rule => rule.NullGateCombination.Length);
-        }
+        public override int MaxRuleDepth => NullGateCombination.Length;
 
         /// <summary>
         /// Nullgate rule for the consecutive application of two H gates.
