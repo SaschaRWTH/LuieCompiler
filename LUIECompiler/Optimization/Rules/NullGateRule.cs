@@ -1,6 +1,8 @@
+using LUIECompiler.CodeGeneration.Codes;
 using LUIECompiler.CodeGeneration.Exceptions;
 using LUIECompiler.Common;
 using LUIECompiler.Optimization.Graphs;
+using LUIECompiler.Optimization.Graphs.Interfaces;
 using LUIECompiler.Optimization.Graphs.Nodes;
 
 namespace LUIECompiler.Optimization.Rules
@@ -96,7 +98,7 @@ namespace LUIECompiler.Optimization.Rules
                 return false;
             }
 
-            return FollowGateCombination(path) && OperateOnSameQubit(path);
+            return FollowGateCombination(path) && OperateOnSameQubit(path) && ConsecutiveGatesForAllQubits(path);
         }
 
         /// <summary>
@@ -104,7 +106,7 @@ namespace LUIECompiler.Optimization.Rules
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
-        public bool FollowGateCombination(WirePath path)
+        private bool FollowGateCombination(WirePath path)
         {
             for (int i = 0; i < NullGateCombination.Length; i++)
             {
@@ -126,7 +128,7 @@ namespace LUIECompiler.Optimization.Rules
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
-        public bool OperateOnSameQubit(WirePath path)
+        private bool OperateOnSameQubit(WirePath path)
         {
             // Casting to GateNode
             if (path.Nodes[0] is not GateNode baseGate)
@@ -140,7 +142,7 @@ namespace LUIECompiler.Optimization.Rules
                 {
                     return false;
                 }
-                
+
                 // Check if the gates have the same amount of parameters.
                 if (baseGate.GateCode.Parameters.Count != gateNode.GateCode.Parameters.Count)
                 {
@@ -174,6 +176,43 @@ namespace LUIECompiler.Optimization.Rules
                         return false;
                     }
                 }
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Check whether the gate nodes are consecutive for all qubits.
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        private bool ConsecutiveGatesForAllQubits(WirePath path)
+        {
+            // Casting to GateNode
+            if (path.Nodes[0] is not GateNode baseGate)
+            {
+                return false;
+            }
+
+            GateNode current = baseGate;
+            for (int i = 1; i < NullGateCombination.Length; i++)
+            {
+                GateNode nextNode = path.Nodes[i] as GateNode ?? throw new InternalException()
+                {
+                    Reason = "Node is not a gate node."
+                };
+                // Casting to GateNode
+                foreach (GraphQubit qubit in baseGate.Qubits)
+                {
+                    // TODO: Can be extened/improved by differentiating between changed and read qubits.
+                    INode nextNodeOfQubit = current.GetOutVertex(qubit).End;
+                    if(nextNodeOfQubit != nextNode)
+                    {
+                        return false;
+                    }
+                }
+                current = nextNode;
             }
 
             return true;

@@ -166,9 +166,32 @@ public class NullGateOptimizationTest
         "qubit id1;\n" +
         "qubit id2;\n" +
         "qubit id3;\n" +
+        "ctrl(1) @ h id0, id1;\n" +
         "ctrl(1) @ x id0, id2;\n" +
+        "ctrl(1) @ h id0, id1;\n" + 
         "h id2;\n" +
         "ctrl(1) @ x id0, id2;\n";
+
+
+
+    public const string NullGateImpossible =
+    @"
+        qubit a;
+        qubit b;
+        qif b do
+            h a;
+        end
+        x b;
+        qif b do
+            h a;
+        end
+    ";
+    public const string NullGateImpossibleTranslation =
+        "qubit id0;\n" +
+        "qubit id1;\n" +
+        "ctrl(1) @ h id1, id0;\n" +
+        "x id1;\n" +
+        "ctrl(1) @ h id1, id0;\n";
 
     public const string NullGateWithNullGateInbetween =
     @"
@@ -372,6 +395,31 @@ public class NullGateOptimizationTest
 
         Assert.AreEqual(ControlledNullGatesOptimizated, optimizedCode);
 
+    }
+
+    [TestMethod]
+    public void NullGateImpossibleTest()
+    {
+        var walker = Utils.GetWalker();
+        var parser = Utils.GetParser(NullGateImpossible);
+
+        var codegen = new CodeGenerationListener();
+        walker.Walk(codegen, parser.parse());
+
+        QASMProgram program = codegen.CodeGen.GenerateCode();
+        Assert.IsNotNull(program);
+
+        string code = program.ToString();
+        Assert.IsNotNull(code);
+
+        Assert.AreEqual(NullGateImpossibleTranslation, code);
+
+        QASMProgram optimized = program.Optimize();
+
+        string optimizedCode = optimized.ToString();
+        Assert.IsNotNull(optimizedCode);
+
+        Assert.AreEqual(NullGateImpossibleTranslation, optimizedCode);
     }
 
     
