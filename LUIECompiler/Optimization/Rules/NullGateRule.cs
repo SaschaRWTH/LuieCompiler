@@ -134,7 +134,7 @@ namespace LUIECompiler.Optimization.Rules
                 {
                     return false;
                 }
-
+                
                 // Check if the gates have the same amount of parameters.
                 if (baseGate.GateCode.Parameters.Count != gateNode.GateCode.Parameters.Count)
                 {

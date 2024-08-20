@@ -81,7 +81,7 @@ namespace LUIECompiler.Optimization.Graphs
             foreach (GateApplicationCode gate in code)
             {
                 HashSet<QubitCode> qubits = GetQubitsFromGate(gate);
-                List<GraphQubit> graphQubits = qubits.Select(GraphQubitFromQubitCode).ToList();
+                List<GraphQubit> graphQubits = qubits.Select(FromCodeToQubit).ToList();
                 new GateNode(this, gate, graphQubits);
             }
         }
@@ -113,7 +113,7 @@ namespace LUIECompiler.Optimization.Graphs
         /// <returns></returns>
         public IEnumerable<GraphQubit> GraphQubitFromGateCode(GateApplicationCode code)
         {
-            return GetQubitsFromGate(code).Select(q => GraphQubitFromQubitCode(q));
+            return GetQubitsFromGate(code).Select(q => FromCodeToQubit(q));
         }
 
         /// <summary>
@@ -121,7 +121,7 @@ namespace LUIECompiler.Optimization.Graphs
         /// </summary>
         /// <param name="code"></param>
         /// <returns></returns>
-        public GraphQubit GraphQubitFromQubitCode(QubitCode code)
+        public GraphQubit FromCodeToQubit(QubitCode code)
         {
             if (code is RegisterAccessCode registerAccessCode)
             {
