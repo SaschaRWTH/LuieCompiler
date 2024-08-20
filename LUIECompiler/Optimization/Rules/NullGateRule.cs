@@ -29,6 +29,11 @@ namespace LUIECompiler.Optimization.Rules
         public static readonly NullGateRule XXGateRule = new NullGateRule([GateType.X, GateType.X]);
 
         /// <summary>
+        /// Nullgate rule for the consecutive application of two Y gates.
+        /// </summary>
+        public static readonly NullGateRule YYGateRule = new NullGateRule([GateType.Y, GateType.Y]);
+
+        /// <summary>
         /// Nullgate rule for the consecutive application of two Z gates.
         /// </summary>
         public static readonly NullGateRule ZZGateRule = new NullGateRule([GateType.Z, GateType.Z]);
@@ -40,6 +45,7 @@ namespace LUIECompiler.Optimization.Rules
         [
             HHGateRule,
             XXGateRule,
+            YYGateRule,
             ZZGateRule
         ];
 
