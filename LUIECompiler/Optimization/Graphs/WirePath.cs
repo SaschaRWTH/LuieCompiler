@@ -204,15 +204,23 @@ namespace LUIECompiler.Optimization.Graphs
             }
         }
 
-        public void ApplyOptimizationRules(IEnumerable<OptimizationRule> rules)
+        /// <summary>
+        /// Applies the given optimization rules to the path.
+        /// </summary>
+        /// <param name="rules"></param>
+        /// <returns>Return true, if any rule was applied, otherwise false.</returns>
+        public bool ApplyOptimizationRules(IEnumerable<OptimizationRule> rules)
         {
+            bool applied = false;
             foreach (OptimizationRule rule in rules)
             {
                 if (rule.IsApplicable(this))
                 {
                     rule.Apply(this);
+                    applied = true;
                 }
             }
+            return applied;
         }
 
         public override string ToString()

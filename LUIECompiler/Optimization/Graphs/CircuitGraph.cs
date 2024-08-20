@@ -165,12 +165,14 @@ namespace LUIECompiler.Optimization.Graphs
         /// </summary>
         /// <param name="rules"></param>
         /// <param name="maxDepth"></param>
-        public void ApplyOptimizationRules(IEnumerable<OptimizationRule> rules, int maxDepth)
+        public bool ApplyOptimizationRules(IEnumerable<OptimizationRule> rules, int maxDepth)
         {
+            bool applied = false;
             foreach (GraphQubit qubit in Qubits)
             {
-                ApplyOptimizationRules(rules, maxDepth, qubit);
+                applied |= ApplyOptimizationRules(rules, maxDepth, qubit);
             }
+            return applied;
         }
 
         /// <summary>
@@ -179,13 +181,15 @@ namespace LUIECompiler.Optimization.Graphs
         /// <param name="rules"></param>
         /// <param name="maxDepth"></param>
         /// <param name="qubit"></param>
-        public void ApplyOptimizationRules(IEnumerable<OptimizationRule> rules, int maxDepth, GraphQubit qubit)
+        public bool ApplyOptimizationRules(IEnumerable<OptimizationRule> rules, int maxDepth, GraphQubit qubit)
         {
+            bool applied = false;
             WirePath path = new WirePath(qubit, qubit.Start, qubit.End);
             foreach (WirePath subpath in path.GetSubPaths(maxDepth))
             {
-                subpath.ApplyOptimizationRules(rules);
+                applied |= subpath.ApplyOptimizationRules(rules);
             }
+            return applied;
         }
 
         /// <summary>

@@ -15,6 +15,7 @@ namespace LUIECompiler.Optimization.Rules
             get => 1;
         }
 
+        public static readonly PeepingControlRule Rule = new();
 
         /// <summary>
         /// Creates a new instance of the PeepingControlRule.
