@@ -22,12 +22,6 @@ namespace LUIECompiler.Optimization.Rules
         }
 
         /// <summary>
-        /// Saves the evaluation result of the rule.
-        /// </summary>
-        private bool? EvaluationResult = null;
-
-
-        /// <summary>
         /// Applies the rule to the given <paramref name="path"/>.
         /// </summary>
         /// <param name="path"></param>
@@ -51,22 +45,7 @@ namespace LUIECompiler.Optimization.Rules
                 };
             }
 
-            if (EvaluationResult == null)
-            {
-                throw new InternalException
-                {
-                    Reason = "Evaluation result is not set.",
-                };
-            }
-
-            GraphGuard guard = gateNode.GetGuardQubits().Single(guard => guard.Qubit == path.Qubit);
-
-            bool willTrigger = EvaluationResult.Value != guard.Negated;
-
-            if (!willTrigger)
-            {
-                gateNode.Remove();
-            }
+            gateNode.Remove();
         }
 
         /// <summary>
@@ -76,23 +55,19 @@ namespace LUIECompiler.Optimization.Rules
         /// <returns></returns>
         public override bool IsApplicable(WirePath path)
         {
-            Console.WriteLine("Checking applicability of PeepingControlRule");
             if (path.Length != 1)
             {
-                Console.WriteLine("length not 1");
                 return false;
             }
             INode node = path.Nodes[0];
 
             if (node is not GateNode gateNode)
             {
-                Console.WriteLine("node not gate");
                 return false;
             }
 
             if (!QubitIsControl(path.Qubit, gateNode))
             {
-                Console.WriteLine("qubit is not control");
                 return false;
             }
 
@@ -100,12 +75,13 @@ namespace LUIECompiler.Optimization.Rules
 
             if (!TryEvaluate(nodes, out bool qubitState))
             {
-                Console.WriteLine("Cannot eval");
                 return false;
             }
 
-            EvaluationResult = qubitState;
-            return true;
+            GraphGuard guard = gateNode.GetGuardQubits().Single(guard => guard.Qubit == path.Qubit);
+            bool willTrigger = qubitState != guard.Negated;
+
+            return !willTrigger;
         }
 
         /// <summary>
