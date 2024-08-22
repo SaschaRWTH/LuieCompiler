@@ -12,46 +12,22 @@ namespace LUIECompiler.Optimization.Graphs
     {
         public List<IVertex> Vertices { get; } = [];
 
-        public List<INode> Nodes =>
-        [
-            Start,
-            .. InnerNodes,
-            End
-        ];
+        public List<INode> Nodes
+        {
+            get
+            {
+                if (Start == End)
+                {
+                    return [Start];
+                }
+                return [Start, .. InnerNodes, End];
+            }
+        }
 
         public int Length => Nodes.Count;
 
-        public INode Start
-        {
-            get
-            {
-                if (Vertices.Count == 0)
-                {
-                    throw new InternalException()
-                    {
-                        Reason = "The path is empty."
-                    };
-                }
-
-                return Vertices[0].Start;
-            }
-        }
-
-        public INode End
-        {
-            get
-            {
-                if (Vertices.Count == 0)
-                {
-                    throw new InternalException()
-                    {
-                        Reason = "The path is empty."
-                    };
-                }
-
-                return Vertices[^1].End;
-            }
-        }
+        public INode Start { get; }
+        public INode End { get; }
 
         public IEnumerable<INode> InnerNodes
         {
@@ -79,6 +55,9 @@ namespace LUIECompiler.Optimization.Graphs
         {
             Qubit = qubit;
 
+            Start = start;
+            End = end;
+
             IVertex current = GetQubitVertex(qubit, start.OutputVertices);
             Vertices.Add(current);
             while (current.End != end)
@@ -94,10 +73,17 @@ namespace LUIECompiler.Optimization.Graphs
         /// <param name="qubit"></param>
         /// <param name="start"></param>
         /// <param name="end"></param>
-        /// <param name="maxLength">Maximum length of the path. A path needs to be at least 2 long.</param>
+        /// <param name="maxLength">Maximum length of the path. A path needs to be at least 1 long.</param>
         public WirePath(GraphQubit qubit, INode start, INode end, int maxLength)
         {
             Qubit = qubit;
+            Start = start;
+
+            if (maxLength == 1)
+            {
+                End = start;
+                return;
+            }
 
             IVertex current = GetQubitVertex(qubit, start.OutputVertices);
             Vertices.Add(current);
@@ -108,6 +94,8 @@ namespace LUIECompiler.Optimization.Graphs
                 Vertices.Add(current);
                 length++;
             }
+
+            End = current.End;
         }
 
         /// <summary>
@@ -136,6 +124,9 @@ namespace LUIECompiler.Optimization.Graphs
             {
                 throw new ArgumentException("The path is empty.");
             }
+
+            Start = Vertices[0].Start;
+            End = Vertices[^1].End;
 
             if (!IsUnInterrupted())
             {
@@ -188,7 +179,7 @@ namespace LUIECompiler.Optimization.Graphs
         {
             foreach (INode node in Nodes)
             {
-                for (int length = 2; length <= maxLength; length++)
+                for (int length = 1; length <= maxLength; length++)
                 {
                     WirePath? path;
                     try

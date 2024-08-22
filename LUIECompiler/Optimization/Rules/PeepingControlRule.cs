@@ -76,19 +76,23 @@ namespace LUIECompiler.Optimization.Rules
         /// <returns></returns>
         public override bool IsApplicable(WirePath path)
         {
+            Console.WriteLine("Checking applicability of PeepingControlRule");
             if (path.Length != 1)
             {
+                Console.WriteLine("length not 1");
                 return false;
             }
             INode node = path.Nodes[0];
 
             if (node is not GateNode gateNode)
             {
+                Console.WriteLine("node not gate");
                 return false;
             }
 
             if (!QubitIsControl(path.Qubit, gateNode))
             {
+                Console.WriteLine("qubit is not control");
                 return false;
             }
 
@@ -96,6 +100,7 @@ namespace LUIECompiler.Optimization.Rules
 
             if (!TryEvaluate(nodes, out bool qubitState))
             {
+                Console.WriteLine("Cannot eval");
                 return false;
             }
 
