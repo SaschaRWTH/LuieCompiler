@@ -36,7 +36,7 @@ namespace LUIECompiler.Optimization
                 rules.Add(PeepingControlRule.Rule);
             }
 
-            if (type.HasFlag(OptimizationType.PeepingControl))
+            if (type.HasFlag(OptimizationType.HSandwichReduction))
             {
                 rules.AddRange(HSandwichReductionRule.GateReductionRules);
             }
