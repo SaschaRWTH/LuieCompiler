@@ -395,7 +395,7 @@ public class CircuitGraphTest
         CheckCircut(graph, QFTPaths);
 
         QASMProgram translated = graph.ToQASM();
-        Console.WriteLine(translated);
+        
         CircuitGraph translatedGraph = new(translated);
 
         CheckCircut(translatedGraph, QFTPaths);

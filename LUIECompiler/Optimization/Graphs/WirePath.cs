@@ -202,21 +202,22 @@ namespace LUIECompiler.Optimization.Graphs
         /// <returns>Return true, if any rule was applied, otherwise false.</returns>
         public bool ApplyOptimizationRules(IEnumerable<OptimizationRule> rules)
         {
-            bool applied = false;
             foreach (OptimizationRule rule in rules)
             {
                 if (rule.IsApplicable(this))
                 {
                     rule.Apply(this);
-                    applied = true;
+                    // Return because the (sub-) path may have been changed such that continuing
+                    // with the rules may lead to errors.
+                    return true;
                 }
             }
-            return applied;
+            return false;
         }
 
         public override string ToString()
         {
-            return $"Start = {Start}, End = {End}, Length = {Length}";
+            return $"Start = {Start} .. {string.Join(',', InnerNodes)} .. End = {End}, Length = {Length}";
         }
     }
 }

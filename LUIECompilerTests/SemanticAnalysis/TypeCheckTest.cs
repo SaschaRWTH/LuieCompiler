@@ -95,7 +95,6 @@ public class TypeCheckTest
         var error = analysis.Error;
 
         Assert.IsTrue(error.ContainsCriticalError);
-        Console.WriteLine(error.ToString());
         Assert.IsTrue(error.Errors.Any(e => e is UndefinedError && e.ErrorContext.Line == 8));
         Assert.IsTrue(error.Errors.Any(e => e is TypeError && e.ErrorContext.Line == 4));
         Assert.IsTrue(error.Errors.Any(e => e is TypeError && e.ErrorContext.Line == 7));

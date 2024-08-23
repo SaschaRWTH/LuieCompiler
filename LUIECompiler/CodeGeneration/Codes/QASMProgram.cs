@@ -124,13 +124,11 @@ namespace LUIECompiler.CodeGeneration.Codes
         public QASMProgram Optimize(OptimizationType optimization = OptimizationType.All)
         {
             int gateCount = Code.Count(c => c is GateApplicationCode);
-            Console.WriteLine($"Optimizing program with {gateCount} gates.");
 
             OptimizationHandler handler = new(this);
 
             QASMProgram program = handler.OptimizeSingleQubitNullGates(optimization);
 
-            Console.WriteLine($"Optimized, {gateCount} gates left.");
             return program;
         }
     }
