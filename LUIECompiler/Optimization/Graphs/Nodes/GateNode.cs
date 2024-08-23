@@ -2,7 +2,6 @@
 using LUIECompiler.CodeGeneration.Codes;
 using LUIECompiler.CodeGeneration.Exceptions;
 using LUIECompiler.Common;
-using LUIECompiler.Common.Symbols;
 using LUIECompiler.Optimization.Graphs.Interfaces;
 
 namespace LUIECompiler.Optimization.Graphs.Nodes
@@ -17,7 +16,7 @@ namespace LUIECompiler.Optimization.Graphs.Nodes
         /// </summary>
         public GateType Gate => GateCode.Gate.GateType;
 
-        public GateApplicationCode GateCode { get; }
+        public GateApplicationCode GateCode { get; private set; }
 
         /// <summary>
         /// Gets the qubits of the gate.
@@ -142,6 +141,11 @@ namespace LUIECompiler.Optimization.Graphs.Nodes
             var result = node.NodesUpTo(wire); 
             result.Add(node);
             return result;
+        }
+
+        public void ReplaceGate(GateApplicationCode gate)
+        {
+            GateCode = gate;
         }
     }
 }

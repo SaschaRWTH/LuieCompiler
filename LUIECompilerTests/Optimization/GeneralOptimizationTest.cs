@@ -50,7 +50,6 @@ public class GeneralOptimizatioTest
         Assert.IsNotNull(optimizedCode);
 
         Assert.AreEqual(NullGatePeepingControlCombinedOptimized, optimizedCode);
-
     }
 
 }

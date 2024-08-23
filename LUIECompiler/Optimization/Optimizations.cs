@@ -2,17 +2,26 @@ using LUIECompiler.Optimization.Rules;
 
 namespace LUIECompiler.Optimization
 {
+    /// <summary>
+    /// Represents the type of optimization.
+    /// </summary>
     [Flags]
     public enum OptimizationType
     {
         NullGate = 0b0000_0001,
         PeepingControl = 0b0000_0010,
+        HSandwichReduction = 0b0000_0100,
 
-        All = NullGate | PeepingControl,
+        All = NullGate | PeepingControl | HSandwichReduction,
     }
 
     public static class OptimizationTypeExtension
     {
+        /// <summary>
+        /// Returns the rules for the given <paramref name="type"/>.
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
         public static List<OptimizationRule> GetRules(this OptimizationType type)
         {
             List<OptimizationRule> rules = [];
@@ -25,6 +34,11 @@ namespace LUIECompiler.Optimization
             if (type.HasFlag(OptimizationType.PeepingControl))
             {
                 rules.Add(PeepingControlRule.Rule);
+            }
+
+            if (type.HasFlag(OptimizationType.PeepingControl))
+            {
+                rules.AddRange(HSandwichReductionRule.GateReductionRules);
             }
 
             return rules;
