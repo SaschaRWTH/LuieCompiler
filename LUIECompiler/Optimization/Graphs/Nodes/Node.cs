@@ -24,7 +24,7 @@ namespace LUIECompiler.Optimization.Graphs.Nodes
         /// </summary>
         public IGraph Graph { get; }
 
-        public IEnumerable<INode> Predecessors 
+        public IEnumerable<INode> Predecessors
         {
             get
             {
@@ -82,6 +82,20 @@ namespace LUIECompiler.Optimization.Graphs.Nodes
         {
             return InputVertices.OfType<CircuitVertex>().FirstOrDefault(v => v.Qubit == qubit);
         }
+
+        /// <summary>
+        /// Gets the input vertex of the given qubit.
+        /// </summary>
+        /// <param name="qubit"></param>
+        /// <returns></returns>
+        public INode GetPredecessor(GraphQubit qubit)
+        {
+            return GetInVertex(qubit)?.Start ?? throw new InternalException()
+            {
+                Reason = $"The does not exist a predecessor for the given qubit {qubit}",
+            };
+        }
+
         /// <summary>
         /// Gets the input vertex of the given qubit.
         /// </summary>
@@ -94,6 +108,20 @@ namespace LUIECompiler.Optimization.Graphs.Nodes
                 Reason = $"No output vertex found for qubit {qubit}."
             };
         }
+
+        /// <summary>
+        /// Gets the input vertex of the given qubit.
+        /// </summary>
+        /// <param name="qubit"></param>
+        /// <returns></returns>
+        public INode GetSuccessor(GraphQubit qubit)
+        {
+            return GetOutVertex(qubit)?.End ?? throw new InternalException()
+            {
+                Reason = $"The does not exist a successor for the given qubit {qubit}",
+            };
+        }
+
         /// <summary>
         /// Gets the input vertex of the given qubit.
         /// </summary>
