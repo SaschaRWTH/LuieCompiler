@@ -17,18 +17,18 @@ namespace LUIECompiler.Optimization.Rules
         public abstract int MaxRuleDepth { get; }
 
         /// <summary>
-        /// Checks if the optimization rule is applicable to the given <paramref name="code"/>.
+        /// Checks if the optimization rule is applicable to the given <paramref name="path"/>.
         /// </summary>
-        /// <param name="code"></param>
+        /// <param name="path"></param>
         /// <returns></returns>
-        public abstract bool IsApplicable(WirePath code);
+        public abstract bool IsApplicable(WirePath path);
 
         /// <summary>
-        /// Applies the optimization rule to the given <paramref name="code"/>.
+        /// Applies the optimization rule to the given <paramref name="path"/>.
         /// </summary>
-        /// <param name="code"></param>
+        /// <param name="path"></param>
         /// <returns></returns>
-        public abstract void Apply(WirePath code);
+        public abstract void Apply(WirePath path);
 
         
         /// <summary>

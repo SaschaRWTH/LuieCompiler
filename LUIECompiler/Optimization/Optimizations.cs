@@ -11,8 +11,9 @@ namespace LUIECompiler.Optimization
         NullGate = 0b0000_0001,
         PeepingControl = 0b0000_0010,
         HSandwichReduction = 0b0000_0100,
+        ControlReversal = 0b0000_1000,
 
-        All = NullGate | PeepingControl | HSandwichReduction,
+        All = NullGate | PeepingControl | HSandwichReduction | ControlReversal,
     }
 
     public static class OptimizationTypeExtension
@@ -39,6 +40,11 @@ namespace LUIECompiler.Optimization
             if (type.HasFlag(OptimizationType.HSandwichReduction))
             {
                 rules.AddRange(HSandwichReductionRule.GateReductionRules);
+            }
+
+            if (type.HasFlag(OptimizationType.ControlReversal))
+            {
+                rules.Add(ControlReversalRule.Rule);
             }
 
             return rules;

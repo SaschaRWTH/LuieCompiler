@@ -1,4 +1,3 @@
-using System.Xml.Serialization;
 using LUIECompiler.CodeGeneration.Codes;
 using LUIECompiler.CodeGeneration.Exceptions;
 using LUIECompiler.Common;
