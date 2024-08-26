@@ -185,7 +185,7 @@ namespace LUIECompiler.Optimization.Rules
                 return false;
             }
 
-            if (node.GetSuccessor(target) is not GateNode targetPredecessor || !IsSingleQubitHGate(targetPredecessor))
+            if (node.GetPredecessor(target) is not GateNode targetPredecessor || !IsSingleQubitHGate(targetPredecessor))
             {
                 return false;
             }
