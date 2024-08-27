@@ -1,53 +1,103 @@
+using System.Reflection;
 using LUIECompiler.Optimization;
 
 namespace LUIECompiler.CLI
 {
     public static class CommandLineParser
     {
-        public static CompilerData ParseArguments(string[] args)
+        /// <summary>
+        /// Parse the commandline arguments and returns the compiler data, if the parsing was successful.
+        /// </summary>
+        /// <param name="args"></param>
+        /// <returns></returns>
+        public static CompilerData? ParseArguments(string[] args)
         {
-            string input = string.Empty;
-            string output = string.Empty;
-            OptimizationType optimization = OptimizationType.None;
-            bool verbose = false;
+            CompilerData? data;
+            try
+            {
+                data = InnerParseArguments(args);
+            }
+            catch (ArgumentException e)
+            {
+                Compiler.PrintError($"Error parsing the commandline arguments: {e.Message}");
+                return null;
+            }
 
+            if (string.IsNullOrEmpty(data.InputPath))
+            {
+                Compiler.PrintError("Missing input path argument.");
+                return null;
+            }
+
+            return data;
+        }
+
+        private static CompilerData InnerParseArguments(string[] args)
+        {
+            CompilerData data = new();
+            IEnumerable<(PropertyInfo, CLIParameterAttribute)> properties = GetPropertiesWithAttribute<CLIParameterAttribute>(typeof(CompilerData));
 
             for (int i = 0; i < args.Length; i++)
             {
-                switch (args[i])
+                foreach (var (prop, attr) in properties)
                 {
-                    case "-i":
-                    case "--input":
-                        input = args[++i];
+                    if (attr.Matches(args[i]))
+                    {
+                        object value = attr.ParseArguments(args, ref i);
+                        prop.SetValue(data, value);
                         break;
-                    case "-o":
-                    case "--output":
-                        output = args[++i];
-                        break;
-                    case "-O":
-                    case "--optimization":
-                        optimization = ParseOptimization(args[++i]);
-                        break;
-                    case "-v":
-                    case "--verbose":
-                        verbose = true;
-                        break;
-                    default:
-                        throw new ArgumentException($"Unknown argument: {args[i]}");
+                    }
                 }
             }
 
-            return new CompilerData()
-            {
-                InputPath = input,
-                OutputPath = output,
-                Optimization = optimization,
-                Verbose = verbose
-            };
+            return data;
         }
 
-        private static OptimizationType ParseOptimization(string arg)
+        /// <summary>
+        /// Get all properties with the specified attribute.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        private static IEnumerable<(PropertyInfo, T)> GetPropertiesWithAttribute<T>(Type type)
         {
+            return from prop in type.GetProperties()
+                   where prop.IsDefined(typeof(T), false)
+                   select (prop, (T)prop.GetCustomAttributes(typeof(T), false).First());
+        }
+
+        /// <summary>
+        /// Parse the path argument.
+        /// </summary>
+        /// <param name="args"></param>
+        /// <param name="pointer"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException"></exception>
+        public static string ParsePath(string[] args, ref int pointer)
+        {
+            if (pointer + 1 >= args.Length)
+            {
+                throw new ArgumentException("Missing path argument.");
+            }
+
+            return args[++pointer];
+        }
+
+        /// <summary>
+        /// Parse the optimization argument.
+        /// </summary>
+        /// <param name="args"></param>
+        /// <param name="pointer"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException"></exception>
+        public static OptimizationType ParseOptimization(string[] args, ref int pointer)
+        {
+            if (pointer + 1 >= args.Length)
+            {
+                throw new ArgumentException("Missing optimization argument.");
+            }
+
+            string arg = args[++pointer];
             if (arg == "all")
             {
                 return OptimizationType.All;
@@ -58,23 +108,14 @@ namespace LUIECompiler.CLI
 
             foreach (var opt in optimizations)
             {
-                switch (opt)
+                type |= opt switch
                 {
-                    case "nullgate":
-                        type |= OptimizationType.NullGate;
-                        break;
-                    case "peepingcontrol":
-                        type |= OptimizationType.PeepingControl;
-                        break;
-                    case "hsandwich":
-                        type |= OptimizationType.HSandwichReduction;
-                        break;
-                    case "controlreversal":
-                        type |= OptimizationType.ControlReversal;
-                        break;
-                    default:
-                        throw new ArgumentException($"Unknown optimization: {opt}");
-                }
+                    "nullgate" => OptimizationType.NullGate,
+                    "peepingcontrol" => OptimizationType.PeepingControl,
+                    "hsandwich" => OptimizationType.HSandwichReduction,
+                    "controlreversal" => OptimizationType.ControlReversal,
+                    _ => throw new ArgumentException($"Unknown optimization: {opt}"),
+                };
             }
 
             return type;

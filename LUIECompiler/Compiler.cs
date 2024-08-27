@@ -4,21 +4,30 @@ using LUIECompiler.CLI;
 using LUIECompiler.CodeGeneration;
 using LUIECompiler.CodeGeneration.Codes;
 using LUIECompiler.CodeGeneration.Exceptions;
+using LUIECompiler.Common;
 using LUIECompiler.SemanticAnalysis;
 
 namespace LUIECompiler
 {
     public static class Compiler
     {
+        public static bool Verbose { get; private set; }
+
         public static void Compile(CompilerData data)
         {
+            Verbose = data.Verbose;
 
             string input = IOHandler.GetInputCode(data);
 
             LuieParser.ParseContext parseContext = GetParseContext(input);
             ParseTreeWalker walker = GetParseTreeWalker();
 
-            SemanticallyAnalyseCode(walker, parseContext);
+            bool @continue = SemanticallyAnalyseCode(walker, parseContext);
+            if(!@continue)
+            {
+                return;
+            }
+
             QASMProgram? program = GenerateCode(walker, parseContext);
 
             if(program == null)
@@ -46,22 +55,31 @@ namespace LUIECompiler
             return new ParseTreeWalker();
         }
 
-        public static void SemanticallyAnalyseCode(ParseTreeWalker walker, LuieParser.ParseContext parseContext)
+        public static bool SemanticallyAnalyseCode(ParseTreeWalker walker, LuieParser.ParseContext parseContext)
         {
-            DeclarationAnalysis(walker, parseContext);            
-            TypeCheckingAnalysis(walker, parseContext);            
+            ErrorHandler declarationErrors = DeclarationAnalysis(walker, parseContext);            
+            ErrorHandler typeCheckingErrors = TypeCheckingAnalysis(walker, parseContext);   
+
+            declarationErrors.Warnings.ForEach(Compiler.PrintWarning);
+            declarationErrors.CriticalErrors.ForEach(Compiler.PrintError);
+            typeCheckingErrors.Warnings.ForEach(Compiler.PrintWarning);
+            typeCheckingErrors.CriticalErrors.ForEach(Compiler.PrintError);
+
+            return !declarationErrors.ContainsCriticalError && !typeCheckingErrors.ContainsCriticalError;
         }
 
-        private static void DeclarationAnalysis(ParseTreeWalker walker, LuieParser.ParseContext parseContext)
+        private static ErrorHandler DeclarationAnalysis(ParseTreeWalker walker, LuieParser.ParseContext parseContext)
         {
             DeclarationAnalysisListener declarationAnalysisListener = new();
             walker.Walk(declarationAnalysisListener, parseContext);
+            return declarationAnalysisListener.Error;
         }
 
-        private static void TypeCheckingAnalysis(ParseTreeWalker walker, LuieParser.ParseContext parseContext)
+        private static ErrorHandler TypeCheckingAnalysis(ParseTreeWalker walker, LuieParser.ParseContext parseContext)
         {
             TypeCheckListener typeCheckListener = new();
             walker.Walk(typeCheckListener, parseContext);
+            return typeCheckListener.Error;
         }
 
         public static QASMProgram? GenerateCode(ParseTreeWalker walker, LuieParser.ParseContext parseContext)
@@ -75,19 +93,69 @@ namespace LUIECompiler
             }
             catch (InternalException e)
             {
-                Console.WriteLine($"Internal error!: {e.Reason}");
-                Console.WriteLine($"{e}");
+                PrintError($"Internal error!: {e.Reason}");
+                PrintError($"{e}");
             }
             catch (CodeGenerationException e)
             {
-                Console.WriteLine($"Code gen exception: {e.Error}");
-                Console.WriteLine($"{e}");
+                PrintError($"Code gen exception: {e.Error}");
+                PrintError($"{e}");
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Error: " + ex);
+                PrintError($"Error: {ex}");
             }
             return program;
+        }
+
+
+
+        public static void PrintError(object message)
+        {
+            PrintError(message.ToString());
+        }
+
+        public static void PrintError(string? message)
+        {
+            if (message is null)
+            {
+                return;
+            }
+            Console.WriteLine(message);
+        }
+
+        public static void PrintWarning(object message)
+        {
+            PrintWarning(message.ToString());
+        }
+
+        public static void PrintWarning(string? message)
+        {
+            if (message is null)
+            {
+                return;
+            }
+            Console.WriteLine(message);
+        }
+
+        public static void PrintLog(object message)
+        {
+            PrintLog(message.ToString());
+        }
+
+        public static void PrintLog(string? message)
+        {
+            if (message is null)
+            {
+                return;
+            }
+            
+            if(!Verbose)
+            {
+                return;
+            }
+
+            Console.WriteLine(message);
         }
     }
 }
