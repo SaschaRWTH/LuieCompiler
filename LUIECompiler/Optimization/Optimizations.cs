@@ -8,6 +8,8 @@ namespace LUIECompiler.Optimization
     [Flags]
     public enum OptimizationType
     {
+        None = 0b0000_0000,
+        
         NullGate = 0b0000_0001,
         PeepingControl = 0b0000_0010,
         HSandwichReduction = 0b0000_0100,
