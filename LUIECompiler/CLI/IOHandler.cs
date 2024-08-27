@@ -6,17 +6,22 @@ namespace LUIECompiler.CLI
     {
        public static string GetInputCode(CompilerData data)
        {
-           if (string.IsNullOrEmpty(data.InputPath))
-           {
-               throw new ArgumentException("Input file path is required.");
-           }
+            if (string.IsNullOrEmpty(data.InputPath))
+            {
+                throw new ArgumentException("Input file path is required.");
+            }
 
-           if (!File.Exists(data.InputPath))
-           {
-               throw new ArgumentException("Input file does not exist.");
-           }
+            if (!File.Exists(data.InputPath))
+            {
+                throw new ArgumentException("Input file does not exist.");
+            }
 
-           return File.ReadAllText(data.InputPath);
+            string input = File.ReadAllText(data.InputPath);
+
+
+            Compiler.PrintLog($"Input code: {input}");
+
+            return input;
        }
 
        public static void WriteOutputCode(CompilerData data, QASMProgram program)

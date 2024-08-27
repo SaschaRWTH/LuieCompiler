@@ -47,5 +47,10 @@ namespace LUIECompiler.Common.Errors
             Line = context.Start.Line;
             Column = context.Start.Column;
         }
+
+        public override string ToString()
+        {
+            return $"Error at {Line}:{Column}";
+        }
     }
 }

@@ -71,14 +71,30 @@ namespace LUIECompiler
         private static ErrorHandler DeclarationAnalysis(ParseTreeWalker walker, LuieParser.ParseContext parseContext)
         {
             DeclarationAnalysisListener declarationAnalysisListener = new();
-            walker.Walk(declarationAnalysisListener, parseContext);
+            try
+            {
+                walker.Walk(declarationAnalysisListener, parseContext); 
+            }
+            catch (InternalException e)
+            {
+                PrintError($"Internal error!: {e.Reason}");
+                PrintError($"{e}");
+            }
             return declarationAnalysisListener.Error;
         }
 
         private static ErrorHandler TypeCheckingAnalysis(ParseTreeWalker walker, LuieParser.ParseContext parseContext)
         {
             TypeCheckListener typeCheckListener = new();
-            walker.Walk(typeCheckListener, parseContext);
+            try
+            {
+                walker.Walk(typeCheckListener, parseContext);
+            }
+            catch (InternalException e)
+            {
+                PrintError($"Internal error!: {e.Reason}");
+                PrintError($"{e}");
+            }
             return typeCheckListener.Error;
         }
 
