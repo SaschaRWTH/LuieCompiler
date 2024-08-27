@@ -1,9 +1,9 @@
+qubit a;
 qubit c;
-qubit y;
-x y;
-qif y do
-    qubit t;
-    x c;
-    h c;
-    h t;
+x c;
+qif c do
+    qubit b;
+    x a;
+    h a;
+    h b;
 end
