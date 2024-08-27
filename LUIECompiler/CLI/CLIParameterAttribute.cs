@@ -15,9 +15,9 @@ namespace LUIECompiler.CLI
         {
             return ShortName switch
             {
-                'i' => CommandLineParser.ParsePath(args, ref pointer),
-                'o' => CommandLineParser.ParsePath(args, ref pointer),
-                'O' => CommandLineParser.ParseOptimization(args, ref pointer),
+                'i' => CommandLineInterface.ParsePath(args, ref pointer),
+                'o' => CommandLineInterface.ParsePath(args, ref pointer),
+                'O' => CommandLineInterface.ParseOptimization(args, ref pointer),
                 'v' => true,
                 _ => throw new ArgumentException($"Unknown parameter: {ShortName}"),
             };

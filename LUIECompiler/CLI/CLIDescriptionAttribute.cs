@@ -1,10 +1,10 @@
 namespace LUIECompiler.CLI
 {
-    public class CLIDescribtionAttribute : Attribute
+    public class CLIDescriptionAttribute : Attribute
     {
         public string Description { get; }
 
-        public CLIDescribtionAttribute(string description)
+        public CLIDescriptionAttribute(string description)
         {
             Description = description;
         }

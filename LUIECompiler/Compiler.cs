@@ -121,7 +121,7 @@ namespace LUIECompiler
             {
                 return;
             }
-            Console.WriteLine(message);
+            Print(message);
         }
 
         public static void PrintWarning(object message)
@@ -135,7 +135,7 @@ namespace LUIECompiler
             {
                 return;
             }
-            Console.WriteLine(message);
+            Print(message);
         }
 
         public static void PrintLog(object message)
@@ -155,6 +155,15 @@ namespace LUIECompiler
                 return;
             }
 
+            Print(message);
+        }
+
+        /// <summary>
+        /// Print a message to the console.
+        /// </summary>
+        /// <param name="message"></param>
+        public static void Print(string message)
+        {
             Console.WriteLine(message);
         }
     }

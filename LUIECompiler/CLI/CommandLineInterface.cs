@@ -3,7 +3,7 @@ using LUIECompiler.Optimization;
 
 namespace LUIECompiler.CLI
 {
-    public static class CommandLineParser
+    public static class CommandLineInterface
     {
         /// <summary>
         /// Parse the commandline arguments and returns the compiler data, if the parsing was successful.
@@ -23,6 +23,11 @@ namespace LUIECompiler.CLI
                 return null;
             }
 
+            if(data == null)
+            {
+                return null;
+            }
+
             if (string.IsNullOrEmpty(data.InputPath))
             {
                 Compiler.PrintError("Missing input path argument.");
@@ -32,20 +37,36 @@ namespace LUIECompiler.CLI
             return data;
         }
 
-        private static CompilerData InnerParseArguments(string[] args)
+        private static CompilerData? InnerParseArguments(string[] args)
         {
             CompilerData data = new();
             IEnumerable<(PropertyInfo, CLIParameterAttribute)> properties = GetPropertiesWithAttribute<CLIParameterAttribute>(typeof(CompilerData));
 
             for (int i = 0; i < args.Length; i++)
             {
+                bool matched = false;
                 foreach (var (prop, attr) in properties)
                 {
                     if (attr.Matches(args[i]))
                     {
+                        matched = true;
                         object value = attr.ParseArguments(args, ref i);
                         prop.SetValue(data, value);
                         break;
+                    }
+                }
+                if(!matched)
+                {
+                    if(args[i] == "-h" || args[i] == "--help")
+                    {
+                        PrintHelp();
+                        return null;
+                    }
+                    else
+                    {
+                        Compiler.PrintError($"Unknown argument: {args[i]}");
+                        PrintHelp();
+                        return null;
                     }
                 }
             }
@@ -119,6 +140,24 @@ namespace LUIECompiler.CLI
             }
 
             return type;
+        }
+
+        public static void PrintHelp()
+        {
+            IEnumerable<(PropertyInfo, CLIParameterAttribute)> parameters = GetPropertiesWithAttribute<CLIParameterAttribute>(typeof(CompilerData));
+            IEnumerable<(PropertyInfo, CLIDescriptionAttribute)> descriptions = GetPropertiesWithAttribute<CLIDescriptionAttribute>(typeof(CompilerData));
+            Compiler.Print("Usage: LUIECompiler [options]");
+            Compiler.Print("Options:");
+            Compiler.Print("  -h, --help \t \t \t Print help.");
+            foreach (var (prop, attr) in parameters)
+            {
+                string? description = descriptions.FirstOrDefault(x => x.Item1.Name == prop.Name).Item2.Description;
+                if(string.IsNullOrEmpty(description))
+                {
+                    description = "No description available.";
+                }
+                Compiler.Print($"  {attr} \t \t \t {description}");
+            }
         }
     }
 }

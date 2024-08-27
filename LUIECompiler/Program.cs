@@ -6,11 +6,10 @@ namespace LUIECompiler
     {
         static void Main(string[] args)
         {
-            CompilerData? data = CommandLineParser.ParseArguments(args);
+            CompilerData? data = CommandLineInterface.ParseArguments(args);
             
             if (data == null)
             {
-                Compiler.PrintError("An error occured while parsing the commandline arguments. Could not continue.");
                 return;
             }
 
