@@ -109,6 +109,117 @@ public class ControlReversalTest
         "h id1;\n" +
         "cx id0, id1;\n" +
         "h id1;\n";
+    public static readonly string SimpleGuardReversal = @"
+        qubit a;
+        qubit c;
+        
+        x c;
+        h a;
+        h c;
+        qif a do
+            x c;
+        end
+        h c;
+        h a;
+        y a;
+    ";
+
+    public static readonly string SimpleGuardReversalTranslated =
+        "qubit id0;\n" +
+        "qubit id1;\n" +
+        "x id1;\n" +
+        "h id0;\n" +
+        "h id1;\n" +
+        "ctrl(1) @ x id0, id1;\n" +
+        "h id1;\n" +
+        "h id0;\n" +
+        "y id0;\n";
+
+    public static readonly string SimpleGuardReversalOptimized =
+        "qubit id0;\n" +
+        "qubit id1;\n" +
+        "x id1;\n" +
+        "ctrl(1) @ x id1, id0;\n" +
+        "y id0;\n";
+
+    public static readonly string MissingFirstHGateGuard = @"
+        qubit a;
+        qubit c;
+        
+        h c;
+        qif a do
+            x c;
+        end
+        h c;
+        h a;
+    ";
+
+    public static readonly string MissingFirstHGateGuardTranslated =
+        "qubit id0;\n" +
+        "qubit id1;\n" +
+        "h id1;\n" +
+        "ctrl(1) @ x id0, id1;\n" +
+        "h id1;\n" +
+        "h id0;\n";
+
+    public static readonly string MissingSecondHGateGuard = @"
+        qubit a;
+        qubit c;
+        
+        h a;
+        qif a do
+            x c;
+        end
+        h a;
+        h c;
+    ";
+
+    public static readonly string MissingSecondHGateGuardTranslated =
+        "qubit id0;\n" +
+        "qubit id1;\n" +
+        "h id0;\n" +
+        "ctrl(1) @ x id0, id1;\n" +
+        "h id0;\n" +
+        "h id1;\n";
+
+    public static readonly string MissingThirdHGateGuard = @"
+        qubit a;
+        qubit c;
+        
+        h a;
+        h c;
+        qif a do
+            x c;
+        end
+        h a;
+    ";
+
+    public static readonly string MissingThirdHGateGuardTranslated =
+        "qubit id0;\n" +
+        "qubit id1;\n" +
+        "h id0;\n" +
+        "h id1;\n" +
+        "ctrl(1) @ x id0, id1;\n" +
+        "h id0;\n";
+    public static readonly string MissingFourthHGateGuard = @"
+        qubit a;
+        qubit c;
+        
+        h a;
+        h c;
+        qif a do
+            x c;
+        end
+        h c;
+    ";
+
+    public static readonly string MissingFourthHGateGuardTranslated =
+        "qubit id0;\n" +
+        "qubit id1;\n" +
+        "h id0;\n" +
+        "h id1;\n" +
+        "ctrl(1) @ x id0, id1;\n" +
+        "h id1;\n";
 
     [TestMethod]    
     public void SimpleControlReversalTest()
@@ -233,5 +344,130 @@ public class ControlReversalTest
         Assert.IsNotNull(optimizedCode);
 
         Assert.AreEqual(MissingFourthHGateTranslated, optimizedCode);
+    }
+
+    [TestMethod]    
+    public void SimpleGuardReversalTest()
+    {
+        var walker = Utils.GetWalker();
+        var parser = Utils.GetParser(SimpleGuardReversal);
+
+        var codegen = new CodeGenerationListener();
+        walker.Walk(codegen, parser.parse());
+
+        QASMProgram program = codegen.CodeGen.GenerateCode();
+        Assert.IsNotNull(program);
+
+        string code = program.ToString();
+        Assert.IsNotNull(code);
+
+        Assert.AreEqual(SimpleGuardReversalTranslated, code);
+
+        QASMProgram optimized = program.Optimize(OptimizationType.ControlReversal);
+
+        string optimizedCode = optimized.ToString();
+        Assert.IsNotNull(optimizedCode);
+
+        Assert.AreEqual(SimpleGuardReversalOptimized, optimizedCode);
+    }
+
+    [TestMethod]    
+    public void MissingFirstHGateGuardTest()
+    {
+        var walker = Utils.GetWalker();
+        var parser = Utils.GetParser(MissingFirstHGateGuard);
+
+        var codegen = new CodeGenerationListener();
+        walker.Walk(codegen, parser.parse());
+
+        QASMProgram program = codegen.CodeGen.GenerateCode();
+        Assert.IsNotNull(program);
+
+        string code = program.ToString();
+        Assert.IsNotNull(code);
+
+        Assert.AreEqual(MissingFirstHGateGuardTranslated, code);
+
+        QASMProgram optimized = program.Optimize(OptimizationType.ControlReversal);
+
+        string optimizedCode = optimized.ToString();
+        Assert.IsNotNull(optimizedCode);
+
+        Assert.AreEqual(MissingFirstHGateGuardTranslated, optimizedCode);
+    }
+    
+    [TestMethod]    
+    public void MissingSecondHGateGuardTest()
+    {
+        var walker = Utils.GetWalker();
+        var parser = Utils.GetParser(MissingSecondHGateGuard);
+
+        var codegen = new CodeGenerationListener();
+        walker.Walk(codegen, parser.parse());
+
+        QASMProgram program = codegen.CodeGen.GenerateCode();
+        Assert.IsNotNull(program);
+
+        string code = program.ToString();
+        Assert.IsNotNull(code);
+
+        Assert.AreEqual(MissingSecondHGateGuardTranslated, code);
+
+        QASMProgram optimized = program.Optimize(OptimizationType.ControlReversal);
+
+        string optimizedCode = optimized.ToString();
+        Assert.IsNotNull(optimizedCode);
+
+        Assert.AreEqual(MissingSecondHGateGuardTranslated, optimizedCode);
+    }
+
+    [TestMethod]    
+    public void MissingThirdHGateGuardTest()
+    {
+        var walker = Utils.GetWalker();
+        var parser = Utils.GetParser(MissingThirdHGateGuard);
+
+        var codegen = new CodeGenerationListener();
+        walker.Walk(codegen, parser.parse());
+
+        QASMProgram program = codegen.CodeGen.GenerateCode();
+        Assert.IsNotNull(program);
+
+        string code = program.ToString();
+        Assert.IsNotNull(code);
+
+        Assert.AreEqual(MissingThirdHGateGuardTranslated, code);
+
+        QASMProgram optimized = program.Optimize(OptimizationType.ControlReversal);
+
+        string optimizedCode = optimized.ToString();
+        Assert.IsNotNull(optimizedCode);
+
+        Assert.AreEqual(MissingThirdHGateGuardTranslated, optimizedCode);
+    }
+
+    [TestMethod]    
+    public void MissingFourthHGateGuardTest()
+    {
+        var walker = Utils.GetWalker();
+        var parser = Utils.GetParser(MissingFourthHGateGuard);
+
+        var codegen = new CodeGenerationListener();
+        walker.Walk(codegen, parser.parse());
+
+        QASMProgram program = codegen.CodeGen.GenerateCode();
+        Assert.IsNotNull(program);
+
+        string code = program.ToString();
+        Assert.IsNotNull(code);
+
+        Assert.AreEqual(MissingFourthHGateGuardTranslated, code);
+
+        QASMProgram optimized = program.Optimize(OptimizationType.ControlReversal);
+
+        string optimizedCode = optimized.ToString();
+        Assert.IsNotNull(optimizedCode);
+
+        Assert.AreEqual(MissingFourthHGateGuardTranslated, optimizedCode);
     }
 }
