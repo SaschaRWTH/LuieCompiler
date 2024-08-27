@@ -14,13 +14,19 @@ namespace LUIECompiler.Optimization
 
         public QASMProgram OptimizeSingleQubitNullGates(OptimizationType optimizationType)
         {
-            CircuitGraph graph = new(Program);
+            var rules = optimizationType.GetRules();
 
+            if(rules.Count == 0)
+            {
+                return Program;
+            }
+
+
+            CircuitGraph graph = new(Program);
             bool changed = true;
             while (changed)
             {
                 changed = false;
-                var rules = optimizationType.GetRules();
                 changed |= graph.ApplyOptimizationRules(rules, rules.Max(rule => rule.MaxRuleDepth));
             }
 
