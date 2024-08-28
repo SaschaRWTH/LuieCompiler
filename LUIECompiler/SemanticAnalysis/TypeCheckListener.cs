@@ -55,6 +55,7 @@ namespace LUIECompiler.SemanticAnalysis
             Symbol? symbol = Table.GetSymbolInfo(identifier);
             if (symbol == null)
             {
+                Compiler.PrintLog($"TypeCheckListener.ExitRegister: Could not get the symbol of identifier '{identifier}' from the symbol table.");
                 Error.Report(new UndefinedError(new ErrorContext(context), identifier));
                 return;
             }
@@ -68,6 +69,7 @@ namespace LUIECompiler.SemanticAnalysis
             // Cannot access qubit with []
             if (symbol is Qubit && context.TryGetIndexExpression(out Expression<int> _))
             {
+                Compiler.PrintLog($"TypeCheckListener.ExitRegister: The symbol '{identifier}' was neither a qubit nor a accessed register.");
                 Error.Report(new UndefinedError(new ErrorContext(context), identifier));
             }
         }
@@ -84,12 +86,14 @@ namespace LUIECompiler.SemanticAnalysis
             Symbol? symbol = Table.GetSymbolInfo(identifier);
             if (symbol == null)
             {
+                Compiler.PrintLog($"TypeCheckListener.ExitFactor: Could not get the symbol of identifier '{identifier}' from the symbol table.");
                 Error.Report(new UndefinedError(new ErrorContext(context), identifier));
                 return;
             }
 
             if (symbol is not LoopIterator)
             {
+                Compiler.PrintLog($"The symbol '{identifier}' was not a LoopIterator.");
                 Error.Report(new TypeError(new ErrorContext(context), identifier, typeof(LoopIterator), symbol.GetType()));
             }
         }
@@ -117,11 +121,13 @@ namespace LUIECompiler.SemanticAnalysis
 
                 if (symbol is not Register)
                 {
+                    Compiler.PrintLog($"TypeCheckListener.ExitGateapplication: Could not get the symbol of identifier '{identifier}'. Symbol is not a register.");
                     Error.Report(new TypeError(new ErrorContext(context), identifier, typeof(Register), symbol.GetType()));
                 }
 
                 if (symbol is not Qubit && !register.IsRegisterAccess())
                 {
+                    Compiler.PrintLog($"TypeCheckListener.ExitGateapplication: Could not get the symbol of identifier '{identifier}'. Symbol is neither a qubit nor accessed.");
                     // Returning typeof(Qubit) is not perfect, technically RegisterAccess is of type Qubit, but the user could still be confused. 
                     Error.Report(new TypeError(new ErrorContext(context), identifier, typeof(Qubit), symbol.GetType()));
                 }
@@ -131,6 +137,7 @@ namespace LUIECompiler.SemanticAnalysis
 
             if (gate.NumberOfArguments != registers.Count)
             {
+                Compiler.PrintLog($"The number of arguments are invalid for the used gate.");
                 Error.Report(new InvalidArguments(new ErrorContext(context), gate, registers.Count));
             }
 
@@ -144,6 +151,7 @@ namespace LUIECompiler.SemanticAnalysis
             Symbol? symbol = Table.GetSymbolInfo(identifier);
             if (symbol == null)
             {
+                Compiler.PrintLog($"Could not get the symbol of identifier '{identifier}' from the symbol table.");
                 Error.Report(new UndefinedError(new ErrorContext(context), identifier));
                 return;
             }
@@ -164,6 +172,7 @@ namespace LUIECompiler.SemanticAnalysis
                 return;
             }
 
+            Compiler.PrintLog($"The symbol {identifier} is neither a qubit nor an accessed register.");
             Error.Report(new TypeError(new ErrorContext(context), identifier, typeof(Qubit), symbol.GetType()));
         }
 
@@ -184,6 +193,7 @@ namespace LUIECompiler.SemanticAnalysis
 
             if (start >= end)
             {
+                Compiler.PrintLog($"The start of the range is smaller of equal to the end index of the range.");
                 Error.Report(new InvalidRangeWarning(new ErrorContext(context), start, end));
             }
         }
@@ -198,14 +208,16 @@ namespace LUIECompiler.SemanticAnalysis
             if (context.identifier?.Text is string identifier)
             {
                 Symbol? symbol = Table.GetSymbolInfo(identifier);
-                if (symbol == null)
+                if (symbol is null)
                 {
+                    Compiler.PrintLog($"The gate identifier '{identifier}' could not be found in the symbol table.");
                     Error.Report(new UndefinedError(new ErrorContext(context), identifier));
                     return;
                 }
 
                 if (symbol is not CompositeGate)
                 {
+                    Compiler.PrintLog($"The symbol '{identifier}' is neither a known gate nor a composite gate.");
                     Error.Report(new TypeError(new ErrorContext(context), identifier, typeof(CompositeGate), symbol.GetType()));
                 }
             }
@@ -227,6 +239,7 @@ namespace LUIECompiler.SemanticAnalysis
                     Symbol? symbol = Table.GetSymbolInfo(identifier);
                     if (symbol is null)
                     {
+                        Compiler.PrintLog($"Could not get the symbol of identifier '{identifier}' from the symbol table.");
                         Error.Report(new UndefinedError(new ErrorContext(context), identifier));
                         continue;
                     }
@@ -239,6 +252,7 @@ namespace LUIECompiler.SemanticAnalysis
 
                     if (symbol is not Register)
                     {
+                        Compiler.PrintLog($"Could not get the symbol of identifier '{identifier}' from the symbol table.");
                         Error.Report(new TypeError(new ErrorContext(context), identifier, typeof(Register), symbol.GetType()));
                     }
                 }
