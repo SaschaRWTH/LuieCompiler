@@ -161,26 +161,45 @@ namespace LUIECompiler
             Print(message);
         }
 
-        public static void PrintLog(object message)
+        public static void LogInfo(object message,
+            [System.Runtime.CompilerServices.CallerMemberName] string membName = "",
+            [System.Runtime.CompilerServices.CallerLineNumber] int lineNumber = 0)
         {
-            PrintLog(message.ToString());
+            Log(message.ToString(), membName, lineNumber);
         }
 
-        public static void PrintLog(string? message)
+        public static void LogInfo(string? message,
+            [System.Runtime.CompilerServices.CallerMemberName] string membName = "",
+            [System.Runtime.CompilerServices.CallerLineNumber] int lineNumber = 0)
         {
-            if (message is null)
-            {
-                return;
-            }
+            Log(message, membName, lineNumber);
+        }
 
+        public static void LogError(object message,
+            [System.Runtime.CompilerServices.CallerMemberName] string membName = "",
+            [System.Runtime.CompilerServices.CallerLineNumber] int lineNumber = 0)
+        {
+            LogError(message.ToString(), membName, lineNumber);
+        }
+
+        public static void LogError(string? message,
+            [System.Runtime.CompilerServices.CallerMemberName] string membName = "",
+            [System.Runtime.CompilerServices.CallerLineNumber] int lineNumber = 0)
+        {
+            Log(message, membName, lineNumber);
+        }
+
+        public static void Log(string? message,
+            [System.Runtime.CompilerServices.CallerMemberName] string membName = "",
+            [System.Runtime.CompilerServices.CallerLineNumber] int lineNumber = 0)
+        {
             if (!Verbose)
             {
                 return;
             }
 
-            Print(message);
+            Print($"{membName}:{lineNumber} >> {message}");
         }
-
         /// <summary>
         /// Print a message to the console.
         /// </summary>

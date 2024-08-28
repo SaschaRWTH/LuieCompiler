@@ -60,7 +60,7 @@ namespace LUIECompiler.CodeGeneration.Statements
             Qubit? qubit = symbol as Qubit;
             if (qubit is null)
             {
-                Compiler.PrintLog($"Could not translate the symbol '{symbol.Identifier}'. Symbol is not a qubit.");
+                Compiler.LogError($"Could not translate the symbol '{symbol.Identifier}'. Symbol is not a qubit.");
                 throw new CodeGenerationException()
                 {
                     Error = new TypeError(ErrorContext, symbol.Identifier, typeof(Qubit), symbol.GetType())

@@ -408,3 +408,6 @@ FodyWeavers.xsd
 *BaseListener.cs
 LuieListener.cs
 LuieVisitor.cs
+
+# Prevent accidental commit of the output file
+output.qasm

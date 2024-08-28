@@ -60,7 +60,7 @@ namespace LUIECompiler.CodeGeneration.Expressions
             Symbol parameter = context.CurrentBlock.GetSymbol(identifier, context);
             if (parameter is not Register register)
             {
-                Compiler.PrintLog($"SizeOf parameter '{identifier}' is not a register.");
+                Compiler.LogError($"SizeOf parameter '{identifier}' is not a register.");
                 throw new CodeGenerationException()
                 {
                     Error = new TypeError(new ErrorContext(), parameter.Identifier, typeof(Register), parameter.GetType()),

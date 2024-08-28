@@ -28,7 +28,7 @@ namespace LUIECompiler.Common.Symbols
             Register? register = GetSymbol(context) as Register;
             if(register is null)
             {
-                Compiler.PrintLog($"Could convert the parameter '{Identifier}' to a register.");
+                Compiler.LogError($"Could not convert the parameter '{Identifier}' to a register.");
                 throw new CodeGenerationException()
                 {
                     Error = new TypeError(ErrorContext, Identifier, typeof(Register), GetSymbol(context).GetType()),

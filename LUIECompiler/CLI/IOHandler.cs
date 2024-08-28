@@ -19,7 +19,7 @@ namespace LUIECompiler.CLI
             string input = File.ReadAllText(data.InputPath);
 
 
-            Compiler.PrintLog($"Input code: {input}");
+            Compiler.LogInfo($"Input code: {input}");
 
             return input;
        }
