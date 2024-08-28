@@ -55,7 +55,7 @@ namespace LUIECompiler.SemanticAnalysis
             Symbol? symbol = Table.GetSymbolInfo(identifier);
             if (symbol == null)
             {
-                Error.Report(new UndefinedError(new ErrorContext(context.Start), identifier));
+                Error.Report(new UndefinedError(new ErrorContext(context), identifier));
                 return;
             }
 
@@ -68,7 +68,7 @@ namespace LUIECompiler.SemanticAnalysis
             // Cannot access qubit with []
             if (symbol is Qubit && context.TryGetIndexExpression(out Expression<int> _))
             {
-                Error.Report(new UndefinedError(new ErrorContext(context.Start), identifier));
+                Error.Report(new UndefinedError(new ErrorContext(context), identifier));
             }
         }
 
@@ -84,13 +84,13 @@ namespace LUIECompiler.SemanticAnalysis
             Symbol? symbol = Table.GetSymbolInfo(identifier);
             if (symbol == null)
             {
-                Error.Report(new UndefinedError(new ErrorContext(context.Start), identifier));
+                Error.Report(new UndefinedError(new ErrorContext(context), identifier));
                 return;
             }
 
             if (symbol is not LoopIterator)
             {
-                Error.Report(new TypeError(new ErrorContext(context.Start), identifier, typeof(LoopIterator), symbol.GetType()));
+                Error.Report(new TypeError(new ErrorContext(context), identifier, typeof(LoopIterator), symbol.GetType()));
             }
         }
 
@@ -104,7 +104,7 @@ namespace LUIECompiler.SemanticAnalysis
                 Symbol? symbol = Table.GetSymbolInfo(identifier);
                 if (symbol == null)
                 {
-                    Error.Report(new UndefinedError(new ErrorContext(context.Start), identifier));
+                    Error.Report(new UndefinedError(new ErrorContext(context), identifier));
                     return;
                 }
 
@@ -117,13 +117,13 @@ namespace LUIECompiler.SemanticAnalysis
 
                 if (symbol is not Register)
                 {
-                    Error.Report(new TypeError(new ErrorContext(context.Start), identifier, typeof(Register), symbol.GetType()));
+                    Error.Report(new TypeError(new ErrorContext(context), identifier, typeof(Register), symbol.GetType()));
                 }
 
                 if (symbol is not Qubit && !register.IsRegisterAccess())
                 {
                     // Returning typeof(Qubit) is not perfect, technically RegisterAccess is of type Qubit, but the user could still be confused. 
-                    Error.Report(new TypeError(new ErrorContext(context.Start), identifier, typeof(Qubit), symbol.GetType()));
+                    Error.Report(new TypeError(new ErrorContext(context), identifier, typeof(Qubit), symbol.GetType()));
                 }
             }
 
@@ -131,7 +131,7 @@ namespace LUIECompiler.SemanticAnalysis
 
             if (gate.NumberOfArguments != registers.Count)
             {
-                Error.Report(new InvalidArguments(new ErrorContext(context.Start), gate, registers.Count));
+                Error.Report(new InvalidArguments(new ErrorContext(context), gate, registers.Count));
             }
 
         }
@@ -144,7 +144,7 @@ namespace LUIECompiler.SemanticAnalysis
             Symbol? symbol = Table.GetSymbolInfo(identifier);
             if (symbol == null)
             {
-                Error.Report(new UndefinedError(new ErrorContext(context.Start), identifier));
+                Error.Report(new UndefinedError(new ErrorContext(context), identifier));
                 return;
             }
 
@@ -164,7 +164,7 @@ namespace LUIECompiler.SemanticAnalysis
                 return;
             }
 
-            Error.Report(new TypeError(new ErrorContext(context.Start), identifier, typeof(Qubit), symbol.GetType()));
+            Error.Report(new TypeError(new ErrorContext(context), identifier, typeof(Qubit), symbol.GetType()));
         }
 
         public override void EnterForstatement([NotNull] LuieParser.ForstatementContext context)
@@ -200,13 +200,13 @@ namespace LUIECompiler.SemanticAnalysis
                 Symbol? symbol = Table.GetSymbolInfo(identifier);
                 if (symbol == null)
                 {
-                    Error.Report(new UndefinedError(new ErrorContext(context.Start), identifier));
+                    Error.Report(new UndefinedError(new ErrorContext(context), identifier));
                     return;
                 }
 
                 if (symbol is not CompositeGate)
                 {
-                    Error.Report(new TypeError(new ErrorContext(context.Start), identifier, typeof(CompositeGate), symbol.GetType()));
+                    Error.Report(new TypeError(new ErrorContext(context), identifier, typeof(CompositeGate), symbol.GetType()));
                 }
             }
         }
@@ -227,7 +227,7 @@ namespace LUIECompiler.SemanticAnalysis
                     Symbol? symbol = Table.GetSymbolInfo(identifier);
                     if (symbol is null)
                     {
-                        Error.Report(new UndefinedError(new ErrorContext(context.Start), identifier));
+                        Error.Report(new UndefinedError(new ErrorContext(context), identifier));
                         continue;
                     }
 
@@ -239,7 +239,7 @@ namespace LUIECompiler.SemanticAnalysis
 
                     if (symbol is not Register)
                     {
-                        Error.Report(new TypeError(new ErrorContext(context.Start), identifier, typeof(Register), symbol.GetType()));
+                        Error.Report(new TypeError(new ErrorContext(context), identifier, typeof(Register), symbol.GetType()));
                     }
                 }
             }
