@@ -177,7 +177,7 @@ namespace LUIECompiler.SemanticAnalysis
 
         public override void ExitRange([NotNull] LuieParser.RangeContext context)
         {
-            if (!int.TryParse(context.start.Text, out int start) || !int.TryParse(context.end.Text, out int end))
+            if (!int.TryParse(context.start?.Text, out int start) || !int.TryParse(context.end?.Text, out int end))
             {
                 return;
             }
