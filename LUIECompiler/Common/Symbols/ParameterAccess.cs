@@ -38,6 +38,7 @@ namespace LUIECompiler.Common.Symbols
 
             if (symbol is not Register register)
             {
+                Compiler.PrintLog($"Could convert the parameter '{Identifier}' to a register. The symbol is not a register.");
                 throw new CodeGenerationException()
                 {
                     Error = new TypeError(ErrorContext, Identifier, typeof(Register), symbol.GetType()),
@@ -49,11 +50,15 @@ namespace LUIECompiler.Common.Symbols
 
         public override Symbol GetSymbol(CodeGenerationContext context)
         {
-            Register register = Parameter.GetSymbol(context) as Register ?? throw new CodeGenerationException()
+            Register? register = Parameter.GetSymbol(context) as Register;
+            if (register is null)
             {
-                Error = new TypeError(ErrorContext, Identifier, typeof(Register), Parameter.GetSymbol(context).GetType()),
-            };
-
+                Compiler.PrintLog($"Could get the symbol of the parameter '{Identifier}'");
+                throw new CodeGenerationException()
+                {
+                    Error = new TypeError(ErrorContext, Identifier, typeof(Register), Parameter.GetSymbol(context).GetType()),
+                };
+            }
             return register.ToRegisterAccess(IndexExpression, ErrorContext);
              
         }

@@ -42,6 +42,7 @@ namespace LUIECompiler.Common.Extensions
 
             if (symbol is not Register register)
             {
+                Compiler.PrintLog($"Could not get the symbol of identifier '{identifier}'. Symbol is not a register.");
                 throw new CodeGenerationException()
                 {
                     Error = new TypeError(new ErrorContext(context.Start), identifier, typeof(Register), symbol.GetType()),

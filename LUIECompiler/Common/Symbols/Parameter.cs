@@ -25,10 +25,16 @@ namespace LUIECompiler.Common.Symbols
         /// <exception cref="CodeGenerationException"></exception>
         public virtual Register ToRegister(CodeGenerationContext context)
         {
-            return GetSymbol(context) as Register ?? throw new CodeGenerationException()
+            Register? register = GetSymbol(context) as Register;
+            if(register is null)
             {
-                Error = new TypeError(ErrorContext, Identifier, typeof(Register), GetSymbol(context).GetType()),
-            };
+                Compiler.PrintLog($"Could convert the parameter '{Identifier}' to a register.");
+                throw new CodeGenerationException()
+                {
+                    Error = new TypeError(ErrorContext, Identifier, typeof(Register), GetSymbol(context).GetType()),
+                };
+            }
+            return register;
         }
 
         /// <summary>

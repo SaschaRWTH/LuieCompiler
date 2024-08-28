@@ -29,6 +29,7 @@ namespace LUIECompiler.Common.Extensions
 
             if (symbol is not Register register)
             {
+                Compiler.PrintLog($"Could not get the symbol of guard identifier '{identifier}'. Symbol is not a register.");
                 throw new CodeGenerationException()
                 {
                     Error = new TypeError(new ErrorContext(context.Start), identifier, typeof(Register), symbol.GetType()),
@@ -42,6 +43,7 @@ namespace LUIECompiler.Common.Extensions
 
             if (!context.register().TryGetIndexExpression(out Expression<int> index))
             {
+                Compiler.PrintLog($"Could not get the index expression of register '{identifier}'. Symbol is not a qubit.");
                 throw new CodeGenerationException()
                 {
                     Error = new TypeError(new ErrorContext(context.Start), identifier, typeof(Qubit), symbol.GetType()),

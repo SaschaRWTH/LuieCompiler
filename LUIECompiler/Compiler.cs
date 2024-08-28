@@ -23,14 +23,14 @@ namespace LUIECompiler
             ParseTreeWalker walker = GetParseTreeWalker();
 
             bool @continue = SemanticallyAnalyseCode(walker, parseContext);
-            if(!@continue)
+            if (!@continue)
             {
                 return;
             }
 
             QASMProgram? program = GenerateCode(walker, parseContext);
 
-            if(program == null)
+            if (program == null)
             {
                 return;
             }
@@ -57,15 +57,22 @@ namespace LUIECompiler
 
         public static bool SemanticallyAnalyseCode(ParseTreeWalker walker, LuieParser.ParseContext parseContext)
         {
-            ErrorHandler declarationErrors = DeclarationAnalysis(walker, parseContext);            
-            ErrorHandler typeCheckingErrors = TypeCheckingAnalysis(walker, parseContext);   
+            ErrorHandler declarationErrors = DeclarationAnalysis(walker, parseContext);
+            ErrorHandler typeCheckingErrors = TypeCheckingAnalysis(walker, parseContext);
 
             declarationErrors.Warnings.ForEach(Compiler.PrintWarning);
             declarationErrors.CriticalErrors.ForEach(Compiler.PrintError);
             typeCheckingErrors.Warnings.ForEach(Compiler.PrintWarning);
             typeCheckingErrors.CriticalErrors.ForEach(Compiler.PrintError);
 
-            return !declarationErrors.ContainsCriticalError && !typeCheckingErrors.ContainsCriticalError;
+            if (!declarationErrors.ContainsCriticalError && !typeCheckingErrors.ContainsCriticalError)
+            {
+                return true;
+            }
+            else{
+                Compiler.PrintError("Critical errors found in the code. Compilation aborted.");
+                return false;
+            }
         }
 
         private static ErrorHandler DeclarationAnalysis(ParseTreeWalker walker, LuieParser.ParseContext parseContext)
@@ -73,7 +80,7 @@ namespace LUIECompiler
             DeclarationAnalysisListener declarationAnalysisListener = new();
             try
             {
-                walker.Walk(declarationAnalysisListener, parseContext); 
+                walker.Walk(declarationAnalysisListener, parseContext);
             }
             catch (InternalException e)
             {
@@ -165,8 +172,8 @@ namespace LUIECompiler
             {
                 return;
             }
-            
-            if(!Verbose)
+
+            if (!Verbose)
             {
                 return;
             }
