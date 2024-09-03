@@ -11,6 +11,8 @@ namespace LUIECompiler
 {
     public static class Compiler
     {
+        public static Action<string?> Printer { get; set; } = Console.WriteLine;
+
         public static bool Verbose { get; private set; }
 
         public static void Compile(CompilerData data)
@@ -69,7 +71,8 @@ namespace LUIECompiler
             {
                 return true;
             }
-            else{
+            else
+            {
                 Compiler.PrintError("Critical errors found in the code. Compilation aborted.");
                 return false;
             }
@@ -206,7 +209,7 @@ namespace LUIECompiler
         /// <param name="message"></param>
         public static void Print(string message)
         {
-            Console.WriteLine(message);
+            Printer(message);
         }
     }
 }
