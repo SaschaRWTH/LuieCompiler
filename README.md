@@ -2,6 +2,7 @@
 ![Semantic Analysis Tests](https://github.com/SaschaRWTH/LuieCompiler/actions/workflows/semanticanalysis.yml/badge.svg)
 ![Code Generation Tests](https://github.com/SaschaRWTH/LuieCompiler/actions/workflows/codegen.yml/badge.svg)
 ![Code Optimization Tests](https://github.com/SaschaRWTH/LuieCompiler/actions/workflows/optimization.yml/badge.svg)
+![Command Line Interface Tests](https://github.com/SaschaRWTH/LuieCompiler/actions/workflows/cli.yml/badge.svg)
 
 ## Setup
 ANTLR is used to generate the lexer and parser for Luie based on its [grammar](./LUIECompiler/Luie.g4). It can be downloaded from the [official website](https://www.antlr.org/download.html). The website also contains information on how to install ANTLR and generate files for different languages.
