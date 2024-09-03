@@ -55,4 +55,21 @@ public class ParsingTest
         Assert.IsNotNull(output);
         Assert.AreEqual("Missing input path argument.", output);
     }
+    
+    [TestMethod]
+    public void InvalidOption()
+    {
+        Output.Clear();
+        string invalidOption = "-ins";
+        string[] args =
+        [
+            invalidOption
+        ];
+        CompilerData? data = CommandLineInterface.ParseArguments(args);
+        Assert.IsNull(data);
+
+        string? output = Output.First();
+        Assert.IsNotNull(output);
+        Assert.AreEqual($"Unknown argument: {invalidOption}", output);
+    }
 }
