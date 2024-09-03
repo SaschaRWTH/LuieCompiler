@@ -144,7 +144,9 @@ namespace LUIECompiler.CLI
             IEnumerable<(PropertyInfo, CLIDescriptionAttribute)> descriptions = GetPropertiesWithAttribute<CLIDescriptionAttribute>(typeof(CompilerData));
             Compiler.Print("Usage: LUIECompiler [options]");
             Compiler.Print("Options:");
-            Compiler.Print("  -h, --help \t \t \t Print help.");
+            string help = "-h, --help";
+            string helpDescription = "Print help.";  
+            Compiler.Print(HelpOptionString(help, helpDescription));
             foreach (var (prop, attr) in parameters)
             {
                 string? description = descriptions.FirstOrDefault(x => x.Item1.Name == prop.Name).Item2.Description;
@@ -152,8 +154,13 @@ namespace LUIECompiler.CLI
                 {
                     description = "No description available.";
                 }
-                Compiler.Print($"  {attr} \t \t \t {description}");
+                Compiler.Print(HelpOptionString(attr.ToString(), description));
             }
+        }
+
+        public static string HelpOptionString(string option, string description)
+        {
+            return $"  {option,-24} {description}";
         }
     }
 }
