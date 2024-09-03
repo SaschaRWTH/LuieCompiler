@@ -129,19 +129,15 @@ namespace LUIECompiler.CLI
 
             foreach (var opt in optimizations)
             {
-                type |= opt switch
-                {
-                    "nullgate" => OptimizationType.NullGate,
-                    "peepingcontrol" => OptimizationType.PeepingControl,
-                    "hsandwich" => OptimizationType.HSandwichReduction,
-                    "controlreversal" => OptimizationType.ControlReversal,
-                    _ => throw new ArgumentException($"Unknown optimization: {opt}"),
-                };
+                type |= OptimizationTypeExtension.FromCommandLineInput(opt);
             }
 
             return type;
         }
 
+        /// <summary>
+        /// Print the help message, describing the available options.
+        /// </summary>
         public static void PrintHelp()
         {
             IEnumerable<(PropertyInfo, CLIParameterAttribute)> parameters = GetPropertiesWithAttribute<CLIParameterAttribute>(typeof(CompilerData));
