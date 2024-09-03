@@ -19,11 +19,11 @@ public class DefinitionTest
         "skip;\n" +
         "end";
 
-    public const string DefineLaterInput = 
+    public const string DefineLaterInput =
         "h c;\n" +
         "qubit c;";
 
-    public const string UndefinedExpressionInput = 
+    public const string UndefinedExpressionInput =
         "qubit[5] c;\n" +
         "h c[i];\n" +
         "h c[2];\n" +
@@ -33,6 +33,34 @@ public class DefinitionTest
         "qubit[5] c;\n" +
         "qubit[sizeof(i)] d;";
 
+    public const string ValidQFTInput =
+    @"
+        // Swaps the values of two qubits
+        gate swap(a, b) do
+            cx a, b;
+            cx b, a;
+            cx a, b;
+        end
+
+        // Performs a discrete Fourier transform on a register of qubits
+        gate qft(reg) do
+            for i in range(sizeof(reg)) do
+                h reg[i];
+                for j in range(sizeof(reg) - (i + 1)) do
+                    qif reg[j + (i + 1)] do
+                        p(1/(power(2, (j + 1)))) reg[i];
+                    end
+                end
+            end
+            for j in range(sizeof(reg) / 2) do
+                swap reg[j], reg[sizeof(reg) - (j + 1)];
+            end
+        end
+
+
+        qubit[5] a;
+        qft a;
+    ";
     /// <summary>
     /// Test that already defined identifiers are correctly reported.
     /// </summary>
@@ -102,7 +130,7 @@ public class DefinitionTest
         Assert.IsTrue(error.Errors.Any(e => e is UndefinedError && e.ErrorContext.Line == 2));
         Assert.IsTrue(error.Errors.Any(e => e is UndefinedError && e.ErrorContext.Line == 4));
     }
-    
+
     /// <summary>
     /// Tests that undefined identifiers are correctly reported.
     /// </summary>
@@ -118,5 +146,18 @@ public class DefinitionTest
         Assert.IsTrue(error.ContainsCriticalError);
 
         Assert.IsTrue(error.Errors.Any(e => e is UndefinedError && e.ErrorContext.Line == 2));
+    }
+    
+    [TestMethod]
+    public void ValidQFTInputTest()
+    {
+        var walker = Utils.GetWalker();
+        var parser = Utils.GetParser(ValidQFTInput);
+        var analysis = new DeclarationAnalysisListener();
+        walker.Walk(analysis, parser.parse());
+        var error = analysis.Error;
+
+        Assert.IsFalse(error.ContainsCriticalError);
+        Assert.IsTrue(error.Errors.Count == 0);
     }
 }

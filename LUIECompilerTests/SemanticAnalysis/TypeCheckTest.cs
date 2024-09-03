@@ -67,6 +67,35 @@ public class TypeCheckTest
         "qubit a;\n" +
         "p(1/8) a;";
 
+    public const string ValidQFTInput =
+    @"
+        // Swaps the values of two qubits
+        gate swap(a, b) do
+            cx a, b;
+            cx b, a;
+            cx a, b;
+        end
+
+        // Performs a discrete Fourier transform on a register of qubits
+        gate qft(reg) do
+            for i in range(sizeof(reg)) do
+                h reg[i];
+                for j in range(sizeof(reg) - (i + 1)) do
+                    qif reg[j + (i + 1)] do
+                        p(1/(power(2, (j + 1)))) reg[i];
+                    end
+                end
+            end
+            for j in range(sizeof(reg) / 2) do
+                swap reg[j], reg[sizeof(reg) - (j + 1)];
+            end
+        end
+
+
+        qubit[5] a;
+        qft a;
+    ";
+
     /// <summary>
     /// Test that redefinitions in correctly reported in scopes.
     /// </summary>
@@ -177,6 +206,22 @@ public class TypeCheckTest
     {
         var walker = Utils.GetWalker();
         var parser = Utils.GetParser(ParameterizedGateValid);
+        var analysis = new TypeCheckListener();
+        walker.Walk(analysis, parser.parse());
+        var error = analysis.Error;
+
+        Assert.IsFalse(error.ContainsCriticalError);
+        Assert.IsTrue(error.Errors.Count == 0);
+    }
+
+    /// <summary>
+    /// Tests that there no errors reported when using a parameterized gate.
+    /// </summary>
+    [TestMethod]
+    public void ValidQFTInputTest()
+    {
+        var walker = Utils.GetWalker();
+        var parser = Utils.GetParser(ValidQFTInput);
         var analysis = new TypeCheckListener();
         walker.Walk(analysis, parser.parse());
         var error = analysis.Error;
