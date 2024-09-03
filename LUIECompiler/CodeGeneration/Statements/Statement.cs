@@ -57,10 +57,15 @@ namespace LUIECompiler.CodeGeneration.Statements
                 symbol = parameter.ToRegister(context);
             }
 
-            Qubit qubit = symbol as Qubit ?? throw new CodeGenerationException()
+            Qubit? qubit = symbol as Qubit;
+            if (qubit is null)
             {
-                Error = new TypeError(ErrorContext, symbol.Identifier, typeof(Qubit), symbol.GetType())
-            };
+                Compiler.LogError($"Could not translate the symbol '{symbol.Identifier}'. Symbol is not a qubit.");
+                throw new CodeGenerationException()
+                {
+                    Error = new TypeError(ErrorContext, symbol.Identifier, typeof(Qubit), symbol.GetType())
+                };
+            }
 
             RegisterDefinition definition = GetDefinition(qubit) as RegisterDefinition ??
                 throw new InternalException()

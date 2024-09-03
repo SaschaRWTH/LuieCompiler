@@ -20,7 +20,7 @@ namespace LUIECompiler.SemanticAnalysis
         /// </summary>
         public ErrorHandler Error { get; init; } = new();
 
-        
+
         public override void EnterMainblock([NotNull] LuieParser.MainblockContext context)
         {
             Table.PushScope();
@@ -55,7 +55,8 @@ namespace LUIECompiler.SemanticAnalysis
             Symbol? symbol = Table.GetSymbolInfo(identifier);
             if (symbol == null)
             {
-                Error.Report(new UndefinedError(new ErrorContext(context.Start), identifier));
+                Compiler.LogError($"TypeCheckListener.ExitRegister: Could not get the symbol of identifier '{identifier}' from the symbol table.");
+                Error.Report(new UndefinedError(new ErrorContext(context), identifier));
                 return;
             }
 
@@ -68,7 +69,8 @@ namespace LUIECompiler.SemanticAnalysis
             // Cannot access qubit with []
             if (symbol is Qubit && context.TryGetIndexExpression(out Expression<int> _))
             {
-                Error.Report(new UndefinedError(new ErrorContext(context.Start), identifier));
+                Compiler.LogError($"TypeCheckListener.ExitRegister: The symbol '{identifier}' was neither a qubit nor a accessed register.");
+                Error.Report(new UndefinedError(new ErrorContext(context), identifier));
             }
         }
 
@@ -84,19 +86,22 @@ namespace LUIECompiler.SemanticAnalysis
             Symbol? symbol = Table.GetSymbolInfo(identifier);
             if (symbol == null)
             {
-                Error.Report(new UndefinedError(new ErrorContext(context.Start), identifier));
+                Compiler.LogError($"TypeCheckListener.ExitFactor: Could not get the symbol of identifier '{identifier}' from the symbol table.");
+                Error.Report(new UndefinedError(new ErrorContext(context), identifier));
                 return;
             }
 
             if (symbol is not LoopIterator)
             {
-                Error.Report(new TypeError(new ErrorContext(context.Start), identifier, typeof(LoopIterator), symbol.GetType()));
+                Compiler.LogError($"The symbol '{identifier}' was not a LoopIterator.");
+                Error.Report(new TypeError(new ErrorContext(context), identifier, typeof(LoopIterator), symbol.GetType()));
             }
         }
 
         public override void ExitGateapplication([NotNull] LuieParser.GateapplicationContext context)
         {
             List<LuieParser.RegisterContext> registers = context.register().ToList();
+            IGate gate = context.gate().GetGate(Table);
 
             foreach (var register in registers)
             {
@@ -104,10 +109,9 @@ namespace LUIECompiler.SemanticAnalysis
                 Symbol? symbol = Table.GetSymbolInfo(identifier);
                 if (symbol == null)
                 {
-                    Error.Report(new UndefinedError(new ErrorContext(context.Start), identifier));
+                    Error.Report(new UndefinedError(new ErrorContext(context), identifier));
                     return;
                 }
-
 
                 // Check type of parameter at generation time
                 if (symbol is Parameter)
@@ -115,23 +119,32 @@ namespace LUIECompiler.SemanticAnalysis
                     return;
                 }
 
+
                 if (symbol is not Register)
                 {
-                    Error.Report(new TypeError(new ErrorContext(context.Start), identifier, typeof(Register), symbol.GetType()));
+                    Compiler.LogError($"TypeCheckListener.ExitGateapplication: Could not get the symbol of identifier '{identifier}'. Symbol is not a register.");
+                    Error.Report(new TypeError(new ErrorContext(context), identifier, typeof(Register), symbol.GetType()));
+                }
+
+                if (gate is CompositeGate)
+                {
+                    // Allow for registers as parameters for composite gates
+                    continue;
                 }
 
                 if (symbol is not Qubit && !register.IsRegisterAccess())
                 {
+                    Compiler.LogError($"TypeCheckListener.ExitGateapplication: Could not get the symbol of identifier '{identifier}'. Symbol is neither a qubit nor accessed.");
                     // Returning typeof(Qubit) is not perfect, technically RegisterAccess is of type Qubit, but the user could still be confused. 
-                    Error.Report(new TypeError(new ErrorContext(context.Start), identifier, typeof(Qubit), symbol.GetType()));
+                    Error.Report(new TypeError(new ErrorContext(context), identifier, typeof(Qubit), symbol.GetType()));
                 }
-            }
 
-            IGate gate = context.gate().GetGate(Table);
+            }
 
             if (gate.NumberOfArguments != registers.Count)
             {
-                Error.Report(new InvalidArguments(new ErrorContext(context.Start), gate, registers.Count));
+                Compiler.LogError($"The number of arguments are invalid for the used gate.");
+                Error.Report(new InvalidArguments(new ErrorContext(context), gate, registers.Count));
             }
 
         }
@@ -144,7 +157,8 @@ namespace LUIECompiler.SemanticAnalysis
             Symbol? symbol = Table.GetSymbolInfo(identifier);
             if (symbol == null)
             {
-                Error.Report(new UndefinedError(new ErrorContext(context.Start), identifier));
+                Compiler.LogError($"Could not get the symbol of identifier '{identifier}' from the symbol table.");
+                Error.Report(new UndefinedError(new ErrorContext(context), identifier));
                 return;
             }
 
@@ -164,7 +178,8 @@ namespace LUIECompiler.SemanticAnalysis
                 return;
             }
 
-            Error.Report(new TypeError(new ErrorContext(context.Start), identifier, typeof(Qubit), symbol.GetType()));
+            Compiler.LogError($"The symbol {identifier} is neither a qubit nor an accessed register.");
+            Error.Report(new TypeError(new ErrorContext(context), identifier, typeof(Qubit), symbol.GetType()));
         }
 
         public override void EnterForstatement([NotNull] LuieParser.ForstatementContext context)
@@ -177,13 +192,14 @@ namespace LUIECompiler.SemanticAnalysis
 
         public override void ExitRange([NotNull] LuieParser.RangeContext context)
         {
-            if (!int.TryParse(context.start.Text, out int start) || !int.TryParse(context.end.Text, out int end))
+            if (!int.TryParse(context.start?.Text, out int start) || !int.TryParse(context.end?.Text, out int end))
             {
                 return;
             }
 
             if (start >= end)
             {
+                Compiler.LogError($"The start of the range is smaller of equal to the end index of the range.");
                 Error.Report(new InvalidRangeWarning(new ErrorContext(context), start, end));
             }
         }
@@ -198,15 +214,17 @@ namespace LUIECompiler.SemanticAnalysis
             if (context.identifier?.Text is string identifier)
             {
                 Symbol? symbol = Table.GetSymbolInfo(identifier);
-                if (symbol == null)
+                if (symbol is null)
                 {
-                    Error.Report(new UndefinedError(new ErrorContext(context.Start), identifier));
+                    Compiler.LogError($"The gate identifier '{identifier}' could not be found in the symbol table.");
+                    Error.Report(new UndefinedError(new ErrorContext(context), identifier));
                     return;
                 }
 
                 if (symbol is not CompositeGate)
                 {
-                    Error.Report(new TypeError(new ErrorContext(context.Start), identifier, typeof(CompositeGate), symbol.GetType()));
+                    Compiler.LogError($"The symbol '{identifier}' is neither a known gate nor a composite gate.");
+                    Error.Report(new TypeError(new ErrorContext(context), identifier, typeof(CompositeGate), symbol.GetType()));
                 }
             }
         }
@@ -220,14 +238,15 @@ namespace LUIECompiler.SemanticAnalysis
                 Error.Report(new UndefinedError(new ErrorContext(context), identifier));
             });
 
-            if(expression is SizeOfFunctionExpression<double> sizeOfFunctionExpression)
+            if (expression is SizeOfFunctionExpression<double> sizeOfFunctionExpression)
             {
-                foreach(string identifier in sizeOfFunctionExpression.Parameter)
+                foreach (string identifier in sizeOfFunctionExpression.Parameter)
                 {
                     Symbol? symbol = Table.GetSymbolInfo(identifier);
                     if (symbol is null)
                     {
-                        Error.Report(new UndefinedError(new ErrorContext(context.Start), identifier));
+                        Compiler.LogError($"Could not get the symbol of identifier '{identifier}' from the symbol table.");
+                        Error.Report(new UndefinedError(new ErrorContext(context), identifier));
                         continue;
                     }
 
@@ -239,13 +258,14 @@ namespace LUIECompiler.SemanticAnalysis
 
                     if (symbol is not Register)
                     {
-                        Error.Report(new TypeError(new ErrorContext(context.Start), identifier, typeof(Register), symbol.GetType()));
+                        Compiler.LogError($"Could not get the symbol of identifier '{identifier}' from the symbol table.");
+                        Error.Report(new TypeError(new ErrorContext(context), identifier, typeof(Register), symbol.GetType()));
                     }
                 }
             }
         }
 
-        
+
         public override void EnterGateDeclaration([NotNull] LuieParser.GateDeclarationContext context)
         {
             Table.PushScope();

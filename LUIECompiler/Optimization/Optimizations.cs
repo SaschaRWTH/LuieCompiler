@@ -8,6 +8,8 @@ namespace LUIECompiler.Optimization
     [Flags]
     public enum OptimizationType
     {
+        None = 0b0000_0000,
+
         NullGate = 0b0000_0001,
         PeepingControl = 0b0000_0010,
         HSandwichReduction = 0b0000_0100,
@@ -27,7 +29,7 @@ namespace LUIECompiler.Optimization
         {
             List<OptimizationRule> rules = [];
 
-            if(type.HasFlag(OptimizationType.NullGate))
+            if (type.HasFlag(OptimizationType.NullGate))
             {
                 rules.AddRange(NullGateRule.NullGateRules);
             }
@@ -48,6 +50,42 @@ namespace LUIECompiler.Optimization
             }
 
             return rules;
+        }
+
+        /// <summary>
+        /// Converts the <paramref name="type"/> to a command line input.
+        /// </summary>
+        public static string ToCommandLineInput(this OptimizationType type)
+        {
+            return type switch
+            {
+                OptimizationType.None => "none",
+                OptimizationType.All => "all",
+                OptimizationType.NullGate => "nullgate",
+                OptimizationType.PeepingControl => "peepingcontrol",
+                OptimizationType.HSandwichReduction => "hsandwich",
+                OptimizationType.ControlReversal => "controlreversal",
+                _ => throw new ArgumentException($"Unknown optimization: {type}"),
+            };
+        }
+
+        /// <summary>
+        /// Converts the command line input to an <see cref="OptimizationType"/>.
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentException"></exception>
+        public static OptimizationType FromCommandLineInput(string type)
+        {
+            var values = Enum.GetValues(typeof(OptimizationType)).Cast<OptimizationType>();
+            foreach (var value in values)
+            {
+                if (value.ToCommandLineInput() == type)
+                {
+                    return value;
+                }
+            }
+            throw new ArgumentException($"Unknown optimization: {type}");
         }
     }
 }

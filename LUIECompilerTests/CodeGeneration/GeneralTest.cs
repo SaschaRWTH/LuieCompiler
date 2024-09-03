@@ -39,12 +39,14 @@ public class GeneralTest
 
     public const string QFTGate =
         @"
+            // Swaps the values of two qubits
             gate swap(a, b) do
                 cx a, b;
                 cx b, a;
                 cx a, b;
             end
 
+            // Performs a discrete Fourier transform on a register of qubits
             gate qft(reg) do
                 for i in range(sizeof(reg)) do
                     h reg[i];
@@ -58,6 +60,8 @@ public class GeneralTest
                     swap reg[j], reg[sizeof(reg) - (j + 1)];
                 end
             end
+
+
             qubit[5] a;
             qft a;
         ";

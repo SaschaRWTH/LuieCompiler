@@ -109,7 +109,7 @@ namespace LUIECompiler.SemanticAnalysis
         }
 
         public override void ExitFunction([NotNull] LuieParser.FunctionContext context)
-        {           
+        {
             FunctionExpression<double> expression = context.GetFunctionExpression<double>();
 
             expression.UndefinedIdentifiers(Table).ForEach(identifier =>
@@ -145,13 +145,17 @@ namespace LUIECompiler.SemanticAnalysis
             if (context.type is not null)
             {
                 return;
+            }
 
+            if (context.parameterizedGate is not null)
+            {
+                return;
             }
 
             string? identifier = (context.identifier?.Text) ?? throw new InternalException()
-                {
-                    Reason = "Gate did have neither a type nor an identifier."
-                };
+            {
+                Reason = $"Gate did have neither a type nor an identifier. ErrorContext = {new ErrorContext(context)}"
+            };
 
             CheckDefinedness(identifier, context);
         }
