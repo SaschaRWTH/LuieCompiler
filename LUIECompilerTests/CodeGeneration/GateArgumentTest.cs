@@ -13,9 +13,9 @@ public class GateArgumentTest
             "qubit b;\n" +
             "x c[1];\n" +
             "qif c[1] do\n" +
-            "x c[1];\n" +
-            "cx c[0], a[2];\n" +
-            "ccx c[0], b, a[1];\n" +
+            "    x c[0];\n" +
+            "    cx c[0], a[2];\n" +
+            "    ccx c[0], b, a[1];\n" +
             "end";
             
     /// <summary>
@@ -26,7 +26,7 @@ public class GateArgumentTest
             "qubit[3] id1;\n" +
             "qubit id2;\n" +
             "x id0[1];\n" +
-            "ctrl(1) @ x id0[1], id0[1];\n" +
+            "ctrl(1) @ x id0[1], id0[0];\n" +
             "ctrl(1) @ cx id0[1], id0[0], id1[2];\n" +
             "ctrl(1) @ ccx id0[1], id0[0], id2, id1[1];\n";
 
