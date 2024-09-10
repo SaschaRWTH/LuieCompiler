@@ -38,9 +38,15 @@ namespace LUIECompiler.Common
             {
                 if (ScopeStack.Count == 0)
                 {
-                    throw new InternalException() { Reason = "Tried peeking an empty scope stack." };
+                    throw new InternalException()
+                    {
+                        Reason = "Tried peeking an empty scope stack."
+                    };
                 }
-                return ScopeStack.Peek() ?? throw new InternalException() { Reason = "Top most element on scope stack null." };
+                return ScopeStack.Peek() ?? throw new InternalException()
+                {
+                    Reason = "Top most element on scope stack null."
+                };
             }
         }
 
