@@ -18,16 +18,6 @@ namespace LUIECompiler.CodeGeneration
         public SymbolTable Table { get; set; } = new();
 
         /// <summary>
-        /// Stack of currently nested code blocks.
-        /// </summary>
-        public Stack<CodeBlock> CodeBlocks { get; } = [];
-
-        /// <summary>
-        /// Stack of the registers guarding the if-clauses.
-        /// </summary>
-        public Stack<Symbol> GuardStack { get; } = [];
-
-        /// <summary>
         ///  Main code block of the program.
         /// </summary>
         public CodeBlock MainBlock { get; } = new()
@@ -40,35 +30,24 @@ namespace LUIECompiler.CodeGeneration
         /// </summary>
         public CodeBlock CurrentBlock
         {
-            get => CodeBlocks.Peek()
-                ?? throw new InternalException()
+            get
+            {
+                return Table.CurrentScope.CodeBlock ?? throw new InternalException()
                 {
-                    Reason = "Tried to peek empty code block stack.",
+                    Reason = "Tried to access empty code block.",
                 };
-        }
-
-        /// <summary>
-        /// Gets guard of the current if statement.
-        /// </summary>
-        public Symbol CurrentGuard
-        {
-            get => GuardStack.Peek()
-                ?? throw new InternalException()
-                {
-                    Reason = "Tried to peek empty guard stack.",
-                };
+            }
         }
 
         /// <summary>
         /// Pushes a new code block onto the stack.
         /// </summary>
-        public void PushCodeBlock()
+        public void PushScope()
         {
-            Table.PushScope();
-            CodeBlocks.Push(new()
+            Table.PushScope(new CodeBlock()
             {
                 Parent = CurrentBlock,
-            });   
+            });
         }
 
         /// <summary>
@@ -77,16 +56,7 @@ namespace LUIECompiler.CodeGeneration
         /// <exception cref="InternalException"></exception>
         public void PushMainCodeBlock()
         {
-            if(CodeBlocks.Count > 0)
-            {
-                throw new InternalException()
-                {
-                    Reason = "Tried to push main code block onto non-empty stack.",
-                };
-            }
-
-            Table.PushScope();
-            CodeBlocks.Push(MainBlock);
+            Table.PushScope(MainBlock);
         }
 
         /// <summary>
@@ -94,18 +64,9 @@ namespace LUIECompiler.CodeGeneration
         /// </summary>
         /// <returns></returns>
         /// <exception cref="InternalException"></exception>
-        public CodeBlock PopCodeBlock()
+        public Scope PopCodeBlock()
         {
-            if (CodeBlocks.Count <= 1)
-            {
-                throw new InternalException()
-                {
-                    Reason = "Tried to pop main code block from stack.",
-                };
-            }
-
-            Table.PopScope();
-            return CodeBlocks.Pop();
+            return Table.PopScope();
         }
 
         /// <summary>
@@ -123,7 +84,7 @@ namespace LUIECompiler.CodeGeneration
         /// <param name="info"></param>
         public void PushGuard([NotNull] Symbol info)
         {
-            GuardStack.Push(info);
+            Table.GuardStack.Push(info);
         }
 
         /// <summary>
@@ -132,7 +93,7 @@ namespace LUIECompiler.CodeGeneration
         /// <returns></returns>
         public Symbol PopGuard()
         {
-            return GuardStack.Pop();
+            return Table.GuardStack.Pop();
         }
 
         /// <summary>

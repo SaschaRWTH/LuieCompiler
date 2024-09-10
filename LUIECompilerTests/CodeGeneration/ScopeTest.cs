@@ -100,7 +100,7 @@ public class ScopeTest
         Qubit firstA = new Qubit("A", new(1, 1));
         handler.AddRegister(firstA, new(1, 1));
 
-        handler.PushCodeBlock();
+        handler.PushScope();
         Qubit secondA = new Qubit("A", new(2, 1));
         handler.AddRegister(secondA, new(2, 1));
 

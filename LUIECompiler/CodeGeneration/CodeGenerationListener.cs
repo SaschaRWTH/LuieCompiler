@@ -19,7 +19,7 @@ namespace LUIECompiler.CodeGeneration
         /// <summary>
         /// Reference to the last poped code block. This is used, e.g., to create if statements.
         /// </summary>
-        private CodeBlock? _lastPoped = null;
+        private Scope? _lastPoped = null;
 
         public override void ExitRegisterDeclaration([NotNull] LuieParser.RegisterDeclarationContext context)
         {
@@ -110,7 +110,7 @@ namespace LUIECompiler.CodeGeneration
 
         public override void EnterBlock([NotNull] LuieParser.BlockContext context)
         {
-            CodeGen.PushCodeBlock();
+            CodeGen.PushScope();
         }
 
         public override void ExitBlock([NotNull] LuieParser.BlockContext context)
@@ -120,15 +120,19 @@ namespace LUIECompiler.CodeGeneration
 
         public override void ExitIfStat([NotNull] LuieParser.IfStatContext context)
         {
-            CodeBlock block = _lastPoped ?? throw new InternalException()
+            Scope scope = _lastPoped ?? throw new InternalException()
             {
-                Reason = "There was no last poped code block, although block should just have been exited."
+                Reason = "There was no last poped scope, although block should just have been exited."
+            };
+            CodeBlock block = scope.CodeBlock ?? throw new InternalException()
+            {
+                Reason = "Scope did not contain codeblock, although block should existed."
             };
 
             QuantumIfStatement statement = new()
             {
                 Block = block,
-                Guard = CodeGen.CurrentGuard,
+                Guard = CodeGen.Table.CurrentGuard,
                 ParentBlock = CodeGen.CurrentBlock,
                 ErrorContext = new ErrorContext(context.Start),
             };
@@ -138,15 +142,19 @@ namespace LUIECompiler.CodeGeneration
 
         public override void ExitElseStat([NotNull] LuieParser.ElseStatContext context)
         {
-            CodeBlock block = _lastPoped ?? throw new InternalException()
+            Scope scope = _lastPoped ?? throw new InternalException()
             {
-                Reason = "There was no last poped code block, although block should just have been exited."
+                Reason = "There was no last poped scope, although block should just have been exited."
+            };
+            CodeBlock block = scope.CodeBlock ?? throw new InternalException()
+            {
+                Reason = "Scope did not contain codeblock, although block should existed."
             };
 
             QuantumIfStatement statement = new()
             {
                 Block = block,
-                Guard = CodeGen.CurrentGuard,
+                Guard = CodeGen.Table.CurrentGuard,
                 ParentBlock = CodeGen.CurrentBlock,
                 ErrorContext = new ErrorContext(context.Start),
             };
@@ -162,9 +170,13 @@ namespace LUIECompiler.CodeGeneration
 
         public override void ExitForstatement([NotNull] LuieParser.ForstatementContext context)
         {
-            CodeBlock block = _lastPoped ?? throw new InternalException()
+            Scope scope = _lastPoped ?? throw new InternalException()
             {
-                Reason = "There was no last poped code block, although block should just have been exited."
+                Reason = "There was no last poped scope, although block should just have been exited."
+            };
+            CodeBlock block = scope.CodeBlock ?? throw new InternalException()
+            {
+                Reason = "Scope did not contain codeblock, although block should existed."
             };
 
             string identifier = context.IDENTIFIER().GetText(); ;
@@ -186,7 +198,7 @@ namespace LUIECompiler.CodeGeneration
 
         public override void EnterGateDeclaration([NotNull] LuieParser.GateDeclarationContext context)
         {
-            CodeGen.Table.PushScope();
+            CodeGen.Table.PushEmtpyScope();
             foreach (Parameter param in context.GetParameters())
             {
                 CodeGen.AddParameter(param, new(context));
@@ -198,10 +210,13 @@ namespace LUIECompiler.CodeGeneration
             List<Parameter> parameters = CodeGen.Table.GetParameters();
             CodeGen.Table.PopScope();
 
-            // Create emtpy block for declaration analysis
-            CodeBlock block = _lastPoped ?? throw new InternalException()
+            Scope scope = _lastPoped ?? throw new InternalException()
             {
-                Reason = "There was no last poped code block, although block should just have been exited."
+                Reason = "There was no last poped scope, although block should just have been exited."
+            };
+            CodeBlock block = scope.CodeBlock ?? throw new InternalException()
+            {
+                Reason = "Scope did not contain codeblock, although block should existed."
             };
             CompositeGate gate = new(context.identifier.Text, block, parameters, new ErrorContext(context));
             CodeGen.AddCompositeGate(gate, new(context));

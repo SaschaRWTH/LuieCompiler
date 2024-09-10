@@ -1,5 +1,6 @@
 using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
+using LUIECompiler.CodeGeneration;
 using LUIECompiler.Common;
 using LUIECompiler.Common.Errors;
 using LUIECompiler.Common.Symbols;
@@ -94,12 +95,17 @@ public class ScopeTest
     public void CorrectInfoTest()
     {
         SymbolTable table = new();
+        CodeBlock mainBlock = new()
+        {
+            Parent = null
+        };
+        table.PushScope(mainBlock);
         
-        table.PushScope();
+        table.PushEmtpyScope();
         Qubit firstA = new("A", new ErrorContext());
         table.AddSymbol(firstA);
 
-        table.PushScope();
+        table.PushEmtpyScope();
         Qubit secondA = new("A", new ErrorContext());
         table.AddSymbol(secondA);
 
