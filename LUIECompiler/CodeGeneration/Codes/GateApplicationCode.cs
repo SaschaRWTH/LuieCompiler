@@ -1,4 +1,8 @@
 
+using LUIECompiler.CodeGeneration.Exceptions;
+using LUIECompiler.Common.Errors;
+using LUIECompiler.Common.Symbols;
+
 namespace LUIECompiler.CodeGeneration.Codes
 {
     /// <summary>
@@ -9,7 +13,7 @@ namespace LUIECompiler.CodeGeneration.Codes
         /// <summary>
         /// List of all registers guarding the gate.
         /// </summary>
-        public required List<GuardCode> Guards { get; init; }
+        public List<GuardCode> Guards { get; }
 
         /// <summary>
         /// List of all positive guards, meaning they need to be true for the gate to be executed.
@@ -24,12 +28,39 @@ namespace LUIECompiler.CodeGeneration.Codes
         /// <summary>
         /// Gate to be executed
         /// </summary>
-        public required GateCode Gate { get; init; }
+        public GateCode Gate { get; }
 
         /// <summary>
         /// List of all gate parameters. 
         /// </summary>
-        public required List<QubitCode> Parameters { get; init; }
+        public List<QubitCode> Parameters { get; }
+
+        public GateApplicationCode(GateCode gate, List<QubitCode> parameters, List<GuardCode> guards)
+        {
+            Gate = gate;
+            Parameters = parameters;
+            Guards = guards;
+
+            CheckUseOfGuard();
+        }
+
+        /// <summary>
+        /// Checks if a parameter of the gate application is also a guard (not allowed).
+        /// </summary>
+        private void CheckUseOfGuard()
+        {
+            foreach (QubitCode parameter in Parameters)
+            {
+                if (Guards.Any(g => g.Qubit.SemanticallyEqual(parameter)))
+                {
+                    Symbol symbol = parameter.Register.Register;
+                    throw new CodeGenerationException()
+                    {
+                        Error = new UseOfGuardError(symbol.ErrorContext, symbol.Identifier)
+                    };
+                }
+            }
+        }
 
         /// <summary>
         ///  Gets the code string representation of all parameters. 

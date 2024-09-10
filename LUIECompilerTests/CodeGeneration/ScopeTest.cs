@@ -37,7 +37,7 @@ public class ScopeTest
         "qubit[5] c;\n" +
         "qubit[5] d;\n" +
         "qif c[0] do\n" +
-        "    h c[0];\n" +
+        "    h c[1];\n" +
         "    qubit[2] c;\n" +
         "    h c[0];\n" +
         "end";
@@ -48,7 +48,7 @@ public class ScopeTest
     public const string ChangeUsedInScopeInputTranslation =
         "qubit[5] id0;\n" +
         "qubit[5] id1;\n" +
-        "ctrl(1) @ h id0[0], id0[0];\n" +
+        "ctrl(1) @ h id0[0], id0[1];\n" +
         "qubit[2] id2;\n" +
         "ctrl(1) @ h id0[0], id2[0];\n";
 
@@ -100,7 +100,7 @@ public class ScopeTest
         Qubit firstA = new Qubit("A", new(1, 1));
         handler.AddRegister(firstA, new(1, 1));
 
-        handler.PushCodeBlock();
+        handler.PushScope();
         Qubit secondA = new Qubit("A", new(2, 1));
         handler.AddRegister(secondA, new(2, 1));
 

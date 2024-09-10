@@ -1,5 +1,6 @@
 using Antlr4.Runtime;
 using Antlr4.Runtime.Tree;
+using LUIECompiler.CodeGeneration;
 using LUIECompiler.Common;
 using LUIECompiler.Common.Errors;
 using LUIECompiler.Common.Symbols;
@@ -33,11 +34,13 @@ public class ScopeTest
 
     public const string InputScopeUseOfOuterScope =
         "qubit a;\n" +
-        "qif a do\n" +
         "qubit b;\n" +
         "qif a do\n" +
-        "qubit a;\n" +
-        "end\n" +
+        "    qubit a;\n" +
+        "    qif b do\n" +
+        "        qubit a;\n" +
+        "        qubit b;\n" +
+        "    end\n" +
         "end";
 
 
@@ -94,12 +97,17 @@ public class ScopeTest
     public void CorrectInfoTest()
     {
         SymbolTable table = new();
+        CodeBlock mainBlock = new()
+        {
+            Parent = null
+        };
+        table.PushScope(mainBlock);
         
-        table.PushScope();
+        table.PushEmtpyScope();
         Qubit firstA = new("A", new ErrorContext());
         table.AddSymbol(firstA);
 
-        table.PushScope();
+        table.PushEmtpyScope();
         Qubit secondA = new("A", new ErrorContext());
         table.AddSymbol(secondA);
 

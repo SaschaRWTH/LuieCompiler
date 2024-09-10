@@ -63,12 +63,12 @@ namespace LUIECompiler.Optimization.Rules
             start.Remove();
             end.Remove();
 
-            GateApplicationCode newGate = new()
-            {
-                Gate = new GateCode(EquivalentGate),
-                Parameters = [ ..sandwiched.GateCode.Parameters],
-                Guards = [ ..sandwiched.GateCode.Guards]
-            };
+            GateApplicationCode newGate = new
+            (
+                gate: new GateCode(EquivalentGate),
+                parameters: [ ..sandwiched.GateCode.Parameters],
+                guards: [ ..sandwiched.GateCode.Guards]
+            );
 
             sandwiched.ReplaceGate(newGate);
         }

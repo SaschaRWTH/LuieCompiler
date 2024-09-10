@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using LUIECompiler.CodeGeneration;
 using LUIECompiler.CodeGeneration.Exceptions;
 using LUIECompiler.Common.Symbols;
 
@@ -27,7 +28,21 @@ namespace LUIECompiler.Common
         /// <summary>
         /// Stack of scopes mapping an identifier to the corrisponding <see cref="Symbol"/>. 
         /// </summary>
-        public Stack<Dictionary<string, Symbol>> ScopeStack { get; init; } = new();
+        public Stack<Scope> ScopeStack { get; init; } = new();
+
+        /// <summary>
+        /// Gets the current scope from the scope stack.
+        /// </summary>
+        public Scope CurrentScope
+        {
+            get
+            {
+                return ScopeStack.Peek() ?? throw new InternalException()
+                {
+                    Reason = "Tried peeking an empty scope stack."
+                };
+            }
+        }
 
         /// <summary>
         /// Dictionary that maps the identifier to its symbol information.
@@ -38,10 +53,30 @@ namespace LUIECompiler.Common
             {
                 if (ScopeStack.Count == 0)
                 {
-                    throw new InternalException() { Reason = "Tried peeking an empty scope stack." };
+                    throw new InternalException()
+                    {
+                        Reason = "Tried peeking an empty scope stack."
+                    };
                 }
-                return ScopeStack.Peek() ?? throw new InternalException() { Reason = "Top most element on scope stack null." };
+
+                return CurrentScope.IdentifierMap;
             }
+        }
+
+        /// <summary>
+        /// Stack of the registers guarding the if-clauses.
+        /// </summary>
+        public Stack<Symbol?> GuardStack { get; } = [];
+
+        /// <summary>
+        /// Gets guard of the current if statement.
+        /// </summary>
+        public Symbol CurrentGuard
+        {
+            get => GuardStack.Peek() ?? throw new InternalException()
+            {
+                Reason = "Tried to peek empty guard stack or dummy guard.",
+            };
         }
 
         /// <summary>
@@ -51,7 +86,7 @@ namespace LUIECompiler.Common
         /// <returns></returns>
         public bool IsDefined(string identifier)
         {
-            foreach (var dict in ScopeStack)
+            foreach (var dict in ScopeStack.Select(scope => scope.IdentifierMap))
             {
                 if (dict.ContainsKey(identifier))
                 {
@@ -83,11 +118,30 @@ namespace LUIECompiler.Common
         }
 
         /// <summary>
+        /// Pushes scope with an emtpy code block onto the scope stack.
+        /// </summary>
+        public void PushEmtpyScope()
+        {
+            ScopeStack.Push(new Scope()
+            {
+                CodeBlock = new CodeBlock()
+                {
+                    Parent = CurrentScope.CodeBlock,
+                },
+                Guard = GuardStack.Count == 0 ? default : GuardStack.Peek(),
+            });
+        }
+
+        /// <summary>
         /// Pushes a new scope onto the scope stack.
         /// </summary>
-        public void PushScope()
+        public void PushScope(CodeBlock codeBlock)
         {
-            ScopeStack.Push([]);
+            ScopeStack.Push(new Scope()
+            {
+                CodeBlock = codeBlock,
+                Guard = GuardStack.Count == 0 ? default : GuardStack.Peek(),
+            });
         }
 
 
@@ -95,7 +149,7 @@ namespace LUIECompiler.Common
         /// Pops the current scope.
         /// </summary>
         /// <returns></returns>
-        public Dictionary<string, Symbol> PopScope()
+        public Scope PopScope()
         {
             return ScopeStack.Pop();
         }
@@ -107,7 +161,7 @@ namespace LUIECompiler.Common
         /// <returns></returns>
         public Symbol? GetSymbolInfo(string identifier)
         {
-            foreach (var dict in ScopeStack)
+            foreach (var dict in ScopeStack.Select(scope => scope.IdentifierMap))
             {
                 if (dict.TryGetValue(identifier, out var info))
                 {
@@ -123,18 +177,41 @@ namespace LUIECompiler.Common
         /// <returns></returns>
         public List<Parameter> GetParameters()
         {
-            List<Parameter> parameters = new();
-            foreach (var dict in ScopeStack)
+            List<Parameter> parameters = [];
+            foreach (var scope in ScopeStack)
             {
-                foreach (var symbol in dict.Values)
-                {
-                    if (symbol is Parameter parameter)
-                    {
-                        parameters.Add(parameter);
-                    }
-                }
+                parameters.AddRange(scope.GetParameters());
             }
             return parameters;
+        }
+
+        
+        /// <summary>
+        /// Pushes a given <paramref name="info"/> onto the guard stack.
+        /// </summary>
+        /// <param name="info"></param>
+        public void PushGuard(Symbol? info)
+        {
+            GuardStack.Push(info);
+        }
+
+        /// <summary>
+        /// Pops the current guard stack.
+        /// </summary>
+        /// <returns></returns>
+        public Symbol? PopGuard()
+        {
+            return GuardStack.Pop();
+        }
+
+        /// <summary>
+        /// Checks whether a given <paramref name="symbol"/> is not a guard is the guard stack.
+        /// </summary>
+        /// <param name="symbol"></param>
+        /// <returns></returns>
+        public bool SymbolNotGuard(Symbol symbol)
+        {
+            return ScopeStack.All(scope => scope.Guard != symbol);
         }
     }
 

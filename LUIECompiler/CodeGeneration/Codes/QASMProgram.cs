@@ -81,19 +81,18 @@ namespace LUIECompiler.CodeGeneration.Codes
                     Negated = negated,
                 };
 
-                code.Code.Add(new GateApplicationCode()
-                {
-                    Guards =
+                code.Code.Add(new GateApplicationCode(
+                    guards:
                     [
                         guard,
                          .. gate.Guards
                     ],
-                    Gate = gate.Gate,
-                    Parameters =
+                    gate: gate.Gate,
+                    parameters:
                     [
                         .. gate.Parameters
-                    ],
-                });
+                    ]
+                ));
             }
 
             return code;
