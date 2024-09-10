@@ -1,5 +1,4 @@
 using System.Diagnostics;
-using System.Diagnostics.CodeAnalysis;
 using LUIECompiler.CodeGeneration;
 using LUIECompiler.CodeGeneration.Exceptions;
 using LUIECompiler.Common.Symbols;
@@ -128,7 +127,8 @@ namespace LUIECompiler.Common
                 CodeBlock = new CodeBlock()
                 {
                     Parent = CurrentScope.CodeBlock,
-                }
+                },
+                Guard = GuardStack.Count == 0 ? default : GuardStack.Peek(),
             });
         }
 
@@ -140,6 +140,7 @@ namespace LUIECompiler.Common
             ScopeStack.Push(new Scope()
             {
                 CodeBlock = codeBlock,
+                Guard = GuardStack.Count == 0 ? default : GuardStack.Peek(),
             });
         }
 
@@ -201,6 +202,16 @@ namespace LUIECompiler.Common
         public Symbol? PopGuard()
         {
             return GuardStack.Pop();
+        }
+
+        /// <summary>
+        /// Checks whether a given <paramref name="symbol"/> is not a guard is the guard stack.
+        /// </summary>
+        /// <param name="symbol"></param>
+        /// <returns></returns>
+        public bool SymbolNotGuard(Symbol symbol)
+        {
+            return ScopeStack.All(scope => scope.Guard != symbol);
         }
     }
 

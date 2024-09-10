@@ -16,6 +16,11 @@ namespace LUIECompiler.Common
         public required CodeBlock CodeBlock { get; init; }
 
         /// <summary>
+        /// The symbol that guards the execution of the scope.
+        /// </summary>
+        public Symbol? Guard { get; init; }
+
+        /// <summary>
         /// Gets all parameters from the scope.
         /// </summary>
         /// <returns></returns>

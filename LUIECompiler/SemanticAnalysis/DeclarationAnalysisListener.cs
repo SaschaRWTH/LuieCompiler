@@ -68,24 +68,37 @@ namespace LUIECompiler.SemanticAnalysis
             base.ExitStatement(context);
         }
 
-        public override void ExitGateapplication([NotNull] LuieParser.GateapplicationContext context)
+
+        public override void EnterRegister([NotNull] LuieParser.RegisterContext context)
         {
-            List<string> identifiers = context.register().GetIdentifiers().ToList();
-            foreach (string identifier in identifiers)
+            string identifier = context.IDENTIFIER().GetText();
+            CheckDefinedness(identifier, context);
+
+            Symbol? info = Table.GetSymbolInfo(identifier);
+            if (info is null)
             {
-                CheckDefinedness(identifier, context);
+                return;
+            }
+
+            if (context.index is not null)
+            {
+                // Ignore register accesses, can only compare index
+                // of access at generation time.
+                return;
+            }
+
+            if (!Table.SymbolNotGuard(info))
+            {
+                Error.Report(new UseOfGuardError(new ErrorContext(context), identifier));
             }
         }
 
         public override void EnterQifStatement([NotNull] LuieParser.QifStatementContext context)
         {
             string identifier = context.register().GetIdentifier();
-
             Symbol? info = Table.GetSymbolInfo(identifier);
-            if (info is null)
-            {
-                Error.Report(new UndefinedError(new ErrorContext(context.Start), identifier));
-            }
+
+            // Definedness of identifier check in EnterRegister
 
             // Push potentially null guard such that poping stack does not mess up other checks.
             Table.PushGuard(info);
