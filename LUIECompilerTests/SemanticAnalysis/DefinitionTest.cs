@@ -39,6 +39,56 @@ public class DefinitionTest
         h b;
     ";
 
+    public const string UseGuardInBlock =
+    @"  qubit[5] a;
+        qubit c;
+        x c;
+
+        qif c do
+            h a[1];
+            h c;                            // line 7: Error here
+            for i in range(sizeof(a)) do
+                h a[i];
+                x c;                        // line 10: Error here
+            end
+        end
+    ";
+
+    public const string UseGuardInBlockIfStatment =
+    @"  qubit[5] a;
+        qubit c;
+        x c;
+
+        qif c do
+            h a[1];
+            h c;                            // line 7: Error here
+            qif c do                         // line 8: Error here
+                h a[1];
+            end
+        end
+    ";
+
+    public const string UseGuardInBlockCompositeGate =
+    @"  
+        // Swaps the values of two qubits
+        gate swap(a, b) do
+            cx a, b;
+            cx b, a;
+            cx a, b;
+        end
+        
+        qubit a;
+        qubit b;
+        qubit c;
+        x c;
+
+        qif c do
+            swap a, b;
+            swap a, c;  // line 16: Error here
+            swap b, c;  // line 17: Error here
+        end
+    ";
+
     public const string ValidQFTInput =
     @"
         // Swaps the values of two qubits
@@ -181,5 +231,55 @@ public class DefinitionTest
         
         Assert.IsTrue(error.Errors.Any(e => e is UndefinedError && e.ErrorContext.Line == 2));
         Assert.IsTrue(error.Errors.Any(e => e is UndefinedError && e.ErrorContext.Line == 7));
+    }
+
+    [TestMethod]
+    public void UseGuardInBlockTest()
+    {
+        var walker = Utils.GetWalker();
+        var parser = Utils.GetParser(UseGuardInBlock);
+        var analysis = new DeclarationAnalysisListener();
+        walker.Walk(analysis, parser.parse());
+        var error = analysis.Error;
+
+        Assert.IsTrue(error.ContainsCriticalError);
+        Assert.AreEqual(2, error.Errors.Count);
+        
+        Assert.IsTrue(error.Errors.Any(e => e is UseOfGuardError && e.ErrorContext.Line == 7));
+        Assert.IsTrue(error.Errors.Any(e => e is UseOfGuardError && e.ErrorContext.Line == 7));
+    }
+    
+    [TestMethod]
+    public void UseGuardInBlockIfStatmentTest()
+    {
+        var walker = Utils.GetWalker();
+        var parser = Utils.GetParser(UseGuardInBlockIfStatment);
+        var analysis = new DeclarationAnalysisListener();
+        walker.Walk(analysis, parser.parse());
+        var error = analysis.Error;
+
+        Console.WriteLine(error);
+
+        Assert.IsTrue(error.ContainsCriticalError);
+        Assert.AreEqual(2, error.Errors.Count);
+        
+        Assert.IsTrue(error.Errors.Any(e => e is UseOfGuardError && e.ErrorContext.Line == 7));
+        Assert.IsTrue(error.Errors.Any(e => e is UseOfGuardError && e.ErrorContext.Line == 8));
+    }
+    
+    [TestMethod]
+    public void UseGuardInBlockCompositeGateTest()
+    {
+        var walker = Utils.GetWalker();
+        var parser = Utils.GetParser(UseGuardInBlockCompositeGate);
+        var analysis = new DeclarationAnalysisListener();
+        walker.Walk(analysis, parser.parse());
+        var error = analysis.Error;
+
+        Assert.IsTrue(error.ContainsCriticalError);
+        Assert.AreEqual(2, error.Errors.Count);
+        
+        Assert.IsTrue(error.Errors.Any(e => e is UseOfGuardError && e.ErrorContext.Line == 16));
+        Assert.IsTrue(error.Errors.Any(e => e is UseOfGuardError && e.ErrorContext.Line == 17));
     }
 }

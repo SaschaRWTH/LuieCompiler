@@ -34,11 +34,13 @@ public class ScopeTest
 
     public const string InputScopeUseOfOuterScope =
         "qubit a;\n" +
-        "qif a do\n" +
         "qubit b;\n" +
         "qif a do\n" +
-        "qubit a;\n" +
-        "end\n" +
+        "    qubit a;\n" +
+        "    qif b do\n" +
+        "        qubit a;\n" +
+        "        qubit b;\n" +
+        "    end\n" +
         "end";
 
 
