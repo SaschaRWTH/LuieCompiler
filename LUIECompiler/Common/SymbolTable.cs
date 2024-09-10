@@ -1,4 +1,5 @@
 using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using LUIECompiler.CodeGeneration;
 using LUIECompiler.CodeGeneration.Exceptions;
 using LUIECompiler.Common.Symbols;
@@ -66,7 +67,7 @@ namespace LUIECompiler.Common
         /// <summary>
         /// Stack of the registers guarding the if-clauses.
         /// </summary>
-        public Stack<Symbol> GuardStack { get; } = [];
+        public Stack<Symbol?> GuardStack { get; } = [];
 
         /// <summary>
         /// Gets guard of the current if statement.
@@ -75,7 +76,7 @@ namespace LUIECompiler.Common
         {
             get => GuardStack.Peek() ?? throw new InternalException()
             {
-                Reason = "Tried to peek empty guard stack.",
+                Reason = "Tried to peek empty guard stack or dummy guard.",
             };
         }
 
@@ -181,6 +182,25 @@ namespace LUIECompiler.Common
                 parameters.AddRange(scope.GetParameters());
             }
             return parameters;
+        }
+
+        
+        /// <summary>
+        /// Pushes a given <paramref name="info"/> onto the guard stack.
+        /// </summary>
+        /// <param name="info"></param>
+        public void PushGuard(Symbol? info)
+        {
+            GuardStack.Push(info);
+        }
+
+        /// <summary>
+        /// Pops the current guard stack.
+        /// </summary>
+        /// <returns></returns>
+        public Symbol? PopGuard()
+        {
+            return GuardStack.Pop();
         }
     }
 

@@ -80,7 +80,20 @@ namespace LUIECompiler.SemanticAnalysis
         public override void EnterQifStatement([NotNull] LuieParser.QifStatementContext context)
         {
             string identifier = context.register().GetIdentifier();
-            CheckDefinedness(identifier, context);
+
+            Symbol? info = Table.GetSymbolInfo(identifier);
+            if (info is null)
+            {
+                Error.Report(new UndefinedError(new ErrorContext(context.Start), identifier));
+            }
+
+            // Push potentially null guard such that poping stack does not mess up other checks.
+            Table.PushGuard(info);
+        }
+
+        public override void ExitQifStatement([NotNull] LuieParser.QifStatementContext context)
+        {
+            Table.PopGuard();
         }
 
         public override void EnterForstatement([NotNull] LuieParser.ForstatementContext context)

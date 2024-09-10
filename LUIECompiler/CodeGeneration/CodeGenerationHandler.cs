@@ -82,18 +82,18 @@ namespace LUIECompiler.CodeGeneration
         /// Pushes a given <paramref name="info"/> onto the guard stack.
         /// </summary>
         /// <param name="info"></param>
-        public void PushGuard([NotNull] Symbol info)
+        public void PushGuard(Symbol info)
         {
-            Table.GuardStack.Push(info);
+            Table.PushGuard(info);
         }
 
         /// <summary>
         /// Pops the current guard stack.
         /// </summary>
         /// <returns></returns>
-        public Symbol PopGuard()
+        public Symbol? PopGuard()
         {
-            return Table.GuardStack.Pop();
+            return Table.PopGuard();
         }
 
         /// <summary>

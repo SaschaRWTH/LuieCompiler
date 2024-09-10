@@ -1,8 +1,4 @@
-using Antlr4.Runtime;
-using Antlr4.Runtime.Tree;
-using LUIECompiler.Common;
 using LUIECompiler.Common.Errors;
-using LUIECompiler.Common.Symbols;
 using LUIECompiler.SemanticAnalysis;
 
 namespace LUIECompilerTests.SemanticAnalysis;
@@ -32,6 +28,16 @@ public class DefinitionTest
     public const string UndefinedFunctionParameterInput =
         "qubit[5] c;\n" +
         "qubit[sizeof(i)] d;";
+
+    public const string MultipleErrors =
+    @"  qubit[5] c;
+        qif a do
+            qubit c;
+        end
+
+        h c[1];
+        h b;
+    ";
 
     public const string ValidQFTInput =
     @"
@@ -159,5 +165,21 @@ public class DefinitionTest
 
         Assert.IsFalse(error.ContainsCriticalError);
         Assert.IsTrue(error.Errors.Count == 0);
+    }
+
+    [TestMethod]
+    public void MutlitpleErrorsTest()
+    {
+        var walker = Utils.GetWalker();
+        var parser = Utils.GetParser(MultipleErrors);
+        var analysis = new DeclarationAnalysisListener();
+        walker.Walk(analysis, parser.parse());
+        var error = analysis.Error;
+
+        Assert.IsTrue(error.ContainsCriticalError);
+        Assert.IsTrue(error.Errors.Count == 2);
+        
+        Assert.IsTrue(error.Errors.Any(e => e is UndefinedError && e.ErrorContext.Line == 2));
+        Assert.IsTrue(error.Errors.Any(e => e is UndefinedError && e.ErrorContext.Line == 7));
     }
 }
