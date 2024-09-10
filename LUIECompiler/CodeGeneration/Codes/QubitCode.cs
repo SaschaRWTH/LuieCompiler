@@ -1,4 +1,5 @@
 using LUIECompiler.CodeGeneration.Definitions;
+using LUIECompiler.Common.Symbols;
 
 namespace LUIECompiler.CodeGeneration.Codes
 {

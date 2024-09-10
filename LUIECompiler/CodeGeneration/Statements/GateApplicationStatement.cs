@@ -26,12 +26,12 @@ namespace LUIECompiler.CodeGeneration.Statements
         /// <returns></returns>
         public override QASMProgram ToQASM(CodeGenerationContext context)
         {
-            return new(new GateApplicationCode()
-            {
-                Gate = Gate.ToGateCode(context),
-                Guards = [],
-                Parameters = GetParameters(context),
-            });
+            return new(new GateApplicationCode
+            (
+                gate: Gate.ToGateCode(context),
+                guards: [],
+                parameters: GetParameters(context)
+            ));
         }
 
         /// <summary>
