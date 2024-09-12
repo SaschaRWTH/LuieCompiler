@@ -19,6 +19,11 @@ namespace LUIECompiler.SemanticAnalysis
         public readonly SymbolTable Table = new();
 
         /// <summary>
+        /// Saves how often a symbol was used.
+        /// </summary>
+        public readonly Dictionary<Symbol, int> SymbolUsage = [];
+
+        /// <summary>
         /// Error handler of the listener.
         /// </summary>
         public ErrorHandler Error { get; init; } = new();
@@ -36,6 +41,15 @@ namespace LUIECompiler.SemanticAnalysis
         {
             // Technically not needed, just for completeness.
             Table.PopScope();
+        
+            // Check for unused symbols
+            foreach(var (symbol, usage) in SymbolUsage)
+            {
+                if (usage == 0)
+                {
+                    Error.Report(new UsedIdendifierWarning(symbol.ErrorContext, symbol));
+                }
+            }
         }
 
         public override void EnterBlock([NotNull] LuieParser.BlockContext context)
@@ -59,7 +73,7 @@ namespace LUIECompiler.SemanticAnalysis
             else
             {
                 Qubit info = new(identifier, new ErrorContext(context));
-                Table.AddSymbol(info);
+                AddSymbolToTable(info);
             }
         }
 
@@ -124,7 +138,7 @@ namespace LUIECompiler.SemanticAnalysis
             LuieParser.RangeContext range = context.range();
             LoopIterator loop = range.GetRange(identifier);
 
-            Table.AddSymbol(loop);
+            AddSymbolToTable(loop);
         }
 
         public override void ExitFactor([NotNull] LuieParser.FactorContext context)
@@ -135,7 +149,6 @@ namespace LUIECompiler.SemanticAnalysis
             }
 
             CheckDefinedness(identifier, context);
-            base.ExitFactor(context);
         }
 
         public override void ExitFunction([NotNull] LuieParser.FunctionContext context)
@@ -153,7 +166,7 @@ namespace LUIECompiler.SemanticAnalysis
             Table.PushEmtpyScope();
             foreach (Parameter param in context.GetParameters())
             {
-                Table.AddSymbol(param);
+                AddSymbolToTable(param);
             }
         }
 
@@ -167,7 +180,7 @@ namespace LUIECompiler.SemanticAnalysis
                 Parent = null
             };
             CompositeGate gate = new(context.identifier.Text, block, context.GetParameters(), new ErrorContext(context));
-            Table.AddSymbol(gate);
+            AddSymbolToTable(gate);
         }
 
         public override void ExitGate([NotNull] LuieParser.GateContext context)
@@ -197,12 +210,24 @@ namespace LUIECompiler.SemanticAnalysis
         /// <param name="context"></param>
         private void CheckDefinedness(string identifier, ParserRuleContext context)
         {
-            if (Table.IsDefined(identifier))
+            Symbol? info = Table.GetSymbolInfo(identifier);
+            if (info is not null)
             {
+                SymbolUsage[info]++;
                 return;
             }
 
             Error.Report(new UndefinedError(new ErrorContext(context.Start), identifier));
+        }
+
+        /// <summary>
+        /// Adds a symbol to the symbol table and initializes its usage counter.
+        /// </summary>
+        /// <param name="symbol"></param>
+        private void AddSymbolToTable(Symbol symbol)
+        {
+            Table.AddSymbol(symbol);
+            SymbolUsage[symbol] = 0;
         }
     }
 

@@ -4,6 +4,9 @@ namespace LUIECompiler.Common.Errors
 {
     public class UsedIdendifierWarning : CompilationError
     {
+        /// <summary>
+        /// Symbol that was never used.
+        /// </summary>
         public Symbol Symbol { get; }
 
         /// <summary>
