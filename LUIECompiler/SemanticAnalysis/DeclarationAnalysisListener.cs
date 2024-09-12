@@ -45,7 +45,7 @@ namespace LUIECompiler.SemanticAnalysis
             // Check for unused symbols
             foreach(var (symbol, usage) in SymbolUsage)
             {
-                if (usage == 0)
+                if (usage == 0 && symbol.Identifier != "_")
                 {
                     Error.Report(new UnusedSymbolWarning(symbol.ErrorContext, symbol));
                 }
