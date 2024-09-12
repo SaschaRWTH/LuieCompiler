@@ -2,7 +2,7 @@ using LUIECompiler.Common.Symbols;
 
 namespace LUIECompiler.Common.Errors
 {
-    public class UsedIdendifierWarning : CompilationError
+    public class UnusedSymbolWarning : CompilationError
     {
         /// <summary>
         /// Symbol that was never used.
@@ -15,7 +15,7 @@ namespace LUIECompiler.Common.Errors
         /// <param name="context">Context where the range was created.</param>
         /// <param name="start">Start value of the range.</param>
         /// <param name="end">End value of the range.</param>
-        public UsedIdendifierWarning(ErrorContext context, Symbol symbol)
+        public UnusedSymbolWarning(ErrorContext context, Symbol symbol)
         {
             Type = ErrorType.Warning;
             ErrorContext = context;

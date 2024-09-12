@@ -47,7 +47,7 @@ namespace LUIECompiler.SemanticAnalysis
             {
                 if (usage == 0)
                 {
-                    Error.Report(new UsedIdendifierWarning(symbol.ErrorContext, symbol));
+                    Error.Report(new UnusedSymbolWarning(symbol.ErrorContext, symbol));
                 }
             }
         }

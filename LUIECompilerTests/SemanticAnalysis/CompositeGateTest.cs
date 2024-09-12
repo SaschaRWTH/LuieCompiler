@@ -40,7 +40,8 @@ namespace LUIECompilerTests.SemanticAnalysis
             "qubit b;\n" +
             "qubit c;\n" +
             "x c;\n" +
-            "swap b, c;";
+            "swap b, c;\n" +
+            "swap2 b, c;";
 
         public const string WrongUseOfGateIdentifier =
             "gate swap(a, b) do\n" +
@@ -117,7 +118,7 @@ namespace LUIECompilerTests.SemanticAnalysis
             var error = analysis.Error;
 
             Assert.IsTrue(error.ContainsCriticalError);
-
+            Console.WriteLine(error);
             Assert.IsTrue(error.Errors.Count == 1);
             Assert.IsTrue(error.CriticalErrors.Exists(e => e.ErrorContext.Line == 10));
         }

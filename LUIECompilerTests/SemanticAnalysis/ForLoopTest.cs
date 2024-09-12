@@ -45,12 +45,12 @@ public class ForLoopTest
         "qubit[5] i;\n" +
         "qubit[5] c;\n" +
         "for i in 0..4 do\n" +
-        "    skip;\n" +
+        "    h c[i];\n" +
         "end\n"+
         "for j in 0..4 do\n" +
-        "    skip;\n" +
+        "    h c[j];\n" +
         "    for j in 0..3 do\n" +
-        "        skip;\n" +
+        "        h c[j];\n" +
         "    end\n" +
         "end";
 

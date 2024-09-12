@@ -33,6 +33,7 @@ public class DefinitionTest
     @"  qubit[5] c;
         qif a do
             qubit c;
+            h c;
         end
 
         h c[1];
@@ -117,6 +118,47 @@ public class DefinitionTest
         qubit[5] a;
         qft a;
     ";
+
+    public const string UsedGateSymbol =
+    @"
+        // Swaps the values of two qubits
+        gate swap(a, b) do
+            cx a, b;
+            cx b, a;
+            cx a, b;
+        end
+
+        qubit[5] a;
+        h a[0];
+    ";
+
+    public const string UsedRegisterSymbol =
+    @"
+        qubit[5] a;
+        qubit[5] b;
+        h a[0];
+    ";
+    
+    public const string UnusedParameterSymbol =
+    @"
+        // Swaps the values of two qubits
+        gate test(a, b) do
+            h a;
+        end
+
+        qubit[5] a;
+        test a[0], a[1];
+    ";
+    
+    public const string UnusedIteratorSymbol =
+    @"
+        qubit[5] a;
+        
+        for i in range(sizeof(a)) do
+            h a[0];
+        end
+    ";
+
     /// <summary>
     /// Test that already defined identifiers are correctly reported.
     /// </summary>
@@ -230,7 +272,7 @@ public class DefinitionTest
         Assert.IsTrue(error.Errors.Count == 2);
         
         Assert.IsTrue(error.Errors.Any(e => e is UndefinedError && e.ErrorContext.Line == 2));
-        Assert.IsTrue(error.Errors.Any(e => e is UndefinedError && e.ErrorContext.Line == 7));
+        Assert.IsTrue(error.Errors.Any(e => e is UndefinedError && e.ErrorContext.Line == 8));
     }
 
     [TestMethod]
@@ -281,5 +323,65 @@ public class DefinitionTest
         
         Assert.IsTrue(error.Errors.Any(e => e is UseOfGuardError && e.ErrorContext.Line == 16));
         Assert.IsTrue(error.Errors.Any(e => e is UseOfGuardError && e.ErrorContext.Line == 17));
+    }
+    
+    [TestMethod]
+    public void UsedGateSymbolTest()
+    {
+        var walker = Utils.GetWalker();
+        var parser = Utils.GetParser(UsedGateSymbol);
+        var analysis = new DeclarationAnalysisListener();
+        walker.Walk(analysis, parser.parse());
+        var error = analysis.Error;
+
+        Assert.IsFalse(error.ContainsCriticalError);
+        Assert.AreEqual(1, error.Errors.Count);
+        
+        Assert.IsTrue(error.Errors.Any(e => e is UnusedSymbolWarning && e.ErrorContext.Line == 3));
+    }
+    
+    [TestMethod]
+    public void UsedRegisterSymbolTest()
+    {
+        var walker = Utils.GetWalker();
+        var parser = Utils.GetParser(UsedRegisterSymbol);
+        var analysis = new DeclarationAnalysisListener();
+        walker.Walk(analysis, parser.parse());
+        var error = analysis.Error;
+
+        Assert.IsFalse(error.ContainsCriticalError);
+        Assert.AreEqual(1, error.Errors.Count);
+        
+        Assert.IsTrue(error.Errors.Any(e => e is UnusedSymbolWarning && e.ErrorContext.Line == 3));
+    }
+    
+    [TestMethod]
+    public void UnusedParameterSymbolTest()
+    {
+        var walker = Utils.GetWalker();
+        var parser = Utils.GetParser(UnusedParameterSymbol);
+        var analysis = new DeclarationAnalysisListener();
+        walker.Walk(analysis, parser.parse());
+        var error = analysis.Error;
+
+        Assert.IsFalse(error.ContainsCriticalError);
+        Assert.AreEqual(1, error.Errors.Count);
+        
+        Assert.IsTrue(error.Errors.Any(e => e is UnusedSymbolWarning && e.ErrorContext.Line == 3));
+    }
+    
+    [TestMethod]
+    public void UnusedIteratorSymbolTest()
+    {
+        var walker = Utils.GetWalker();
+        var parser = Utils.GetParser(UnusedIteratorSymbol);
+        var analysis = new DeclarationAnalysisListener();
+        walker.Walk(analysis, parser.parse());
+        var error = analysis.Error;
+
+        Assert.IsFalse(error.ContainsCriticalError);
+        Assert.AreEqual(1, error.Errors.Count);
+        
+        Assert.IsTrue(error.Errors.Any(e => e is UnusedSymbolWarning && e.ErrorContext.Line == 4));
     }
 }
