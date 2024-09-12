@@ -158,6 +158,14 @@ public class DefinitionTest
             h a[0];
         end
     ";
+    public const string UseOfThrowAwaySymbol =
+    @"
+        qubit[5] a;
+        
+        for _ in range(sizeof(a)) do
+            h a[0];
+        end
+    ";
 
     /// <summary>
     /// Test that already defined identifiers are correctly reported.
@@ -383,5 +391,18 @@ public class DefinitionTest
         Assert.AreEqual(1, error.Errors.Count);
         
         Assert.IsTrue(error.Errors.Any(e => e is UnusedSymbolWarning && e.ErrorContext.Line == 4));
+    }
+    
+    [TestMethod]
+    public void UseOfThrowAwaySymbolTest()
+    {
+        var walker = Utils.GetWalker();
+        var parser = Utils.GetParser(UseOfThrowAwaySymbol);
+        var analysis = new DeclarationAnalysisListener();
+        walker.Walk(analysis, parser.parse());
+        var error = analysis.Error;
+
+        Assert.IsFalse(error.ContainsCriticalError);
+        Assert.AreEqual(0, error.Errors.Count);
     }
 }
