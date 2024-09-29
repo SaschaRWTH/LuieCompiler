@@ -112,7 +112,46 @@ public class ForLoopTest
         "h id0[3];\n" +
         "h id0[4];\n";
 
+    public const string LoopIteratorInCompositeGate =
+    @"  gate h_all(a) do
+            for i in range(sizeof(a)) do
+                h a[i];
+            end
+        end    
+
+        qubit[5] a;
+        h_all a;
+    ";
+
+    public const string LoopIteratorInCompositeGateTranslation =
+        "qubit[5] id0;\n" +
+        "h id0[0];\n" +
+        "h id0[1];\n" +
+        "h id0[2];\n" +
+        "h id0[3];\n" +
+        "h id0[4];\n";
+
         
+    public const string LoopIteratorInCompositeGateDefinedIdentifier =
+    @"  gate h_all(a) do
+            for i in range(sizeof(a)) do
+                h a[i];
+            end
+        end    
+
+        qubit[5] i;
+        h_all i;
+    ";
+
+    public const string LoopIteratorInCompositeGateDefinedIdentifierTranslation =
+        "qubit[5] id0;\n" +
+        "h id0[0];\n" +
+        "h id0[1];\n" +
+        "h id0[2];\n" +
+        "h id0[3];\n" +
+        "h id0[4];\n";
+
+
 
     /// <summary>
     /// Test the translation of a simple for loop.
@@ -228,5 +267,35 @@ public class ForLoopTest
         Assert.IsNotNull(code);
 
         Assert.AreEqual(RangeFunctionTranslation, code);
+    }
+    
+    
+    [TestMethod]
+    public void LoopIteratorInCompositeGateTest()
+    {
+        var walker = Utils.GetWalker();
+        var parser = Utils.GetParser(LoopIteratorInCompositeGate);
+        var gen = new CodeGenerationListener();
+        walker.Walk(gen, parser.parse());
+        
+        string? code = gen.CodeGen.GenerateCode()?.ToString();
+        Assert.IsNotNull(code);
+
+        Assert.AreEqual(LoopIteratorInCompositeGateTranslation, code);
+    }
+    
+    
+    [TestMethod]
+    public void LoopIteratorInCompositeGateDefinedIdentifierTest()
+    {
+        var walker = Utils.GetWalker();
+        var parser = Utils.GetParser(LoopIteratorInCompositeGateDefinedIdentifier);
+        var gen = new CodeGenerationListener();
+        walker.Walk(gen, parser.parse());
+        
+        string? code = gen.CodeGen.GenerateCode()?.ToString();
+        Assert.IsNotNull(code);
+
+        Assert.AreEqual(LoopIteratorInCompositeGateDefinedIdentifierTranslation, code);
     }
 }
