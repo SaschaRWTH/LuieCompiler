@@ -34,21 +34,13 @@ namespace LUIECompiler.CodeGeneration.Statements
 
             for (Iterator.CurrentValue = start; Iterator.CurrentValue <= end; Iterator.CurrentValue++)
             {
-                if (context.IntegerConstants.Exists(c => c.Identifier == Iterator.Identifier))
-                {
-                    throw new NotImplementedException($"The constant {Iterator.Identifier} is already defined in the current scope.");
-                }
-
                 CodeBlock block = new()
                 {
                     Parent = Body.Parent,
                 };
                 block.AddTranslateables(Body.Translateables);
 
-                // Constant<int> constant = new Constant<int>(Iterator.Identifier, i, ErrorContext);
-
-                program += block.ToQASM(new([.. context.IntegerConstants], context.ParameterMap)
-                // program += block.ToQASM(new([.. context.IntegerConstants, constant], context.ParameterMap)
+                program += block.ToQASM(new(context.ParameterMap)
                 {
                     SymbolTable = context.SymbolTable,
                     CurrentBlock = Body,

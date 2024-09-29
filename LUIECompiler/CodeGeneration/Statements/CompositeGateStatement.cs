@@ -34,7 +34,7 @@ namespace LUIECompiler.CodeGeneration.Statements
                 parameterMap[parameter.Key] = parameter.Value;
             }
 
-            CodeGenerationContext bodyContext = new CodeGenerationContext(context.IntegerConstants, parameterMap)
+            CodeGenerationContext bodyContext = new CodeGenerationContext(parameterMap)
             {
                 CurrentBlock = context.CurrentBlock,
                 SymbolTable = context.SymbolTable,
