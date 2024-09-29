@@ -167,6 +167,21 @@ public class DefinitionTest
         end
     ";
 
+    public const string DefinedIdentifierConst =
+    @"  qubit[5] a; 
+        const a : int = 5;
+
+        h a[0];
+    ";
+
+    public const string OverwritingDefinedIdentifierConst =
+    @"  const a : int = 2;
+        qubit[5] a; 
+        qubit[5] b; 
+
+        x b[a];
+    ";
+
     /// <summary>
     /// Test that already defined identifiers are correctly reported.
     /// </summary>
@@ -404,5 +419,36 @@ public class DefinitionTest
 
         Assert.IsFalse(error.ContainsCriticalError);
         Assert.AreEqual(0, error.Errors.Count);
+    }    
+    [TestMethod]
+    public void DefinedIdentifierConstTest()
+    {
+        var walker = Utils.GetWalker();
+        var parser = Utils.GetParser(DefinedIdentifierConst);
+        var analysis = new DeclarationAnalysisListener();
+        walker.Walk(analysis, parser.parse());
+        var error = analysis.Error;
+
+        Console.WriteLine(error);
+
+        Assert.IsTrue(error.ContainsCriticalError);
+        Assert.AreEqual(1, error.Errors.Count);
+
+        Assert.IsTrue(error.Errors.Any(e => e is RedefineError && e.ErrorContext.Line == 2));
+    }    
+
+    [TestMethod]
+    public void OverwritingDefinedIdentifierConstTest()
+    {
+        var walker = Utils.GetWalker();
+        var parser = Utils.GetParser(OverwritingDefinedIdentifierConst);
+        var analysis = new DeclarationAnalysisListener();
+        walker.Walk(analysis, parser.parse());
+        var error = analysis.Error;
+
+        Assert.IsTrue(error.ContainsCriticalError);
+        Assert.AreEqual(1, error.Errors.Count);
+
+        Assert.IsTrue(error.Errors.Any(e => e is RedefineError && e.ErrorContext.Line == 2));
     }
 }

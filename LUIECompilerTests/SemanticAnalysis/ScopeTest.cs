@@ -103,11 +103,11 @@ public class ScopeTest
         };
         table.PushScope(mainBlock);
         
-        table.PushEmtpyScope();
+        table.PushEmptyScope();
         Qubit firstA = new("A", new ErrorContext());
         table.AddSymbol(firstA);
 
-        table.PushEmtpyScope();
+        table.PushEmptyScope();
         Qubit secondA = new("A", new ErrorContext());
         table.AddSymbol(secondA);
 
