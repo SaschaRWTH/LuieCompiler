@@ -23,26 +23,41 @@ namespace LUIECompiler.CodeGeneration.Statements
             QASMProgram program = new();
             int start = Iterator.Start.Evaluate(context);
             int end = Iterator.End.Evaluate(context);
-            for (int i = start; i <= end; i++)
+
+            // Create temporary scope where the iterator is defined.
+            // Very hacky way to add the iterator to the symbol table.
+            context.SymbolTable.PushScope(new CodeBlock()
+            {
+                Parent = Body,
+            });
+            context.SymbolTable.AddSymbol(Iterator);
+
+            for (Iterator.CurrentValue = start; Iterator.CurrentValue <= end; Iterator.CurrentValue++)
             {
                 if (context.IntegerConstants.Exists(c => c.Identifier == Iterator.Identifier))
                 {
                     throw new NotImplementedException($"The constant {Iterator.Identifier} is already defined in the current scope.");
                 }
 
-                CodeBlock block = new() {
+                CodeBlock block = new()
+                {
                     Parent = Body.Parent,
                 };
                 block.AddTranslateables(Body.Translateables);
 
-                Constant<int> constant = new Constant<int>(Iterator.Identifier, i, ErrorContext);
+                // Constant<int> constant = new Constant<int>(Iterator.Identifier, i, ErrorContext);
 
-                program += block.ToQASM(new([.. context.IntegerConstants, constant], context.ParameterMap)
+                program += block.ToQASM(new([.. context.IntegerConstants], context.ParameterMap)
+                // program += block.ToQASM(new([.. context.IntegerConstants, constant], context.ParameterMap)
                 {
                     SymbolTable = context.SymbolTable,
                     CurrentBlock = Body,
                 });
             }
+
+            // Remove temporary scope.
+            context.SymbolTable.PopScope();
+
             return program;
         }
     }

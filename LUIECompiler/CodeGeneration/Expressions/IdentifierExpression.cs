@@ -1,6 +1,7 @@
 using System.Numerics;
 using LUIECompiler.CodeGeneration.Exceptions;
 using LUIECompiler.Common;
+using LUIECompiler.Common.Symbols;
 
 namespace LUIECompiler.CodeGeneration.Expressions
 {
@@ -28,16 +29,37 @@ namespace LUIECompiler.CodeGeneration.Expressions
 
         public override T Evaluate(CodeGenerationContext context)
         {
-            // Find the constant with the given identifier
-            var constant = context.IntegerConstants.Find(constant => constant.Identifier == Identifier);
-            if (constant == null)
+            Symbol symbol = context.SymbolTable.GetSymbolInfo(Identifier) ?? throw new InternalException()
+            {
+                Reason = $"Symbol with identifier {Identifier} not found.",
+            };
+
+            if (symbol is Constant<T> constant)
+            {
+                return constant.Value;
+            }
+            else if(symbol is LoopIterator loopIterator)
+            {
+                return T.CreateChecked(loopIterator.CurrentValue);
+            }
+            else
             {
                 throw new InternalException()
                 {
-                    Reason = $"Constant with identifier {Identifier} not found.",
+                    Reason = $"Symbol with identifier {Identifier} is not a constant.",
                 };
             }
-            return T.CreateChecked(constant.Value);
+
+            // Find the constant with the given identifier
+            // var constant = context.IntegerConstants.Find(constant => constant.Identifier == Identifier);
+            // if (constant == null)
+            // {
+            //     throw new InternalException()
+            //     {
+            //         Reason = $"Constant with identifier {Identifier} not found.",
+            //     };
+            // }
+            // return T.CreateChecked(constant.Value);
         }
 
         public override string ToString()

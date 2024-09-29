@@ -19,6 +19,11 @@ namespace LUIECompiler.Common.Symbols
         public Expression<int> End { get; init; }
 
         /// <summary>
+        /// The current value of the loop iterator when iterating through the loop.
+        /// </summary>
+        public int CurrentValue { get; set; }
+
+        /// <summary>
         /// Creates a new loop iterator.
         /// </summary>
         /// <param name="identifier">Identifier of the loop iterator.</param>
