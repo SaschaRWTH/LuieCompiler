@@ -14,14 +14,19 @@ block
 
 declaration
  : registerDeclaration
+ | constDeclaration
  ;
 
 registerDeclaration
- : 'qubit' ('[' size=expression ']')? IDENTIFIER ';'
+ : REGISTERKEYWORD ('[' size=expression ']')? IDENTIFIER ';'
+ ;
+
+constDeclaration
+ : CONSTANTKEYWORD identifier=IDENTIFIER '=' exp=expression';'
  ;
 
 gateDeclaration
- : 'gate' identifier=IDENTIFIER '(' param=gateParameter? ')' DO block END
+ : GATEKEYWORD identifier=IDENTIFIER '(' param=gateParameter? ')' DO block END
  ;
 
 gateParameter 
@@ -137,6 +142,13 @@ fragment POWER : 'power';
 fragment MIN : 'min';
 fragment MAX : 'max';
 
+SKIPSTAT        : 'skip';
+
+// Keywords
+GATEKEYWORD : 'gate';
+REGISTERKEYWORD : 'qubit';
+CONSTANTKEYWORD : 'const';
+
 RANGE : 'range';
 
 IF     : 'qif';
@@ -146,7 +158,6 @@ END    : 'end';
 FOR    : 'for';
 IN    : 'in';
 
-SKIPSTAT        : 'skip';
 
 INTEGER 
  : [1-9] [0-9]* | '0'
