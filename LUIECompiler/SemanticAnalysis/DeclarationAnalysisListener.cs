@@ -54,7 +54,7 @@ namespace LUIECompiler.SemanticAnalysis
 
         public override void EnterBlock([NotNull] LuieParser.BlockContext context)
         {
-            Table.PushEmtpyScope();
+            Table.PushEmptyScope();
         }
 
         public override void ExitBlock([NotNull] LuieParser.BlockContext context)
@@ -163,7 +163,7 @@ namespace LUIECompiler.SemanticAnalysis
 
         public override void EnterGateDeclaration([NotNull] LuieParser.GateDeclarationContext context)
         {
-            Table.PushEmtpyScope();
+            Table.PushEmptyScope();
             foreach (Parameter param in context.GetParameters())
             {
                 AddSymbolToTable(param);
@@ -181,6 +181,20 @@ namespace LUIECompiler.SemanticAnalysis
             };
             CompositeGate gate = new(context.identifier.Text, block, context.GetParameters(), new ErrorContext(context));
             AddSymbolToTable(gate);
+        }
+
+        public override void ExitConstDeclaration([NotNull] LuieParser.ConstDeclarationContext context)
+        {
+            string identifier = context.identifier.Text;
+            if (Table.IsDefinedInCurrentScop(identifier))
+            {
+                Error.Report(new RedefineError(new ErrorContext(context.Start), identifier));
+            }
+            else
+            {
+                Symbol info = context.GetConstantSymbol();
+                AddSymbolToTable(info);
+            }
         }
 
         public override void ExitGate([NotNull] LuieParser.GateContext context)

@@ -120,7 +120,7 @@ namespace LUIECompiler.Common
         /// <summary>
         /// Pushes scope with an emtpy code block onto the scope stack.
         /// </summary>
-        public void PushEmtpyScope()
+        public void PushEmptyScope()
         {
             ScopeStack.Push(new Scope()
             {

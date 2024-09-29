@@ -7,6 +7,7 @@ using LUIECompiler.Common;
 using LUIECompiler.Common.Errors;
 using LUIECompiler.CodeGeneration.Exceptions;
 using LUIECompiler.Common.Symbols;
+using System.Numerics;
 
 namespace LUIECompiler.CodeGeneration
 {
@@ -145,6 +146,17 @@ namespace LUIECompiler.CodeGeneration
         }
 
         /// <summary>
+        /// Adds a constant to the symbol table.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="constant"></param>
+        /// <param name="context"></param>
+        public void AddConstant(Symbol constant, ErrorContext context)
+        {
+            AddSymbol(constant, context);
+        }
+
+        /// <summary>
         /// Adds a symbol to the symbol table.
         /// </summary>
         /// <param name="symbol"></param>
@@ -163,7 +175,7 @@ namespace LUIECompiler.CodeGeneration
         }
 
         /// <summary>
-        /// Generates the entier QASM program for the code generation handler.
+        /// Generates the entire QASM program for the code generation handler.
         /// </summary>
         /// <returns></returns>
         public QASMProgram GenerateCode()

@@ -22,7 +22,7 @@ registerDeclaration
  ;
 
 constDeclaration
- : CONSTANTKEYWORD identifier=IDENTIFIER '=' exp=expression';'
+ : CONSTANTKEYWORD identifier=IDENTIFIER ':' type=TYPE '=' exp=expression';'
  ;
 
 gateDeclaration
@@ -143,6 +143,11 @@ fragment MIN : 'min';
 fragment MAX : 'max';
 
 SKIPSTAT        : 'skip';
+
+TYPE : 'int'
+     | 'uint'
+     | 'double'
+     ;
 
 // Keywords
 GATEKEYWORD : 'gate';

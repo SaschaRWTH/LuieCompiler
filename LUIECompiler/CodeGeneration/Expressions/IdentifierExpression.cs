@@ -33,10 +33,23 @@ namespace LUIECompiler.CodeGeneration.Expressions
             {
                 Reason = $"Symbol with identifier {Identifier} not found.",
             };
-
+            
+            // TODO: Check that all possible types are handled
             if (symbol is Constant<T> constant)
             {
-                return constant.Value;
+                return constant.Value.Evaluate(context);
+            }
+            else if (symbol is Constant<int> intConstant)
+            {
+                return T.CreateChecked(intConstant.Value.Evaluate(context));
+            }
+            else if (symbol is Constant<double> doubleConstant)
+            {
+                return T.CreateChecked(doubleConstant.Value.Evaluate(context));
+            }
+            else if (symbol is Constant<uint> uintConstant)
+            {
+                return T.CreateChecked(uintConstant.Value.Evaluate(context));
             }
             else if(symbol is LoopIterator loopIterator)
             {

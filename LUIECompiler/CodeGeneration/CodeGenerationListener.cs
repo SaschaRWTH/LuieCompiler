@@ -198,7 +198,7 @@ namespace LUIECompiler.CodeGeneration
 
         public override void EnterGateDeclaration([NotNull] LuieParser.GateDeclarationContext context)
         {
-            CodeGen.Table.PushEmtpyScope();
+            CodeGen.Table.PushEmptyScope();
             foreach (Parameter param in context.GetParameters())
             {
                 CodeGen.AddParameter(param, new(context));
@@ -220,6 +220,12 @@ namespace LUIECompiler.CodeGeneration
             };
             CompositeGate gate = new(context.identifier.Text, block, parameters, new ErrorContext(context));
             CodeGen.AddCompositeGate(gate, new(context));
+        }
+
+        public override void ExitConstDeclaration([NotNull] LuieParser.ConstDeclarationContext context)
+        {
+            Symbol symbol = context.GetConstantSymbol();
+            CodeGen.AddConstant(symbol, new ErrorContext(context));
         }
 
     }

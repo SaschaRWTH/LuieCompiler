@@ -38,7 +38,7 @@ namespace LUIECompiler.SemanticAnalysis
 
         public override void EnterBlock([NotNull] LuieParser.BlockContext context)
         {
-            Table.PushEmtpyScope();
+            Table.PushEmptyScope();
         }
 
         public override void ExitBlock([NotNull] LuieParser.BlockContext context)
@@ -272,7 +272,7 @@ namespace LUIECompiler.SemanticAnalysis
 
         public override void EnterGateDeclaration([NotNull] LuieParser.GateDeclarationContext context)
         {
-            Table.PushEmtpyScope();
+            Table.PushEmptyScope();
             foreach (Parameter param in context.GetParameters())
             {
                 Table.AddSymbol(param);
