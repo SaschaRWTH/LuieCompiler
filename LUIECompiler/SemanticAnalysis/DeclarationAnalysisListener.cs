@@ -77,6 +77,48 @@ namespace LUIECompiler.SemanticAnalysis
             }
         }
 
+        public override void EnterGateDeclaration([NotNull] LuieParser.GateDeclarationContext context)
+        {
+            Table.PushEmptyScope();
+            foreach (Parameter param in context.GetParameters())
+            {
+                AddSymbolToTable(param);
+            }
+        }
+
+        public override void ExitGateDeclaration([NotNull] LuieParser.GateDeclarationContext context)
+        {
+            Table.PopScope();
+
+            // Create empty block for declaration analysis
+            CodeBlock block = new()
+            {
+                Parent = null
+            };
+            string identifier = context.identifier.Text;
+            if (Table.IsDefinedInCurrentScop(identifier))
+            {
+                Error.Report(new RedefineError(new ErrorContext(context.Start), identifier));
+                return;
+            }
+            CompositeGate gate = new(identifier, block, context.GetParameters(), new ErrorContext(context));
+            AddSymbolToTable(gate);
+        }
+
+        public override void ExitConstDeclaration([NotNull] LuieParser.ConstDeclarationContext context)
+        {
+            string identifier = context.identifier.Text;
+            if (Table.IsDefinedInCurrentScop(identifier))
+            {
+                Error.Report(new RedefineError(new ErrorContext(context.Start), identifier));
+            }
+            else
+            {
+                Symbol info = context.GetConstantSymbol();
+                AddSymbolToTable(info);
+            }
+        }
+
         public override void ExitStatement([NotNull] LuieParser.StatementContext context)
         {
             base.ExitStatement(context);
@@ -159,42 +201,6 @@ namespace LUIECompiler.SemanticAnalysis
             {
                 Error.Report(new UndefinedError(new ErrorContext(context), identifier));
             });
-        }
-
-        public override void EnterGateDeclaration([NotNull] LuieParser.GateDeclarationContext context)
-        {
-            Table.PushEmptyScope();
-            foreach (Parameter param in context.GetParameters())
-            {
-                AddSymbolToTable(param);
-            }
-        }
-
-        public override void ExitGateDeclaration([NotNull] LuieParser.GateDeclarationContext context)
-        {
-            Table.PopScope();
-
-            // Create emtpy block for declaration analysis
-            CodeBlock block = new()
-            {
-                Parent = null
-            };
-            CompositeGate gate = new(context.identifier.Text, block, context.GetParameters(), new ErrorContext(context));
-            AddSymbolToTable(gate);
-        }
-
-        public override void ExitConstDeclaration([NotNull] LuieParser.ConstDeclarationContext context)
-        {
-            string identifier = context.identifier.Text;
-            if (Table.IsDefinedInCurrentScop(identifier))
-            {
-                Error.Report(new RedefineError(new ErrorContext(context.Start), identifier));
-            }
-            else
-            {
-                Symbol info = context.GetConstantSymbol();
-                AddSymbolToTable(info);
-            }
         }
 
         public override void ExitGate([NotNull] LuieParser.GateContext context)

@@ -4,7 +4,7 @@ using LUIECompiler.SemanticAnalysis;
 namespace LUIECompilerTests.SemanticAnalysis;
 
 [TestClass, TestCategory("SemanticAnalysis"), TestCategory("Definitions")]
-public class DefinitionTest
+public class DeclarationTest
 {
     public const string InputSimple =
         "qubit c;\n" +
@@ -180,6 +180,24 @@ public class DefinitionTest
         qubit[5] b; 
 
         x b[a];
+    ";
+
+
+    public const string DeclaringAlreadyDeclaredGate =
+    @"  gate swap(a, b) do
+            cx a, b;
+            cx b, a;
+            cx a, b;
+        end
+
+        gate swap(b, a) do
+            cx a, b;
+            cx b, a;
+            cx a, b;
+        end
+        
+        qubit[5] a;
+        swap a[0], a[1];
     ";
 
     /// <summary>
@@ -450,5 +468,20 @@ public class DefinitionTest
         Assert.AreEqual(1, error.Errors.Count);
 
         Assert.IsTrue(error.Errors.Any(e => e is RedefineError && e.ErrorContext.Line == 2));
+    }
+
+    [TestMethod]
+    public void DeclaringAlreadyDeclaredGateTest()
+    {
+        var walker = Utils.GetWalker();
+        var parser = Utils.GetParser(DeclaringAlreadyDeclaredGate);
+        var analysis = new DeclarationAnalysisListener();
+        walker.Walk(analysis, parser.parse());
+        var error = analysis.Error;
+
+        Assert.IsTrue(error.ContainsCriticalError);
+        Assert.AreEqual(1, error.Errors.Count);
+
+        Assert.IsTrue(error.Errors.Any(e => e is RedefineError && e.ErrorContext.Line == 7));
     }
 }

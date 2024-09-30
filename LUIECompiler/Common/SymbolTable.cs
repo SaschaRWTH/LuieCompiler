@@ -113,7 +113,13 @@ namespace LUIECompiler.Common
         /// <returns></returns>
         public void AddSymbol(Symbol symbolInfo)
         {
-            Debug.Assert(!IsDefinedInCurrentScop(symbolInfo.Identifier));
+            if (IsDefinedInCurrentScop(symbolInfo.Identifier))
+            {
+                throw new InternalException()
+                {
+                    Reason = $"Tried to add a symbol that is already defined. This should have been caught before this point. Identifier = {symbolInfo.Identifier}"
+                };
+            }
             CurrentIdentifierDictionary.Add(symbolInfo.Identifier, symbolInfo);
         }
 
@@ -185,7 +191,7 @@ namespace LUIECompiler.Common
             return parameters;
         }
 
-        
+
         /// <summary>
         /// Pushes a given <paramref name="info"/> onto the guard stack.
         /// </summary>
