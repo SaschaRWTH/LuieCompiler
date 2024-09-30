@@ -66,10 +66,6 @@ forstatement
  : FOR IDENTIFIER IN range DO block END
  ;
 
-parameter
- : register (',' register)*
- ;
-
 register
  : IDENTIFIER
  | IDENTIFIER '[' index=expression ']'

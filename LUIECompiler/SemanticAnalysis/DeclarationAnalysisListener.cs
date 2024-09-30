@@ -119,12 +119,6 @@ namespace LUIECompiler.SemanticAnalysis
             }
         }
 
-        public override void ExitStatement([NotNull] LuieParser.StatementContext context)
-        {
-            base.ExitStatement(context);
-        }
-
-
         public override void EnterRegister([NotNull] LuieParser.RegisterContext context)
         {
             string identifier = context.IDENTIFIER().GetText();
