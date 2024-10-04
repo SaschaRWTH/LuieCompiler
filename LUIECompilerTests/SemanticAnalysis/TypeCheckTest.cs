@@ -144,8 +144,8 @@ public class TypeCheckTest
 
         Assert.IsTrue(error.ContainsCriticalError);
         Assert.AreEqual(2, error.Errors.Count);
-        Assert.IsTrue(error.Errors.Any(e => e is InvalidArguments && e.ErrorContext.Line == 4));
-        Assert.IsTrue(error.Errors.Any(e => e is InvalidArguments && e.ErrorContext.Line == 5));
+        Assert.IsTrue(error.Errors.Any(e => e is InvalidNumberOfArgumentsError && e.ErrorContext.Line == 4));
+        Assert.IsTrue(error.Errors.Any(e => e is InvalidNumberOfArgumentsError && e.ErrorContext.Line == 5));
     }
     
     /// <summary>

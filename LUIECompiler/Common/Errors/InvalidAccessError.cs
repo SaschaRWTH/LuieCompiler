@@ -14,7 +14,7 @@ namespace LUIECompiler.Common.Errors
         public string Identifier { get; init; }
 
         /// <summary>
-        /// Inde that was used to access the register.
+        /// Index that was used to access the register.
         /// </summary>
         public int InvalidIndex { get; init; } 
 

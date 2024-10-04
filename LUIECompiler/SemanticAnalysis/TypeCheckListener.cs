@@ -148,7 +148,7 @@ namespace LUIECompiler.SemanticAnalysis
             if (gate.NumberOfArguments != registers.Count)
             {
                 Compiler.LogError($"The number of arguments are invalid for the used gate.");
-                Error.Report(new InvalidArguments(new ErrorContext(context), gate, registers.Count));
+                Error.Report(new InvalidNumberOfArgumentsError(new ErrorContext(context), gate, registers.Count));
             }
 
         }

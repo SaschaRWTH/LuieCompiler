@@ -55,7 +55,7 @@ namespace LUIECompiler.CodeGeneration
             {
                 throw new CodeGenerationException()
                 {
-                    Error = new InvalidArguments(errorContext, gate, parameters.Count),
+                    Error = new InvalidNumberOfArgumentsError(errorContext, gate, parameters.Count),
                 };
             }
 
