@@ -149,7 +149,48 @@ public class ForLoopTest
         "h id0[1];\n" +
         "h id0[2];\n" +
         "h id0[3];\n" +
+        "h id0[4];\n";       
+
+    public const string RangeStartEndExpression =
+    @"  gate h_all(a) do
+            for i in range(0, sizeof(a) - 1) do
+                h a[i];
+            end
+        end    
+
+        qubit[5] i;
+        h_all i;
+    ";
+
+    public const string RangeStartEndExpressionTranslation =
+        "qubit[5] id0;\n" +
+        "h id0[0];\n" +
+        "h id0[1];\n" +
+        "h id0[2];\n" +
+        "h id0[3];\n" +
         "h id0[4];\n";
+
+    public const string RangeStartEndExpressionComplex =
+    @"  gate complex(a) do
+            for i in range((20 + 5) - 5 * 5, (sizeof(a) - 2 * sizeof(a) + 4/2 * sizeof(a)) - 1) do
+                h a[i];
+            end
+        end    
+
+        qubit[8] i;
+        complex i;
+    ";
+
+    public const string RangeStartEndExpressionComplexTranslation =
+        "qubit[8] id0;\n" +
+        "h id0[0];\n" +
+        "h id0[1];\n" +
+        "h id0[2];\n" +
+        "h id0[3];\n" +
+        "h id0[4];\n" +
+        "h id0[5];\n" +
+        "h id0[6];\n" +
+        "h id0[7];\n";
 
 
 
@@ -297,5 +338,31 @@ public class ForLoopTest
         Assert.IsNotNull(code);
 
         Assert.AreEqual(LoopIteratorInCompositeGateDefinedIdentifierTranslation, code);
+    }
+    [TestMethod]
+    public void RangeStartEndExpressionTest()
+    {
+        var walker = Utils.GetWalker();
+        var parser = Utils.GetParser(RangeStartEndExpression);
+        var gen = new CodeGenerationListener();
+        walker.Walk(gen, parser.parse());
+        
+        string? code = gen.CodeGen.GenerateCode()?.ToString();
+        Assert.IsNotNull(code);
+
+        Assert.AreEqual(RangeStartEndExpressionTranslation, code);
+    }
+    [TestMethod]
+    public void RangeStartEndExpressionComplexTest()
+    {
+        var walker = Utils.GetWalker();
+        var parser = Utils.GetParser(RangeStartEndExpressionComplex);
+        var gen = new CodeGenerationListener();
+        walker.Walk(gen, parser.parse());
+        
+        string? code = gen.CodeGen.GenerateCode()?.ToString();
+        Assert.IsNotNull(code);
+
+        Assert.AreEqual(RangeStartEndExpressionComplexTranslation, code);
     }
 }
