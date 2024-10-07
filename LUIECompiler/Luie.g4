@@ -74,6 +74,7 @@ register
 range 
  : start=INTEGER '..' end=INTEGER
  | RANGE '(' length=expression ')'
+ | RANGE '(' startIndex=expression ',' endIndex=expression ')'
  ;
 
 expression

@@ -48,6 +48,15 @@ namespace LUIECompiler.Common.Extensions
                 return new(identifier, startExpression, endExpression, new(context));
             }
 
+            var startIndex = context.startIndex;
+            var endIndex = context.endIndex;
+            if(startIndex != null && endIndex != null)
+            {
+                Expression<int> startExpression = startIndex.GetExpression<int>();
+                Expression<int> endExpression = endIndex.GetExpression<int>();
+                return new(identifier, startExpression, endExpression, new(context));
+            }
+
             throw new InternalException()
             {
                 Reason = "Failed to parse the range of the for statement.",

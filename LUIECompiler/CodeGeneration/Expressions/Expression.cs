@@ -5,7 +5,7 @@ using LUIECompiler.Common.Symbols;
 namespace LUIECompiler.CodeGeneration.Expressions
 {
     /// <summary>
-    /// Represents an abtract expression.
+    /// Represents an abstract expression.
     /// </summary>
     /// <typeparam name="T">Type of the result of the expression</typeparam>
     public abstract class Expression<T> where T : INumber<T>
