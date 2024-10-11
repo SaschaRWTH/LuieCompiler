@@ -12,6 +12,11 @@ namespace LUIECompiler.CodeGeneration.Definitions
         /// </summary>
         public string Identifier { get; }
 
+        public UniqueIdentifier(string identifier)
+        {
+            Identifier = identifier;
+        }
+
         public UniqueIdentifier(SymbolTable table)
         {
             Identifier = table.UniqueIdentifier;

@@ -1,4 +1,5 @@
 
+using LUIECompiler.CodeGeneration.Definitions;
 using LUIECompiler.Optimization;
 
 namespace LUIECompiler.CodeGeneration.Codes
@@ -10,8 +11,10 @@ namespace LUIECompiler.CodeGeneration.Codes
         /// </summary>
         public List<Code> Code { get; set; } = [];
 
+        /// <summary>
+        /// Header of the QASM program.
+        /// </summary>
         public const string QASMHeader = "OpenQASM 3.0;\ninclude \"stdgates.inc\";\n";
-        public const string QASMTail = "measure_all;";
 
         /// <summary>
         /// Creates an empty instance of <see cref="QASMProgram"/>.
@@ -111,10 +114,47 @@ namespace LUIECompiler.CodeGeneration.Codes
             return code;
         }
 
-        public string PrintProgram(){
-            return QASMHeader + ToString() + QASMTail;
+        /// <summary>
+        /// Prints the program in QASM format.
+        /// </summary>
+        /// <returns></returns>
+        public string PrintProgram()
+        {
+            QASMProgram copy = ShallowCopy();
+            copy.AddMeasurements();
+
+            return QASMHeader + copy.ToString();
         }
 
+        /// <summary>
+        /// Adds measurements to the program.
+        /// </summary>
+        public void AddMeasurements()
+        {
+            foreach (QubitDeclarationCode target in Code.OfType<QubitDeclarationCode>())
+            {
+                UniqueIdentifier storageId = new($"{target.Identifier.Identifier}_measurement");
+                BitDeclarationCode storage = new BitDeclarationCode()
+                {
+                    Identifier = storageId,
+                    Size = target.Size,
+                };
+
+                MeasurementCode measurement = new MeasurementCode()
+                {
+                    Target = target.Identifier,
+                    Storage = storage.Identifier,
+                };
+
+                Code.Add(storage);
+                Code.Add(measurement);
+            }
+        }
+
+        /// <summary>
+        /// Creates a shallow copy of the program.
+        /// </summary>
+        /// <returns></returns>
         public QASMProgram ShallowCopy()
         {
             return new()
