@@ -66,7 +66,7 @@ namespace LUIECompiler.SemanticAnalysis
         {
             ITerminalNode id = context.IDENTIFIER();
             string identifier = id.GetText();
-            if (Table.IsDefinedInCurrentScop(identifier))
+            if (Table.IsDefined(identifier))
             {
                 Error.Report(new RedefineError(new ErrorContext(context.Start), identifier));
             }
@@ -96,7 +96,7 @@ namespace LUIECompiler.SemanticAnalysis
                 Parent = null
             };
             string identifier = context.identifier.Text;
-            if (Table.IsDefinedInCurrentScop(identifier))
+            if (Table.IsDefined(identifier))
             {
                 Error.Report(new RedefineError(new ErrorContext(context.Start), identifier));
                 return;
@@ -108,7 +108,7 @@ namespace LUIECompiler.SemanticAnalysis
         public override void ExitConstDeclaration([NotNull] LuieParser.ConstDeclarationContext context)
         {
             string identifier = context.identifier.Text;
-            if (Table.IsDefinedInCurrentScop(identifier))
+            if (Table.IsDefined(identifier))
             {
                 Error.Report(new RedefineError(new ErrorContext(context.Start), identifier));
             }

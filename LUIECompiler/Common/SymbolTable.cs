@@ -97,23 +97,13 @@ namespace LUIECompiler.Common
         }
 
         /// <summary>
-        /// Checks whether a given <paramref name="identifier"/> is defined in the current scope.
-        /// </summary>
-        /// <param name="identifier"></param>
-        /// <returns></returns>
-        public bool IsDefinedInCurrentScop(string identifier)
-        {
-            return CurrentIdentifierDictionary.ContainsKey(identifier);
-        }
-
-        /// <summary>
         /// Adds a symbol to the table and return a unique identifier for it.
         /// </summary>
         /// <param name="symbolInfo"></param>
         /// <returns></returns>
         public void AddSymbol(Symbol symbolInfo)
         {
-            if (IsDefinedInCurrentScop(symbolInfo.Identifier))
+            if (IsDefined(symbolInfo.Identifier))
             {
                 throw new InternalException()
                 {

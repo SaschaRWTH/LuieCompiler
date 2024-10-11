@@ -164,7 +164,7 @@ namespace LUIECompiler.CodeGeneration
         /// <exception cref="CodeGenerationException"></exception>
         protected void AddSymbol(Symbol symbol, ErrorContext context)
         {
-            if (Table.IsDefinedInCurrentScop(symbol.Identifier))
+            if (Table.IsDefined(symbol.Identifier))
             {
                 throw new CodeGenerationException()
                 {
