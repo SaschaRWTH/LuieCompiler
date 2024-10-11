@@ -10,7 +10,7 @@ namespace LUIECompiler.CodeGeneration.Definitions
         /// <summary>
         /// The unique identifier.
         /// </summary>
-        public string Identifier { get; init; }
+        public string Identifier { get; }
 
         public UniqueIdentifier(SymbolTable table)
         {
