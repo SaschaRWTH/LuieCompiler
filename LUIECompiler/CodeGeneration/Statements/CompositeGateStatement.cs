@@ -1,4 +1,5 @@
 using LUIECompiler.CodeGeneration.Codes;
+using LUIECompiler.CodeGeneration.Expressions;
 using LUIECompiler.Common.Symbols;
 
 namespace LUIECompiler.CodeGeneration.Statements
@@ -25,19 +26,35 @@ namespace LUIECompiler.CodeGeneration.Statements
         public override QASMProgram ToQASM(CodeGenerationContext context)
         {
             Dictionary<Parameter, Symbol> parameterMap = [];
-            foreach(var parameter in context.ParameterMap)
+            foreach (var parameter in context.ParameterMap)
             {
-                parameterMap[parameter.Key] = parameter.Value;
+                // The expressions need to be evaluated because some symbols may not be propagated (e.g. iterators).
+                Symbol symbol = parameter.Value;
+                if (symbol is ParameterAccess access)
+                {
+                    symbol = new ParameterAccess(access.Parameter, new ConstantExpression<int>(){
+                        Value = access.IndexExpression.Evaluate(context),
+                    }, access.ErrorContext);
+                }
+                parameterMap[parameter.Key] = symbol;
             }
             foreach (var parameter in Parameters)
             {
-                parameterMap[parameter.Key] = parameter.Value;
+                Symbol symbol = parameter.Value;
+                if (symbol is ParameterAccess access)
+                {
+                    symbol = new ParameterAccess(access.Parameter, new ConstantExpression<int>(){
+                        Value = access.IndexExpression.Evaluate(context),
+                    }, access.ErrorContext);
+                }
+                parameterMap[parameter.Key] = symbol;
             }
 
             CodeGenerationContext bodyContext = new CodeGenerationContext(parameterMap)
             {
                 CurrentBlock = context.CurrentBlock,
-                SymbolTable = context.SymbolTable,
+                // Propagate an empty symbol table, otherwise can access symbols NOT in scope of gate declaration.
+                SymbolTable = new(),
             };
 
             return Gate.Body.ToQASM(bodyContext);

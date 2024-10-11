@@ -7,17 +7,17 @@ namespace LUIECompilerTests.CodeGeneration;
 public class ScopeTest
 {
     public const string ScopeInput =
-            "qubit c;\n" +
-            "qubit a;\n" +
-            "x a;\n" +
-            "qif a do\n" +
-            "qubit a;\n" +
-            "qubit t;" +
-            "x c;\n" +
-            "h c;\n" +
-            "h t;\n" +
-            "h a;\n" +
-            "end";
+        "qubit c;\n" +
+        "qubit a;\n" +
+        "x a;\n" +
+        "qif a do\n" +
+        "   qubit b;\n" +
+        "   qubit t;" +
+        "   x c;\n" +
+        "   h c;\n" +
+        "   h t;\n" +
+        "   h b;\n" +
+        "end";
 
     /// <summary>
     /// Beware: with changes to the translation code, the translations could change, while still being correct!
@@ -38,8 +38,8 @@ public class ScopeTest
         "qubit[5] d;\n" +
         "qif c[0] do\n" +
         "    h c[1];\n" +
-        "    qubit[2] c;\n" +
-        "    h c[0];\n" +
+        "    qubit[2] e;\n" +
+        "    h e[0];\n" +
         "end";
 
     /// <summary>
@@ -86,35 +86,5 @@ public class ScopeTest
         Assert.IsNotNull(code);
 
         Assert.AreEqual(ChangeUsedInScopeInputTranslation, code);
-    }    
-
-    /// <summary>
-    /// Tests if the scope is correctly handled.
-    /// </summary>
-    [TestMethod]
-    public void ScopeCorrectInfoTest()
-    {
-        CodeGenerationHandler handler = new();
-
-        handler.PushMainCodeBlock();
-        Qubit firstA = new Qubit("A", new(1, 1));
-        handler.AddRegister(firstA, new(1, 1));
-
-        handler.PushScope();
-        Qubit secondA = new Qubit("A", new(2, 1));
-        handler.AddRegister(secondA, new(2, 1));
-
-        Qubit? secondScopeA = handler.GetSymbolInfo("A", new(3, 1)) as Qubit;
-        Assert.IsNotNull(secondScopeA);
-        Assert.AreNotEqual(firstA, secondScopeA);
-        Assert.AreEqual(secondA, secondScopeA);
-
-        handler.PopCodeBlock();
-        Qubit? firstScopeA = handler.GetSymbolInfo("A", new(4, 1)) as Qubit;
-        Assert.IsNotNull(secondScopeA);
-        Assert.AreNotEqual(secondA, firstScopeA);
-        Assert.AreEqual(firstA, firstScopeA);
-    }
-
-    
+    }        
 }

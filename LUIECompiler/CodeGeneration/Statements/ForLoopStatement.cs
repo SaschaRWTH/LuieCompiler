@@ -30,7 +30,13 @@ namespace LUIECompiler.CodeGeneration.Statements
             {
                 Parent = Body,
             });
-            context.SymbolTable.AddSymbol(Iterator);
+
+            // Add symbol only if it is not already defined.
+            // e.g. it is not defined for a for loop in a composite gate.
+            if (!context.SymbolTable.IsDefined(Iterator.Identifier))
+            {
+                context.SymbolTable.AddSymbol(Iterator);
+            }
 
             for (Iterator.CurrentValue = start; Iterator.CurrentValue <= end; Iterator.CurrentValue++)
             {

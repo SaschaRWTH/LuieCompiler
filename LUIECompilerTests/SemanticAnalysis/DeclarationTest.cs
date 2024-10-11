@@ -310,7 +310,7 @@ public class DeclarationTest
         var error = analysis.Error;
 
         Assert.IsTrue(error.ContainsCriticalError);
-        Assert.IsTrue(error.Errors.Count == 2);
+        Assert.AreEqual(3, error.Errors.Count);
         
         Assert.IsTrue(error.Errors.Any(e => e is UndefinedError && e.ErrorContext.Line == 2));
         Assert.IsTrue(error.Errors.Any(e => e is UndefinedError && e.ErrorContext.Line == 8));

@@ -11,15 +11,15 @@ public class TypeCheckTest
         "qubit b;\n" +
         "x b;\n" +
         "qif c[1] do\n" +
-        "qubit b;\n" +
-        "qubit c;" +
-        "qubit t;" +
-        "qif c do\n" +
-        "x c;\n" +
-        "end\n" +
-        "h c;\n" +
-        "h t;\n" +
-        "h b;\n" +
+        "   qubit d;\n" +
+        "   qubit e;" +
+        "   qubit t;" +
+        "   qif d do\n" +
+        "       x d;\n" +
+        "   end\n" +
+        "   h d;\n" +
+        "   h t;\n" +
+        "   h e;\n" +
         "end";
 
     public const string InputIncorrect =
@@ -27,14 +27,14 @@ public class TypeCheckTest
         "qubit b;\n" +
         "x b;\n" +
         "qif c do\n" +
-        "qubit b;\n" +
-        "qubit[2] t;\n" +
-        "qif t do\n" +
-        "x i;\n" +
-        "end\n" +
-        "h c;\n" +
-        "h t;\n" +
-        "h b;\n" +
+        "   qubit b;\n" +
+        "   qubit[2] t;\n" +
+        "   qif t do\n" +
+        "       x i;\n" +
+        "   end\n" +
+        "   h c;\n" +
+        "   h t;\n" +
+        "   h b;\n" +
         "end";
 
     public const string InvalidArguments =

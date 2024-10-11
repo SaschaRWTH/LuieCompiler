@@ -28,9 +28,9 @@ public class RegisterTest
         "qubit[3] a;\n" +
         "x c[1];\n" +
         "qif c[1] do\n" +
-        "    qubit[3] a;\n" +
+        "    qubit[3] b;\n" +
         "    x c[0];\n" +
-        "    h a[2];\n" +
+        "    h b[2];\n" +
         "end";
 
     /// <summary>

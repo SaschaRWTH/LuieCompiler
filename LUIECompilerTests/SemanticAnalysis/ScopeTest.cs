@@ -12,13 +12,13 @@ namespace LUIECompilerTests.SemanticAnalysis;
 public class ScopeTest
 {
 
-    public const string InputScopeCorrect =
+    public const string RedefineError =
         "qubit a;\n" +
         "qif a do\n" +
-        "qubit a;\n" +
-        "qif a do\n" +
-        "qubit a;\n" +
-        "end\n" +
+        "   qubit a;\n" +
+        "   qif a do\n" +
+        "       qubit a;\n" +
+        "   end\n" +
         "end";
 
     public const string InputScopeIncorrect =
@@ -32,7 +32,7 @@ public class ScopeTest
         "end";
 
 
-    public const string InputScopeUseOfOuterScope =
+    public const string RedefineInInnerScope =
         "qubit a;\n" +
         "qubit b;\n" +
         "qif a do\n" +
@@ -51,12 +51,16 @@ public class ScopeTest
     public void ScopeCorrectTest()
     {
         var walker = Utils.GetWalker();
-        var parser = Utils.GetParser(InputScopeCorrect);
+        var parser = Utils.GetParser(RedefineError);
         var analysis = new DeclarationAnalysisListener();
         walker.Walk(analysis, parser.parse());
         var error = analysis.Error;
 
-        Assert.IsTrue(!error.ContainsCriticalError);
+        Assert.IsTrue(error.ContainsCriticalError);
+        Assert.AreEqual(3, error.Errors.Count);
+
+        Assert.AreEqual(2, error.Errors.Count(e => e is RedefineError));
+        Assert.AreEqual(1, error.Errors.Count(e => e is UseOfGuardError));
     }
 
     /// <summary>
@@ -82,44 +86,12 @@ public class ScopeTest
     public void ScopeUseOfOuterScopeTest()
     {
         var walker = Utils.GetWalker();
-        var parser = Utils.GetParser(InputScopeUseOfOuterScope);
+        var parser = Utils.GetParser(RedefineInInnerScope);
         var analysis = new DeclarationAnalysisListener();
         walker.Walk(analysis, parser.parse());
         var error = analysis.Error;
 
-        Assert.IsTrue(!error.ContainsCriticalError);
-    }
-
-    /// <summary>
-    /// Tests whether the correct symbol is returned when using the same identifier in different scopes.
-    /// </summary>
-    [TestMethod]
-    public void CorrectInfoTest()
-    {
-        SymbolTable table = new();
-        CodeBlock mainBlock = new()
-        {
-            Parent = null
-        };
-        table.PushScope(mainBlock);
-        
-        table.PushEmptyScope();
-        Qubit firstA = new("A", new ErrorContext());
-        table.AddSymbol(firstA);
-
-        table.PushEmptyScope();
-        Qubit secondA = new("A", new ErrorContext());
-        table.AddSymbol(secondA);
-
-        Qubit? secondScopeA = table.GetSymbolInfo("A") as Qubit;
-        Assert.IsNotNull(secondScopeA);
-        Assert.AreNotEqual(firstA, secondScopeA);
-        Assert.AreEqual(secondA, secondScopeA);
-
-        table.PopScope();
-        Qubit? firstScopeA = table.GetSymbolInfo("A") as Qubit;
-        Assert.IsNotNull(secondScopeA);
-        Assert.AreNotEqual(secondA, firstScopeA);
-        Assert.AreEqual(firstA, firstScopeA);
+        Assert.IsTrue(error.ContainsCriticalError);
+        Assert.AreEqual(3, error.Errors.Count);
     }
 }

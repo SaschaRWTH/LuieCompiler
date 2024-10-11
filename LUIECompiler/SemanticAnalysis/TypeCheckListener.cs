@@ -49,7 +49,10 @@ namespace LUIECompiler.SemanticAnalysis
         public override void ExitRegisterDeclaration([NotNull] LuieParser.RegisterDeclarationContext context)
         {
             Register reg = context.GetRegister();
-            Table.AddSymbol(reg);
+            if (!Table.IsDefined(reg.Identifier))
+            {
+                Table.AddSymbol(reg);
+            }
         }
 
         public override void ExitRegister([NotNull] LuieParser.RegisterContext context)
