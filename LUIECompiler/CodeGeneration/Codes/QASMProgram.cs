@@ -14,7 +14,7 @@ namespace LUIECompiler.CodeGeneration.Codes
         /// <summary>
         /// Header of the QASM program.
         /// </summary>
-        public const string QASMHeader = "OpenQASM 3.0;\ninclude \"stdgates.inc\";\n";
+        public const string QASMHeader = "OPENQASM 3.0;\ninclude \"stdgates.inc\";\n";
 
         /// <summary>
         /// Creates an empty instance of <see cref="QASMProgram"/>.
@@ -131,7 +131,8 @@ namespace LUIECompiler.CodeGeneration.Codes
         /// </summary>
         public void AddMeasurements()
         {
-            foreach (QubitDeclarationCode target in Code.OfType<QubitDeclarationCode>())
+            IEnumerable<QubitDeclarationCode> declarations = [.. Code.OfType<QubitDeclarationCode>()];
+            foreach (QubitDeclarationCode target in declarations)
             {
                 UniqueIdentifier storageId = new($"{target.Identifier.Identifier}_measurement");
                 BitDeclarationCode storage = new BitDeclarationCode()

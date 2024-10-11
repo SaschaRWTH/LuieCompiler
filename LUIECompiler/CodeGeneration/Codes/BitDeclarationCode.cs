@@ -12,10 +12,10 @@ namespace LUIECompiler.CodeGeneration.Codes
         {
             if (Size == 1)
             {
-                return $"qubit {Identifier.Identifier};";
+                return $"bit {Identifier.Identifier};";
             }
 
-            return $"qubit[{Size}] {Identifier.Identifier};";
+            return $"bit[{Size}] {Identifier.Identifier};";
         }
 
         
