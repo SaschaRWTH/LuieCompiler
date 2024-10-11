@@ -26,7 +26,7 @@ namespace LUIECompiler.CLI
 
        public static void WriteOutputCode(CompilerData data, QASMProgram program)
        {
-           File.WriteAllText(data.OutputPath, program.ToString());
+           File.WriteAllText(data.OutputPath, program.PrintProgram());
        }
     }
 }

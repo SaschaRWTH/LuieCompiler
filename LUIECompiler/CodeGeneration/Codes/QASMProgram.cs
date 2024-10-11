@@ -10,6 +10,9 @@ namespace LUIECompiler.CodeGeneration.Codes
         /// </summary>
         public List<Code> Code { get; set; } = [];
 
+        public const string QASMHeader = "OpenQASM 3.0;\ninclude \"stdgates.inc\";\n";
+        public const string QASMTail = "measure_all;";
+
         /// <summary>
         /// Creates an empty instance of <see cref="QASMProgram"/>.
         /// </summary>
@@ -106,6 +109,10 @@ namespace LUIECompiler.CodeGeneration.Codes
                 code += $"{line.ToCode()}\n";
             }
             return code;
+        }
+
+        public string PrintProgram(){
+            return QASMHeader + ToString() + QASMTail;
         }
 
         public QASMProgram ShallowCopy()
