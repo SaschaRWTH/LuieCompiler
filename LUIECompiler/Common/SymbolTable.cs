@@ -26,7 +26,7 @@ namespace LUIECompiler.Common
         }
 
         /// <summary>
-        /// Stack of scopes mapping an identifier to the corrisponding <see cref="Symbol"/>. 
+        /// Stack of scopes mapping an identifier to the corresponding <see cref="Symbol"/>. 
         /// </summary>
         public Stack<Scope> ScopeStack { get; init; } = new();
 
@@ -80,7 +80,7 @@ namespace LUIECompiler.Common
         }
 
         /// <summary>
-        /// Checks whether a given <paramref name="identifier"/> is definined.
+        /// Checks whether a given <paramref name="identifier"/> is defined.
         /// </summary>
         /// <param name="identifier"></param>
         /// <returns></returns>
@@ -97,7 +97,7 @@ namespace LUIECompiler.Common
         }
 
         /// <summary>
-        /// Checks whether a given <paramref name="identifier"/> is definined in the current scope.
+        /// Checks whether a given <paramref name="identifier"/> is defined in the current scope.
         /// </summary>
         /// <param name="identifier"></param>
         /// <returns></returns>
@@ -124,7 +124,7 @@ namespace LUIECompiler.Common
         }
 
         /// <summary>
-        /// Pushes scope with an emtpy code block onto the scope stack.
+        /// Pushes scope with an empty code block onto the scope stack.
         /// </summary>
         public void PushEmptyScope()
         {
