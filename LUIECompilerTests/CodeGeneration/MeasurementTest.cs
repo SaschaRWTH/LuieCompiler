@@ -56,19 +56,19 @@ public class MeasurementTest
     public const string SimpleRegisterInputTranslation =
         "OPENQASM 3.0;\n" +
         "include \"stdgates.inc\";\n" +
-        "qubit id0;\n" +
-        "qubit[4] id1;\n" +
-        "h id1[0];\n" +
-        "h id1[1];\n" +
-        "h id1[2];\n" +
-        "h id1[3];\n" +
-        "qubit id2;\n" +
+        "qubit[4] id0;\n" +
+        "qubit id1;\n" +
+        "h id0[0];\n" +
+        "h id0[1];\n" +
+        "h id0[2];\n" +
+        "h id0[3];\n" +
+        "qubit[3] id2;\n" +
         "ctrl(1) @ h id1, id2[0];\n" +
         "ctrl(1) @ h id1, id2[1];\n" +
         "ctrl(1) @ h id1, id2[2];\n" +
-        "bit id0_measurement;\n" +
+        "bit[4] id0_measurement;\n" +
         "measure id0 -> id0_measurement;\n" +
-        "bit[4] id1_measurement;\n" +
+        "bit id1_measurement;\n" +
         "measure id1 -> id1_measurement;\n" +
         "bit[3] id2_measurement;\n" +
         "measure id2 -> id2_measurement;\n";
@@ -89,7 +89,7 @@ public class MeasurementTest
         string? code = codegen.CodeGen.GenerateCode()?.PrintProgram();
         Assert.IsNotNull(code);
 
-        Assert.AreEqual(code, SimpleQubitInputTranslation);
+        Assert.AreEqual(SimpleQubitInputTranslation, code);
     }
             
     /// <summary>
@@ -107,6 +107,6 @@ public class MeasurementTest
         string? code = codegen.CodeGen.GenerateCode()?.PrintProgram();
         Assert.IsNotNull(code);
 
-        Assert.AreEqual(code, SimpleRegisterInputTranslation);
+        Assert.AreEqual(SimpleRegisterInputTranslation, code);
     }
 }

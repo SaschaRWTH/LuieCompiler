@@ -42,14 +42,17 @@ namespace LUIECompiler.CodeGeneration.Statements
             {
                 CodeBlock block = new()
                 {
-                    Parent = Body.Parent,
+                    Parent = context.CurrentBlock,
+                    Translateables = Body.Translateables,
+                    // Dont pass on the identifier map, causes tests to fail.
+                    // IdentifierMap = Body.IdentifierMap,
                 };
-                block.AddTranslateables(Body.Translateables);
+                // block.AddTranslateables(Body.Translateables);
 
                 program += block.ToQASM(new(context.ParameterMap)
                 {
                     SymbolTable = context.SymbolTable,
-                    CurrentBlock = Body,
+                    CurrentBlock = block,
                 });
             }
 

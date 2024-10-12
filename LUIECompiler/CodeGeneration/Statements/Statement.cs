@@ -31,14 +31,14 @@ namespace LUIECompiler.CodeGeneration.Statements
         /// <param name="register"></param>
         /// <returns></returns>
         /// <exception cref="CodeGenerationException"></exception>
-        protected Definition GetDefinition([NotNull] Register register)
+        protected Definition GetDefinition([NotNull] Register register, CodeGenerationContext context)
         {
             if (register is RegisterAccess access)
             {
                 register = access.Register;
             }
 
-            Definition definition = ParentBlock.GetDefinition(register);
+            Definition definition = context.CurrentBlock.GetDefinition(register);
             
             return definition;
         }
@@ -67,7 +67,7 @@ namespace LUIECompiler.CodeGeneration.Statements
                 };
             }
 
-            RegisterDefinition definition = GetDefinition(qubit) as RegisterDefinition ??
+            RegisterDefinition definition = GetDefinition(qubit, context) as RegisterDefinition ??
                 throw new InternalException()
                 {
                     Reason = "Guard is not a register definition. This should have been caught by the semantic analysis and type checking while generating."
