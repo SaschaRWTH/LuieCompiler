@@ -34,7 +34,7 @@ namespace LUIECompiler.CodeGeneration.Definitions
                 };
             }
 
-            return new(new DefinitionCode()
+            return new(new QubitDeclarationCode()
             {
                 Size = size,
                 Identifier = context.CurrentBlock.GetUniqueIdentifier(this),

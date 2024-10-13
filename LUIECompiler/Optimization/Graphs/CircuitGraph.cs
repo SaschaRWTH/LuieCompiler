@@ -33,7 +33,7 @@ namespace LUIECompiler.Optimization.Graphs
         /// <param name="program">Quantum program from which to create the graph.</param>
         public CircuitGraph(QASMProgram program)
         {
-            var definitions = program.Code.OfType<DefinitionCode>();
+            var definitions = program.Code.OfType<QubitDeclarationCode>();
             var gates = program.Code.OfType<GateApplicationCode>();
 
             CreateQubits(definitions);
@@ -44,9 +44,9 @@ namespace LUIECompiler.Optimization.Graphs
         /// Creates the qubits of the graph.
         /// </summary>
         /// <param name="code"></param>
-        public void CreateQubits(IEnumerable<DefinitionCode> code)
+        public void CreateQubits(IEnumerable<QubitDeclarationCode> code)
         {
-            foreach (DefinitionCode definition in code)
+            foreach (QubitDeclarationCode definition in code)
             {
                 CreateQubits(definition);
             }
@@ -56,7 +56,7 @@ namespace LUIECompiler.Optimization.Graphs
         /// Creates the qubits of the graph.
         /// </summary>
         /// <param name="definition"></param>
-        public void CreateQubits(DefinitionCode definition)
+        public void CreateQubits(QubitDeclarationCode definition)
         {
             if (definition.Size == 1)
             {
@@ -281,7 +281,7 @@ namespace LUIECompiler.Optimization.Graphs
         /// Gets a list of definitions code of the graph.
         /// </summary>
         /// <returns></returns>
-        public List<DefinitionCode> GetDefinitions()
+        public List<QubitDeclarationCode> GetDefinitions()
         {
             Dictionary<UniqueIdentifier, IEnumerable<GraphQubit>> identifierMap = [];
             foreach (GraphQubit qubit in Qubits)
@@ -293,11 +293,11 @@ namespace LUIECompiler.Optimization.Graphs
                 identifierMap[qubit.Identifier] = identifierMap[qubit.Identifier].Append(qubit);
             }
 
-            List<DefinitionCode> definitions = [];
+            List<QubitDeclarationCode> definitions = [];
 
             foreach (var pair in identifierMap)
             {
-                definitions.Add(new DefinitionCode()
+                definitions.Add(new QubitDeclarationCode()
                 {
                     Identifier = pair.Key,
                     Size = pair.Value.Count()

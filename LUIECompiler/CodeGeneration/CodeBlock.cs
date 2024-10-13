@@ -14,12 +14,12 @@ namespace LUIECompiler.CodeGeneration
         /// <summary>
         /// List of statements in the code block.
         /// </summary>
-        public List<ITranslateable> Translateables { get; } = [];
+        public List<ITranslateable> Translateables { get; init; } = [];
 
         /// <summary>
         /// Maps definitions to their unique identifiers given while generating.
         /// </summary>
-        public Dictionary<Definition, UniqueIdentifier> IdentifierMap { get; } = [];
+        public Dictionary<Definition, UniqueIdentifier> IdentifierMap { get; init; } = [];
 
         /// <summary>
         /// Parent code block. If null, this is the main block.
@@ -46,16 +46,28 @@ namespace LUIECompiler.CodeGeneration
 
         public QASMProgram ToQASM(CodeGenerationContext context)
         {
-            context.CurrentBlock = this;
+            CodeBlock propagateBlock = new()
+            {
+                Parent = context.CurrentBlock,
+                Translateables = Translateables,
+                IdentifierMap = IdentifierMap,
+            };
+
+            CodeGenerationContext generationContext = new(context.ParameterMap)
+            {
+                CurrentBlock = propagateBlock,
+                SymbolTable = context.SymbolTable,
+            };
+            
             QASMProgram code = new();
 
             foreach (var statement in Translateables)
             {
-                if(statement is Definition definition)
+                if (statement is Definition definition)
                 {
                     IdentifierMap.Add(definition, new UniqueIdentifier(context.SymbolTable));
                 }
-                code += statement.ToQASM(context);
+                code += statement.ToQASM(generationContext);
             }
 
             return code;
