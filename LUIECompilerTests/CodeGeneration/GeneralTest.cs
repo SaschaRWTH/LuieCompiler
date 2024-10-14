@@ -88,8 +88,6 @@ public class GeneralTest
         "ctrl(1) @ x id0[1], id0[3];\n" +
         "ctrl(1) @ x id0[3], id0[1];\n" +
         "ctrl(1) @ x id0[1], id0[3];\n";
-        
-
 
     /// <summary>
     /// Tests the code generation for the simple input.
