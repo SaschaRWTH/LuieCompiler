@@ -12,7 +12,7 @@ namespace LUIECompiler.Optimization
             Program = program.ShallowCopy();
         }
 
-        public QASMProgram OptimizeSingleQubitNullGates(OptimizationType optimizationType)
+        public QASMProgram OptimizeProgram(OptimizationType optimizationType)
         {
             var rules = optimizationType.GetRules();
 
@@ -27,8 +27,10 @@ namespace LUIECompiler.Optimization
             while (changed)
             {
                 changed = false;
+                Compiler.LogInfo($"Applying all rules.");
                 changed |= graph.ApplyOptimizationRules(rules, rules.Max(rule => rule.MaxRuleDepth));
             }
+            Compiler.LogInfo($"No more optimizations possible.");
 
             return graph.ToQASM();
         }

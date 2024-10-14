@@ -170,7 +170,12 @@ namespace LUIECompiler.Optimization.Graphs
             bool applied = false;
             foreach (GraphQubit qubit in Qubits)
             {
-                applied |= ApplyOptimizationRules(rules, maxDepth, qubit);
+                // applied |= ApplyOptimizationRules(rules, maxDepth, qubit);
+                if (ApplyOptimizationRules(rules, maxDepth, qubit))
+                {
+                    applied = true;
+                    Compiler.LogInfo($"Applied optimization rules to qubit {qubit}.");
+                }
             }
             return applied;
         }
@@ -187,6 +192,7 @@ namespace LUIECompiler.Optimization.Graphs
             WirePath path = new WirePath(qubit, qubit.Start, qubit.End);
             foreach (WirePath subpath in path.GetSubPaths(maxDepth))
             {
+                Compiler.LogInfo($"Checking subpath {subpath}.");
                 applied |= subpath.ApplyOptimizationRules(rules);
             }
             return applied;
@@ -229,7 +235,7 @@ namespace LUIECompiler.Optimization.Graphs
                 }
 
                 List<INode> predecessors = gateNode.Predecessors.ToList();
-                // If gate only operates on one qubit, it can allways be translated 
+                // If gate only operates on one qubit, it can always be translated 
                 // (not dependent on other gates to have been executed on other wires)
                 // This is technically a special case of the following, but it is easier to handle it separately
                 if (predecessors.Count <= 1)

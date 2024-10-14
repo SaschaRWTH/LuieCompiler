@@ -47,6 +47,7 @@ namespace LUIECompiler.Optimization.Rules
                 };
             }
 
+            Compiler.LogInfo($"Applying peeping control rules, WillTrigger = {WillTrigger}");
             if(!WillTrigger)
             {
                 gateNode.Remove();
@@ -63,8 +64,6 @@ namespace LUIECompiler.Optimization.Rules
         /// <returns></returns>
         public override bool IsApplicable(WirePath path)
         {
-            Compiler.LogInfo($"Checking if peeping control applicable to {path}.");
-
             if (path.Length != 1)
             {
                 return false;
@@ -78,7 +77,6 @@ namespace LUIECompiler.Optimization.Rules
 
             if (!QubitIsControl(path.Qubit, gateNode))
             {
-                Compiler.LogInfo($"Qubit {path.Qubit} not guard of {gateNode}.");
                 return false;
             }
 
@@ -86,7 +84,6 @@ namespace LUIECompiler.Optimization.Rules
 
             if (!TryEvaluate(nodes, out bool qubitState))
             {
-                Compiler.LogInfo($"Could not evaluate the path {path}.");
                 return false;
             }
 

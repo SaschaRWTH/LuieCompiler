@@ -174,7 +174,7 @@ namespace LUIECompiler.CodeGeneration.Codes
 
             OptimizationHandler handler = new(this);
 
-            QASMProgram program = handler.OptimizeSingleQubitNullGates(optimization);
+            QASMProgram program = handler.OptimizeProgram(optimization);
 
             return program;
         }

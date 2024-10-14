@@ -50,21 +50,29 @@ namespace LUIECompiler.Optimization.Graphs.Nodes
         /// </summary>
         public void Remove()
         {
-            foreach (GraphQubit qubit in Qubits)
+            // Create copy of Qubits to avoid concurrent modification.
+            IEnumerable<GraphQubit> qubits = [ .. Qubits];
+            foreach (GraphQubit qubit in qubits)
             {
-                CircuitVertex inVertex = GetInVertex(qubit) as CircuitVertex ?? throw new InternalException()
-                {
-                    Reason = $"The input vertex is missing for qubit {qubit} or is not a Circuit Vertex."
-                };
-                IVertex outVertex = GetOutVertex(qubit) ?? throw new InternalException()
-                {
-                    Reason = $"The output vertex is missing for qubit {qubit}."
-                };
-
-                inVertex.ExtendTo(outVertex.End);
+                RemoveSingleQubit(qubit);
             }
 
             Graph.RemoveNode(this);
+        }
+
+        public void RemoveSingleQubit(GraphQubit qubit)
+        {
+            CircuitVertex inVertex = GetInVertex(qubit) as CircuitVertex ?? throw new InternalException()
+            {
+                Reason = $"The input vertex is missing for qubit {qubit} or is not a Circuit Vertex."
+            };
+            IVertex outVertex = GetOutVertex(qubit) ?? throw new InternalException()
+            {
+                Reason = $"The output vertex is missing for qubit {qubit}."
+            };
+            inVertex.ExtendTo(outVertex.End);
+
+            Qubits.Remove(qubit);
         }
 
         /// <summary>
@@ -84,12 +92,13 @@ namespace LUIECompiler.Optimization.Graphs.Nodes
 
             HashSet<GraphGuard> guards = [];
             // Special case for CX gate
-            if (GateCode.Gate.GateType == GateType.CX)
-            {
-                GraphQubit qubit = circuitGraph.FromCodeToQubit(GateCode.Parameters[0]);
-                Compiler.LogInfo($"Adding guard qubit {qubit} to gate {GateCode.Gate}.");
-                guards.Add(new GraphGuard(qubit, false, this));
-            }
+            // This special case should no longer be needed, all CX and CCX gates translated to controlled X gates.
+            // if (GateCode.Gate.GateType == GateType.CX)
+            // {
+            //     GraphQubit qubit = circuitGraph.FromCodeToQubit(GateCode.Parameters[0]);
+            //     Compiler.LogInfo($"Adding guard qubit {qubit} to gate {GateCode.Gate}.");
+            //     guards.Add(new GraphGuard(qubit, false, this));
+            // }
 
             foreach (GuardCode code in GateCode.Guards)
             {
@@ -102,7 +111,6 @@ namespace LUIECompiler.Optimization.Graphs.Nodes
                     continue;
                 }
 
-                Compiler.LogInfo($"Adding guard qubit {qubit} to gate {GateCode.Gate}.");
                 guards.Add(new GraphGuard(qubit, code.Negated, this));
             }
 
@@ -175,20 +183,18 @@ namespace LUIECompiler.Optimization.Graphs.Nodes
                 };
             }
 
-            if (GateCode.Guards.Contains(guard!.Code))
-            {
-                GateCode.Guards.Remove(guard!.Code);
-                return;
-            }
-            
+            GateCode.Guards.Remove(guard!.Code);
+            RemoveSingleQubit(qubit);
+
             // Special case for CX gate
-            if (GateCode.Gate.GateType != GateType.CX)
-            {
-                throw new InternalException()
-                {
-                    Reason = $"The qubit {qubit} is not a guard for the gate and can, therefore, not be removed as such."
-                };
-            }
+            // This special case should no longer be needed, all CX and CCX gates translated to controlled X gates.
+            // if (GateCode.Gate.GateType != GateType.CX)
+            // {
+            //     throw new InternalException()
+            //     {
+            //         Reason = $"The qubit {qubit} is not a guard for the gate and can, therefore, not be removed as such."
+            //     };
+            // }
 
             /// Create 
 

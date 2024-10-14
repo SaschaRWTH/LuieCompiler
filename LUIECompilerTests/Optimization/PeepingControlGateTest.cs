@@ -57,10 +57,10 @@ public class PeepingControlTest
     public const string SimpleTrueGateOptimized =
         "qubit id0;\n" +
         "qubit id1;\n" +
-        "x id1;\n" +
+        "h id0;\n" +
         "h id0;\n" +
         "x id1;\n" +
-        "h id0;\n";
+        "x id1;\n";
 
     
     
