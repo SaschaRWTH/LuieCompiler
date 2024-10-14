@@ -58,7 +58,7 @@ public class PeepingControlTest
         "qubit id0;\n" +
         "qubit id1;\n" +
         "x id1;\n" +
-        "ctrl(1) @ h id1, id0;\n" +
+        "h id0;\n" +
         "x id1;\n" +
         "h id0;\n";
 

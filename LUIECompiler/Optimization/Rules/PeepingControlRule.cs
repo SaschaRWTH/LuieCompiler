@@ -14,6 +14,8 @@ namespace LUIECompiler.Optimization.Rules
 
         public static readonly PeepingControlRule Rule = new();
 
+        public bool WillTrigger { get; private set; } = false;
+
         /// <summary>
         /// Creates a new instance of the PeepingControlRule.
         /// </summary>
@@ -45,7 +47,13 @@ namespace LUIECompiler.Optimization.Rules
                 };
             }
 
-            gateNode.Remove();
+            if(!WillTrigger)
+            {
+                gateNode.Remove();
+                return;
+            }
+
+            gateNode.RemoveAsGuard(path.Qubit);
         }
 
         /// <summary>
@@ -79,9 +87,9 @@ namespace LUIECompiler.Optimization.Rules
             }
 
             GraphGuard guard = gateNode.GetGuardQubits().Single(guard => guard.Qubit == path.Qubit);
-            bool willTrigger = qubitState != guard.Negated;
+            WillTrigger = qubitState != guard.Negated;
 
-            return !willTrigger;
+            return true;
         }
 
         /// <summary>
