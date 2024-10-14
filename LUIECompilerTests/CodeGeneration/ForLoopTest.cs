@@ -19,11 +19,11 @@ public class ForLoopTest
         "qubit id0;\n" +
         "qubit id1;\n" +
         "h id0;\n" +
-        "cx id0, id1;\n" +
+        "ctrl(1) @ x id0, id1;\n" +
         "h id0;\n" +
-        "cx id0, id1;\n" +
+        "ctrl(1) @ x id0, id1;\n" +
         "h id0;\n" +
-        "cx id0, id1;\n";
+        "ctrl(1) @ x id0, id1;\n";
 
 
     public const string InputRedefine =
@@ -46,11 +46,11 @@ public class ForLoopTest
         "qubit[3] id0;\n" +
         "qubit id1;\n" +
         "h id0[0];\n" +
-        "cx id0[0], id1;\n" +
+        "ctrl(1) @ x id0[0], id1;\n" +
         "h id0[1];\n" +
-        "cx id0[1], id1;\n" +
+        "ctrl(1) @ x id0[1], id1;\n" +
         "h id0[2];\n" +
-        "cx id0[2], id1;\n";
+        "ctrl(1) @ x id0[2], id1;\n";
 
     public const string DefinitionInForLoop =
         "qubit[5] c;\n" +

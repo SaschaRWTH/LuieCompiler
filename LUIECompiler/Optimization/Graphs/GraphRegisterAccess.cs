@@ -17,9 +17,9 @@ namespace LUIECompiler.Optimization.Graphs
             Index = index;
         }
 
-        override public string ToString()
+        public override string ToString()
         {
-            return $"{Identifier}[{Index}]";
+            return $"GraphQubit = {{ Identifier = {Identifier}, Index = {Index} }}";
         }
     }
 }

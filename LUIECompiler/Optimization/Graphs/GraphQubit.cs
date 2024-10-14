@@ -37,7 +37,7 @@ namespace LUIECompiler.Optimization.Graphs
         public virtual bool CanBeRemoved
         {
             get
-            {           
+            {
                 IVertex vertex = Start.OutputVertex ?? throw new InternalException
                 {
                     Reason = "Input node must have exactly one output vertex",
@@ -128,7 +128,7 @@ namespace LUIECompiler.Optimization.Graphs
         /// <exception cref="InternalException"></exception>
         public void Remove()
         {
-            if(!CanBeRemoved)
+            if (!CanBeRemoved)
             {
                 return;
             }
@@ -138,7 +138,7 @@ namespace LUIECompiler.Optimization.Graphs
                 Reason = "Input node must have exactly one output vertex",
             };
 
-            if(Graph is not CircuitGraph circuitGraph)
+            if (Graph is not CircuitGraph circuitGraph)
             {
                 throw new InternalException
                 {
@@ -151,7 +151,12 @@ namespace LUIECompiler.Optimization.Graphs
             circuitGraph.RemoveNode(Start);
             circuitGraph.RemoveNode(End);
 
-            circuitGraph.Qubits.Remove(this);  
+            circuitGraph.Qubits.Remove(this);
+        }
+
+        public override string ToString()
+        {
+            return $"GraphQubit = {{ Identifier = {Identifier} }}";
         }
     }
 }

@@ -31,21 +31,25 @@ namespace LUIECompiler.Optimization
 
             if (type.HasFlag(OptimizationType.NullGate))
             {
+                Compiler.Log("Adding NullGateRule to optimizations.");
                 rules.AddRange(NullGateRule.NullGateRules);
             }
 
             if (type.HasFlag(OptimizationType.PeepingControl))
             {
+                Compiler.Log("Adding PeepingControl to optimizations.");
                 rules.Add(PeepingControlRule.Rule);
             }
 
             if (type.HasFlag(OptimizationType.HSandwichReduction))
             {
+                Compiler.Log("Adding HSandwichReduction to optimizations.");
                 rules.AddRange(HSandwichReductionRule.GateReductionRules);
             }
 
             if (type.HasFlag(OptimizationType.ControlReversal))
             {
+                Compiler.Log("Adding ControlReversal to optimizations.");
                 rules.Add(ControlReversalRule.Rule);
             }
 

@@ -35,5 +35,10 @@ namespace LUIECompiler.CodeGeneration.Definitions
         {
             return Identifier.GetHashCode();
         }
+
+        public override string ToString()
+        {
+            return Identifier;
+        }
     }
 }

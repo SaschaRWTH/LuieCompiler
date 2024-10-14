@@ -1,5 +1,6 @@
 
 using LUIECompiler.CodeGeneration.Exceptions;
+using LUIECompiler.Common;
 using LUIECompiler.Common.Errors;
 using LUIECompiler.Common.Symbols;
 
@@ -28,7 +29,7 @@ namespace LUIECompiler.CodeGeneration.Codes
         /// <summary>
         /// Gate to be executed
         /// </summary>
-        public GateCode Gate { get; }
+        public GateCode Gate { get; private set; }
 
         /// <summary>
         /// List of all gate parameters. 
@@ -41,7 +42,59 @@ namespace LUIECompiler.CodeGeneration.Codes
             Parameters = parameters;
             Guards = guards;
 
+            ReplaceControlledGates();
             CheckUseOfGuard();
+        }
+
+        private void ReplaceControlledGates()
+        {
+            if (Gate.GateType == GateType.CX)
+            { 
+                Gate = new(GateType.X);
+                if (Parameters.Count != 2)
+                {
+                    throw new InternalException()
+                    {
+                        Reason = "CX gate must have 2 parameters"
+                    };
+                }
+                QubitCode guard = Parameters[0];
+                Parameters.Remove(guard);
+
+                Guards.Add(new GuardCode()
+                {
+                    Qubit = guard,
+                    Negated = false
+                });
+
+                return;
+            }
+            if (Gate.GateType == GateType.CCX)
+            {
+                Gate = new(GateType.X);
+                if (Parameters.Count != 3)
+                {
+                    throw new InternalException()
+                    {
+                        Reason = "CCX gate must have 3 parameters"
+                    };
+                }
+                QubitCode firstGuard = Parameters[0];
+                QubitCode secGuard = Parameters[1];
+                Parameters.Remove(firstGuard);
+                Parameters.Remove(secGuard);
+
+                Guards.Add(new GuardCode()
+                {
+                    Qubit = firstGuard,
+                    Negated = false
+                });
+                Guards.Add(new GuardCode()
+                {
+                    Qubit = secGuard,
+                    Negated = false
+                });
+            }
         }
 
         /// <summary>

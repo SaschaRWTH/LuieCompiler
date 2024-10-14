@@ -82,12 +82,12 @@ public class GeneralTest
         "h id0[3];\n" +
         "ctrl(1) @ p(pi * 0.5) id0[4], id0[3];\n" +
         "h id0[4];\n" +
-        "cx id0[0], id0[4];\n" +
-        "cx id0[4], id0[0];\n" +
-        "cx id0[0], id0[4];\n" +
-        "cx id0[1], id0[3];\n" +
-        "cx id0[3], id0[1];\n" +
-        "cx id0[1], id0[3];\n";
+        "ctrl(1) @ x id0[0], id0[4];\n" +
+        "ctrl(1) @ x id0[4], id0[0];\n" +
+        "ctrl(1) @ x id0[0], id0[4];\n" +
+        "ctrl(1) @ x id0[1], id0[3];\n" +
+        "ctrl(1) @ x id0[3], id0[1];\n" +
+        "ctrl(1) @ x id0[1], id0[3];\n";
         
 
 

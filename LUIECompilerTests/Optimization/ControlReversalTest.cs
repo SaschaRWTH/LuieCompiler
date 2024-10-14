@@ -27,7 +27,7 @@ public class ControlReversalTest
         "x id1;\n" +
         "h id0;\n" +
         "h id1;\n" +
-        "cx id0, id1;\n" +
+        "ctrl(1) @ x id0, id1;\n" +
         "h id1;\n" +
         "h id0;\n" +
         "y id0;\n";
@@ -36,7 +36,7 @@ public class ControlReversalTest
         "qubit id0;\n" +
         "qubit id1;\n" +
         "x id1;\n" +
-        "cx id1, id0;\n" +
+        "ctrl(1) @ x id1, id0;\n" +
         "y id0;\n";
 
     public static readonly string MissingFirstHGate = @"
@@ -53,7 +53,7 @@ public class ControlReversalTest
         "qubit id0;\n" +
         "qubit id1;\n" +
         "h id1;\n" +
-        "cx id0, id1;\n" +
+        "ctrl(1) @ x id0, id1;\n" +
         "h id1;\n" +
         "h id0;\n";
 
@@ -71,7 +71,7 @@ public class ControlReversalTest
         "qubit id0;\n" +
         "qubit id1;\n" +
         "h id0;\n" +
-        "cx id0, id1;\n" +
+        "ctrl(1) @ x id0, id1;\n" +
         "h id0;\n" +
         "h id1;\n";
 
@@ -90,7 +90,7 @@ public class ControlReversalTest
         "qubit id1;\n" +
         "h id0;\n" +
         "h id1;\n" +
-        "cx id0, id1;\n" +
+        "ctrl(1) @ x id0, id1;\n" +
         "h id0;\n";
     public static readonly string MissingFourthHGate = @"
         qubit a;
@@ -107,7 +107,7 @@ public class ControlReversalTest
         "qubit id1;\n" +
         "h id0;\n" +
         "h id1;\n" +
-        "cx id0, id1;\n" +
+        "ctrl(1) @ x id0, id1;\n" +
         "h id1;\n";
     public static readonly string SimpleGuardReversal = @"
         qubit a;

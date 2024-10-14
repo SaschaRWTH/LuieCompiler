@@ -27,8 +27,8 @@ public class GateArgumentTest
             "qubit id2;\n" +
             "x id0[1];\n" +
             "ctrl(1) @ x id0[1], id0[0];\n" +
-            "ctrl(1) @ cx id0[1], id0[0], id1[2];\n" +
-            "ctrl(1) @ ccx id0[1], id0[0], id2, id1[1];\n";
+            "ctrl(2) @ x id0[1], id0[0], id1[2];\n" +
+            "ctrl(3) @ x id0[1], id0[0], id2, id1[1];\n";
 
     /// <summary>
     /// Tests if the scope is correctly handled in the input.

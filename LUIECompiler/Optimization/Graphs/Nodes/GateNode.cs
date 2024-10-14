@@ -7,7 +7,7 @@ using LUIECompiler.Optimization.Graphs.Interfaces;
 namespace LUIECompiler.Optimization.Graphs.Nodes
 {
     /// <summary>
-    /// A node that reprensent a gate in a quantum circuit graph.
+    /// A node that represent a gate in a quantum circuit graph.
     /// </summary>
     public class GateNode : Node
     {
@@ -83,6 +83,14 @@ namespace LUIECompiler.Optimization.Graphs.Nodes
             }
 
             HashSet<GraphGuard> guards = [];
+            // Special case for CX gate
+            if (GateCode.Gate.GateType == GateType.CX)
+            {
+                GraphQubit qubit = circuitGraph.FromCodeToQubit(GateCode.Parameters[0]);
+                Compiler.LogInfo($"Adding guard qubit {qubit} to gate {GateCode.Gate}.");
+                guards.Add(new GraphGuard(qubit, false, this));
+            }
+
             foreach (GuardCode code in GateCode.Guards)
             {
                 GraphQubit qubit = circuitGraph.FromCodeToQubit(code.Qubit);
@@ -94,6 +102,7 @@ namespace LUIECompiler.Optimization.Graphs.Nodes
                     continue;
                 }
 
+                Compiler.LogInfo($"Adding guard qubit {qubit} to gate {GateCode.Gate}.");
                 guards.Add(new GraphGuard(qubit, code.Negated, this));
             }
 
@@ -166,7 +175,23 @@ namespace LUIECompiler.Optimization.Graphs.Nodes
                 };
             }
 
-            GateCode.Guards.Remove(guard!.Code);
+            if (GateCode.Guards.Contains(guard!.Code))
+            {
+                GateCode.Guards.Remove(guard!.Code);
+                return;
+            }
+            
+            // Special case for CX gate
+            if (GateCode.Gate.GateType != GateType.CX)
+            {
+                throw new InternalException()
+                {
+                    Reason = $"The qubit {qubit} is not a guard for the gate and can, therefore, not be removed as such."
+                };
+            }
+
+            /// Create 
+
         }
     }
 }

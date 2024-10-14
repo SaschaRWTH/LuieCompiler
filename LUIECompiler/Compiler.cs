@@ -37,7 +37,7 @@ namespace LUIECompiler
                 return;
             }
 
-            program.Optimize(data.Optimization);
+            program = program.Optimize(data.Optimization);
 
             IOHandler.WriteOutputCode(data, program);
         }

@@ -23,9 +23,9 @@ public class CompositeGateTest
         "qubit id0;\n" +
         "qubit id1;\n" +
         "x id1;\n" +
-        "cx id0, id1;\n" +
-        "cx id1, id0;\n" +
-        "cx id0, id1;\n";
+        "ctrl(1) @ x id0, id1;\n" +
+        "ctrl(1) @ x id1, id0;\n" +
+        "ctrl(1) @ x id0, id1;\n";
 
     public const string DefinitionsUsingCompositeGate =
         "gate swap(a, b) do\n" +
@@ -46,9 +46,9 @@ public class CompositeGateTest
         "qubit id0;\n" +
         "qubit id1;\n" +
         "x id1;\n" +
-        "cx id1, id0;\n" +
-        "cx id0, id1;\n" +
-        "cx id1, id0;\n";
+        "ctrl(1) @ x id1, id0;\n" +
+        "ctrl(1) @ x id0, id1;\n" +
+        "ctrl(1) @ x id1, id0;\n";
 
         
     public const string InvalidRecursiveGate =
