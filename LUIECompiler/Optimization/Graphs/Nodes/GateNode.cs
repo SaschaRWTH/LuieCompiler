@@ -87,13 +87,14 @@ namespace LUIECompiler.Optimization.Graphs.Nodes
             {
                 GraphQubit qubit = circuitGraph.FromCodeToQubit(code.Qubit);
 
-                // Can currently be the case be should be fixed such that qif body is seperate from controls.
+                // Should no longer be the case, check to be safe.
                 if (guards.Any(g => g.Qubit == qubit))
                 {
+                    Compiler.LogWarning("Gate was controlled by the same qubit multiple times, should not be possible. Optimization can continue.");
                     continue;
                 }
 
-                guards.Add(new GraphGuard(qubit, code.Negated));
+                guards.Add(new GraphGuard(qubit, code.Negated, this));
             }
 
 
@@ -137,7 +138,7 @@ namespace LUIECompiler.Optimization.Graphs.Nodes
                 return [];
             }
 
-            var result = node.NodesUpTo(wire); 
+            var result = node.NodesUpTo(wire);
             result.Add(node);
             return result;
         }
@@ -145,6 +146,27 @@ namespace LUIECompiler.Optimization.Graphs.Nodes
         public void ReplaceGate(GateApplicationCode gate)
         {
             GateCode = gate;
+        }
+
+        public bool TryGetGuard(GraphQubit qubit, out GraphGuard? guard)
+        {
+            HashSet<GraphGuard> guards = GetGuardQubits();
+            guard = guards.FirstOrDefault(g => g.Qubit == qubit);
+
+            return guard != null;
+        }
+
+        public void RemoveAsGuard(GraphQubit qubit)
+        {
+            if (!TryGetGuard(qubit, out GraphGuard? guard))
+            {
+                throw new InternalException()
+                {
+                    Reason = $"The qubit {qubit} is not a guard for the gate and can, therefore, not be removed as such."
+                };
+            }
+
+            GateCode.Guards.Remove(guard!.Code);
         }
     }
 }

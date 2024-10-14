@@ -14,7 +14,7 @@ namespace LUIECompiler.CodeGeneration.Statements
         public required Symbol Guard { get; init; }
 
         /// <summary>
-        /// Nexted block of the if statement.
+        /// Nested block of the if statement.
         /// </summary>
         public required CodeBlock Block { get; init; }
 

@@ -92,8 +92,7 @@ namespace LUIECompiler.Optimization.Rules
         /// <returns></returns>
         private bool QubitIsControl(GraphQubit qubit, GateNode gateNode)
         {
-            HashSet<GraphGuard> guards = gateNode.GetGuardQubits();
-            return guards.Any(guard => guard.Qubit == qubit);
+            return gateNode.TryGetGuard(qubit, out _);
         }
 
         /// <summary>

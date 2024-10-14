@@ -189,7 +189,14 @@ namespace LUIECompiler
             [System.Runtime.CompilerServices.CallerMemberName] string membName = "",
             [System.Runtime.CompilerServices.CallerLineNumber] int lineNumber = 0)
         {
-            Log(message, membName, lineNumber);
+            Log($"Error: {message}", membName, lineNumber);
+        }
+
+        public static void LogWarning(string? message,
+            [System.Runtime.CompilerServices.CallerMemberName] string membName = "",
+            [System.Runtime.CompilerServices.CallerLineNumber] int lineNumber = 0)
+        {
+            Log($"Warning: {message}", membName, lineNumber);
         }
 
         public static void Log(string? message,
