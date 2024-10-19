@@ -124,7 +124,7 @@ namespace LUIECompiler.CLI
                 return OptimizationType.All;
             }
 
-            var optimizations = arg.Split('|');
+            var optimizations = arg.Split('+');
             OptimizationType type = OptimizationType.None;
 
             foreach (var opt in optimizations)
