@@ -292,7 +292,7 @@ public class CompositeGateTest
         
         var exception = Assert.ThrowsException<CodeGenerationException>(() => walker.Walk(codegen, parser.parse()));
 
-        Assert.IsTrue(exception.Error is UndefinedError error && error.Identifier[0] == "paws");
+        Assert.IsTrue(exception.Error is UndefinedError error && error.Identifiers[0] == "paws");
     }
 
     /// <summary>

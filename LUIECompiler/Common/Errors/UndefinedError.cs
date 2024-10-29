@@ -9,7 +9,7 @@ namespace LUIECompiler.Common.Errors
         /// <summary>
         /// Identifiers that are undefined.
         /// </summary>
-        public List<string> Identifier { get; init; }
+        public List<string> Identifiers { get; init; }
 
         /// <summary>
         /// Creates a new undefined error.
@@ -20,7 +20,7 @@ namespace LUIECompiler.Common.Errors
         {
             Type = ErrorType.Critical;
             ErrorContext = context;
-            Identifier = [identifier];
+            Identifiers = [identifier];
             Description = $"The identifier {identifier} does not exist in the context.";
         }
 
@@ -33,7 +33,7 @@ namespace LUIECompiler.Common.Errors
         {
             Type = ErrorType.Critical;
             ErrorContext = context;
-            Identifier = [.. identifiers];
+            Identifiers = [.. identifiers];
             Description = $"The identifiers {string.Join(", ", identifiers)} do not exist in the context.";
         }
     }
