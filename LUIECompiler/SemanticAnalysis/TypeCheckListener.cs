@@ -46,6 +46,33 @@ namespace LUIECompiler.SemanticAnalysis
             Table.PopScope();
         }
 
+        public override void ExitRegister([NotNull] LuieParser.RegisterContext context)
+        {            
+            string identifier = context.IDENTIFIER().GetText();
+
+            Symbol? symbol = Table.GetSymbolInfo(identifier);
+            if (symbol == null)
+            {
+                // Undefined error are reported in the declaration analysis
+                // Compiler.LogError($"TypeCheckListener.ExitRegister: Could not get the symbol of identifier '{identifier}' from the symbol table.");
+                // Error.Report(new UndefinedError(new ErrorContext(context), identifier));
+                return;
+            }
+
+            // Check type of parameter at generation time
+            if (symbol is Parameter)
+            {
+                return;
+            }
+
+            // Cannot access qubit with []
+            if (symbol is Qubit && context.TryGetIndexExpression(out Expression<int> _))
+            {
+                Compiler.LogError($"TypeCheckListener.ExitRegister: The symbol '{identifier}' was neither a qubit nor a accessed register.");
+                Error.Report(new TypeError(new ErrorContext(context), identifier, typeof(Register), symbol.GetType()));
+            }
+        }
+
         public override void ExitRegisterDeclaration([NotNull] LuieParser.RegisterDeclarationContext context)
         {
             Register reg = context.GetRegister();

@@ -13,7 +13,7 @@ namespace LUIECompiler
     {
         public static Action<string?> Printer { get; set; } = Console.WriteLine;
 
-        public static bool Verbose { get; private set; }
+        public static bool Verbose { get; set; }
 
         public static void Compile(CompilerData data)
         {

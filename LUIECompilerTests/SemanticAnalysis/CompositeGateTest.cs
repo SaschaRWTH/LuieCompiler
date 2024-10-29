@@ -1,3 +1,4 @@
+using LUIECompiler;
 using LUIECompiler.SemanticAnalysis;
 
 namespace LUIECompilerTests.SemanticAnalysis
@@ -103,8 +104,8 @@ namespace LUIECompilerTests.SemanticAnalysis
             var error = analysis.Error;
 
             Assert.IsTrue(error.ContainsCriticalError);
-
-            Assert.IsTrue(error.Errors.Count == 1);
+            Console.WriteLine(error);
+            Assert.AreEqual(1, error.Errors.Count);
             Assert.IsTrue(error.CriticalErrors.Exists(e => e.ErrorContext.Line == 3));
         }
 
@@ -119,7 +120,7 @@ namespace LUIECompilerTests.SemanticAnalysis
 
             Assert.IsTrue(error.ContainsCriticalError);
             Console.WriteLine(error);
-            Assert.IsTrue(error.Errors.Count == 1);
+            Assert.AreEqual(1, error.Errors.Count);
             Assert.IsTrue(error.CriticalErrors.Exists(e => e.ErrorContext.Line == 10));
         }
 
