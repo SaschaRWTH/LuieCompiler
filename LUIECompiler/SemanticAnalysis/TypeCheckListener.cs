@@ -55,32 +55,6 @@ namespace LUIECompiler.SemanticAnalysis
             }
         }
 
-        public override void ExitRegister([NotNull] LuieParser.RegisterContext context)
-        {
-            string identifier = context.IDENTIFIER().GetText();
-
-            Symbol? symbol = Table.GetSymbolInfo(identifier);
-            if (symbol == null)
-            {
-                Compiler.LogError($"TypeCheckListener.ExitRegister: Could not get the symbol of identifier '{identifier}' from the symbol table.");
-                Error.Report(new UndefinedError(new ErrorContext(context), identifier));
-                return;
-            }
-
-            // Check type of parameter at generation time
-            if (symbol is Parameter)
-            {
-                return;
-            }
-
-            // Cannot access qubit with []
-            if (symbol is Qubit && context.TryGetIndexExpression(out Expression<int> _))
-            {
-                Compiler.LogError($"TypeCheckListener.ExitRegister: The symbol '{identifier}' was neither a qubit nor a accessed register.");
-                Error.Report(new UndefinedError(new ErrorContext(context), identifier));
-            }
-        }
-
         public override void ExitFactor([NotNull] LuieParser.FactorContext context)
         {
             // Only allow factors in register to be iterator (for now)
@@ -93,8 +67,9 @@ namespace LUIECompiler.SemanticAnalysis
             Symbol? symbol = Table.GetSymbolInfo(identifier);
             if (symbol == null)
             {
-                Compiler.LogError($"TypeCheckListener.ExitFactor: Could not get the symbol of identifier '{identifier}' from the symbol table.");
-                Error.Report(new UndefinedError(new ErrorContext(context), identifier));
+                // Undefined error are reported in the declaration analysis
+                // Compiler.LogError($"TypeCheckListener.ExitFactor: Could not get the symbol of identifier '{identifier}' from the symbol table.");
+                // Error.Report(new UndefinedError(new ErrorContext(context), identifier));
                 return;
             }
 
@@ -116,7 +91,8 @@ namespace LUIECompiler.SemanticAnalysis
                 Symbol? symbol = Table.GetSymbolInfo(identifier);
                 if (symbol == null)
                 {
-                    Error.Report(new UndefinedError(new ErrorContext(context), identifier));
+                    // Undefined error are reported in the declaration analysis
+                    // Error.Report(new UndefinedError(new ErrorContext(context), identifier));
                     return;
                 }
 
@@ -164,8 +140,9 @@ namespace LUIECompiler.SemanticAnalysis
             Symbol? symbol = Table.GetSymbolInfo(identifier);
             if (symbol == null)
             {
-                Compiler.LogError($"Could not get the symbol of identifier '{identifier}' from the symbol table.");
-                Error.Report(new UndefinedError(new ErrorContext(context), identifier));
+                // Error is reported in the declaration analysis
+                // Compiler.LogError($"Could not get the symbol of identifier '{identifier}' from the symbol table.");
+                // Error.Report(new UndefinedError(new ErrorContext(context), identifier));
                 return;
             }
 
@@ -218,21 +195,24 @@ namespace LUIECompiler.SemanticAnalysis
                 return;
             }
 
-            if (context.identifier?.Text is string identifier)
+            if (context.identifier?.Text is not string identifier)
             {
-                Symbol? symbol = Table.GetSymbolInfo(identifier);
-                if (symbol is null)
-                {
-                    Compiler.LogError($"The gate identifier '{identifier}' could not be found in the symbol table.");
-                    Error.Report(new UndefinedError(new ErrorContext(context), identifier));
-                    return;
-                }
+                return;
+            }
 
-                if (symbol is not CompositeGate)
-                {
-                    Compiler.LogError($"The symbol '{identifier}' is neither a known gate nor a composite gate.");
-                    Error.Report(new TypeError(new ErrorContext(context), identifier, typeof(CompositeGate), symbol.GetType()));
-                }
+            Symbol? symbol = Table.GetSymbolInfo(identifier);
+            if (symbol is null)
+            {
+                // Undefined errors are reported in the declaration analysis
+                // Compiler.LogError($"The gate identifier '{identifier}' could not be found in the symbol table.");
+                // Error.Report(new UndefinedError(new ErrorContext(context), identifier));
+                return;
+            }
+
+            if (symbol is not CompositeGate)
+            {
+                Compiler.LogError($"The symbol '{identifier}' is neither a known gate nor a composite gate.");
+                Error.Report(new TypeError(new ErrorContext(context), identifier, typeof(CompositeGate), symbol.GetType()));
             }
         }
 
@@ -240,34 +220,38 @@ namespace LUIECompiler.SemanticAnalysis
         {
             FunctionExpression<double> expression = context.GetFunctionExpression<double>();
 
-            expression.UndefinedIdentifiers(Table).ForEach(identifier =>
-            {
-                Error.Report(new UndefinedError(new ErrorContext(context), identifier));
-            });
+            // Undefined errors are reported in the declaration analysis
+            // expression.UndefinedIdentifiers(Table).ForEach(identifier =>
+            // {
+            //     Error.Report(new UndefinedError(new ErrorContext(context), identifier));
+            // });
 
-            if (expression is SizeOfFunctionExpression<double> sizeOfFunctionExpression)
+            if (expression is not SizeOfFunctionExpression<double> sizeOfFunctionExpression)
             {
-                foreach (string identifier in sizeOfFunctionExpression.Parameter)
+                return;
+            }
+
+            foreach (string identifier in sizeOfFunctionExpression.Parameter)
+            {
+                Symbol? symbol = Table.GetSymbolInfo(identifier);
+                if (symbol is null)
                 {
-                    Symbol? symbol = Table.GetSymbolInfo(identifier);
-                    if (symbol is null)
-                    {
-                        Compiler.LogError($"Could not get the symbol of identifier '{identifier}' from the symbol table.");
-                        Error.Report(new UndefinedError(new ErrorContext(context), identifier));
-                        continue;
-                    }
+                    // Undefined errors are reported in the declaration analysis
+                    // Compiler.LogError($"Could not get the symbol of identifier '{identifier}' from the symbol table.");
+                    // Error.Report(new UndefinedError(new ErrorContext(context), identifier));
+                    continue;
+                }
 
-                    // Check type of parameter at generation time
-                    if (symbol is Parameter)
-                    {
-                        continue;
-                    }
+                // Check type of parameter at generation time
+                if (symbol is Parameter)
+                {
+                    continue;
+                }
 
-                    if (symbol is not Register)
-                    {
-                        Compiler.LogError($"Could not get the symbol of identifier '{identifier}' from the symbol table.");
-                        Error.Report(new TypeError(new ErrorContext(context), identifier, typeof(Register), symbol.GetType()));
-                    }
+                if (symbol is not Register)
+                {
+                    Compiler.LogError($"Could not get the symbol of identifier '{identifier}' from the symbol table.");
+                    Error.Report(new TypeError(new ErrorContext(context), identifier, typeof(Register), symbol.GetType()));
                 }
             }
         }

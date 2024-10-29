@@ -76,6 +76,32 @@ namespace LUIECompiler.SemanticAnalysis
                 AddSymbolToTable(info);
             }
         }
+        
+        public override void ExitRegister([NotNull] LuieParser.RegisterContext context)
+        {
+            string identifier = context.IDENTIFIER().GetText();
+
+            Symbol? symbol = Table.GetSymbolInfo(identifier);
+            if (symbol == null)
+            {
+                Compiler.LogError($"TypeCheckListener.ExitRegister: Could not get the symbol of identifier '{identifier}' from the symbol table.");
+                Error.Report(new UndefinedError(new ErrorContext(context), identifier));
+                return;
+            }
+
+            // Check type of parameter at generation time
+            if (symbol is Parameter)
+            {
+                return;
+            }
+
+            // Cannot access qubit with []
+            if (symbol is Qubit && context.TryGetIndexExpression(out Expression<int> _))
+            {
+                Compiler.LogError($"TypeCheckListener.ExitRegister: The symbol '{identifier}' was neither a qubit nor a accessed register.");
+                Error.Report(new UndefinedError(new ErrorContext(context), identifier));
+            }
+        }
 
         public override void EnterGateDeclaration([NotNull] LuieParser.GateDeclarationContext context)
         {
