@@ -8,20 +8,20 @@ namespace LUIECompiler.Common.Errors
     public struct ErrorContext
     {
         /// <summary>
-        /// Line where the error occured.
+        /// Line where the error occurred.
         /// </summary>
         public int Line { get; set; }
 
         /// <summary>
-        /// Column where the error occured.
+        /// Column where the error occurred.
         /// </summary>
         public int Column { get; set; }
 
         /// <summary>
         /// Creates a new error context.
         /// </summary>
-        /// <param name="line">Line where the error occured.</param>
-        /// <param name="column">Column where the error occured.</param>
+        /// <param name="line">Line where the error occurred.</param>
+        /// <param name="column">Column where the error occurred.</param>
         public ErrorContext(int line, int column)
         {
             Line = line;

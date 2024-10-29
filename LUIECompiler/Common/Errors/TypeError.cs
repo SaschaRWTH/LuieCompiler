@@ -3,13 +3,8 @@ namespace LUIECompiler.Common.Errors
     /// <summary>
     /// Represents an error where an identifier has the wrong type.
     /// </summary>
-    public class TypeError : CompilationError
+    public class TypeError : IdentifierError
     {
-        /// <summary>
-        /// Identifier with the wrong type.
-        /// </summary>
-        public string Identifier { get; init; }
-
         /// <summary>
         /// The required type.
         /// </summary>
@@ -27,11 +22,9 @@ namespace LUIECompiler.Common.Errors
         /// <param name="identifier">Identifier with the wrong type.</param>
         /// <param name="requiredType">Required type in the context.</param>
         /// <param name="givenType">Type of the identifier.</param>
-        public TypeError(ErrorContext context, string identifier, Type requiredType, Type givenType)
+        public TypeError(ErrorContext context, string identifier, Type requiredType, Type givenType)  : base(context, identifier)
         {
             Type = ErrorType.Critical;
-            ErrorContext = context;
-            Identifier = identifier;
             RequiredType = requiredType;
             GivenType = givenType;
             Description = $"The identifier {identifier} was of the wrong type. Expected {requiredType} but got {givenType}.";
