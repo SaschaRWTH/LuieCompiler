@@ -65,6 +65,12 @@ namespace LUIECompiler.SemanticAnalysis
                 return;
             }
 
+            if(symbol is not Register)
+            {
+                Compiler.LogError($"TypeCheckListener.ExitRegister: The symbol '{identifier}' was not a register.");
+                Error.Report(new TypeError(new ErrorContext(context), identifier, typeof(Register), symbol.GetType()));
+            }
+
             // Cannot access qubit with []
             if (symbol is Qubit && context.TryGetIndexExpression(out Expression<int> _))
             {
@@ -100,11 +106,18 @@ namespace LUIECompiler.SemanticAnalysis
                 return;
             }
 
-            if (symbol is not LoopIterator)
+            if (symbol is LoopIterator)
             {
-                Compiler.LogError($"The symbol '{identifier}' was not a LoopIterator.");
-                Error.Report(new TypeError(new ErrorContext(context), identifier, typeof(LoopIterator), symbol.GetType()));
+                return;
             }
+
+            if(symbol is Constant<int> || symbol is Constant<uint> || symbol is Constant<double>)
+            {
+                return;
+            }
+
+            Compiler.LogError($"The symbol '{identifier}' was not a LoopIterator.");
+            Error.Report(new TypeError(new ErrorContext(context), identifier, typeof(LoopIterator), symbol.GetType()));
         }
 
         public override void ExitGateapplication([NotNull] LuieParser.GateapplicationContext context)
