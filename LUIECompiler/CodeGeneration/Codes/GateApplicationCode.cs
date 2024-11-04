@@ -106,7 +106,7 @@ namespace LUIECompiler.CodeGeneration.Codes
             {
                 if (Guards.Any(g => g.Qubit.SemanticallyEqual(parameter)))
                 {
-                    Symbol symbol = parameter.Register.Register;
+                    Symbol symbol = parameter.Register.Symbol;
                     throw new CodeGenerationException()
                     {
                         Error = new UseOfGuardError(symbol.ErrorContext, symbol.Identifier)

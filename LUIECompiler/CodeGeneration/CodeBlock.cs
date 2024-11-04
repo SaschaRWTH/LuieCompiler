@@ -90,7 +90,7 @@ namespace LUIECompiler.CodeGeneration
             {
                 throw new CodeGenerationException()
                 {
-                    Error = new UndefinedError(definition.Register.ErrorContext, definition.Register.Identifier),
+                    Error = new UndefinedError(definition.Symbol.ErrorContext, definition.Symbol.Identifier),
                 };
             }
             
@@ -136,7 +136,7 @@ namespace LUIECompiler.CodeGeneration
             Symbol? symbol = null;
             try
             {
-                symbol = Translateables.OfType<Declaration>().SingleOrDefault(def => def.Register.Identifier == identifier)?.Register;
+                symbol = Translateables.OfType<Declaration>().SingleOrDefault(def => def.Symbol.Identifier == identifier)?.Symbol;
             }
             catch (InvalidOperationException)
             {
@@ -202,7 +202,7 @@ namespace LUIECompiler.CodeGeneration
             Declaration? definition = null;
             try
             {
-                definition = Translateables.OfType<Declaration>().SingleOrDefault(def => def.Register == register);
+                definition = Translateables.OfType<Declaration>().SingleOrDefault(def => def.Symbol == register);
             }
             catch (InvalidOperationException)
             {

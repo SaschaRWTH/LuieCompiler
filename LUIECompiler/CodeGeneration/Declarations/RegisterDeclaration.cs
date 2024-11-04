@@ -13,16 +13,16 @@ namespace LUIECompiler.CodeGeneration.Declarations
         /// <summary>
         /// The register to define.
         /// </summary>
-        public override Symbol Register { get; init; }
+        public override Symbol Symbol { get; init; }
 
         public RegisterDeclaration(Register register)
         {
-            Register = register;
+            Symbol = register;
         }
 
         public override QASMProgram ToQASM(CodeGenerationContext context)
         {
-            Register register = (Register)Register;
+            Register register = (Register)Symbol;
 
             int size = register.Size.Evaluate(context);
 
@@ -30,7 +30,7 @@ namespace LUIECompiler.CodeGeneration.Declarations
             {
                 throw new CodeGenerationException()
                 {
-                    Error = new InvalidSizeError(Register.ErrorContext, register.Identifier, size),
+                    Error = new InvalidSizeError(Symbol.ErrorContext, register.Identifier, size),
                 };
             }
 
