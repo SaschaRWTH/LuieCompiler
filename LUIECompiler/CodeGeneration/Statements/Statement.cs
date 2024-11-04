@@ -1,6 +1,6 @@
 
 using System.Diagnostics.CodeAnalysis;
-using LUIECompiler.CodeGeneration.Definitions;
+using LUIECompiler.CodeGeneration.Declarations;
 using LUIECompiler.CodeGeneration.Codes;
 using LUIECompiler.Common.Errors;
 using LUIECompiler.CodeGeneration.Exceptions;
@@ -26,19 +26,19 @@ namespace LUIECompiler.CodeGeneration.Statements
         public abstract QASMProgram ToQASM(CodeGenerationContext context);
         
         /// <summary>
-        /// Returns the <see cref="Definition"/> of a given <paramref name="register"/>
+        /// Returns the <see cref="Declaration"/> of a given <paramref name="register"/>
         /// </summary>
         /// <param name="register"></param>
         /// <returns></returns>
         /// <exception cref="CodeGenerationException"></exception>
-        protected Definition GetDefinition([NotNull] Register register, CodeGenerationContext context)
+        protected Declaration GetDefinition([NotNull] Register register, CodeGenerationContext context)
         {
             if (register is RegisterAccess access)
             {
                 register = access.Register;
             }
 
-            Definition definition = context.CurrentBlock.GetDefinition(register);
+            Declaration definition = context.CurrentBlock.GetDefinition(register);
             
             return definition;
         }
@@ -67,7 +67,7 @@ namespace LUIECompiler.CodeGeneration.Statements
                 };
             }
 
-            RegisterDefinition definition = GetDefinition(qubit, context) as RegisterDefinition ??
+            RegisterDeclaration definition = GetDefinition(qubit, context) as RegisterDeclaration ??
                 throw new InternalException()
                 {
                     Reason = "Guard is not a register definition. This should have been caught by the semantic analysis and type checking while generating."

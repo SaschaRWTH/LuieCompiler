@@ -1,4 +1,4 @@
-using LUIECompiler.CodeGeneration.Definitions;
+using LUIECompiler.CodeGeneration.Declarations;
 using LUIECompiler.Common;
 
 namespace LUIECompiler.CodeGeneration.Codes

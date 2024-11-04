@@ -1,5 +1,5 @@
 
-using LUIECompiler.CodeGeneration.Definitions;
+using LUIECompiler.CodeGeneration.Declarations;
 using LUIECompiler.Optimization;
 
 namespace LUIECompiler.CodeGeneration.Codes

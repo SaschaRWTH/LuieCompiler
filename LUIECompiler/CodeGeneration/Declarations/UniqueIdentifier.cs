@@ -1,6 +1,6 @@
 using LUIECompiler.Common;
 
-namespace LUIECompiler.CodeGeneration.Definitions
+namespace LUIECompiler.CodeGeneration.Declarations
 {
     /// <summary>
     /// Represents a unique identifier for a register or qubit.

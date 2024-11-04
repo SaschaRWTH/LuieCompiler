@@ -1,4 +1,4 @@
-using LUIECompiler.CodeGeneration.Definitions;
+using LUIECompiler.CodeGeneration.Declarations;
 
 namespace LUIECompiler.Optimization.Graphs
 {

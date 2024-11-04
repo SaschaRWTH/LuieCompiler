@@ -3,19 +3,19 @@ using LUIECompiler.Common.Symbols;
 using LUIECompiler.CodeGeneration.Exceptions;
 using LUIECompiler.Common.Errors;
 
-namespace LUIECompiler.CodeGeneration.Definitions
+namespace LUIECompiler.CodeGeneration.Declarations
 {
     /// <summary>
     /// Represents a definition of a register.
     /// </summary>
-    public class RegisterDefinition : Definition
+    public class RegisterDeclaration : Declaration
     {
         /// <summary>
         /// The register to define.
         /// </summary>
         public override Symbol Register { get; init; }
 
-        public RegisterDefinition(Register register)
+        public RegisterDeclaration(Register register)
         {
             Register = register;
         }

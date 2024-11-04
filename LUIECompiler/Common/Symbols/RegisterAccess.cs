@@ -1,5 +1,5 @@
 using LUIECompiler.CodeGeneration.Codes;
-using LUIECompiler.CodeGeneration.Definitions;
+using LUIECompiler.CodeGeneration.Declarations;
 using LUIECompiler.CodeGeneration;
 using LUIECompiler.CodeGeneration.Expressions;
 using LUIECompiler.CodeGeneration.Exceptions;
@@ -35,7 +35,7 @@ namespace LUIECompiler.Common.Symbols
             Register = register;
         }
 
-        public override QubitCode ToQASMCode(RegisterDefinition definition, CodeGenerationContext codeGenContext, ErrorContext context)
+        public override QubitCode ToQASMCode(RegisterDeclaration definition, CodeGenerationContext codeGenContext, ErrorContext context)
         {
             int index = IndexExpression.Evaluate(codeGenContext);
             int size = Register.Size.Evaluate(codeGenContext);

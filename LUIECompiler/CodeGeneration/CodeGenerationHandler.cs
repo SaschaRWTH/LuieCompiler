@@ -1,6 +1,6 @@
 
 using System.Diagnostics.CodeAnalysis;
-using LUIECompiler.CodeGeneration.Definitions;
+using LUIECompiler.CodeGeneration.Declarations;
 using LUIECompiler.CodeGeneration.Statements;
 using LUIECompiler.CodeGeneration.Codes;
 using LUIECompiler.Common;
@@ -108,7 +108,7 @@ namespace LUIECompiler.CodeGeneration
         {
             AddSymbol(register, context);
 
-            RegisterDefinition definition = new(register);
+            RegisterDeclaration definition = new(register);
 
             CurrentBlock.AddTranslateable(definition);
 

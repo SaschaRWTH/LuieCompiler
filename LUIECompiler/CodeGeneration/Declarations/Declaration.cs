@@ -2,10 +2,10 @@ using LUIECompiler.Common;
 using LUIECompiler.CodeGeneration.Codes;
 using LUIECompiler.Common.Symbols;
 
-namespace LUIECompiler.CodeGeneration.Definitions
+namespace LUIECompiler.CodeGeneration.Declarations
 {
 
-    public abstract class Definition : ITranslateable
+    public abstract class Declaration : ITranslateable
     {
         /// <summary>
         /// Identifier to be defined.

@@ -1,6 +1,6 @@
 using LUIECompiler.CodeGeneration.Codes;
 using LUIECompiler.Common.Symbols;
-using LUIECompiler.CodeGeneration.Definitions;
+using LUIECompiler.CodeGeneration.Declarations;
 using LUIECompiler.CodeGeneration.Exceptions;
 using LUIECompiler.Common.Errors;
 
@@ -19,7 +19,7 @@ namespace LUIECompiler.CodeGeneration
         /// <summary>
         /// Maps definitions to their unique identifiers given while generating.
         /// </summary>
-        public Dictionary<Definition, UniqueIdentifier> IdentifierMap { get; init; } = [];
+        public Dictionary<Declaration, UniqueIdentifier> IdentifierMap { get; init; } = [];
 
         /// <summary>
         /// Parent code block. If null, this is the main block.
@@ -63,7 +63,7 @@ namespace LUIECompiler.CodeGeneration
 
             foreach (var statement in Translateables)
             {
-                if (statement is Definition definition)
+                if (statement is Declaration definition)
                 {
                     IdentifierMap.Add(definition, new UniqueIdentifier(context.SymbolTable));
                 }
@@ -79,7 +79,7 @@ namespace LUIECompiler.CodeGeneration
         /// <param name="definition"></param>
         /// <returns></returns>
         /// <exception cref="CodeGenerationException"></exception>
-        public UniqueIdentifier GetUniqueIdentifier(Definition definition)
+        public UniqueIdentifier GetUniqueIdentifier(Declaration definition)
         {
             if(IdentifierMap.TryGetValue(definition, out var identifier))
             {
@@ -136,7 +136,7 @@ namespace LUIECompiler.CodeGeneration
             Symbol? symbol = null;
             try
             {
-                symbol = Translateables.OfType<Definition>().SingleOrDefault(def => def.Register.Identifier == identifier)?.Register;
+                symbol = Translateables.OfType<Declaration>().SingleOrDefault(def => def.Register.Identifier == identifier)?.Register;
             }
             catch (InvalidOperationException)
             {
@@ -196,13 +196,13 @@ namespace LUIECompiler.CodeGeneration
         /// <returns></returns>
         /// <exception cref="InternalException"></exception>
         /// <exception cref="CodeGenerationException"></exception>
-        public Definition GetDefinition(Register register)
+        public Declaration GetDefinition(Register register)
         {
 
-            Definition? definition = null;
+            Declaration? definition = null;
             try
             {
-                definition = Translateables.OfType<Definition>().SingleOrDefault(def => def.Register == register);
+                definition = Translateables.OfType<Declaration>().SingleOrDefault(def => def.Register == register);
             }
             catch (InvalidOperationException)
             {
