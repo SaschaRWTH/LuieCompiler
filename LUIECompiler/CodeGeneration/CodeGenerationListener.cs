@@ -66,7 +66,6 @@ namespace LUIECompiler.CodeGeneration
                     Reason = "Gate was not of type Gate.",
                 },
                 Parameters = parameters,
-                ParentBlock = CodeGen.CurrentBlock,
                 ErrorContext = errorContext,
             };
 
@@ -84,7 +83,6 @@ namespace LUIECompiler.CodeGeneration
             {
                 Gate = gate,
                 Parameters = parameters.ToDictionary(parameter => gate.Parameters[parameters.IndexOf(parameter)]),
-                ParentBlock = CodeGen.CurrentBlock,
                 ErrorContext = errorContext,
             };
 
@@ -133,7 +131,6 @@ namespace LUIECompiler.CodeGeneration
             {
                 Block = block,
                 Guard = CodeGen.Table.CurrentGuard,
-                ParentBlock = CodeGen.CurrentBlock,
                 ErrorContext = new ErrorContext(context.Start),
             };
 
@@ -155,7 +152,6 @@ namespace LUIECompiler.CodeGeneration
             {
                 Block = block,
                 Guard = CodeGen.Table.CurrentGuard,
-                ParentBlock = CodeGen.CurrentBlock,
                 ErrorContext = new ErrorContext(context.Start),
             };
 
@@ -189,7 +185,6 @@ namespace LUIECompiler.CodeGeneration
             {
                 Iterator = iterator,
                 Body = block,
-                ParentBlock = CodeGen.CurrentBlock,
                 ErrorContext = new ErrorContext(context.Start),
             };
 

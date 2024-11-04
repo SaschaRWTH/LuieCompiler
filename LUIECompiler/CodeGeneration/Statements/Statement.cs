@@ -14,11 +14,6 @@ namespace LUIECompiler.CodeGeneration.Statements
     public abstract class Statement : ITranslateable
     {
         /// <summary>
-        /// Parent code block in which the statement is executed.
-        /// </summary>
-        public required CodeBlock ParentBlock { get; init; }
-
-        /// <summary>
         /// Source code line of the statement.
         /// </summary>
         public required ErrorContext ErrorContext { get; init; }
