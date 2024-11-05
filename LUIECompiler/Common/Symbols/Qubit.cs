@@ -33,7 +33,7 @@ namespace LUIECompiler.Common.Symbols
         {
             return new()
             {
-                Register = definition,
+                Register = definition.Symbol,
                 Identifier = codeGenContext.CurrentBlock.GetUniqueIdentifier(definition),
             };
         }

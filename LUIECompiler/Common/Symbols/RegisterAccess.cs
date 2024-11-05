@@ -51,7 +51,7 @@ namespace LUIECompiler.Common.Symbols
 
             return new RegisterAccessCode()
             {
-                Register = definition,
+                Register = definition.Symbol,
                 Index = index,
                 Identifier = codeGenContext.CurrentBlock.GetUniqueIdentifier(definition),
             };

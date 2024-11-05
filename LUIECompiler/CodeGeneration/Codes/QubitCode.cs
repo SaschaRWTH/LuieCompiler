@@ -11,7 +11,7 @@ namespace LUIECompiler.CodeGeneration.Codes
         /// <summary>
         /// Register that the parameter is associated with.
         /// </summary>
-        public required RegisterDeclaration Register { get; init; }
+        public required Symbol Register { get; init; }
 
         /// <summary>
         /// Unique identifier of the qubit.
