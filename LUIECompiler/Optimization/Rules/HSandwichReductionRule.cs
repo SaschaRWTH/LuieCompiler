@@ -66,7 +66,7 @@ namespace LUIECompiler.Optimization.Rules
             GateApplicationCode newGate = new
             (
                 gate: new GateCode(EquivalentGate),
-                parameters: [ ..sandwiched.GateCode.Parameters],
+                arguments: [ ..sandwiched.GateCode.Arguments],
                 guards: [ ..sandwiched.GateCode.Guards]
             );
 

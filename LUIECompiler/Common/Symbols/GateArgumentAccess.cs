@@ -8,7 +8,7 @@ namespace LUIECompiler.Common.Symbols
     /// <summary>
     /// Represents an access to a parameter in the code generation.
     /// </summary>
-    public class ParameterAccess : Parameter
+    public class GateArgumentAccess : GateArgument
     {
         /// <summary>
         /// Expression that evaluates to the index of the qubit in the <see cref="Register"/>.
@@ -18,7 +18,7 @@ namespace LUIECompiler.Common.Symbols
         /// <summary>
         /// The parameter being accessed.
         /// </summary>
-        public Parameter Parameter { get; }
+        public GateArgument Argument { get; }
 
         /// <summary>
         /// Creates a new parameter access.
@@ -26,15 +26,15 @@ namespace LUIECompiler.Common.Symbols
         /// <param name="parameter">Parameter being accessed.</param>
         /// <param name="indexExpression">Expression that evaluates to the index of the qubit in the <see cref="Register"/>.</param>
         /// <param name="errorContext">Context of the parameter access.</param>
-        public ParameterAccess(Parameter parameter, Expression<int> indexExpression, ErrorContext errorContext) : base(parameter.Identifier, errorContext) 
+        public GateArgumentAccess(GateArgument parameter, Expression<int> indexExpression, ErrorContext errorContext) : base(parameter.Identifier, errorContext) 
         { 
-            Parameter = parameter;
+            Argument = parameter;
             IndexExpression = indexExpression;
         }
 
         public override RegisterAccess ToRegister(CodeGenerationContext context)
         {
-            Symbol symbol = Parameter.GetSymbol(context);
+            Symbol symbol = Argument.GetSymbol(context);
 
             if (symbol is not Register register)
             {
@@ -50,13 +50,13 @@ namespace LUIECompiler.Common.Symbols
 
         public override Symbol GetSymbol(CodeGenerationContext context)
         {
-            Register? register = Parameter.GetSymbol(context) as Register;
+            Register? register = Argument.GetSymbol(context) as Register;
             if (register is null)
             {
                 Compiler.LogError($"Could not get the symbol of the parameter '{Identifier}'");
                 throw new CodeGenerationException()
                 {
-                    Error = new TypeError(ErrorContext, Identifier, typeof(Register), Parameter.GetSymbol(context).GetType()),
+                    Error = new TypeError(ErrorContext, Identifier, typeof(Register), Argument.GetSymbol(context).GetType()),
                 };
             }
             return register.ToRegisterAccess(IndexExpression, ErrorContext);
@@ -65,7 +65,7 @@ namespace LUIECompiler.Common.Symbols
 
         public override string ToString()
         {
-            return $"Parameter = {{ id={Identifier}, index={IndexExpression}, Hash={GetHashCode()}, Parameter={Parameter} }}";
+            return $"Argument = {{ id={Identifier}, index={IndexExpression}, Hash={GetHashCode()}, Parameter={Argument} }}";
         }
     }
 }

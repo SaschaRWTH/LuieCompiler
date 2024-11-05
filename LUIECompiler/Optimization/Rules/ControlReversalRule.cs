@@ -37,7 +37,7 @@ namespace LUIECompiler.Optimization.Rules
 
             if (node.Gate == GateType.CX)
             {
-                if (node.GateCode.Parameters.Count != 2)
+                if (node.GateCode.Arguments.Count != 2)
                 {
                     throw new InternalException()
                     {
@@ -45,16 +45,16 @@ namespace LUIECompiler.Optimization.Rules
                     };
                 }
 
-                QubitCode guard = node.GateCode.Parameters[0];
-                QubitCode target = node.GateCode.Parameters[1];
+                QubitCode guard = node.GateCode.Arguments[0];
+                QubitCode target = node.GateCode.Arguments[1];
 
-                node.GateCode.Parameters[0] = target;
-                node.GateCode.Parameters[1] = guard;
+                node.GateCode.Arguments[0] = target;
+                node.GateCode.Arguments[1] = guard;
             }
 
             if (node.Gate == GateType.X)
             {
-                if (node.GateCode.Parameters.Count != 1)
+                if (node.GateCode.Arguments.Count != 1)
                 {
                     throw new InternalException()
                     {
@@ -70,9 +70,9 @@ namespace LUIECompiler.Optimization.Rules
                 }
 
                 GuardCode guard = node.GateCode.Guards[0];
-                QubitCode target = node.GateCode.Parameters[0];
+                QubitCode target = node.GateCode.Arguments[0];
 
-                node.GateCode.Parameters[0] = guard.Qubit;
+                node.GateCode.Arguments[0] = guard.Qubit;
                 node.GateCode.Guards[0] = new()
                 {
                     Qubit = target,

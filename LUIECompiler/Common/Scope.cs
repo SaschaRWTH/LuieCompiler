@@ -24,12 +24,12 @@ namespace LUIECompiler.Common
         /// Gets all parameters from the scope.
         /// </summary>
         /// <returns></returns>
-        public List<Parameter> GetParameters()
+        public List<GateArgument> GetParameters()
         {
-            List<Parameter> parameters = [];
+            List<GateArgument> parameters = [];
             foreach (var symbol in IdentifierMap.Values)
             {
-                if (symbol is Parameter parameter)
+                if (symbol is GateArgument parameter)
                 {
                     parameters.Add(parameter);
                 }

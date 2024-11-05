@@ -60,7 +60,7 @@ namespace LUIECompiler.SemanticAnalysis
             }
 
             // Check type of parameter at generation time
-            if (symbol is Parameter)
+            if (symbol is GateArgument)
             {
                 return;
             }
@@ -137,7 +137,7 @@ namespace LUIECompiler.SemanticAnalysis
                 }
 
                 // Check type of parameter at generation time
-                if (symbol is Parameter)
+                if (symbol is GateArgument)
                 {
                     return;
                 }
@@ -187,7 +187,7 @@ namespace LUIECompiler.SemanticAnalysis
             }
 
             // Check type of parameter at generation time
-            if (symbol is Parameter)
+            if (symbol is GateArgument)
             {
                 return;
             }
@@ -283,7 +283,7 @@ namespace LUIECompiler.SemanticAnalysis
                 }
 
                 // Check type of parameter at generation time
-                if (symbol is Parameter)
+                if (symbol is GateArgument)
                 {
                     continue;
                 }
@@ -300,7 +300,7 @@ namespace LUIECompiler.SemanticAnalysis
         public override void EnterGateDeclaration([NotNull] LuieParser.GateDeclarationContext context)
         {
             Table.PushEmptyScope();
-            foreach (Parameter param in context.GetParameters())
+            foreach (GateArgument param in context.GetArguments())
             {
                 Table.AddSymbol(param);
             }
@@ -315,7 +315,7 @@ namespace LUIECompiler.SemanticAnalysis
             {
                 Parent = null
             };
-            CompositeGate gate = new(context.identifier.Text, block, context.GetParameters(), new ErrorContext(context));
+            CompositeGate gate = new(context.identifier.Text, block, context.GetArguments(), new ErrorContext(context));
             Table.AddSymbol(gate);
         }
     }

@@ -19,9 +19,9 @@ namespace LUIECompiler.CodeGeneration
         public required SymbolTable SymbolTable { get; init; }
 
         /// <summary>
-        /// Maps the parameters to the corresponding symbols for the current context.
+        /// Maps the arguments to the corresponding symbols for the current context.
         /// </summary>
-        public Dictionary<Parameter, Symbol> ParameterMap { get; } = [];
+        public Dictionary<GateArgument, Symbol> ArgumentMap { get; } = [];
 
         public CodeGenerationContext()
         {
@@ -32,9 +32,9 @@ namespace LUIECompiler.CodeGeneration
         /// Creates a new code generation context with the given integer constants.
         /// </summary>
         /// <param name="integerConstants"></param>
-        public CodeGenerationContext(Dictionary<Parameter, Symbol> parameterMap)
+        public CodeGenerationContext(Dictionary<GateArgument, Symbol> argMap)
         {
-            ParameterMap = parameterMap;
+            ArgumentMap = argMap;
         }
 
 

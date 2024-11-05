@@ -18,7 +18,7 @@ namespace LUIECompiler.CodeGeneration.Statements
         /// <summary>
         /// Register to which the gate is applied to.
         /// </summary>
-        public required List<Symbol> Parameters { get; init; }
+        public required List<Symbol> Arguments { get; init; }
 
         /// <summary>
         /// Returns the QASM code for the statement.
@@ -30,18 +30,18 @@ namespace LUIECompiler.CodeGeneration.Statements
             (
                 gate: Gate.ToGateCode(context),
                 guards: [],
-                parameters: GetParameters(context)
+                arguments: GetArguments(context)
             ));
         }
 
         /// <summary>
-        /// Gets the parameters of the gate.
+        /// Gets the arguments of the gate.
         /// </summary>
         /// <returns></returns>
         /// <exception cref="CodeGenerationException"></exception>
-        public List<QubitCode> GetParameters(CodeGenerationContext context)
+        public List<QubitCode> GetArguments(CodeGenerationContext context)
         {
-            return Parameters.Select(param =>
+            return Arguments.Select(param =>
                 TranslateQubit(param, context)
             ).ToList();
         }

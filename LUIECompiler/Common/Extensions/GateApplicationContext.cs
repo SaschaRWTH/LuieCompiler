@@ -13,7 +13,7 @@ namespace LUIECompiler.Common.Extensions
         /// <param name="context"></param>
         /// <param name="table"></param>
         /// <returns></returns>
-        public static List<Symbol> GetParameters(this LuieParser.GateapplicationContext context, SymbolTable table)
+        public static List<Symbol> GetArguments(this LuieParser.GateapplicationContext context, SymbolTable table)
         {
             var registers = context.register();
             return registers.Select(register => SingleSymbol(register, table)).ToList();
@@ -35,7 +35,7 @@ namespace LUIECompiler.Common.Extensions
                 Error = new UndefinedError(new ErrorContext(context.Start), identifier),
             };
 
-            if (symbol is Parameter parameter)
+            if (symbol is GateArgument parameter)
             {
                 return SingleParameter(context, parameter, table);
             }
@@ -101,14 +101,14 @@ namespace LUIECompiler.Common.Extensions
         /// <param name="parameter"></param>
         /// <param name="table"></param>
         /// <returns></returns>
-        private static Parameter SingleParameter(LuieParser.RegisterContext context, Parameter parameter, SymbolTable table)
+        private static GateArgument SingleParameter(LuieParser.RegisterContext context, GateArgument parameter, SymbolTable table)
         {
             if (!context.TryGetIndexExpression(out Expression<int> index))
             {
                 return parameter;
             }
             
-            return new ParameterAccess(parameter, index, new ErrorContext(context));
+            return new GateArgumentAccess(parameter, index, new ErrorContext(context));
         }
     }
 }

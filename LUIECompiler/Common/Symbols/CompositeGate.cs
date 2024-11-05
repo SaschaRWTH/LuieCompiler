@@ -14,14 +14,14 @@ namespace LUIECompiler.Common.Symbols
         public CodeBlock Body { get; init; }
 
         /// <summary>
-        /// List of parameters of the composite gate.
+        /// List of arguments of the composite gate.
         /// </summary>
-        public List<Parameter> Parameters { get; init; }
+        public List<GateArgument> Arguments { get; init; }
         
         /// <summary>
         /// Number of arguments the gate takes.
         /// </summary>
-        public int NumberOfArguments { get => Parameters.Count; }
+        public int NumberOfArguments { get => Arguments.Count; }
 
         /// <summary>
         /// Type of the gate.
@@ -33,17 +33,17 @@ namespace LUIECompiler.Common.Symbols
         /// </summary>
         /// <param name="identifier">Identifier of the gate.</param>
         /// <param name="body">Body of the gate.</param>
-        /// <param name="parameters">List of parameters of the gate.</param>
+        /// <param name="arguments">List of arguments of the gate.</param>
         /// <param name="errorContext">Context of the gate definition.</param>
-        public CompositeGate(string identifier, CodeBlock body, List<Parameter> parameters, ErrorContext errorContext) : base(identifier, errorContext)
+        public CompositeGate(string identifier, CodeBlock body, List<GateArgument> arguments, ErrorContext errorContext) : base(identifier, errorContext)
         {
             Body = body;
-            Parameters = parameters;
+            Arguments = arguments;
         }
 
         public override string ToString()
         {
-            return $"CompositeGate: {{ Identifier = {Identifier}, Parameters = {Parameters} }}";
+            return $"CompositeGate: {{ Identifier = {Identifier}, Args = {Arguments} }}";
         }
     }
 }

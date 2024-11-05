@@ -10,13 +10,13 @@ namespace LUIECompiler.Common.Extensions
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public static List<Parameter> GetParameters(this LuieParser.GateParameterContext context)
+        public static List<GateArgument> GetParameters(this LuieParser.GateParameterContext context)
         {
-            List<Parameter> parameters = [];
+            List<GateArgument> parameters = [];
 
             foreach (string identifier in context.IDENTIFIER().Select(x => x.GetText()))
             {
-                parameters.Add(new Parameter(identifier, new ErrorContext(context)));
+                parameters.Add(new GateArgument(identifier, new ErrorContext(context)));
             }
 
             return parameters;

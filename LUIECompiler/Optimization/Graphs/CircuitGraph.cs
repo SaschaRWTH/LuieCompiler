@@ -99,7 +99,7 @@ namespace LUIECompiler.Optimization.Graphs
             {
                 identifiers.Add(guard.Qubit);
             }
-            foreach (var parameter in gate.Parameters)
+            foreach (var parameter in gate.Arguments)
             {
                 identifiers.Add(parameter);
             }

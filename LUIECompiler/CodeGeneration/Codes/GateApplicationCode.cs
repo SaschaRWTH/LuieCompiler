@@ -32,14 +32,14 @@ namespace LUIECompiler.CodeGeneration.Codes
         public GateCode Gate { get; private set; }
 
         /// <summary>
-        /// List of all gate parameters. 
+        /// List of all gate arguments. 
         /// </summary>
-        public List<QubitCode> Parameters { get; }
+        public List<QubitCode> Arguments { get; }
 
-        public GateApplicationCode(GateCode gate, List<QubitCode> parameters, List<GuardCode> guards)
+        public GateApplicationCode(GateCode gate, List<QubitCode> arguments, List<GuardCode> guards)
         {
             Gate = gate;
-            Parameters = parameters;
+            Arguments = arguments;
             Guards = guards;
 
             ReplaceControlledGates();
@@ -51,15 +51,15 @@ namespace LUIECompiler.CodeGeneration.Codes
             if (Gate.GateType == GateType.CX)
             { 
                 Gate = new(GateType.X);
-                if (Parameters.Count != 2)
+                if (Arguments.Count != 2)
                 {
                     throw new InternalException()
                     {
-                        Reason = "CX gate must have 2 parameters"
+                        Reason = "CX gate must have 2 arguments"
                     };
                 }
-                QubitCode guard = Parameters[0];
-                Parameters.Remove(guard);
+                QubitCode guard = Arguments[0];
+                Arguments.Remove(guard);
 
                 Guards.Add(new GuardCode()
                 {
@@ -72,17 +72,17 @@ namespace LUIECompiler.CodeGeneration.Codes
             if (Gate.GateType == GateType.CCX)
             {
                 Gate = new(GateType.X);
-                if (Parameters.Count != 3)
+                if (Arguments.Count != 3)
                 {
                     throw new InternalException()
                     {
-                        Reason = "CCX gate must have 3 parameters"
+                        Reason = "CCX gate must have 3 arguments"
                     };
                 }
-                QubitCode firstGuard = Parameters[0];
-                QubitCode secGuard = Parameters[1];
-                Parameters.Remove(firstGuard);
-                Parameters.Remove(secGuard);
+                QubitCode firstGuard = Arguments[0];
+                QubitCode secGuard = Arguments[1];
+                Arguments.Remove(firstGuard);
+                Arguments.Remove(secGuard);
 
                 Guards.Add(new GuardCode()
                 {
@@ -98,15 +98,15 @@ namespace LUIECompiler.CodeGeneration.Codes
         }
 
         /// <summary>
-        /// Checks if a parameter of the gate application is also a guard (not allowed).
+        /// Checks if an argument of the gate application is also a guard (not allowed).
         /// </summary>
         private void CheckUseOfGuard()
         {
-            foreach (QubitCode parameter in Parameters)
+            foreach (QubitCode arg in Arguments)
             {
-                if (Guards.Any(g => g.Qubit.SemanticallyEqual(parameter)))
+                if (Guards.Any(g => g.Qubit.SemanticallyEqual(arg)))
                 {
-                    Symbol symbol = parameter.Register;
+                    Symbol symbol = arg.Register;
                     throw new CodeGenerationException()
                     {
                         Error = new UseOfGuardError(symbol.ErrorContext, symbol.Identifier)
@@ -116,37 +116,37 @@ namespace LUIECompiler.CodeGeneration.Codes
         }
 
         /// <summary>
-        ///  Gets the code string representation of all parameters. 
+        ///  Gets the code string representation of all arguments. 
         /// </summary>
         /// <returns></returns>
-        private string GetParameters()
+        private string GetArguments()
         {
-            return string.Join(", ", Parameters.Select(param => param.ToCode()));
+            return string.Join(", ", Arguments.Select(param => param.ToCode()));
         }
 
         public override string ToCode()
         {
-            string parameters = GetParameters();
+            string arguments = GetArguments();
 
             if (NegativeGuards.Count == 0 && PositiveGuards.Count == 0)
             {
-                return $"{Gate.ToCode()} {parameters};";
+                return $"{Gate.ToCode()} {arguments};";
             }
 
             if (NegativeGuards.Count == 0)
             {
-                return $"ctrl({PositiveGuards.Count}) @ {Gate.ToCode()} {string.Join(", ", PositiveGuards.Select(g => g.ToCode()))}, {parameters};";
+                return $"ctrl({PositiveGuards.Count}) @ {Gate.ToCode()} {string.Join(", ", PositiveGuards.Select(g => g.ToCode()))}, {arguments};";
             }
 
             if (PositiveGuards.Count == 0)
             {
-                return $"negctrl({NegativeGuards.Count}) @ {Gate.ToCode()} {string.Join(", ", NegativeGuards.Select(g => g.ToCode()))}, {parameters};";
+                return $"negctrl({NegativeGuards.Count}) @ {Gate.ToCode()} {string.Join(", ", NegativeGuards.Select(g => g.ToCode()))}, {arguments};";
             }
 
 
             return $"negctrl({NegativeGuards.Count}) @ ctrl({PositiveGuards.Count}) @" +
                    $"{Gate.ToCode()} {string.Join(", ", NegativeGuards.Select(g => g.ToCode()))}," +
-                   $"{string.Join(", ", PositiveGuards.Select(g => g.ToCode()))}, {parameters};";
+                   $"{string.Join(", ", PositiveGuards.Select(g => g.ToCode()))}, {arguments};";
         }
 
         public override bool SemanticallyEqual(Code code)
@@ -157,7 +157,7 @@ namespace LUIECompiler.CodeGeneration.Codes
                 return false;
             }
 
-            CheckParameterSemanticEquality(gateCode.Parameters);
+            CheckArgumentSemanticEquality(gateCode.Arguments);
 
             // Guards are independent of order and amounts (i.e. ctrl(2) @ q, q = ctrl(1) @ q)
             // Therefore we only need to check mutually inclusivity of semantically equal guards
@@ -180,20 +180,20 @@ namespace LUIECompiler.CodeGeneration.Codes
         }
 
         /// <summary>
-        /// Checks if the parameters of the gate application are semantically equal to the <paramref name="parameter"/>.
+        /// Checks if the arguments of the gate application are semantically equal to the <paramref name="args"/>.
         /// </summary>
-        /// <param name="parameter"></param>
+        /// <param name="args"></param>
         /// <returns></returns>
-        protected bool CheckParameterSemanticEquality(List<QubitCode> parameter)
+        protected bool CheckArgumentSemanticEquality(List<QubitCode> args)
         {
-            if (parameter.Count != Parameters.Count)
+            if (args.Count != Arguments.Count)
             {
                 return false;
             }
 
-            for (int i = 0; i < Parameters.Count; i++)
+            for (int i = 0; i < Arguments.Count; i++)
             {
-                if (!Parameters[i].SemanticallyEqual(parameter[i]))
+                if (!Arguments[i].SemanticallyEqual(args[i]))
                 {
                     return false;
                 }
@@ -209,7 +209,7 @@ namespace LUIECompiler.CodeGeneration.Codes
         /// <returns></returns>
         public bool AreIndependent(GateApplicationCode code)
         {
-            return IndependentGuards(code) && IndependentParameters(code);
+            return IndependentGuards(code) && IndependentArguments(code);
         }
 
         /// <summary>
@@ -233,23 +233,23 @@ namespace LUIECompiler.CodeGeneration.Codes
         }
 
         /// <summary>
-        /// Checks if the parameters of the gate application are independent of the <paramref name="code"/>.
+        /// Checks if the argument of the gate application are independent of the <paramref name="code"/>.
         /// </summary>
         /// <param name="code"></param>
         /// <returns></returns>
-        public bool IndependentParameters(GateApplicationCode code)
+        public bool IndependentArguments(GateApplicationCode code)
         {
-            if (code.Parameters.Count == 0)
+            if (code.Arguments.Count == 0)
             {
                 return true;
             }
 
-            if (Parameters.Count == 0)
+            if (Arguments.Count == 0)
             {
                 return true;
             }
 
-            return !Parameters.Any(p => code.Parameters.Any(p.SemanticallyEqual));
+            return !Arguments.Any(p => code.Arguments.Any(p.SemanticallyEqual));
         }
 
         public override string ToString()

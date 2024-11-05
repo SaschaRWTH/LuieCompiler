@@ -29,16 +29,16 @@ namespace LUIECompiler.CodeGeneration
 
         public override void ExitGateapplication([NotNull] LuieParser.GateapplicationContext context)
         {
-            List<Symbol> parameters = context.GetParameters(CodeGen.Table);
+            List<Symbol> arguments = context.GetArguments(CodeGen.Table);
             IGate gate = context.gate().GetGate(CodeGen.Table);
 
             if (gate is CompositeGate compositeGate)
             {
-                CreateCompositeGate(compositeGate, parameters, new ErrorContext(context));
+                CreateCompositeGate(compositeGate, arguments, new ErrorContext(context));
             }
             else
             {
-                CreatePredefinedGate(gate, parameters, new ErrorContext(context));
+                CreatePredefinedGate(gate, arguments, new ErrorContext(context));
             }
         }
 
@@ -46,16 +46,16 @@ namespace LUIECompiler.CodeGeneration
         /// Creates a predefined gate application statement.
         /// </summary>
         /// <param name="gate"></param>
-        /// <param name="parameters"></param>
+        /// <param name="arguments"></param>
         /// <param name="errorContext"></param>
         /// <exception cref="CodeGenerationException"></exception>
-        private void CreatePredefinedGate(IGate gate, List<Symbol> parameters, ErrorContext errorContext)
+        private void CreatePredefinedGate(IGate gate, List<Symbol> arguments, ErrorContext errorContext)
         {
-            if (parameters.Count != gate.NumberOfArguments)
+            if (arguments.Count != gate.NumberOfArguments)
             {
                 throw new CodeGenerationException()
                 {
-                    Error = new InvalidNumberOfArgumentsError(errorContext, gate, parameters.Count),
+                    Error = new InvalidNumberOfArgumentsError(errorContext, gate, arguments.Count),
                 };
             }
 
@@ -65,7 +65,7 @@ namespace LUIECompiler.CodeGeneration
                 {
                     Reason = "Gate was not of type Gate.",
                 },
-                Parameters = parameters,
+                Arguments = arguments,
                 ErrorContext = errorContext,
             };
 
@@ -76,13 +76,13 @@ namespace LUIECompiler.CodeGeneration
         /// Creates a composite gate application statement.
         /// </summary>
         /// <param name="gate"></param>
-        /// <param name="parameters"></param>
-        private void CreateCompositeGate(CompositeGate gate, List<Symbol> parameters, ErrorContext errorContext)
+        /// <param name="arguments"></param>
+        private void CreateCompositeGate(CompositeGate gate, List<Symbol> arguments, ErrorContext errorContext)
         {
             CompositeGateStatement statement = new()
             {
                 Gate = gate,
-                Parameters = parameters.ToDictionary(parameter => gate.Parameters[parameters.IndexOf(parameter)]),
+                Arguments = arguments.ToDictionary(arg => gate.Arguments[arguments.IndexOf(arg)]),
                 ErrorContext = errorContext,
             };
 
@@ -194,15 +194,15 @@ namespace LUIECompiler.CodeGeneration
         public override void EnterGateDeclaration([NotNull] LuieParser.GateDeclarationContext context)
         {
             CodeGen.Table.PushEmptyScope();
-            foreach (Parameter param in context.GetParameters())
+            foreach (GateArgument arg in context.GetArguments())
             {
-                CodeGen.AddParameter(param, new(context));
+                CodeGen.AddArgument(arg, new(context));
             }
         }
 
         public override void ExitGateDeclaration([NotNull] LuieParser.GateDeclarationContext context)
         {
-            List<Parameter> parameters = CodeGen.Table.GetParameters();
+            List<GateArgument> arguments = CodeGen.Table.GetArguments();
             CodeGen.Table.PopScope();
 
             Scope scope = _lastPoped ?? throw new InternalException()
@@ -213,7 +213,7 @@ namespace LUIECompiler.CodeGeneration
             {
                 Reason = "Scope did not contain codeblock, although block should existed."
             };
-            CompositeGate gate = new(context.identifier.Text, block, parameters, new ErrorContext(context));
+            CompositeGate gate = new(context.identifier.Text, block, arguments, new ErrorContext(context));
             CodeGen.AddCompositeGate(gate, new(context));
         }
 

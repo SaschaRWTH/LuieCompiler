@@ -22,7 +22,7 @@ namespace LUIECompiler.Common.Extensions
                 Error = new UndefinedError(new ErrorContext(context.Start), identifier),
             };
 
-            if(symbol is Parameter parameter)
+            if(symbol is GateArgument parameter)
             {
                 return GetGuardParameter(context.register(), parameter);
             }
@@ -59,14 +59,14 @@ namespace LUIECompiler.Common.Extensions
         /// <param name="context"></param>
         /// <param name="parameter"></param>
         /// <returns></returns>
-        public static Parameter GetGuardParameter(LuieParser.RegisterContext context, Parameter parameter)
+        public static GateArgument GetGuardParameter(LuieParser.RegisterContext context, GateArgument parameter)
         {
             if (!context.TryGetIndexExpression(out Expression<int> index))
             {
                 return parameter;
             }
 
-            return new ParameterAccess(parameter, index, new ErrorContext(context));
+            return new GateArgumentAccess(parameter, index, new ErrorContext(context));
         }
     }
 }

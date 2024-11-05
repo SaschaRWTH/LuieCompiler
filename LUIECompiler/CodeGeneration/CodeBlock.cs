@@ -53,7 +53,7 @@ namespace LUIECompiler.CodeGeneration
                 IdentifierMap = IdentifierMap,
             };
 
-            CodeGenerationContext generationContext = new(context.ParameterMap)
+            CodeGenerationContext generationContext = new(context.ArgumentMap)
             {
                 CurrentBlock = propagateBlock,
                 SymbolTable = context.SymbolTable,
@@ -113,7 +113,7 @@ namespace LUIECompiler.CodeGeneration
                 return symbol;
             }
 
-            symbol = GetSymbolFromParameters(identifier, context);
+            symbol = GetSymbolFromArguments(identifier, context);
             if(symbol != null)
             {
                 return symbol;
@@ -161,18 +161,18 @@ namespace LUIECompiler.CodeGeneration
         }
 
         /// <summary>
-        /// Gets the symbol with the given identifier from the parameters.
+        /// Gets the symbol with the given identifier from the arguments.
         /// </summary>
         /// <param name="identifier"></param>
         /// <param name="context"></param>
         /// <returns></returns>
         /// <exception cref="InternalException"></exception>
-        private Symbol? GetSymbolFromParameters(string identifier, CodeGenerationContext context)
+        private Symbol? GetSymbolFromArguments(string identifier, CodeGenerationContext context)
         {            
-            Parameter? parameter = null;
+            GateArgument? arg = null;
             try
             {
-                parameter = context.ParameterMap.SingleOrDefault(pair => pair.Key.Identifier == identifier).Key;
+                arg = context.ArgumentMap.SingleOrDefault(pair => pair.Key.Identifier == identifier).Key;
             }
             catch (InvalidOperationException)
             {
@@ -182,12 +182,12 @@ namespace LUIECompiler.CodeGeneration
                 };
             }
 
-            if(parameter == null)
+            if(arg == null)
             {
                 return null;
             }
 
-            return parameter.ToRegister(context);
+            return arg.ToRegister(context);
         }
 
         /// <summary>

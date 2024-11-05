@@ -80,7 +80,7 @@ namespace LUIECompiler.SemanticAnalysis
         public override void EnterGateDeclaration([NotNull] LuieParser.GateDeclarationContext context)
         {
             Table.PushEmptyScope();
-            foreach (Parameter param in context.GetParameters())
+            foreach (GateArgument param in context.GetArguments())
             {
                 AddSymbolToTable(param);
             }
@@ -101,7 +101,7 @@ namespace LUIECompiler.SemanticAnalysis
                 Error.Report(new RedefineError(new ErrorContext(context.Start), identifier));
                 return;
             }
-            CompositeGate gate = new(identifier, block, context.GetParameters(), new ErrorContext(context));
+            CompositeGate gate = new(identifier, block, context.GetArguments(), new ErrorContext(context));
             AddSymbolToTable(gate);
         }
 

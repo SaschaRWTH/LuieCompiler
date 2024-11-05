@@ -49,7 +49,7 @@ namespace LUIECompiler.CodeGeneration.Statements
                 };
                 // block.AddTranslateables(Body.Translateables);
 
-                program += block.ToQASM(new(context.ParameterMap)
+                program += block.ToQASM(new(context.ArgumentMap)
                 {
                     SymbolTable = context.SymbolTable,
                     CurrentBlock = block,

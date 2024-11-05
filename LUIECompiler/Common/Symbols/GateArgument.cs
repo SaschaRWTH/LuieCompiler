@@ -8,14 +8,14 @@ namespace LUIECompiler.Common.Symbols
     /// <summary>
     /// The parameter is a symbol used in the definition of a composite gate. It represents a parameter of the composite gate.
     /// </summary>
-    public class Parameter : Symbol
+    public class GateArgument : Symbol
     {
         /// <summary>
         /// Creates a new parameter.
         /// </summary>
         /// <param name="identifier">Identifier of the parameter.</param>
         /// <param name="errorContext">Context of the parameter definition.</param>
-        public Parameter(string identifier, ErrorContext errorContext) : base(identifier, errorContext) { }
+        public GateArgument(string identifier, ErrorContext errorContext) : base(identifier, errorContext) { }
 
         /// <summary>
         /// Maps the parameter to the register in the given context.
@@ -45,7 +45,7 @@ namespace LUIECompiler.Common.Symbols
         /// <exception cref="CodeGenerationException"></exception>
         public virtual Symbol GetSymbol(CodeGenerationContext context)
         {
-            if (!context.ParameterMap.TryGetValue(this, out Symbol? symbol))
+            if (!context.ArgumentMap.TryGetValue(this, out Symbol? symbol))
             {
                 throw new CodeGenerationException()
                 {
@@ -54,7 +54,7 @@ namespace LUIECompiler.Common.Symbols
             }
 
             // TODO: Is a cycle possible? E.g. a -> b, b -> a
-            if (symbol is Parameter parameter1)
+            if (symbol is GateArgument parameter1)
             {
                 return parameter1.GetSymbol(context);
             }
@@ -64,7 +64,7 @@ namespace LUIECompiler.Common.Symbols
 
         public override string ToString()
         {
-            return $"Parameter = {{ id={Identifier}, Hash={GetHashCode()} }}";
+            return $"Argument = {{ id={Identifier}, Hash={GetHashCode()} }}";
         }
     }
 }

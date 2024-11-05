@@ -133,7 +133,7 @@ namespace LUIECompiler.Optimization.Graphs.Nodes
                 };
             }
 
-            return [.. GateCode.Parameters.Select(circuitGraph.FromCodeToQubit)];
+            return [.. GateCode.Arguments.Select(circuitGraph.FromCodeToQubit)];
         }
 
         /// <summary>

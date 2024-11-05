@@ -94,9 +94,9 @@ namespace LUIECompiler.CodeGeneration.Codes
                          .. gate.Guards
                     ],
                     gate: gate.Gate,
-                    parameters:
+                    arguments:
                     [
-                        .. gate.Parameters
+                        .. gate.Arguments
                     ]
                 ));
             }

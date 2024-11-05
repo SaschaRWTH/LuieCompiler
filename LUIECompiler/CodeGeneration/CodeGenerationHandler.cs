@@ -126,13 +126,13 @@ namespace LUIECompiler.CodeGeneration
         }
 
         /// <summary>
-        /// Adds a parameter to the symbol table.
+        /// Adds a argument to the symbol table.
         /// </summary>
-        /// <param name="parameter"></param>
+        /// <param name="argument"></param>
         /// <param name="context"></param>
-        public void AddParameter(Parameter parameter, ErrorContext context)
+        public void AddArgument(GateArgument argument, ErrorContext context)
         {
-            AddSymbol(parameter, context);
+            AddSymbol(argument, context);
         }
 
         /// <summary>

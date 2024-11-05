@@ -17,7 +17,7 @@ namespace LUIECompiler.CodeGeneration.Statements
         /// <summary>
         /// Register to which the gate is applied to.
         /// </summary>
-        public required Dictionary<Parameter, Symbol> Parameters { get; init; }
+        public required Dictionary<GateArgument, Symbol> Arguments { get; init; }
 
         /// <summary>
         /// Returns the QASM code for the statement.
@@ -25,32 +25,32 @@ namespace LUIECompiler.CodeGeneration.Statements
         /// <returns></returns>
         public override QASMProgram ToQASM(CodeGenerationContext context)
         {
-            Dictionary<Parameter, Symbol> parameterMap = [];
-            foreach (var parameter in context.ParameterMap)
+            Dictionary<GateArgument, Symbol> argMap = [];
+            foreach (var arg in context.ArgumentMap)
             {
                 // The expressions need to be evaluated because some symbols may not be propagated (e.g. iterators).
-                Symbol symbol = parameter.Value;
-                if (symbol is ParameterAccess access)
+                Symbol symbol = arg.Value;
+                if (symbol is GateArgumentAccess access)
                 {
-                    symbol = new ParameterAccess(access.Parameter, new ConstantExpression<int>(){
+                    symbol = new GateArgumentAccess(access.Argument, new ConstantExpression<int>(){
                         Value = access.IndexExpression.Evaluate(context),
                     }, access.ErrorContext);
                 }
-                parameterMap[parameter.Key] = symbol;
+                argMap[arg.Key] = symbol;
             }
-            foreach (var parameter in Parameters)
+            foreach (var arg in Arguments)
             {
-                Symbol symbol = parameter.Value;
-                if (symbol is ParameterAccess access)
+                Symbol symbol = arg.Value;
+                if (symbol is GateArgumentAccess access)
                 {
-                    symbol = new ParameterAccess(access.Parameter, new ConstantExpression<int>(){
+                    symbol = new GateArgumentAccess(access.Argument, new ConstantExpression<int>(){
                         Value = access.IndexExpression.Evaluate(context),
                     }, access.ErrorContext);
                 }
-                parameterMap[parameter.Key] = symbol;
+                argMap[arg.Key] = symbol;
             }
 
-            CodeGenerationContext bodyContext = new CodeGenerationContext(parameterMap)
+            CodeGenerationContext bodyContext = new CodeGenerationContext(argMap)
             {
                 CurrentBlock = context.CurrentBlock,
                 // Propagate an empty symbol table, otherwise can access symbols NOT in scope of gate declaration.
