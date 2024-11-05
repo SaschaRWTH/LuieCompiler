@@ -51,7 +51,7 @@ namespace LUIECompiler.Optimization.Rules
                     return false;
                 }
 
-                // Check if the gates have the same amount of parameters.
+                // Check if the gates have the same amount of arguments.
                 if (baseGate.GateCode.Arguments.Count != gateNode.GateCode.Arguments.Count)
                 {
                     return false;
@@ -76,7 +76,7 @@ namespace LUIECompiler.Optimization.Rules
                     }
                 }
 
-                // Check if all parameters are semantically equal.
+                // Check if all arguments are semantically equal.
                 for (int j = 0; j < baseGate.GateCode.Arguments.Count; j++)
                 {
                     if (!baseGate.GateCode.Arguments[j].SemanticallyEqual(gateNode.GateCode.Arguments[j]))

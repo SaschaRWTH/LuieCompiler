@@ -4,12 +4,12 @@ using LUIECompiler.Common.Symbols;
 namespace LUIECompiler.CodeGeneration.Codes
 {
     /// <summary>
-    /// Represents a parameter of a gate.
+    /// Represents a argument of a gate.
     /// </summary>
     public class QubitCode : Code
     {
         /// <summary>
-        /// Register that the parameter is associated with.
+        /// Register that the argument is associated with.
         /// </summary>
         public required Symbol Register { get; init; }
 
@@ -19,7 +19,7 @@ namespace LUIECompiler.CodeGeneration.Codes
         public required UniqueIdentifier Identifier { get; init; }
     
         /// <summary>
-        /// Return the code string representation of the parameter.
+        /// Return the code string representation of the argument.
         /// </summary>
         /// <returns></returns>
         public override string ToCode()

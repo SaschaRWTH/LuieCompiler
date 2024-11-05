@@ -25,10 +25,10 @@ namespace LUIECompiler.Common.Symbols
         }
 
         /// <summary>
-        /// Converts the qubit to a QASM parameter.
+        /// Converts the qubit to a QASM argument.
         /// </summary>
         /// <param name="definition"></param>
-        /// <returns> The QASM parameter. </returns>
+        /// <returns> The QASM argument. </returns>
         public virtual QubitCode ToQASMCode(RegisterDeclaration definition, CodeGenerationContext codeGenContext, ErrorContext context)
         {
             return new()

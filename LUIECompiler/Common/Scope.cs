@@ -21,20 +21,20 @@ namespace LUIECompiler.Common
         public Symbol? Guard { get; init; }
 
         /// <summary>
-        /// Gets all parameters from the scope.
+        /// Gets all arguments from the scope.
         /// </summary>
         /// <returns></returns>
-        public List<GateArgument> GetParameters()
+        public List<GateArgument> GetArguments()
         {
-            List<GateArgument> parameters = [];
+            List<GateArgument> args = [];
             foreach (var symbol in IdentifierMap.Values)
             {
-                if (symbol is GateArgument parameter)
+                if (symbol is GateArgument arg)
                 {
-                    parameters.Add(parameter);
+                    args.Add(arg);
                 }
             }
-            return parameters;
+            return args;
         }
     }
 }

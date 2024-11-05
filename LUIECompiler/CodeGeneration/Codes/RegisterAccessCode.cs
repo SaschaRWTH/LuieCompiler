@@ -1,7 +1,7 @@
 namespace LUIECompiler.CodeGeneration.Codes
 {
     /// <summary>
-    /// Represents a parameter of a gate which is an access to a register.
+    /// Represents a argument of a gate which is an access to a register.
     /// </summary>
     public class RegisterAccessCode : QubitCode
     {

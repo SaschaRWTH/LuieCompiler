@@ -6,19 +6,19 @@ using LUIECompiler.Common.Errors;
 namespace LUIECompiler.Common.Symbols
 {
     /// <summary>
-    /// The parameter is a symbol used in the definition of a composite gate. It represents a parameter of the composite gate.
+    /// The argument is a symbol used in the definition of a composite gate. It represents an argument of the composite gate.
     /// </summary>
     public class GateArgument : Symbol
     {
         /// <summary>
-        /// Creates a new parameter.
+        /// Creates a new argument.
         /// </summary>
-        /// <param name="identifier">Identifier of the parameter.</param>
-        /// <param name="errorContext">Context of the parameter definition.</param>
+        /// <param name="identifier">Identifier of the argument.</param>
+        /// <param name="errorContext">Context of the argument definition.</param>
         public GateArgument(string identifier, ErrorContext errorContext) : base(identifier, errorContext) { }
 
         /// <summary>
-        /// Maps the parameter to the register in the given context.
+        /// Maps the argument to the register in the given context.
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
@@ -28,7 +28,7 @@ namespace LUIECompiler.Common.Symbols
             Register? register = GetSymbol(context) as Register;
             if(register is null)
             {
-                Compiler.LogError($"Could not convert the parameter '{Identifier}' to a register.");
+                Compiler.LogError($"Could not convert the argument '{Identifier}' to a register.");
                 throw new CodeGenerationException()
                 {
                     Error = new TypeError(ErrorContext, Identifier, typeof(Register), GetSymbol(context).GetType()),
@@ -38,7 +38,7 @@ namespace LUIECompiler.Common.Symbols
         }
 
         /// <summary>
-        /// Gets the symbol the parameter is mapped to in the given context.
+        /// Gets the symbol the argument is mapped to in the given context.
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
@@ -54,9 +54,9 @@ namespace LUIECompiler.Common.Symbols
             }
 
             // TODO: Is a cycle possible? E.g. a -> b, b -> a
-            if (symbol is GateArgument parameter1)
+            if (symbol is GateArgument arg)
             {
-                return parameter1.GetSymbol(context);
+                return arg.GetSymbol(context);
             }
 
             return symbol;

@@ -6,7 +6,7 @@ using LUIECompiler.Common.Errors;
 namespace LUIECompiler.Common.Symbols
 {
     /// <summary>
-    /// Represents an access to a parameter in the code generation.
+    /// Represents an access to a argument in the code generation.
     /// </summary>
     public class GateArgumentAccess : GateArgument
     {
@@ -16,19 +16,19 @@ namespace LUIECompiler.Common.Symbols
         public Expression<int> IndexExpression { get; }
 
         /// <summary>
-        /// The parameter being accessed.
+        /// The argument being accessed.
         /// </summary>
         public GateArgument Argument { get; }
 
         /// <summary>
-        /// Creates a new parameter access.
+        /// Creates a new argument access.
         /// </summary>
-        /// <param name="parameter">Parameter being accessed.</param>
+        /// <param name="argument">argument being accessed.</param>
         /// <param name="indexExpression">Expression that evaluates to the index of the qubit in the <see cref="Register"/>.</param>
-        /// <param name="errorContext">Context of the parameter access.</param>
-        public GateArgumentAccess(GateArgument parameter, Expression<int> indexExpression, ErrorContext errorContext) : base(parameter.Identifier, errorContext) 
+        /// <param name="errorContext">Context of the argument access.</param>
+        public GateArgumentAccess(GateArgument argument, Expression<int> indexExpression, ErrorContext errorContext) : base(argument.Identifier, errorContext) 
         { 
-            Argument = parameter;
+            Argument = argument;
             IndexExpression = indexExpression;
         }
 
@@ -38,7 +38,7 @@ namespace LUIECompiler.Common.Symbols
 
             if (symbol is not Register register)
             {
-                Compiler.LogError($"Could not convert the parameter '{Identifier}' to a register. The symbol is not a register.");
+                Compiler.LogError($"Could not convert the argument '{Identifier}' to a register. The symbol is not a register.");
                 throw new CodeGenerationException()
                 {
                     Error = new TypeError(ErrorContext, Identifier, typeof(Register), symbol.GetType()),
@@ -53,7 +53,7 @@ namespace LUIECompiler.Common.Symbols
             Register? register = Argument.GetSymbol(context) as Register;
             if (register is null)
             {
-                Compiler.LogError($"Could not get the symbol of the parameter '{Identifier}'");
+                Compiler.LogError($"Could not get the symbol of the argument '{Identifier}'");
                 throw new CodeGenerationException()
                 {
                     Error = new TypeError(ErrorContext, Identifier, typeof(Register), Argument.GetSymbol(context).GetType()),
@@ -65,7 +65,7 @@ namespace LUIECompiler.Common.Symbols
 
         public override string ToString()
         {
-            return $"Argument = {{ id={Identifier}, index={IndexExpression}, Hash={GetHashCode()}, Parameter={Argument} }}";
+            return $"Argument = {{ id={Identifier}, index={IndexExpression}, Hash={GetHashCode()}, argument={Argument} }}";
         }
     }
 }

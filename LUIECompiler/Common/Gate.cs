@@ -85,7 +85,7 @@ namespace LUIECompiler.Common
     public class Gate : IGate
     {
         /// <summary>
-        /// The number of parameters the gate requires.
+        /// The number of arguments the gate requires.
         /// </summary>
         public int NumberOfArguments { get => Type.GetNumberOfArguments(); }
 
@@ -111,7 +111,7 @@ namespace LUIECompiler.Common
     public interface IGate
     {
         /// <summary>
-        /// The number of parameters the gate requires.
+        /// The number of arguments the gate requires.
         /// </summary>
         public int NumberOfArguments { get; }
 

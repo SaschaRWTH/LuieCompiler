@@ -99,9 +99,9 @@ namespace LUIECompiler.Optimization.Graphs
             {
                 identifiers.Add(guard.Qubit);
             }
-            foreach (var parameter in gate.Arguments)
+            foreach (var arg in gate.Arguments)
             {
-                identifiers.Add(parameter);
+                identifiers.Add(arg);
             }
             return identifiers;
         }

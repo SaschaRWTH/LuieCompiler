@@ -41,7 +41,7 @@ namespace LUIECompiler.Optimization.Rules
                 {
                     throw new InternalException()
                     {
-                        Reason = $"The gate {node.GateCode} has an invalid number of parameters.",
+                        Reason = $"The gate {node.GateCode} has an invalid number of arguments.",
                     };
                 }
 
@@ -58,7 +58,7 @@ namespace LUIECompiler.Optimization.Rules
                 {
                     throw new InternalException()
                     {
-                        Reason = $"The gate {node.GateCode} has an invalid number of parameters.",
+                        Reason = $"The gate {node.GateCode} has an invalid number of arguments.",
                     };
                 }
                 if (node.GateCode.Guards.Count != 1)
@@ -124,14 +124,14 @@ namespace LUIECompiler.Optimization.Rules
                 return false;
             }
 
-            List<GraphQubit> parameters = node.GetParameters();
-            if (parameters.Count != 2)
+            List<GraphQubit> arguments = node.GetArguments();
+            if (arguments.Count != 2)
             {
                 return false;
             }
 
-            GraphQubit guard = parameters[0];
-            GraphQubit target = parameters[1];
+            GraphQubit guard = arguments[0];
+            GraphQubit target = arguments[1];
 
             return IsApplicableQubits(node, guard, target);
         }
@@ -156,13 +156,13 @@ namespace LUIECompiler.Optimization.Rules
                 return false;
             }
 
-            List<GraphQubit> parameters = node.GetParameters();
-            if (parameters.Count != 1)
+            List<GraphQubit> arguments = node.GetArguments();
+            if (arguments.Count != 1)
             {
                 return false;
             }
 
-            return IsApplicableQubits(node, guard.Qubit, parameters[0]);
+            return IsApplicableQubits(node, guard.Qubit, arguments[0]);
         }
 
         /// <summary>

@@ -22,9 +22,9 @@ namespace LUIECompiler.Common.Extensions
                 Error = new UndefinedError(new ErrorContext(context.Start), identifier),
             };
 
-            if(symbol is GateArgument parameter)
+            if(symbol is GateArgument arg)
             {
-                return GetGuardParameter(context.register(), parameter);
+                return GetGuardArgument(context.register(), arg);
             }
 
             if (symbol is not Register register)
@@ -54,19 +54,19 @@ namespace LUIECompiler.Common.Extensions
         }
 
         /// <summary>
-        /// Gets the guard parameter of the qif statement.
+        /// Gets the guard argument of the qif statement.
         /// </summary>
         /// <param name="context"></param>
-        /// <param name="parameter"></param>
+        /// <param name="arg"></param>
         /// <returns></returns>
-        public static GateArgument GetGuardParameter(LuieParser.RegisterContext context, GateArgument parameter)
+        public static GateArgument GetGuardArgument(LuieParser.RegisterContext context, GateArgument arg)
         {
             if (!context.TryGetIndexExpression(out Expression<int> index))
             {
-                return parameter;
+                return arg;
             }
 
-            return new GateArgumentAccess(parameter, index, new ErrorContext(context));
+            return new GateArgumentAccess(arg, index, new ErrorContext(context));
         }
     }
 }

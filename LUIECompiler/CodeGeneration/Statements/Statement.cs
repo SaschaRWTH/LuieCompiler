@@ -47,9 +47,9 @@ namespace LUIECompiler.CodeGeneration.Statements
         /// <exception cref="InternalException"></exception>
         protected QubitCode TranslateQubit([NotNull] Symbol symbol, CodeGenerationContext context)
         {
-            if(symbol is GateArgument parameter)
+            if(symbol is GateArgument arg)
             {
-                symbol = parameter.ToRegister(context);
+                symbol = arg.ToRegister(context);
             }
 
             Qubit? qubit = symbol as Qubit;

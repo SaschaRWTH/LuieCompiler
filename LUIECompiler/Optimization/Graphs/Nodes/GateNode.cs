@@ -95,7 +95,7 @@ namespace LUIECompiler.Optimization.Graphs.Nodes
             // This special case should no longer be needed, all CX and CCX gates translated to controlled X gates.
             // if (GateCode.Gate.GateType == GateType.CX)
             // {
-            //     GraphQubit qubit = circuitGraph.FromCodeToQubit(GateCode.Parameters[0]);
+            //     GraphQubit qubit = circuitGraph.FromCodeToQubit(GateCode.Argument[0]);
             //     Compiler.LogInfo($"Adding guard qubit {qubit} to gate {GateCode.Gate}.");
             //     guards.Add(new GraphGuard(qubit, false, this));
             // }
@@ -119,11 +119,11 @@ namespace LUIECompiler.Optimization.Graphs.Nodes
         }
 
         /// <summary>
-        /// Gets the parameter qubits of the gate.
+        /// Gets the argument qubits of the gate.
         /// </summary>
         /// <returns></returns>
         /// <exception cref="InternalException"></exception>
-        public List<GraphQubit> GetParameters()
+        public List<GraphQubit> GetArguments()
         {
             if (Graph is not CircuitGraph circuitGraph)
             {

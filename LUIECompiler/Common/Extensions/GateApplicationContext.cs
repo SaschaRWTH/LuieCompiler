@@ -8,7 +8,7 @@ namespace LUIECompiler.Common.Extensions
     public static class GateApplicationContext
     {
         /// <summary>
-        /// Gets the parameters of the gate application.
+        /// Gets the arguments of the gate application.
         /// </summary>
         /// <param name="context"></param>
         /// <param name="table"></param>
@@ -20,7 +20,7 @@ namespace LUIECompiler.Common.Extensions
         }
 
         /// <summary>
-        /// Gets a single parameter of a gate application based on the <see cref="LuieParser.RegisterContext"/> <paramref name="context"/>.
+        /// Gets a single argument of a gate application based on the <see cref="LuieParser.RegisterContext"/> <paramref name="context"/>.
         /// </summary>
         /// <param name="context"></param>
         /// <param name="table"></param>
@@ -35,9 +35,9 @@ namespace LUIECompiler.Common.Extensions
                 Error = new UndefinedError(new ErrorContext(context.Start), identifier),
             };
 
-            if (symbol is GateArgument parameter)
+            if (symbol is GateArgument arg)
             {
-                return SingleParameter(context, parameter, table);
+                return SingleArgument(context, arg, table);
             }
 
             if (symbol is not Register register)
@@ -95,20 +95,20 @@ namespace LUIECompiler.Common.Extensions
         }
 
         /// <summary>
-        /// Gets the symbol of a single parameter.
+        /// Gets the symbol of a single argument.
         /// </summary>
         /// <param name="context"></param>
-        /// <param name="parameter"></param>
+        /// <param name="arg"></param>
         /// <param name="table"></param>
         /// <returns></returns>
-        private static GateArgument SingleParameter(LuieParser.RegisterContext context, GateArgument parameter, SymbolTable table)
+        private static GateArgument SingleArgument(LuieParser.RegisterContext context, GateArgument arg, SymbolTable table)
         {
             if (!context.TryGetIndexExpression(out Expression<int> index))
             {
-                return parameter;
+                return arg;
             }
             
-            return new GateArgumentAccess(parameter, index, new ErrorContext(context));
+            return new GateArgumentAccess(arg, index, new ErrorContext(context));
         }
     }
 }

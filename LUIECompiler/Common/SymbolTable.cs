@@ -168,17 +168,17 @@ namespace LUIECompiler.Common
         }
 
         /// <summary>
-        /// Gets all parameters in the symbol table.
+        /// Gets all arguments in the symbol table.
         /// </summary>
         /// <returns></returns>
         public List<GateArgument> GetArguments()
         {
-            List<GateArgument> parameters = [];
+            List<GateArgument> args = [];
             foreach (var scope in ScopeStack)
             {
-                parameters.AddRange(scope.GetParameters());
+                args.AddRange(scope.GetArguments());
             }
-            return parameters;
+            return args;
         }
 
 

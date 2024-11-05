@@ -59,7 +59,7 @@ namespace LUIECompiler.SemanticAnalysis
                 return;
             }
 
-            // Check type of parameter at generation time
+            // Check type of argument at generation time
             if (symbol is GateArgument)
             {
                 return;
@@ -136,7 +136,7 @@ namespace LUIECompiler.SemanticAnalysis
                     return;
                 }
 
-                // Check type of parameter at generation time
+                // Check type of argument at generation time
                 if (symbol is GateArgument)
                 {
                     return;
@@ -151,7 +151,7 @@ namespace LUIECompiler.SemanticAnalysis
 
                 if (gate is CompositeGate)
                 {
-                    // Allow for registers as parameters for composite gates
+                    // Allow for registers as argument for composite gates
                     continue;
                 }
 
@@ -186,7 +186,7 @@ namespace LUIECompiler.SemanticAnalysis
                 return;
             }
 
-            // Check type of parameter at generation time
+            // Check type of argument at generation time
             if (symbol is GateArgument)
             {
                 return;
@@ -282,7 +282,7 @@ namespace LUIECompiler.SemanticAnalysis
                     continue;
                 }
 
-                // Check type of parameter at generation time
+                // Check type of argument at generation time
                 if (symbol is GateArgument)
                 {
                     continue;
