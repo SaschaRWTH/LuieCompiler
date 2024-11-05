@@ -34,10 +34,13 @@ namespace LUIECompiler.CodeGeneration.Declarations
                 };
             }
 
+            UniqueIdentifier identifier = new(context.SymbolTable);
+            context.CurrentBlock.AddIdentifier(this, identifier);
+
             return new(new QubitDeclarationCode()
             {
                 Size = size,
-                Identifier = context.CurrentBlock.GetUniqueIdentifier(this),
+                Identifier = identifier,
             });
         }
     }

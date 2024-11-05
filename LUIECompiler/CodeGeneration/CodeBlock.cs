@@ -63,10 +63,6 @@ namespace LUIECompiler.CodeGeneration
 
             foreach (var statement in Translateables)
             {
-                if (statement is Declaration definition)
-                {
-                    IdentifierMap.Add(definition, new UniqueIdentifier(context.SymbolTable));
-                }
                 code += statement.ToQASM(generationContext);
             }
 
@@ -95,6 +91,11 @@ namespace LUIECompiler.CodeGeneration
             }
             
             return Parent.GetUniqueIdentifier(definition);
+        }
+
+        public void AddIdentifier(Declaration definition, UniqueIdentifier identifier)
+        {
+            IdentifierMap.Add(definition, identifier);
         }
 
         /// <summary>
