@@ -49,7 +49,7 @@ namespace LUIECompiler.CodeGeneration.Codes
         private void ReplaceControlledGates()
         {
             if (Gate.GateType == GateType.CX)
-            { 
+            {
                 Gate = new(GateType.X);
                 if (Arguments.Count != 2)
                 {
@@ -153,11 +153,13 @@ namespace LUIECompiler.CodeGeneration.Codes
         {
             if (code is not GateApplicationCode gateCode)
             {
-
                 return false;
             }
 
-            CheckArgumentSemanticEquality(gateCode.Arguments);
+            if (!CheckArgumentSemanticEquality(gateCode.Arguments))
+            {
+                return false;
+            }
 
             // Guards are independent of order and amounts (i.e. ctrl(2) @ q, q = ctrl(1) @ q)
             // Therefore we only need to check mutually inclusivity of semantically equal guards
