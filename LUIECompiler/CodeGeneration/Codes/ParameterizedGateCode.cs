@@ -16,5 +16,12 @@ namespace LUIECompiler.CodeGeneration.Codes
         {
             return $"{GateType.ToCode()}(pi * {Parameter.ToString(CultureInfo.InvariantCulture)})";
         }
+
+        public override bool SemanticallyEqual(Code code)
+        {
+            return base.SemanticallyEqual(code) 
+                && code is ParameterizedGateCode parameterizedGateCode 
+                && Parameter == parameterizedGateCode.Parameter;
+        }
     }
 }
