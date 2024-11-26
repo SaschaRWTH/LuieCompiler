@@ -11,9 +11,9 @@ namespace LUIECompiler.Optimization.Graphs.Interfaces
         public List<INode> Nodes { get; }
         
         /// <summary>
-        /// Gets the vertices transversed by the path.
+        /// Gets the edges transversed by the path.
         /// </summary>
-        public List<IVertex> Vertices { get; }
+        public List<IEdge> Edges { get; }
 
         /// <summary>
         /// Gets the length of the path.

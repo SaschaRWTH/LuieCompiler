@@ -10,14 +10,14 @@ namespace LUIECompiler.Optimization.Graphs.Nodes
     public abstract class Node : INode
     {
         /// <summary>
-        /// Gets the input vertices of the node.
+        /// Gets the input edges of the node.
         /// </summary>
-        public virtual List<IVertex> InputVertices { get; } = [];
+        public virtual List<IEdge> InputEdges { get; } = [];
 
         /// <summary>
-        /// Gets the output vertices of the node.
+        /// Gets the output edges of the node.
         /// </summary>
-        public virtual List<IVertex> OutputVertices { get; } = [];
+        public virtual List<IEdge> OutputEdges { get; } = [];
 
         /// <summary>
         /// Gets the graph the node is in.
@@ -28,9 +28,9 @@ namespace LUIECompiler.Optimization.Graphs.Nodes
         {
             get
             {
-                foreach (IVertex vertex in InputVertices)
+                foreach (IEdge edge in InputEdges)
                 {
-                    yield return vertex.Start;
+                    yield return edge.Start;
                 }
             }
         }
@@ -39,9 +39,9 @@ namespace LUIECompiler.Optimization.Graphs.Nodes
         {
             get
             {
-                foreach (IVertex vertex in OutputVertices)
+                foreach (IEdge edge in OutputEdges)
                 {
-                    yield return vertex.Start;
+                    yield return edge.Start;
                 }
             }
         }
@@ -56,80 +56,80 @@ namespace LUIECompiler.Optimization.Graphs.Nodes
         }
 
         /// <summary>
-        /// Adds an input vertex to the node.
+        /// Adds an input edge to the node.
         /// </summary>
-        /// <param name="vertex"></param>
-        public virtual void AddInput(IVertex vertex)
+        /// <param name="edge"></param>
+        public virtual void AddInput(IEdge edge)
         {
-            InputVertices.Add(vertex);
+            InputEdges.Add(edge);
         }
 
         /// <summary>
-        /// Adds an output vertex to the node.
+        /// Adds an output edge to the node.
         /// </summary>
-        /// <param name="vertex"></param>
-        public virtual void AddOutput(IVertex vertex)
+        /// <param name="edge"></param>
+        public virtual void AddOutput(IEdge edge)
         {
-            OutputVertices.Add(vertex);
+            OutputEdges.Add(edge);
         }
 
         /// <summary>
-        /// Gets the input vertex of the given qubit.
+        /// Gets the input edge of the given qubit.
         /// </summary>
         /// <param name="qubit"></param>
         /// <returns></returns>
-        public IVertex? GetInVertex(GraphQubit qubit)
+        public IEdge? GetInEdge(GraphQubit qubit)
         {
-            return InputVertices.OfType<CircuitVertex>().FirstOrDefault(v => v.Qubit == qubit);
+            return InputEdges.OfType<CircuitEdge>().FirstOrDefault(v => v.Qubit == qubit);
         }
 
         /// <summary>
-        /// Gets the input vertex of the given qubit.
+        /// Gets the input edge of the given qubit.
         /// </summary>
         /// <param name="qubit"></param>
         /// <returns></returns>
         public INode GetPredecessor(GraphQubit qubit)
         {
-            return GetInVertex(qubit)?.Start ?? throw new InternalException()
+            return GetInEdge(qubit)?.Start ?? throw new InternalException()
             {
                 Reason = $"The does not exist a predecessor for the given qubit {qubit}",
             };
         }
 
         /// <summary>
-        /// Gets the input vertex of the given qubit.
+        /// Gets the input edge of the given qubit.
         /// </summary>
         /// <param name="qubit"></param>
         /// <returns></returns>
-        public IVertex GetOutVertex(GraphQubit qubit)
+        public IEdge GetOutEdge(GraphQubit qubit)
         {
-            return OutputVertices.OfType<CircuitVertex>().FirstOrDefault(v => v.Qubit == qubit) ?? throw new InternalException()
+            return OutputEdges.OfType<CircuitEdge>().FirstOrDefault(v => v.Qubit == qubit) ?? throw new InternalException()
             {
-                Reason = $"No output vertex found for qubit {qubit}."
+                Reason = $"No output edge found for qubit {qubit}."
             };
         }
 
         /// <summary>
-        /// Gets the input vertex of the given qubit.
+        /// Gets the input edge of the given qubit.
         /// </summary>
         /// <param name="qubit"></param>
         /// <returns></returns>
         public INode GetSuccessor(GraphQubit qubit)
         {
-            return GetOutVertex(qubit)?.End ?? throw new InternalException()
+            return GetOutEdge(qubit)?.End ?? throw new InternalException()
             {
                 Reason = $"The does not exist a successor for the given qubit {qubit}",
             };
         }
 
         /// <summary>
-        /// Gets the input vertex of the given qubit.
+        /// Gets the input edge of the given qubit.
         /// </summary>
         /// <param name="qubit"></param>
         /// <returns></returns>
-        public IVertex? GetOutVertexOrDefault(GraphQubit qubit)
+        public IEdge? GetOutEdgeOrDefault(GraphQubit qubit)
         {
-            return OutputVertices.OfType<CircuitVertex>().FirstOrDefault(v => v.Qubit == qubit);
+            return OutputEdges.OfType<CircuitEdge>().FirstOrDefault(v => v.Qubit == qubit);
         }
     }
 }

@@ -2,7 +2,7 @@ using LUIECompiler.Optimization.Graphs.Interfaces;
 
 namespace LUIECompiler.Optimization.Graphs
 {
-    public class Vertex : IVertex
+    public class Edge : IEdge
     {
         public IGraph Graph { get; }
 
@@ -11,12 +11,12 @@ namespace LUIECompiler.Optimization.Graphs
         public INode End { get; protected set; }
 
         /// <summary>
-        /// Creates a new vertex.
+        /// Creates a new edge.
         /// </summary>
         /// <param name="graph"></param>
         /// <param name="start"></param>
         /// <param name="end"></param>
-        public Vertex(IGraph graph, INode start, INode end)
+        public Edge(IGraph graph, INode start, INode end)
         {
             Start = start;
             End = end;
@@ -29,7 +29,7 @@ namespace LUIECompiler.Optimization.Graphs
 
         public override string ToString()
         {
-            return $"Vertex = {{ Start = {Start}, End = {End} }}";
+            return $"Edge = {{ Start = {Start}, End = {End} }}";
         }
     }
 }

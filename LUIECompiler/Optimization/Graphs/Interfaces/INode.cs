@@ -6,14 +6,14 @@ namespace LUIECompiler.Optimization.Graphs.Interfaces
     public interface INode
     {
         /// <summary>
-        /// Gets the input vertices of the node.
+        /// Gets the input edges of the node.
         /// </summary>
-        public List<IVertex> InputVertices { get; }
+        public List<IEdge> InputEdges { get; }
 
         /// <summary>
-        /// Gets the output vertices of the node.
+        /// Gets the output edges of the node.
         /// </summary>
-        public List<IVertex> OutputVertices { get; }
+        public List<IEdge> OutputEdges { get; }
 
         /// <summary>
         /// Gets the direct predecessors of the node.
@@ -31,15 +31,15 @@ namespace LUIECompiler.Optimization.Graphs.Interfaces
         public IGraph Graph { get; }
 
         /// <summary>
-        /// Adds an input vertex to the node.
+        /// Adds an input edge to the node.
         /// </summary>
-        /// <param name="vertex"></param>
-        public void AddInput(IVertex vertex);
+        /// <param name="edge"></param>
+        public void AddInput(IEdge edge);
 
         /// <summary>
-        /// Adds an output vertex to the node.
+        /// Adds an output edge to the node.
         /// </summary>
-        /// <param name="vertex"></param>
-        public void AddOutput(IVertex vertex);
+        /// <param name="edge"></param>
+        public void AddOutput(IEdge edge);
     }
 }

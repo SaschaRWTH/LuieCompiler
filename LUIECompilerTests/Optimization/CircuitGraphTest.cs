@@ -492,7 +492,7 @@ public class CircuitGraphTest
         INode current = qubit.Start;
         while(current != qubit.End)
         {
-            var outV = current.OutputVertices.OfType<CircuitVertex>();
+            var outV = current.OutputEdges.OfType<CircuitEdge>();
             Assert.IsTrue(outV.Count(v => v.Qubit == qubit) == 1);
             current = outV.Single(v => v.Qubit == qubit).End;
         }

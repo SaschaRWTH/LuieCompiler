@@ -9,13 +9,13 @@ namespace LUIECompiler.Optimization.Graphs.Nodes
     /// </summary>
     public class OutputNode : Node
     {
-        public override List<IVertex> InputVertices => InputVertex == null ? [] : [InputVertex];
-        public override List<IVertex> OutputVertices => [];
+        public override List<IEdge> InputEdges => InputEdge == null ? [] : [InputEdge];
+        public override List<IEdge> OutputEdges => [];
 
         /// <summary>
-        /// The input vertex of the node.
+        /// The input edge of the node.
         /// </summary>
-        public IVertex? InputVertex;
+        public IEdge? InputEdge;
 
         /// <summary>
         /// Creates a new output node.
@@ -24,17 +24,17 @@ namespace LUIECompiler.Optimization.Graphs.Nodes
         public OutputNode(CircuitGraph graph) : base(graph)
         {
         }
-        public override void AddOutput(IVertex vertex)
+        public override void AddOutput(IEdge edge)
         {
             throw new InternalException()
             {
-                Reason = "Output node cannot have output vertex",
+                Reason = "Output node cannot have output edge",
             };
         }
 
-        public override void AddInput(IVertex vertex)
+        public override void AddInput(IEdge edge)
         {
-            InputVertex = vertex;
+            InputEdge = edge;
         }
         
         public override string ToString()

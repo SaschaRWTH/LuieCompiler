@@ -114,7 +114,7 @@ namespace LUIECompiler.Optimization.Rules
                 foreach (GraphQubit qubit in baseGate.Qubits)
                 {
                     // TODO: Can be extened/improved by differentiating between changed and read qubits.
-                    INode nextNodeOfQubit = current.GetOutVertex(qubit).End;
+                    INode nextNodeOfQubit = current.GetOutEdge(qubit).End;
                     if(nextNodeOfQubit != nextNode)
                     {
                         return false;

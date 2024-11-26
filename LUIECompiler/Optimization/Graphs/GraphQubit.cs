@@ -38,12 +38,12 @@ namespace LUIECompiler.Optimization.Graphs
         {
             get
             {
-                IVertex vertex = Start.OutputVertex ?? throw new InternalException
+                IEdge edge = Start.OutputEdge ?? throw new InternalException
                 {
-                    Reason = "Input node must have exactly one output vertex",
+                    Reason = "Input node must have exactly one output edge",
                 };
 
-                return vertex.Start == Start && vertex.End == End;
+                return edge.Start == Start && edge.End == End;
             }
         }
 
@@ -62,8 +62,8 @@ namespace LUIECompiler.Optimization.Graphs
             graph.AddNode(Start);
             graph.AddNode(End);
 
-            IVertex vertex = new CircuitVertex(graph, this, Start, End);
-            graph.AddVertex(vertex);
+            IEdge edge = new CircuitEdge(graph, this, Start, End);
+            graph.AddEdge(edge);
         }
 
         /// <summary>
@@ -73,13 +73,13 @@ namespace LUIECompiler.Optimization.Graphs
         /// <exception cref="InternalException"></exception>
         public void AddGateNode(GateNode node)
         {
-            IVertex last = End.InputVertex ?? throw new InternalException
+            IEdge last = End.InputEdge ?? throw new InternalException
             {
-                Reason = "Output node must have exactly one output vertex",
+                Reason = "Output node must have exactly one output edge",
             };
 
-            IVertex input = new CircuitVertex(Graph, this, last.Start, node);
-            IVertex output = new CircuitVertex(Graph, this, node, last.End);
+            IEdge input = new CircuitEdge(Graph, this, last.Start, node);
+            IEdge output = new CircuitEdge(Graph, this, node, last.End);
 
             Graph.ReplacePath(new([last]), new([input, output]));
         }
@@ -98,11 +98,11 @@ namespace LUIECompiler.Optimization.Graphs
         /// </summary>
         /// <returns></returns>
         /// <exception cref="InternalException"></exception>
-        public IEnumerable<IVertex> TracePath()
+        public IEnumerable<IEdge> TracePath()
         {
-            IVertex current = Start.OutputVertex ?? throw new InternalException
+            IEdge current = Start.OutputEdge ?? throw new InternalException
             {
-                Reason = "Input node must have exactly one output vertex",
+                Reason = "Input node must have exactly one output edge",
             };
             yield return current;
 
@@ -111,10 +111,10 @@ namespace LUIECompiler.Optimization.Graphs
             {
                 INode nextNode = current.End;
 
-                current = nextNode.OutputVertices.OfType<CircuitVertex>().SingleOrDefault(v => v.Qubit == this) ??
+                current = nextNode.OutputEdges.OfType<CircuitEdge>().SingleOrDefault(v => v.Qubit == this) ??
                     throw new InternalException
                     {
-                        Reason = "Output node must have exactly one output vertex",
+                        Reason = "Output node must have exactly one output edge",
                     };
 
 
@@ -133,9 +133,9 @@ namespace LUIECompiler.Optimization.Graphs
                 return;
             }
 
-            IVertex vertex = Start.OutputVertex ?? throw new InternalException
+            IEdge edge = Start.OutputEdge ?? throw new InternalException
             {
-                Reason = "Input node must have exactly one output vertex",
+                Reason = "Input node must have exactly one output edge",
             };
 
             if (Graph is not CircuitGraph circuitGraph)
@@ -146,7 +146,7 @@ namespace LUIECompiler.Optimization.Graphs
                 };
             }
 
-            circuitGraph.RemoveVertex(vertex);
+            circuitGraph.RemoveEdge(edge);
 
             circuitGraph.RemoveNode(Start);
             circuitGraph.RemoveNode(End);

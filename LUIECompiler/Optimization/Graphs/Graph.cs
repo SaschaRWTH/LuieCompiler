@@ -8,7 +8,7 @@ namespace LUIECompiler.Optimization.Graphs
     public class Graph : IGraph
     {
         public List<INode> Nodes { get; } = [];
-        public List<IVertex> Vertices { get; } = [];
+        public List<IEdge> Edges { get; } = [];
 
         
         public void AddNode(INode node)
@@ -21,21 +21,21 @@ namespace LUIECompiler.Optimization.Graphs
             Nodes.Remove(node);
         }
 
-        public void AddVertex(IVertex vertex)
+        public void AddEdge(IEdge edge)
         {
-            Vertices.Add(vertex);
+            Edges.Add(edge);
         }
         
 
-        public void RemoveVertex(IVertex vertex)
+        public void RemoveEdge(IEdge edge)
         {
-            var start = vertex.Start;
-            var end = vertex.End;
+            var start = edge.Start;
+            var end = edge.End;
 
-            start.OutputVertices.Remove(vertex);
-            end.InputVertices.Remove(vertex);
+            start.OutputEdges.Remove(edge);
+            end.InputEdges.Remove(edge);
 
-            Vertices.Remove(vertex);
+            Edges.Remove(edge);
         }
 
 
@@ -56,14 +56,14 @@ namespace LUIECompiler.Optimization.Graphs
                 AddNode(node);
             }
 
-            foreach (IVertex vertex in old.Vertices)
+            foreach (IEdge edge in old.Edges)
             {
-                RemoveVertex(vertex);
+                RemoveEdge(edge);
             }
 
-            foreach (IVertex vertex in replacement.Vertices)
+            foreach (IEdge edge in replacement.Edges)
             {
-                AddVertex(vertex);
+                AddEdge(edge);
             }
         }
     }

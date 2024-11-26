@@ -9,13 +9,13 @@ namespace LUIECompiler.Optimization.Graphs.Nodes
     /// </summary>
     public class InputNode : Node
     {
-        public override List<IVertex> InputVertices => [];
-        public override List<IVertex> OutputVertices => OutputVertex == null ? [] : [OutputVertex];
+        public override List<IEdge> InputEdges => [];
+        public override List<IEdge> OutputEdges => OutputEdge == null ? [] : [OutputEdge];
         
         /// <summary>
-        /// The output vertex of the node.
+        /// The output edge of the node.
         /// </summary>
-        public IVertex? OutputVertex;
+        public IEdge? OutputEdge;
 
         /// <summary>
         /// Creates a new input node.
@@ -26,17 +26,17 @@ namespace LUIECompiler.Optimization.Graphs.Nodes
 
         }
 
-        public override void AddInput(IVertex vertex)
+        public override void AddInput(IEdge edge)
         {
             throw new InternalException()
             {
-                Reason = "Input node cannot have input vertex",
+                Reason = "Input node cannot have input edge",
             };
         }
 
-        public override void AddOutput(IVertex vertex)
+        public override void AddOutput(IEdge edge)
         {
-            OutputVertex = vertex;
+            OutputEdge = edge;
         }
 
         public override string ToString()

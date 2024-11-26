@@ -42,7 +42,7 @@ namespace LUIECompiler.Optimization.Graphs.Nodes
 
         public override string ToString()
         {
-            return $"GateNode = {{ Gate = {Gate}, Inputs = {InputVertices.Count}, Outputs = {OutputVertices.Count} }}";
+            return $"GateNode = {{ Gate = {Gate}, Inputs = {InputEdges.Count}, Outputs = {OutputEdges.Count} }}";
         }
 
         /// <summary>
@@ -62,15 +62,15 @@ namespace LUIECompiler.Optimization.Graphs.Nodes
 
         public void RemoveSingleQubit(GraphQubit qubit)
         {
-            CircuitVertex inVertex = GetInVertex(qubit) as CircuitVertex ?? throw new InternalException()
+            CircuitEdge inEdge = GetInEdge(qubit) as CircuitEdge ?? throw new InternalException()
             {
-                Reason = $"The input vertex is missing for qubit {qubit} or is not a Circuit Vertex."
+                Reason = $"The input edge is missing for qubit {qubit} or is not a Circuit Edge."
             };
-            IVertex outVertex = GetOutVertex(qubit) ?? throw new InternalException()
+            IEdge outEdge = GetOutEdge(qubit) ?? throw new InternalException()
             {
-                Reason = $"The output vertex is missing for qubit {qubit}."
+                Reason = $"The output edge is missing for qubit {qubit}."
             };
-            inVertex.ExtendTo(outVertex.End);
+            inEdge.ExtendTo(outEdge.End);
 
             Qubits.Remove(qubit);
         }
@@ -145,12 +145,12 @@ namespace LUIECompiler.Optimization.Graphs.Nodes
         public List<GateNode> NodesUpTo(WirePath wire)
         {
             GraphQubit qubit = wire.Qubit;
-            IVertex vertex = GetInVertex(qubit) ?? throw new InternalException()
+            IEdge edge = GetInEdge(qubit) ?? throw new InternalException()
             {
-                Reason = $"The input vertex is missing for qubit {qubit}."
+                Reason = $"The input edge is missing for qubit {qubit}."
             };
 
-            if (vertex.Start is not GateNode node)
+            if (edge.Start is not GateNode node)
             {
                 return [];
             }

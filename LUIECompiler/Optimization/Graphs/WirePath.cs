@@ -8,7 +8,7 @@ namespace LUIECompiler.Optimization.Graphs
     /// </summary>
     public class WirePath : IPath
     {
-        public List<IVertex> Vertices { get; } = [];
+        public List<IEdge> Edges { get; } = [];
 
         public List<INode> Nodes
         {
@@ -31,9 +31,9 @@ namespace LUIECompiler.Optimization.Graphs
         {
             get
             {
-                for (int i = 0; i < Vertices.Count - 1; i++)
+                for (int i = 0; i < Edges.Count - 1; i++)
                 {
-                    yield return Vertices[i].End;
+                    yield return Edges[i].End;
                 }
             }
         }
@@ -56,12 +56,12 @@ namespace LUIECompiler.Optimization.Graphs
             Start = start;
             End = end;
 
-            IVertex current = GetQubitVertex(qubit, start.OutputVertices);
-            Vertices.Add(current);
+            IEdge current = GetQubitEdge(qubit, start.OutputEdges);
+            Edges.Add(current);
             while (current.End != end)
             {
-                current = GetQubitVertex(qubit, current.End.OutputVertices);
-                Vertices.Add(current);
+                current = GetQubitEdge(qubit, current.End.OutputEdges);
+                Edges.Add(current);
             }
         }
 
@@ -83,13 +83,13 @@ namespace LUIECompiler.Optimization.Graphs
                 return;
             }
 
-            IVertex current = GetQubitVertex(qubit, start.OutputVertices);
-            Vertices.Add(current);
+            IEdge current = GetQubitEdge(qubit, start.OutputEdges);
+            Edges.Add(current);
             int length = 2;
             while (current.End != end && length < maxLength)
             {
-                current = GetQubitVertex(qubit, current.End.OutputVertices);
-                Vertices.Add(current);
+                current = GetQubitEdge(qubit, current.End.OutputEdges);
+                Edges.Add(current);
                 length++;
             }
 
@@ -97,56 +97,56 @@ namespace LUIECompiler.Optimization.Graphs
         }
 
         /// <summary>
-        /// Gets the vertex of the qubit in the given enumerable vertices.
+        /// Gets the edge of the qubit in the given enumerable edges.
         /// </summary>
         /// <param name="qubit"></param>
-        /// <param name="vertices"></param>
+        /// <param name="edges"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentException"></exception>
-        public IVertex GetQubitVertex(GraphQubit qubit, IEnumerable<IVertex> vertices)
+        public IEdge GetQubitEdge(GraphQubit qubit, IEnumerable<IEdge> edges)
         {
-            return vertices.FirstOrDefault(v => v is CircuitVertex qubitVertex && qubitVertex.Qubit == qubit) ??
-                   throw new ArgumentException("Enumerable does not contain a vertex of the qubit.");
+            return edges.FirstOrDefault(v => v is CircuitEdge qubitEdge && qubitEdge.Qubit == qubit) ??
+                   throw new ArgumentException("Enumerable does not contain a edge of the qubit.");
         }
 
         /// <summary>
         /// Creates a new path.
         /// </summary>
-        /// <param name="vertices"></param>
+        /// <param name="edges"></param>
         /// <exception cref="ArgumentException"></exception>
-        public WirePath(IEnumerable<IVertex> vertices)
+        public WirePath(IEnumerable<IEdge> edges)
         {
-            Vertices = vertices.ToList();
+            Edges = edges.ToList();
 
-            if (Vertices.Count == 0)
+            if (Edges.Count == 0)
             {
                 throw new ArgumentException("The path is empty.");
             }
 
-            Start = Vertices[0].Start;
-            End = Vertices[^1].End;
+            Start = Edges[0].Start;
+            End = Edges[^1].End;
 
             if (!IsUnInterrupted())
             {
                 throw new ArgumentException("The path is interrupted.");
             }
 
-            if (Vertices[0] is not CircuitVertex startVertex)
+            if (Edges[0] is not CircuitEdge startEdge)
             {
-                throw new ArgumentException("The path does not start with a qubit vertex.");
+                throw new ArgumentException("The path does not start with a qubit edge.");
             }
-            Qubit = startVertex.Qubit;
+            Qubit = startEdge.Qubit;
 
-            foreach (IVertex vertex in Vertices)
+            foreach (IEdge edge in Edges)
             {
-                if (vertex is not CircuitVertex qubitVertex)
+                if (edge is not CircuitEdge qubitEdge)
                 {
-                    throw new ArgumentException("The path contains a vertex that is not a qubit vertex.");
+                    throw new ArgumentException("The path contains a edge that is not a qubit edge.");
                 }
 
-                if (Qubit != qubitVertex.Qubit)
+                if (Qubit != qubitEdge.Qubit)
                 {
-                    throw new ArgumentException("The path contains vertices of different qubits.");
+                    throw new ArgumentException("The path contains edges of different qubits.");
                 }
             }
         }
@@ -157,9 +157,9 @@ namespace LUIECompiler.Optimization.Graphs
         /// <returns></returns>
         public bool IsUnInterrupted()
         {
-            for (int i = 0; i < Vertices.Count - 1; i++)
+            for (int i = 0; i < Edges.Count - 1; i++)
             {
-                if (Vertices[i].End != Vertices[i + 1].Start)
+                if (Edges[i].End != Edges[i + 1].Start)
                 {
                     return false;
                 }

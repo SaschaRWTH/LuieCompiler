@@ -11,9 +11,9 @@ namespace LUIECompiler.Optimization.Graphs.Interfaces
         public List<INode> Nodes { get; }
 
         /// <summary>
-        /// Gets all vertices in the graph.
+        /// Gets all edges in the graph.
         /// </summary>
-        public List<IVertex> Vertices { get; }
+        public List<IEdge> Edges { get; }
 
         /// <summary>
         /// Adds a node to the graph.
@@ -28,16 +28,16 @@ namespace LUIECompiler.Optimization.Graphs.Interfaces
         public void RemoveNode(INode node);
 
         /// <summary>
-        /// Adds a vertex to the graph.
+        /// Adds a edge to the graph.
         /// </summary>
-        /// <param name="vertex"></param>
-        public void AddVertex(IVertex vertex);
+        /// <param name="edge"></param>
+        public void AddEdge(IEdge edge);
 
         /// <summary>
-        /// Removes a vertex from the graph.
+        /// Removes a edge from the graph.
         /// </summary>
-        /// <param name="vertex"></param>
-        public void RemoveVertex(IVertex vertex);
+        /// <param name="edge"></param>
+        public void RemoveEdge(IEdge edge);
 
         /// <summary>
         /// Replaces a path in the graph.

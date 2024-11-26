@@ -215,9 +215,9 @@ namespace LUIECompiler.Optimization.Graphs
             Dictionary<GraphQubit, INode> qubitToNode = new();
             foreach (GraphQubit qubit in Qubits)
             {
-                qubitToNode[qubit] = qubit.Start.OutputVertex?.End ?? throw new InternalException()
+                qubitToNode[qubit] = qubit.Start.OutputEdge?.End ?? throw new InternalException()
                 {
-                    Reason = $"Start node of qubit {qubit} does not have an output vertex."
+                    Reason = $"Start node of qubit {qubit} does not have an output edge."
                 };
             }
 
@@ -241,7 +241,7 @@ namespace LUIECompiler.Optimization.Graphs
                 if (predecessors.Count <= 1)
                 {
                     code.Add(gateNode.GateCode);
-                    qubitToNode[current] = gateNode.GetOutVertex(current).End;
+                    qubitToNode[current] = gateNode.GetOutEdge(current).End;
                     continue;
                 }
                 IEnumerable<GraphQubit> qubits = gateNode.Qubits;
@@ -277,7 +277,7 @@ namespace LUIECompiler.Optimization.Graphs
                 // Move each qubit to the next node
                 foreach (GraphQubit qubit in qubits)
                 {
-                    qubitToNode[qubit] = gateNode.GetOutVertex(qubit).End;
+                    qubitToNode[qubit] = gateNode.GetOutEdge(qubit).End;
                 }
             }
             return new QASMProgram(code);
