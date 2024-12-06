@@ -9,7 +9,7 @@ namespace LUIECompiler.Optimization.Graphs.Nodes
     /// <summary>
     /// A node that represent a gate in a quantum circuit graph.
     /// </summary>
-    public class GateNode : Node
+    public class GateNode : CircuitNode
     {
         /// <summary>
         /// The type of the gate.

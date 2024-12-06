@@ -7,7 +7,7 @@ namespace LUIECompiler.Optimization.Graphs.Nodes
     /// <summary>
     /// Represents an output node in a quantum circuit graph.
     /// </summary>
-    public class OutputNode : Node
+    public class OutputNode : CircuitNode
     {
         public override List<IEdge> InputEdges => InputEdge == null ? [] : [InputEdge];
         public override List<IEdge> OutputEdges => [];
