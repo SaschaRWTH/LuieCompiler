@@ -82,7 +82,8 @@ namespace LUIECompiler.Optimization.Graphs
             {
                 HashSet<QubitCode> qubits = GetQubitsFromGate(gate);
                 List<GraphQubit> graphQubits = qubits.Select(FromCodeToQubit).ToList();
-                new GateNode(this, gate, graphQubits);
+                GateNode node = new(this, gate, graphQubits);
+                node.AddToGraph();
             }
         }
 

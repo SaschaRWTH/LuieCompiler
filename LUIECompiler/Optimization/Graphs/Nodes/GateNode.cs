@@ -33,8 +33,14 @@ namespace LUIECompiler.Optimization.Graphs.Nodes
         {
             Qubits = qubits;
             GateCode = gate;
+        }
 
-            foreach (GraphQubit qubit in qubits)
+        /// <summary>
+        /// Adds the node to the graph by adding the gate node to all qubits that are used as input.
+        /// </summary>
+        public void AddToGraph()
+        {
+            foreach (GraphQubit qubit in Qubits)
             {
                 qubit.AddGateNode(this);
             }
