@@ -61,6 +61,7 @@ namespace LUIECompiler.Optimization.Graphs
             if (definition.Size == 1)
             {
                 GraphQubit qubit = new(this, definition.Identifier);
+                qubit.AddIONodes();
                 Qubits.Add(qubit);
                 return;
             }
@@ -68,6 +69,7 @@ namespace LUIECompiler.Optimization.Graphs
             for (int i = 0; i < definition.Size; i++)
             {
                 GraphRegisterAccess qubit = new(this, definition.Identifier, i);
+                qubit.AddIONodes();
                 Qubits.Add(qubit);
             }
         }
