@@ -18,12 +18,12 @@ namespace LUIECompiler.Optimization.Graphs
         /// <summary>
         /// The start node of the qubit.
         /// </summary>
-        public InputNode Start { get; private set; }
+        public InputNode Start { get; }
 
         /// <summary>
         /// The end node of the qubit.
         /// </summary>
-        public OutputNode End { get; private set; }
+        public OutputNode End { get; }
 
         /// <summary>
         /// The identifier of the qubit.
@@ -57,6 +57,8 @@ namespace LUIECompiler.Optimization.Graphs
             Graph = graph;
             Identifier = identifier;
 
+            Start = new(graph);
+            End = new(graph);
         }
 
         /// <summary>
@@ -65,21 +67,11 @@ namespace LUIECompiler.Optimization.Graphs
         /// <exception cref="InternalException"></exception>
         public void AddIONodes()
         {
-            if(Graph is not CircuitGraph circuitGraph)
-            {
-                throw new InternalException
-                {
-                    Reason = "Graph must be a circuit graph",
-                };
-            }
+            Graph.AddNode(Start);
+            Graph.AddNode(End);
 
-            Start = new(circuitGraph);
-            End = new(circuitGraph);
-            circuitGraph.AddNode(Start);
-            circuitGraph.AddNode(End);
-
-            IEdge edge = new CircuitEdge(circuitGraph, this, Start, End);
-            circuitGraph.AddEdge(edge);
+            IEdge edge = new CircuitEdge(Graph, this, Start, End);
+            Graph.AddEdge(edge);
         }
 
         /// <summary>

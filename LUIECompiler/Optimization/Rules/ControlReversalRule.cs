@@ -150,7 +150,7 @@ namespace LUIECompiler.Optimization.Rules
             }
 
             GraphGuard guard = guards.First();
-            // TODO: Check wheter the rule can be applied in this case as well.
+            // TODO: Check whether the rule can be applied in this case as well.
             if (guard.Negated)
             {
                 return false;
