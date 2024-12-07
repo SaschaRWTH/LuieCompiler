@@ -100,7 +100,8 @@ namespace LUIECompiler.Optimization.Rules
 
             if (node.Gate == GateType.CX)
             {
-                return IsApplicableCX(node);
+                Compiler.LogError("Gate type cx should have been replaced in the code generation.");
+                return false;
             }
 
             if (node.Gate == GateType.X)
@@ -110,30 +111,6 @@ namespace LUIECompiler.Optimization.Rules
 
 
             return false;
-        }
-
-        /// <summary>
-        /// Checks if the rule is applicable to a cx gate.
-        /// </summary>
-        /// <param name="node"></param>
-        /// <returns></returns>
-        private bool IsApplicableCX(GateNode node)
-        {
-            if (node.GateCode.Guards.Count != 0)
-            {
-                return false;
-            }
-
-            List<GraphQubit> arguments = node.GetArguments();
-            if (arguments.Count != 2)
-            {
-                return false;
-            }
-
-            GraphQubit guard = arguments[0];
-            GraphQubit target = arguments[1];
-
-            return IsApplicableQubits(node, guard, target);
         }
 
         /// <summary>
