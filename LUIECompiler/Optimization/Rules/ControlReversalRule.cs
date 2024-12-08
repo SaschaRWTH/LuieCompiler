@@ -35,50 +35,39 @@ namespace LUIECompiler.Optimization.Rules
                 };
             }
 
-            if (node.Gate == GateType.CX)
+            if (node.Gate != GateType.X)
             {
-                if (node.GateCode.Arguments.Count != 2)
+                throw new InternalException()
                 {
-                    throw new InternalException()
-                    {
-                        Reason = $"The gate {node.GateCode} has an invalid number of arguments.",
-                    };
-                }
-
-                QubitCode guard = node.GateCode.Arguments[0];
-                QubitCode target = node.GateCode.Arguments[1];
-
-                node.GateCode.Arguments[0] = target;
-                node.GateCode.Arguments[1] = guard;
-            }
-
-            if (node.Gate == GateType.X)
-            {
-                if (node.GateCode.Arguments.Count != 1)
-                {
-                    throw new InternalException()
-                    {
-                        Reason = $"The gate {node.GateCode} has an invalid number of arguments.",
-                    };
-                }
-                if (node.GateCode.Guards.Count != 1)
-                {
-                    throw new InternalException()
-                    {
-                        Reason = $"The gate {node.GateCode} has an invalid number of guards for the rule application.",
-                    };
-                }
-
-                GuardCode guard = node.GateCode.Guards[0];
-                QubitCode target = node.GateCode.Arguments[0];
-
-                node.GateCode.Arguments[0] = guard.Qubit;
-                node.GateCode.Guards[0] = new()
-                {
-                    Qubit = target,
-                    Negated = false,
+                    Reason = $"The gate type {node.Gate} is not valid for application.",
                 };
             }
+
+            if (node.GateCode.Arguments.Count != 1)
+            {
+                throw new InternalException()
+                {
+                    Reason = $"The gate {node.GateCode} has an invalid number of arguments.",
+                };
+            }
+            if (node.GateCode.Guards.Count != 1)
+            {
+                throw new InternalException()
+                {
+                    Reason = $"The gate {node.GateCode} has an invalid number of guards for the rule application.",
+                };
+            }
+
+            GuardCode guard = node.GateCode.Guards[0];
+            QubitCode target = node.GateCode.Arguments[0];
+
+            node.GateCode.Arguments[0] = guard.Qubit;
+            node.GateCode.Guards[0] = new()
+            {
+                Qubit = target,
+                Negated = false,
+            };
+        
 
             foreach (GateNode hNode in HGates)
             {
@@ -98,17 +87,16 @@ namespace LUIECompiler.Optimization.Rules
                 return false;
             }
 
-            if (node.Gate == GateType.CX)
-            {
-                Compiler.LogError("Gate type cx should have been replaced in the code generation.");
-                return false;
-            }
 
             if (node.Gate == GateType.X)
             {
                 return IsApplicableGuardedX(node);
             }
 
+            if (node.Gate == GateType.CX)
+            {
+                Compiler.LogError("Gate type cx should have been replaced in the code generation.");
+            }
 
             return false;
         }
