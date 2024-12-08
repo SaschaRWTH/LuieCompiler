@@ -49,6 +49,38 @@ public class HSandwichTest
         "z id0;\n" +
         "y id0;\n";
 
+    public static readonly string SandwichedOnControlWire =@"
+        qubit c;
+        qubit a;
+        
+        qif a do
+            h c;
+        end
+
+        qif c do
+            z a;
+        end
+        
+        qif a do
+            h c;
+        end
+    ";
+
+    
+    public static readonly string SandwichedOnControlWireTranslated =
+        "qubit id0;\n" +
+        "qubit id1;\n" +
+        "ctrl(1) @ h id1, id0;\n" +
+        "ctrl(1) @ z id0, id1;\n" +
+        "ctrl(1) @ h id1, id0;\n";
+    
+    public static readonly string SandwichedOnControlWireOptimized =
+        "qubit id0;\n" +
+        "qubit id1;\n" +
+        "ctrl(1) @ h id1, id0;\n" +
+        "ctrl(1) @ z id0, id1;\n" +
+        "ctrl(1) @ h id1, id0;\n";
+
     [TestMethod]
     public void SimpleHZHSandwichTest()
     {
@@ -74,6 +106,7 @@ public class HSandwichTest
         Assert.AreEqual(SimpleHZHSandwichOptimized, optimizedCode);
 
     }
+
     [TestMethod]
     public void SimpleHXHSandwichTest()
     {
@@ -99,4 +132,32 @@ public class HSandwichTest
         Assert.AreEqual(SimpleHXHSandwichOptimized, optimizedCode);
 
     }
+
+    [TestMethod]
+    public void SandwichedOnControlWireTest()
+    {
+        var walker = Utils.GetWalker();
+        var parser = Utils.GetParser(SandwichedOnControlWire);
+
+        var codegen = new CodeGenerationListener();
+        walker.Walk(codegen, parser.parse());
+
+        QASMProgram program = codegen.CodeGen.GenerateCode();
+        Assert.IsNotNull(program);
+
+        string code = program.ToString();
+        Assert.IsNotNull(code);
+
+        Assert.AreEqual(SandwichedOnControlWireTranslated, code);
+
+        QASMProgram optimized = program.Optimize(OptimizationType.HSandwichReduction);
+
+        string optimizedCode = optimized.ToString();
+        Assert.IsNotNull(optimizedCode);
+
+        Assert.AreEqual(SandwichedOnControlWireOptimized, optimizedCode);
+
+    }
+
+
 }
