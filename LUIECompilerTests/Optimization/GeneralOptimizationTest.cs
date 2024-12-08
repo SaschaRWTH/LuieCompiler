@@ -27,9 +27,7 @@ public class GeneralOptimizatioTest
     ";
 
     public const string NullGatePeepingControlCombinedOptimized =
-        "qubit id0;\n" +
         "qubit id1;\n" +
-        "qubit id2;\n" +
         "h id1;\n" +
         "y id1;\n";
 

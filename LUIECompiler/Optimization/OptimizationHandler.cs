@@ -5,7 +5,7 @@ namespace LUIECompiler.Optimization
 {
     public class OptimizationHandler
     {
-        public QASMProgram Program { get; set; }
+        public QASMProgram Program { get; private set; }
 
         public OptimizationHandler(QASMProgram program)
         {
@@ -27,10 +27,11 @@ namespace LUIECompiler.Optimization
             while (changed)
             {
                 changed = false;
-                Compiler.LogInfo($"Applying all rules.");
                 changed |= graph.ApplyOptimizationRules(rules, rules.Max(rule => rule.MaxRuleDepth));
             }
             Compiler.LogInfo($"No more optimizations possible.");
+
+            graph.RemoveUnusedQubits();
 
             return graph.ToQASM();
         }

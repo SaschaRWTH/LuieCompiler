@@ -22,8 +22,7 @@ public class NullGateOptimizationTest
         "h id0;\n" +
         "x id1;\n";
 
-    public const string SimpleHHNullGateOptimizated =
-        "qubit id0;\n" +
+    public const string SimpleHHNullGateOptimized =
         "qubit id1;\n" +
         "x id1;\n";
 
@@ -42,8 +41,7 @@ public class NullGateOptimizationTest
         "x id0;\n" +
         "x id0;\n";
 
-    public const string SimpleXXNullGateOptimizated =
-        "qubit id0;\n" +
+    public const string SimpleXXNullGateOptimized =
         "qubit id1;\n" +
         "x id1;\n";
 
@@ -62,8 +60,7 @@ public class NullGateOptimizationTest
         "z id0;\n" +
         "z id0;\n";
 
-    public const string SimpleZZNullGateOptimizated =
-        "qubit id0;\n" +
+    public const string SimpleZZNullGateOptimized =
         "qubit id1;\n" +
         "x id1;\n";
 
@@ -82,8 +79,7 @@ public class NullGateOptimizationTest
         "x id1;\n" +
         "h id0;\n";
 
-    public const string InterruptedHHNullGateOptimizated =
-        "qubit id0;\n" +
+    public const string InterruptedHHNullGateOptimized =
         "qubit id1;\n" +
         "x id1;\n";
 
@@ -103,8 +99,7 @@ public class NullGateOptimizationTest
         "x id1;\n" +
         "x id0;\n";
 
-    public const string InterruptedXXNullGateOptimizated =
-        "qubit id0;\n" +
+    public const string InterruptedXXNullGateOptimized =
         "qubit id1;\n" +
         "x id1;\n";
 
@@ -125,8 +120,7 @@ public class NullGateOptimizationTest
         "x id1;\n" +
         "z id0;\n";
 
-    public const string InterruptedZZNullGateOptimizated =
-        "qubit id0;\n" +
+    public const string InterruptedZZNullGateOptimized =
         "qubit id1;\n" +
         "x id1;\n";
 
@@ -162,11 +156,10 @@ public class NullGateOptimizationTest
         "ctrl(1) @ h id0, id1;\n" +
         "ctrl(1) @ x id0, id2;\n";
 
-    public const string ControlledNullGatesOptimizated =
+    public const string ControlledNullGatesOptimized =
         "qubit id0;\n" +
         "qubit id1;\n" +
         "qubit id2;\n" +
-        "qubit id3;\n" +
         "ctrl(1) @ h id0, id1;\n" +
         "ctrl(1) @ x id0, id2;\n" +
         "ctrl(1) @ h id0, id1;\n" + 
@@ -238,7 +231,7 @@ public class NullGateOptimizationTest
         string optimizedCode = optimized.ToString();
         Assert.IsNotNull(optimizedCode);
 
-        Assert.AreEqual(SimpleHHNullGateOptimizated, optimizedCode);
+        Assert.AreEqual(SimpleHHNullGateOptimized, optimizedCode);
 
     }
 
@@ -264,7 +257,7 @@ public class NullGateOptimizationTest
         string optimizedCode = optimized.ToString();
         Assert.IsNotNull(optimizedCode);
 
-        Assert.AreEqual(SimpleXXNullGateOptimizated, optimizedCode);
+        Assert.AreEqual(SimpleXXNullGateOptimized, optimizedCode);
 
     }
 
@@ -290,7 +283,7 @@ public class NullGateOptimizationTest
         string optimizedCode = optimized.ToString();
         Assert.IsNotNull(optimizedCode);
 
-        Assert.AreEqual(SimpleZZNullGateOptimizated, optimizedCode);
+        Assert.AreEqual(SimpleZZNullGateOptimized, optimizedCode);
 
     }
 
@@ -316,7 +309,7 @@ public class NullGateOptimizationTest
         string optimizedCode = optimized.ToString();
         Assert.IsNotNull(optimizedCode);
 
-        Assert.AreEqual(InterruptedHHNullGateOptimizated, optimizedCode);
+        Assert.AreEqual(InterruptedHHNullGateOptimized, optimizedCode);
 
     }
 
@@ -342,7 +335,7 @@ public class NullGateOptimizationTest
         string optimizedCode = optimized.ToString();
         Assert.IsNotNull(optimizedCode);
 
-        Assert.AreEqual(InterruptedXXNullGateOptimizated, optimizedCode);
+        Assert.AreEqual(InterruptedXXNullGateOptimized, optimizedCode);
 
     }
 
@@ -368,7 +361,7 @@ public class NullGateOptimizationTest
         string optimizedCode = optimized.ToString();
         Assert.IsNotNull(optimizedCode);
 
-        Assert.AreEqual(InterruptedZZNullGateOptimizated, optimizedCode);
+        Assert.AreEqual(InterruptedZZNullGateOptimized, optimizedCode);
 
     }
     
@@ -394,7 +387,7 @@ public class NullGateOptimizationTest
         string optimizedCode = optimized.ToString();
         Assert.IsNotNull(optimizedCode);
 
-        Assert.AreEqual(ControlledNullGatesOptimizated, optimizedCode);
+        Assert.AreEqual(ControlledNullGatesOptimized, optimizedCode);
 
     }
 
