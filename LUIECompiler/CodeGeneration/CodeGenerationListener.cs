@@ -19,7 +19,7 @@ namespace LUIECompiler.CodeGeneration
         /// <summary>
         /// Reference to the last poped code block. This is used, e.g., to create if statements.
         /// </summary>
-        private Scope? _lastPoped = null;
+        private Scope? _lastPopped = null;
 
         public override void ExitRegisterDeclaration([NotNull] LuieParser.RegisterDeclarationContext context)
         {
@@ -113,12 +113,12 @@ namespace LUIECompiler.CodeGeneration
 
         public override void ExitBlock([NotNull] LuieParser.BlockContext context)
         {
-            _lastPoped = CodeGen.PopCodeBlock();
+            _lastPopped = CodeGen.PopCodeBlock();
         }
 
         public override void ExitIfStat([NotNull] LuieParser.IfStatContext context)
         {
-            Scope scope = _lastPoped ?? throw new InternalException()
+            Scope scope = _lastPopped ?? throw new InternalException()
             {
                 Reason = "There was no last poped scope, although block should just have been exited."
             };
@@ -139,7 +139,7 @@ namespace LUIECompiler.CodeGeneration
 
         public override void ExitElseStat([NotNull] LuieParser.ElseStatContext context)
         {
-            Scope scope = _lastPoped ?? throw new InternalException()
+            Scope scope = _lastPopped ?? throw new InternalException()
             {
                 Reason = "There was no last poped scope, although block should just have been exited."
             };
@@ -160,15 +160,18 @@ namespace LUIECompiler.CodeGeneration
 
         public override void EnterForstatement([NotNull] LuieParser.ForstatementContext context)
         {
+            CodeGen.Table.PushEmptyScope();
+
             LoopIterator iterator = context.GetIterator();
             CodeGen.AddIterator(iterator, new ErrorContext(context.Start));
         }
 
         public override void ExitForstatement([NotNull] LuieParser.ForstatementContext context)
         {
-            Scope scope = _lastPoped ?? throw new InternalException()
+
+            Scope scope = _lastPopped ?? throw new InternalException()
             {
-                Reason = "There was no last poped scope, although block should just have been exited."
+                Reason = "There was no last popped scope, although block should just have been exited."
             };
             CodeBlock block = scope.CodeBlock ?? throw new InternalException()
             {
@@ -188,6 +191,10 @@ namespace LUIECompiler.CodeGeneration
                 ErrorContext = new ErrorContext(context.Start),
             };
 
+            // Cannot pop earlier, because popping scope will discard iterator symbol.
+            // Must pop scope before adding statement or statement is discarded. 
+            CodeGen.Table.PopScope();
+
             CodeGen.AddStatement(statement);
         }
 
@@ -205,7 +212,7 @@ namespace LUIECompiler.CodeGeneration
             List<GateArgument> arguments = CodeGen.Table.GetArguments();
             CodeGen.Table.PopScope();
 
-            Scope scope = _lastPoped ?? throw new InternalException()
+            Scope scope = _lastPopped ?? throw new InternalException()
             {
                 Reason = "There was no last poped scope, although block should just have been exited."
             };

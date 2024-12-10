@@ -192,7 +192,22 @@ public class ForLoopTest
         "h id0[6];\n" +
         "h id0[7];\n";
 
-
+    public const string DoubledLoop = @"
+        qubit[2] a;
+        for i in 0..1 do
+            h a[i];
+        end
+        for i in 0..1 do
+            h a[i];
+        end
+    ";
+    
+    public const string DoubledLoopTranslation =
+        "qubit[2] id0;\n" +
+        "h id0[0];\n" +
+        "h id0[1];\n" +
+        "h id0[0];\n" +
+        "h id0[1];\n";
 
     /// <summary>
     /// Test the translation of a simple for loop.
@@ -364,5 +379,18 @@ public class ForLoopTest
         Assert.IsNotNull(code);
 
         Assert.AreEqual(RangeStartEndExpressionComplexTranslation, code);
+    }
+    [TestMethod]
+    public void DoubledLoopTest()
+    {
+        var walker = Utils.GetWalker();
+        var parser = Utils.GetParser(DoubledLoop);
+        var gen = new CodeGenerationListener();
+        walker.Walk(gen, parser.parse());
+        
+        string? code = gen.CodeGen.GenerateCode()?.ToString();
+        Assert.IsNotNull(code);
+
+        Assert.AreEqual(DoubledLoopTranslation, code);
     }
 }
