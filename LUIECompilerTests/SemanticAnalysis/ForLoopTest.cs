@@ -54,6 +54,17 @@ public class ForLoopTest
         "    end\n" +
         "end";
 
+    
+    public const string DoubledLoop = @"
+        qubit[2] a;
+        for i in 0..1 do
+            h a[i];
+        end
+        for i in 0..1 do
+            h a[i];
+        end
+    ";
+
     /// <summary>
     /// Test no error are incorrectly reported.
     /// </summary>
@@ -149,6 +160,23 @@ public class ForLoopTest
         Assert.IsTrue(error.Warnings.Count == 0);
         Assert.IsTrue(error.Errors.Any(e => e is RedefineError && e.ErrorContext.Line == 3));
         Assert.IsTrue(error.Errors.Any(e => e is RedefineError && e.ErrorContext.Line == 8));
+    }
+
+    /// <summary>
+    /// Test no error are incorrectly reported.
+    /// </summary>
+    [TestMethod]
+    public void DoubledLoopTest()
+    {
+        var walker = Utils.GetWalker();
+        var parser = Utils.GetParser(DoubledLoop);
+        var analysis = new DeclarationAnalysisListener();
+        walker.Walk(analysis, parser.parse());
+        var error = analysis.Error;
+
+        Console.WriteLine(error);
+        Assert.IsFalse(error.ContainsCriticalError);
+        Assert.IsTrue(error.Warnings.Count == 0);
     }
 
 }

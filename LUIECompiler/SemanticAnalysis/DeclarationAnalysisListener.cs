@@ -41,9 +41,9 @@ namespace LUIECompiler.SemanticAnalysis
         {
             // Technically not needed, just for completeness.
             Table.PopScope();
-        
+
             // Check for unused symbols
-            foreach(var (symbol, usage) in SymbolUsage)
+            foreach (var (symbol, usage) in SymbolUsage)
             {
                 if (usage == 0 && symbol.Identifier != "_")
                 {
@@ -161,6 +161,7 @@ namespace LUIECompiler.SemanticAnalysis
 
         public override void EnterForstatement([NotNull] LuieParser.ForstatementContext context)
         {
+            Table.PushEmptyScope();
 
             string identifier = context.IDENTIFIER().GetText();
 
@@ -175,6 +176,11 @@ namespace LUIECompiler.SemanticAnalysis
             LoopIterator loop = range.GetRange(identifier);
 
             AddSymbolToTable(loop);
+        }
+
+        public override void ExitForstatement([NotNull] LuieParser.ForstatementContext context)
+        {
+            Table.PopScope();
         }
 
         public override void ExitFactor([NotNull] LuieParser.FactorContext context)
