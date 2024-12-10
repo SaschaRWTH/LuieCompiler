@@ -201,6 +201,19 @@ public class ForLoopTest
             h a[i];
         end
     ";
+
+    public const string DoubledLoopCompositeGate = @"
+        gate h2all(a) do
+            for i in 0..1 do
+                h a[i];
+            end
+            for i in 0..1 do
+                h a[i];
+            end
+        end
+        qubit[2] b;
+        h2all b;
+    ";
     
     public const string DoubledLoopTranslation =
         "qubit[2] id0;\n" +
@@ -385,6 +398,19 @@ public class ForLoopTest
     {
         var walker = Utils.GetWalker();
         var parser = Utils.GetParser(DoubledLoop);
+        var gen = new CodeGenerationListener();
+        walker.Walk(gen, parser.parse());
+        
+        string? code = gen.CodeGen.GenerateCode()?.ToString();
+        Assert.IsNotNull(code);
+
+        Assert.AreEqual(DoubledLoopTranslation, code);
+    }
+    [TestMethod]
+    public void DoubledLoopCompositeGateTest()
+    {
+        var walker = Utils.GetWalker();
+        var parser = Utils.GetParser(DoubledLoopCompositeGate);
         var gen = new CodeGenerationListener();
         walker.Walk(gen, parser.parse());
         
