@@ -1,0 +1,61 @@
+gate majority(a, b, c) do
+    qif c do
+        x b;
+        x a;
+    end
+    qif a do
+        qif b do
+            x c;
+        end
+    end
+end
+
+gate unmaj(a, b, c) do
+    qif a do
+        qif b do
+            x c;
+        end
+    end
+    qif c do 
+        x a;
+    end
+    
+    qif a do 
+        x b;
+    end
+end
+
+// Adder that add a to b with a possible carryIn and carryOut
+// size of a must be size of b
+gate adder(a, b, carryIn, carryOut) do
+    
+    majority carryIn, b[0], a[0];
+    for i in range(sizeof(a) - 1) do
+        majority a[i], b[i + 1], a[i + 1];
+    end
+    
+    qif a[3] do
+        x carryOut;
+    end
+    
+    for i in range(sizeof(a) - 1) do
+        majority a[(sizeof(a) - 2) - i], b[(sizeof(a) - 1) - i], a[(sizeof(a) - 1) - i];
+    end
+    unmaj carryIn, b[0], a[0];
+end
+
+qubit[4] a;
+qubit[4] b;
+qubit carryIn;
+qubit carryOut;
+
+// a = 0001
+// b = 1111
+x a[0];
+x b[0];
+x b[1];
+x b[2];
+x b[3];
+
+
+adder a, b, carryIn, carryOut;
