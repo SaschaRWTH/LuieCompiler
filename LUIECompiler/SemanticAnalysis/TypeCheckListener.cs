@@ -208,10 +208,17 @@ namespace LUIECompiler.SemanticAnalysis
 
         public override void EnterForstatement([NotNull] LuieParser.ForstatementContext context)
         {
+            Table.PushEmptyScope();
+
             string identifier = context.IDENTIFIER().GetText();
             LoopIterator loopIterator = context.range().GetRange(identifier);
 
             Table.AddSymbol(loopIterator);
+        }
+
+        public override void ExitForstatement([NotNull] LuieParser.ForstatementContext context)
+        {
+            Table.PopScope();
         }
 
         public override void ExitRange([NotNull] LuieParser.RangeContext context)
