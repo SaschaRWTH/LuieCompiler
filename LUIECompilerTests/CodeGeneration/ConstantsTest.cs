@@ -94,6 +94,26 @@ public class ConstantsTest
         "x id0[2];\n" +
         "x id0[3];\n" +
         "x id0[4];\n";
+
+    public const string ConstAsSizeInCompGate =
+    @"
+        gate h_all(reg) do
+            for i in range(sizeof(reg)) do
+                x reg[i];
+            end
+        end
+
+        const n : double = 5;
+        qubit[n] a;
+        h_all a;
+    ";
+    public const string ConstAsSizeInCompGateTranslation =
+        "qubit[5] id0;\n" +
+        "x id0[0];\n" +
+        "x id0[1];\n" +
+        "x id0[2];\n" +
+        "x id0[3];\n" +
+        "x id0[4];\n";
         
     [TestMethod]
     public void SimpleIntConstantTest()
@@ -178,5 +198,19 @@ public class ConstantsTest
         Assert.IsNotNull(code);
 
         Assert.AreEqual(DoubleConstantInExpressionTranslation, code);
+    }   
+    [TestMethod]
+    public void ConstAsSizeInCompGateTest()
+    {
+        var walker = Utils.GetWalker();
+        var parser = Utils.GetParser(ConstAsSizeInCompGate);
+
+        var codegen = new CodeGenerationListener();
+        walker.Walk(codegen, parser.parse());
+
+        string? code = codegen.CodeGen.GenerateCode()?.ToString();
+        Assert.IsNotNull(code);
+
+        Assert.AreEqual(ConstAsSizeInCompGateTranslation, code);
     }
 }
