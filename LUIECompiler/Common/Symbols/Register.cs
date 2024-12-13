@@ -1,3 +1,4 @@
+using LUIECompiler.CodeGeneration;
 using LUIECompiler.CodeGeneration.Expressions;
 using LUIECompiler.Common.Errors;
 
@@ -11,7 +12,7 @@ namespace LUIECompiler.Common.Symbols
         /// <summary>
         /// The size of the register, i.e., the number of qubits it contains.
         /// </summary>
-        public Expression<int> Size { get; init; }
+        public Expression<int> Size { get; private set; }
 
         /// <summary>
         /// Creates a new register.
@@ -52,6 +53,19 @@ namespace LUIECompiler.Common.Symbols
         public RegisterAccess ToRegisterAccess(Expression<int> indexExpression, ErrorContext? errorContext = null)
         {
             return new RegisterAccess(this, indexExpression, errorContext ?? ErrorContext);
+        }
+
+        /// <summary>
+        /// Evaluates the size of the register in the given <paramref name="context"/> and replaces its property with a constant size expression.
+        /// </summary>
+        /// <param name="context"></param>
+        public void EvaluateSize(CodeGenerationContext context)
+        {
+            int size = Size.Evaluate(context);
+            Size = new ConstantExpression<int>()
+            {
+                Value = size,
+            };
         }
     }
 

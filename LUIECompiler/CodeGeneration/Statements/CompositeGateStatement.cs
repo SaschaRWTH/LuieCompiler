@@ -32,7 +32,8 @@ namespace LUIECompiler.CodeGeneration.Statements
                 Symbol symbol = arg.Value;
                 if (symbol is GateArgumentAccess access)
                 {
-                    symbol = new GateArgumentAccess(access.Argument, new ConstantExpression<int>(){
+                    symbol = new GateArgumentAccess(access.Argument, new ConstantExpression<int>()
+                    {
                         Value = access.IndexExpression.Evaluate(context),
                     }, access.ErrorContext);
                 }
@@ -43,13 +44,15 @@ namespace LUIECompiler.CodeGeneration.Statements
                 Symbol symbol = arg.Value;
                 if (symbol is GateArgumentAccess access)
                 {
-                    symbol = new GateArgumentAccess(access.Argument, new ConstantExpression<int>(){
+                    symbol = new GateArgumentAccess(access.Argument, new ConstantExpression<int>()
+                    {
                         Value = access.IndexExpression.Evaluate(context),
                     }, access.ErrorContext);
                 }
                 argMap[arg.Key] = symbol;
             }
 
+            EvaluateRegisterSizes(argMap, context);
             CodeGenerationContext bodyContext = new CodeGenerationContext(argMap)
             {
                 CurrentBlock = context.CurrentBlock,
@@ -58,6 +61,17 @@ namespace LUIECompiler.CodeGeneration.Statements
             };
 
             return Gate.Body.ToQASM(bodyContext);
+        }
+
+        private void EvaluateRegisterSizes(Dictionary<GateArgument, Symbol> argMap, CodeGenerationContext context)
+        {
+            foreach (var (_, symbol) in argMap)
+            {
+                if (symbol is Register register)
+                {
+                    register.EvaluateSize(context);
+                }
+            }
         }
     }
 }
