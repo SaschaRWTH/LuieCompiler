@@ -15,29 +15,41 @@ namespace LUIECompiler
 
         public static bool Verbose { get; set; }
 
+        private static CompilerTimer? _timer = null;
+
         public static void Compile(CompilerData data)
         {
             Verbose = data.Verbose;
+            if (data.Timed)
+            {
+                _timer = new();
+            }
 
             string input = IOHandler.GetInputCode(data);
 
             LuieParser.ParseContext parseContext = GetParseContext(input);
             ParseTreeWalker walker = GetParseTreeWalker();
 
+            _timer?.StartStage("Semantic analysis");
             bool @continue = SemanticallyAnalyseCode(walker, parseContext);
+            _timer?.StopStage();
             if (!@continue)
             {
                 return;
             }
 
+            _timer?.StartStage("Code Generation");
             QASMProgram? program = GenerateCode(walker, parseContext);
+            _timer?.StopStage();
 
             if (program == null)
             {
                 return;
             }
 
+            _timer?.StartStage("Code Optimization");
             program = program.Optimize(data.Optimization);
+            _timer?.StopStage();
 
             IOHandler.WriteOutputCode(data, program);
         }
@@ -218,5 +230,27 @@ namespace LUIECompiler
         {
             Printer(message);
         }
+
+
+        private class CompilerTimer
+        {
+            private readonly System.Diagnostics.Stopwatch _stopwatch = new();
+            private string _stage = string.Empty;
+
+            public void StartStage(string stage)
+            {
+                _stage = stage;
+                _stopwatch.Start();
+            }
+
+            public void StopStage()
+            {
+                _stopwatch.Stop();
+                Print($"Compilation stage \"{_stage}\" took {_stopwatch.ElapsedMilliseconds}ms!");
+
+            }
+        }
+
     }
+
 }

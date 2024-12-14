@@ -20,5 +20,9 @@ namespace LUIECompiler
         [CLIParameter('v', "verbose")]
         [CLIDescription("Path to the input file.")]
         public bool Verbose { get; set; } = false;
+
+        [CLIParameter('t', "timed", hidden: true)]
+        [CLIDescription("Times compilation stages and prints the result.")]
+        public bool Timed { get; set; } = false;
     }
 }

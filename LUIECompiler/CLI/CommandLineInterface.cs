@@ -149,6 +149,11 @@ namespace LUIECompiler.CLI
             Compiler.Print(HelpOptionString(help, helpDescription));
             foreach (var (prop, attr) in parameters)
             {
+                if(attr?.Hidden == true)
+                {
+                    continue;
+                }
+
                 string? description = descriptions.FirstOrDefault(x => x.Item1.Name == prop.Name).Item2.Description;
                 if(string.IsNullOrEmpty(description))
                 {
