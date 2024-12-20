@@ -34,24 +34,28 @@ gate adder(a, b, carryIn, carryOut) do
         majority a[i], b[i + 1], a[i + 1];
     end
     
-    qif a[3] do
+    qif a[sizeof(a) - 1] do
         x carryOut;
     end
     
     for i in range(sizeof(a) - 1) do
-        majority a[(sizeof(a) - 2) - i], b[(sizeof(a) - 1) - i], a[(sizeof(a) - 1) - i];
+        unmaj a[(sizeof(a) - 2) - i], b[(sizeof(a) - 1) - i], a[(sizeof(a) - 1) - i];
     end
     unmaj carryIn, b[0], a[0];
 end
 
-qubit[4] a;
-qubit[4] b;
+const size : int = 32;
+qubit[size] a;
+qubit[size] b;
 qubit carryIn;
 qubit carryOut;
 
 // a = 0001
 // b = 1111
-x a[0];
+h a[0];
+qif a[0] do
+    x a[1];
+end
 x b[0];
 x b[1];
 x b[2];
