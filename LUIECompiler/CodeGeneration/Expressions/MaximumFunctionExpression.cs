@@ -32,8 +32,13 @@ namespace LUIECompiler.CodeGeneration.Expressions
         /// <param name="context">Context of the function</param>
         /// <exception cref="NotImplementedException"></exception>
         public MaximumFunctionExpression(LuieParser.FunctionParameterContext context)
-        {
-            // TODO: Add error handling for wrong parameters
+        { 
+            if(TryIdentifierToIdentifierExpression(context, out List<Expression<T>> expressions))
+            {
+                Parameters = expressions;
+                return;
+            }
+            
             Parameters = context.expression()?.Select(expression => expression.GetExpression<T>()).ToList() ?? throw new NotImplementedException();
         }
 

@@ -57,6 +57,16 @@ public class ConstantsTest
             x a[i];
         end
     ";
+    public const string UIntConstantInExpressionWithFunc =
+    @"
+        const n : uint = 5;
+        const m : uint = 6;
+        qubit[n] a;
+
+        for i in range(min(n,m)) do
+            x a[i];
+        end
+    ";
 
     public const string UIntConstantInExpressionTranslation =
         "qubit[5] id0;\n" +
@@ -156,12 +166,28 @@ public class ConstantsTest
         Assert.IsNotNull(code);
 
         Assert.AreEqual(SimpleUIntConstantTranslation, code);
-    }        
+    }   
+         
     [TestMethod]
     public void ConstantUIntExpressionTest()
     {
         var walker = Utils.GetWalker();
         var parser = Utils.GetParser(UIntConstantInExpression);
+
+        var codegen = new CodeGenerationListener();
+        walker.Walk(codegen, parser.parse());
+
+        string? code = codegen.CodeGen.GenerateCode()?.ToString();
+        Assert.IsNotNull(code);
+
+        Assert.AreEqual(UIntConstantInExpressionTranslation, code);
+    }    
+
+    [TestMethod]
+    public void UIntConstantInExpressionWithFuncTest()
+    {
+        var walker = Utils.GetWalker();
+        var parser = Utils.GetParser(UIntConstantInExpressionWithFunc);
 
         var codegen = new CodeGenerationListener();
         walker.Walk(codegen, parser.parse());

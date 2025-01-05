@@ -25,6 +25,29 @@ namespace LUIECompiler.CodeGeneration.Expressions
                 "max" => new MaximumFunctionExpression<T>(context.param),
                 _ => throw new NotImplementedException(),
             };
-        } 
+        }
+
+        protected bool TryIdentifierToIdentifierExpression(LuieParser.FunctionParameterContext context, out List<Expression<T>> expressions)
+        {
+            expressions = new List<Expression<T>>();
+            if (context.IDENTIFIER() is not Antlr4.Runtime.Tree.ITerminalNode[] array)
+            {
+                return false;
+            }
+
+            if (array.Length == 0)
+            {
+                return false;
+            }
+
+            foreach (var identifier in array)
+            {
+                expressions.Add(new IdentifierExpression<T>()
+                {
+                    Identifier = identifier.GetText()
+                });
+            }
+            return true;
+        }
     }
 }

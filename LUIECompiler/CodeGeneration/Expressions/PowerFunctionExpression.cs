@@ -33,6 +33,12 @@ namespace LUIECompiler.CodeGeneration.Expressions
         /// <exception cref="NotImplementedException"></exception>
         public PowerFunctionExpression(LuieParser.FunctionParameterContext context)
         {
+            if (TryIdentifierToIdentifierExpression(context, out List<Expression<T>> expressions))
+            {
+                Parameters = expressions;
+                return;
+            }
+
             // TODO: Add error handling for wrong parameters
             Parameters = context.expression()?.Select(expression => expression.GetExpression<T>()).ToList() ?? throw new NotImplementedException();
         }
