@@ -26,7 +26,7 @@ constDeclaration
  ;
 
 gateDeclaration
- : GATEKEYWORD identifier=IDENTIFIER '(' param=gateParameter? ')' DO block END
+ : GATEKEYWORD identifier=IDENTIFIER '(' param=gateParameter ')' DO block END
  ;
 
 gateParameter 
