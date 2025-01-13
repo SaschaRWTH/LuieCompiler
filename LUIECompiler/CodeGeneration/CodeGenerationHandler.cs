@@ -76,7 +76,7 @@ namespace LUIECompiler.CodeGeneration
         /// <param name="statement"></param>
         public void AddStatement([NotNull] Statement statement)
         {
-            CurrentBlock.AddTranslateable(statement);
+            CurrentBlock.AddTranslatable(statement);
         }
 
         /// <summary>
@@ -110,7 +110,7 @@ namespace LUIECompiler.CodeGeneration
 
             RegisterDeclaration definition = new(register);
 
-            CurrentBlock.AddTranslateable(definition);
+            CurrentBlock.AddTranslatable(definition);
 
             return register;
         }

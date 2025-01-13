@@ -11,7 +11,7 @@ namespace LUIECompiler.CodeGeneration.Statements
     /// <summary>
     /// Represents an abstract statement in the code generation.
     /// </summary>
-    public abstract class Statement : ITranslateable
+    public abstract class Statement : ITranslatable
     {
         /// <summary>
         /// Source code line of the statement.

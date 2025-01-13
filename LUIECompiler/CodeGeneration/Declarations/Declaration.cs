@@ -5,7 +5,7 @@ using LUIECompiler.Common.Symbols;
 namespace LUIECompiler.CodeGeneration.Declarations
 {
 
-    public abstract class Declaration : ITranslateable
+    public abstract class Declaration : ITranslatable
     {
         /// <summary>
         /// Identifier to be defined.

@@ -9,12 +9,12 @@ namespace LUIECompiler.CodeGeneration
     /// <summary>
     /// Represents a code block in the code generation.
     /// </summary>
-    public class CodeBlock : ITranslateable
+    public class CodeBlock : ITranslatable
     {
         /// <summary>
         /// List of statements in the code block.
         /// </summary>
-        public List<ITranslateable> Translateables { get; init; } = [];
+        public List<ITranslatable> Translateables { get; init; } = [];
 
         /// <summary>
         /// Maps definitions to their unique identifiers given while generating.
@@ -30,7 +30,7 @@ namespace LUIECompiler.CodeGeneration
         /// Adds a statement to the code block.
         /// </summary>
         /// <param name="statement"></param>
-        public void AddTranslateable(ITranslateable statement)
+        public void AddTranslatable(ITranslatable statement)
         {
             Translateables.Add(statement);
         }
@@ -39,7 +39,7 @@ namespace LUIECompiler.CodeGeneration
         /// Adds a statement to the code block.
         /// </summary>
         /// <param name="statement"></param>
-        public void AddTranslateables(IEnumerable<ITranslateable> statements)
+        public void AddTranslatables(IEnumerable<ITranslatable> statements)
         {
             Translateables.AddRange(statements);
         }
