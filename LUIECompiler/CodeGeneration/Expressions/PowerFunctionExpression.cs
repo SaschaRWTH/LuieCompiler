@@ -18,15 +18,6 @@ namespace LUIECompiler.CodeGeneration.Expressions
         public List<Expression<T>> Parameters { get; init; }
 
         /// <summary>
-        /// Creates a power function expression from the given <paramref name="parameters"/>.
-        /// </summary>
-        /// <param name="parameters"></param>
-        public PowerFunctionExpression(List<Expression<T>> parameters)
-        {
-            Parameters = parameters;
-        }
-
-        /// <summary>
         /// Creates a power function expression from the given <paramref name="context"/>.
         /// </summary>
         /// <param name="context"></param>
@@ -39,8 +30,8 @@ namespace LUIECompiler.CodeGeneration.Expressions
                 return;
             }
 
-            // TODO: Add error handling for wrong parameters
             Parameters = context.expression()?.Select(expression => expression.GetExpression<T>()).ToList() ?? throw new NotImplementedException();
+            ArgumentErrorContext = new ErrorContext(context);
         }
 
         public override T Evaluate(CodeGenerationContext context)
@@ -49,7 +40,7 @@ namespace LUIECompiler.CodeGeneration.Expressions
             {
                 throw new CodeGenerationException()
                 {
-                    Error = new InvalidFunctionArguments(new ErrorContext(), "Power", 2, Parameters.Count),
+                    Error = new InvalidFunctionArguments(ArgumentErrorContext, "Power", 2, Parameters.Count),
                 };
             }
 

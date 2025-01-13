@@ -20,15 +20,6 @@ namespace LUIECompiler.CodeGeneration.Expressions
         /// <summary>
         /// Creates a new instance of the maximum function expression.
         /// </summary>
-        /// <param name="parameters">Parameters of the function</param>
-        public MaximumFunctionExpression(List<Expression<T>> parameters)
-        {
-            Parameters = parameters;
-        }
-
-        /// <summary>
-        /// Creates a new instance of the maximum function expression.
-        /// </summary>
         /// <param name="context">Context of the function</param>
         /// <exception cref="NotImplementedException"></exception>
         public MaximumFunctionExpression(LuieParser.FunctionParameterContext context)
@@ -40,6 +31,7 @@ namespace LUIECompiler.CodeGeneration.Expressions
             }
             
             Parameters = context.expression()?.Select(expression => expression.GetExpression<T>()).ToList() ?? throw new NotImplementedException();
+            ArgumentErrorContext = new ErrorContext(context);
         }
 
         public override T Evaluate(CodeGenerationContext context)
@@ -48,8 +40,7 @@ namespace LUIECompiler.CodeGeneration.Expressions
             {
                 throw new CodeGenerationException()
                 {
-                    // TODO: Add error context
-                    Error = new InvalidFunctionArguments(new(), "min", 1, 0),
+                    Error = new InvalidFunctionArguments(ArgumentErrorContext, "min", 1, 0),
                 };
             }
 

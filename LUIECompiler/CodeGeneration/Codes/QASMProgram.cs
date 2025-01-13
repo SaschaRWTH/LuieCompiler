@@ -76,7 +76,6 @@ namespace LUIECompiler.CodeGeneration.Codes
             {
                 if (line is not GateApplicationCode gate)
                 {
-                    // TODO: Change to shallow copy?
                     code.Code.Add(line);
                     continue;
                 }

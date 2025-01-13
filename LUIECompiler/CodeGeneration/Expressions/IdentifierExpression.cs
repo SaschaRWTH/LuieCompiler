@@ -34,7 +34,6 @@ namespace LUIECompiler.CodeGeneration.Expressions
                 Reason = $"Symbol with identifier {Identifier} not found.",
             };
             
-            // TODO: Check that all possible types are handled
             if (symbol is Constant<T> constant)
             {
                 return constant.Value.Evaluate(context);
@@ -62,17 +61,6 @@ namespace LUIECompiler.CodeGeneration.Expressions
                     Reason = $"Symbol with identifier {Identifier} is not a constant.",
                 };
             }
-
-            // Find the constant with the given identifier
-            // var constant = context.IntegerConstants.Find(constant => constant.Identifier == Identifier);
-            // if (constant == null)
-            // {
-            //     throw new InternalException()
-            //     {
-            //         Reason = $"Constant with identifier {Identifier} not found.",
-            //     };
-            // }
-            // return T.CreateChecked(constant.Value);
         }
 
         public override string ToString()

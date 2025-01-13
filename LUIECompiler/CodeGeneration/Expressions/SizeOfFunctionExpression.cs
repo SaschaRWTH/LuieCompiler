@@ -18,13 +18,6 @@ namespace LUIECompiler.CodeGeneration.Expressions
         /// </summary>
         public List<string> Parameter { get; }
 
-        /// <summary>
-        /// Creates a sizeof function expression from the given <paramref name="parameter"/>.
-        /// </summary>
-        public SizeOfFunctionExpression(List<string> parameter)
-        {
-            Parameter = parameter;
-        }
 
         /// <summary>
         /// Creates a sizeof function expression from the given <paramref name="context"/>.
@@ -33,8 +26,8 @@ namespace LUIECompiler.CodeGeneration.Expressions
         /// <exception cref="NotImplementedException"></exception>
         public SizeOfFunctionExpression(LuieParser.FunctionParameterContext context)
         {
-            // TODO: Adjust error handling!
             Parameter = context.IDENTIFIER()?.Select(obj => obj.GetText())?.ToList() ?? throw new NotImplementedException();
+            ArgumentErrorContext = new ErrorContext(context);
         }
 
         public override List<string> UndefinedIdentifiers(SymbolTable table)
@@ -48,7 +41,7 @@ namespace LUIECompiler.CodeGeneration.Expressions
             {
                 throw new CodeGenerationException()
                 {
-                    Error = new InvalidFunctionArguments(new ErrorContext(), "SizeOf", 1, Parameter.Count),
+                    Error = new InvalidFunctionArguments(ArgumentErrorContext, "SizeOf", 1, Parameter.Count),
                 };
             }
 

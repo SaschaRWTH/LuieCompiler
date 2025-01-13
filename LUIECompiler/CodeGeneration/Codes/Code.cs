@@ -9,7 +9,6 @@ namespace LUIECompiler.CodeGeneration.Codes
         /// <returns></returns>
         public abstract string ToCode();
 
-        // TODO: Add test cases for semantic equality
         /// <summary>
         /// Indicates whether the code is semantically equal to another <paramref name="code"/>.
         /// </summary>

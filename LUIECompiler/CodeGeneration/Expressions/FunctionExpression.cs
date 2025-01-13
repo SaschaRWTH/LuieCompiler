@@ -1,4 +1,5 @@
 using System.Numerics;
+using LUIECompiler.Common.Errors;
 
 namespace LUIECompiler.CodeGeneration.Expressions
 {
@@ -8,6 +9,8 @@ namespace LUIECompiler.CodeGeneration.Expressions
     /// <typeparam name="T"></typeparam>
     public abstract class FunctionExpression<T> : Expression<T> where T : INumber<T>
     {
+        public ErrorContext ArgumentErrorContext { get; set; }
+
         /// <summary>
         /// Creates a function expression from the given <paramref name="context"/>.
         /// </summary>
