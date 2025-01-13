@@ -16,7 +16,7 @@ namespace LUIECompiler.CodeGeneration.Expressions
         /// <summary>
         /// List of parameters of the function.
         /// </summary>
-        public List<string> Parameter { get; }
+        public List<string> Argument { get; }
 
 
         /// <summary>
@@ -26,26 +26,26 @@ namespace LUIECompiler.CodeGeneration.Expressions
         /// <exception cref="NotImplementedException"></exception>
         public SizeOfFunctionExpression(LuieParser.FunctionParameterContext context)
         {
-            Parameter = context.IDENTIFIER()?.Select(obj => obj.GetText())?.ToList() ?? throw new NotImplementedException();
+            Argument = context.IDENTIFIER()?.Select(obj => obj.GetText())?.ToList() ?? throw new NotImplementedException();
             ArgumentErrorContext = new ErrorContext(context);
         }
 
         public override List<string> UndefinedIdentifiers(SymbolTable table)
         {
-            return Parameter.Where(obj => obj is string).Select(obj => (string)obj).Where(p => !table.IsDefined(p)).ToList();
+            return Argument.Where(obj => obj is string).Select(obj => (string)obj).Where(p => !table.IsDefined(p)).ToList();
         }
 
         public override T Evaluate(CodeGenerationContext context)
         {
-            if (Parameter.Count != 1)
+            if (Argument.Count != 1)
             {
                 throw new CodeGenerationException()
                 {
-                    Error = new InvalidFunctionArguments(ArgumentErrorContext, "SizeOf", 1, Parameter.Count),
+                    Error = new InvalidFunctionArguments(ArgumentErrorContext, "SizeOf", 1, Argument.Count),
                 };
             }
 
-            string identifier = Parameter[0] as string ?? throw new InternalException()
+            string identifier = Argument[0] as string ?? throw new InternalException()
             {
                 Reason = "The parameter is not a string.",
             };
@@ -65,7 +65,7 @@ namespace LUIECompiler.CodeGeneration.Expressions
 
         public override string ToString()
         {
-            return $"sizeof({Parameter[0]})";
+            return $"sizeof({Argument[0]})";
         }
     }
 }

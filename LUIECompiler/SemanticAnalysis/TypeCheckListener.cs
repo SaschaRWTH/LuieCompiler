@@ -278,7 +278,7 @@ namespace LUIECompiler.SemanticAnalysis
                 return;
             }
 
-            foreach (string identifier in sizeOfFunctionExpression.Parameter)
+            foreach (string identifier in sizeOfFunctionExpression.Argument)
             {
                 Symbol? symbol = Table.GetSymbolInfo(identifier);
                 if (symbol is null)

@@ -15,7 +15,7 @@ namespace LUIECompiler.CodeGeneration.Expressions
         /// <summary>
         /// List of parameters of the function.
         /// </summary>
-        public List<Expression<T>> Parameters { get; init; }
+        public List<Expression<T>> Arguments { get; init; }
 
         /// <summary>
         /// Creates a power function expression from the given <paramref name="context"/>.
@@ -26,26 +26,26 @@ namespace LUIECompiler.CodeGeneration.Expressions
         {
             if (TryIdentifierToIdentifierExpression(context, out List<Expression<T>> expressions))
             {
-                Parameters = expressions;
+                Arguments = expressions;
                 return;
             }
 
-            Parameters = context.expression()?.Select(expression => expression.GetExpression<T>()).ToList() ?? throw new NotImplementedException();
+            Arguments = context.expression()?.Select(expression => expression.GetExpression<T>()).ToList() ?? throw new NotImplementedException();
             ArgumentErrorContext = new ErrorContext(context);
         }
 
         public override T Evaluate(CodeGenerationContext context)
         {
-            if (Parameters.Count != 2)
+            if (Arguments.Count != 2)
             {
                 throw new CodeGenerationException()
                 {
-                    Error = new InvalidFunctionArguments(ArgumentErrorContext, "Power", 2, Parameters.Count),
+                    Error = new InvalidFunctionArguments(ArgumentErrorContext, "Power", 2, Arguments.Count),
                 };
             }
 
-            Expression<T> baseExp = Parameters[0];
-            Expression<T> exponentExp = Parameters[1];
+            Expression<T> baseExp = Arguments[0];
+            Expression<T> exponentExp = Arguments[1];
 
             double baseValue = double.CreateChecked(baseExp.Evaluate(context));
             double exponent = double.CreateChecked(exponentExp.Evaluate(context));
@@ -56,7 +56,7 @@ namespace LUIECompiler.CodeGeneration.Expressions
         public override List<string> UndefinedIdentifiers(SymbolTable table)
         {
             List<string> result = new List<string>();
-            foreach (var parameter in Parameters)
+            foreach (var parameter in Arguments)
             {
                 result.AddRange(parameter.UndefinedIdentifiers(table));
             }
@@ -65,7 +65,7 @@ namespace LUIECompiler.CodeGeneration.Expressions
 
         public override string ToString()
         {
-            return $"power({Parameters[0]}, {Parameters[1]})";
+            return $"power({Arguments[0]}, {Arguments[1]})";
         }
     }
 }
