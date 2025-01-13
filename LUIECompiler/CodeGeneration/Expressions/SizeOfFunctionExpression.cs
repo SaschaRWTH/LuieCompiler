@@ -50,7 +50,7 @@ namespace LUIECompiler.CodeGeneration.Expressions
                 Reason = "The parameter is not a string.",
             };
 
-            Symbol parameter = context.CurrentBlock.GetSymbol(identifier, context);
+            Symbol parameter = context.CurrentBlock.GetSymbol(identifier, context, ArgumentErrorContext);
             if (parameter is not Register register)
             {
                 Compiler.LogError($"SizeOf parameter '{identifier}' is not a register.");

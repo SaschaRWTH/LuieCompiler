@@ -54,8 +54,6 @@ namespace LUIECompiler.SemanticAnalysis
             if (symbol == null)
             {
                 // Undefined error are reported in the declaration analysis
-                // Compiler.LogError($"TypeCheckListener.ExitRegister: Could not get the symbol of identifier '{identifier}' from the symbol table.");
-                // Error.Report(new UndefinedError(new ErrorContext(context), identifier));
                 return;
             }
 
@@ -69,6 +67,7 @@ namespace LUIECompiler.SemanticAnalysis
             {
                 Compiler.LogError($"TypeCheckListener.ExitRegister: The symbol '{identifier}' was not a register.");
                 Error.Report(new TypeError(new ErrorContext(context), identifier, typeof(Register), symbol.GetType()));
+                return;
             }
 
             // Cannot access qubit with []
@@ -101,8 +100,6 @@ namespace LUIECompiler.SemanticAnalysis
             if (symbol == null)
             {
                 // Undefined error are reported in the declaration analysis
-                // Compiler.LogError($"TypeCheckListener.ExitFactor: Could not get the symbol of identifier '{identifier}' from the symbol table.");
-                // Error.Report(new UndefinedError(new ErrorContext(context), identifier));
                 return;
             }
 
@@ -132,7 +129,6 @@ namespace LUIECompiler.SemanticAnalysis
                 if (symbol == null)
                 {
                     // Undefined error are reported in the declaration analysis
-                    // Error.Report(new UndefinedError(new ErrorContext(context), identifier));
                     return;
                 }
 
@@ -147,6 +143,7 @@ namespace LUIECompiler.SemanticAnalysis
                 {
                     Compiler.LogError($"TypeCheckListener.ExitGateapplication: Could not get the symbol of identifier '{identifier}'. Symbol is not a register.");
                     Error.Report(new TypeError(new ErrorContext(context), identifier, typeof(Register), symbol.GetType()));
+                    return;
                 }
 
                 if (gate is CompositeGate)

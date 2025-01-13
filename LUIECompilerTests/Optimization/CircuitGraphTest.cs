@@ -359,26 +359,26 @@ public class CircuitGraphTest
         CheckCircut(graph, QFTPaths);
     }
 
-    // Currently not working, 
-    // TODO: adjust to change away from CX
-    // [TestMethod]
-    // public void RemovedGateQFTCircuitTest()
-    // {
-    //     var walker = Utils.GetWalker();
-    //     var parser = Utils.GetParser(QFT);
+    // Currently not working
+    [TestMethod]
+    public void RemovedGateQFTCircuitTest()
+    {
+        var walker = Utils.GetWalker();
+        var parser = Utils.GetParser(QFT);
 
-    //     var codegen = new CodeGenerationListener();
-    //     walker.Walk(codegen, parser.parse());
+        var codegen = new CodeGenerationListener();
+        walker.Walk(codegen, parser.parse());
 
-    //     QASMProgram program = codegen.CodeGen.GenerateCode();
-    //     Assert.IsNotNull(program);
+        QASMProgram program = codegen.CodeGen.GenerateCode();
+        Assert.IsNotNull(program);
 
-    //     CircuitGraph graph = new(program);
+        CircuitGraph graph = new(program);
 
-    //     graph.Nodes.OfType<GateNode>().First(n => n.Gate == GateType.CX).Remove();
+        // Formerly: Check for GateType.CX, but alls CX now replaced with controlled X gates for easier optimizations
+        graph.Nodes.OfType<GateNode>().First(n => n.Gate == GateType.X && n.GetGuardQubits().Count == 1).Remove();
 
-    //     CheckCircut(graph, QFTFirstCXRemovedPaths);
-    // }
+        CheckCircut(graph, QFTFirstCXRemovedPaths);
+    }
     
     [TestMethod]
     public void QFTGraphTranslationTest()

@@ -105,7 +105,7 @@ namespace LUIECompiler.CodeGeneration
         /// <returns></returns>
         /// <exception cref="InternalException"></exception>
         /// <exception cref="CodeGenerationException"></exception>
-        public Symbol GetSymbol(string identifier, CodeGenerationContext context)
+        public Symbol GetSymbol(string identifier, CodeGenerationContext context, ErrorContext errorContext)
         {
             Symbol? symbol = GetSymbolFromTranslateables(identifier);
             if(symbol != null)
@@ -121,8 +121,7 @@ namespace LUIECompiler.CodeGeneration
             
             throw new CodeGenerationException()
             {
-                // TODO: Fix this error context.
-                Error = new UndefinedError(new(), identifier),
+                Error = new UndefinedError(errorContext, identifier),
             };
         }
 

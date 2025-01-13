@@ -136,7 +136,9 @@ namespace LUIECompilerTests.SemanticAnalysis
             Assert.IsTrue(error.ContainsCriticalError);
 
             Assert.IsTrue(error.CriticalErrors.Exists(e => e.ErrorContext.Line == 7));
-            // TODO: "A critical Error occured at (9, 0)" occurs twice
+            // "A critical Error occured at (9, 0)" occurs twice
+            // Once for wrong argument to a the gate application
+            // Another time for the wrong type of a register
             Assert.IsTrue(error.CriticalErrors.Exists(e => e.ErrorContext.Line == 9));
         }
 
