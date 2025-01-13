@@ -149,7 +149,12 @@ namespace LUIECompiler.CLI
             Compiler.Print(HelpOptionString(help, helpDescription));
             foreach (var (prop, attr) in parameters)
             {
-                if(attr?.Hidden == true)
+                if(attr is null)
+                {
+                    continue;
+                }
+
+                if(attr.Hidden == true)
                 {
                     continue;
                 }
