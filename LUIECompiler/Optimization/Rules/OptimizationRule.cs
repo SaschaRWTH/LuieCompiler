@@ -113,7 +113,6 @@ namespace LUIECompiler.Optimization.Rules
                 // Casting to GateNode
                 foreach (GraphQubit qubit in baseGate.Qubits)
                 {
-                    // TODO: Can be extened/improved by differentiating between changed and read qubits.
                     INode nextNodeOfQubit = current.GetOutEdge(qubit).End;
                     if(nextNodeOfQubit != nextNode)
                     {

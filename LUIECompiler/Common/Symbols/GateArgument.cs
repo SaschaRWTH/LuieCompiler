@@ -53,7 +53,6 @@ namespace LUIECompiler.Common.Symbols
                 };
             }
 
-            // TODO: Is a cycle possible? E.g. a -> b, b -> a
             if (symbol is GateArgument arg)
             {
                 return arg.GetSymbol(context);
