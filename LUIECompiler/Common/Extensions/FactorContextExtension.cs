@@ -25,10 +25,7 @@ namespace LUIECompiler.Common.Extensions
 
             if(context.identifier is not null)
             {
-                return new IdentifierExpression<T>()
-                {
-                    Identifier = context.identifier.Text,
-                };
+                return new IdentifierExpression<T>(context.identifier.Text, symbolTable);
             }
 
             if(context.exp is not null)

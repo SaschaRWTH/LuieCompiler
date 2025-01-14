@@ -32,7 +32,7 @@ namespace LUIECompiler.CodeGeneration.Expressions
             };
         }
 
-        protected bool TryIdentifierToIdentifierExpression(LuieParser.FunctionParameterContext context, out List<Expression<T>> expressions)
+        protected bool TryIdentifierToIdentifierExpression(LuieParser.FunctionParameterContext context, SymbolTable symbolTable, out List<Expression<T>> expressions)
         {
             expressions = new List<Expression<T>>();
             if (context.IDENTIFIER() is not Antlr4.Runtime.Tree.ITerminalNode[] array)
@@ -47,10 +47,7 @@ namespace LUIECompiler.CodeGeneration.Expressions
 
             foreach (var identifier in array)
             {
-                expressions.Add(new IdentifierExpression<T>()
-                {
-                    Identifier = identifier.GetText()
-                });
+                expressions.Add(new IdentifierExpression<T>(identifier.GetText(), symbolTable));
             }
             return true;
         }

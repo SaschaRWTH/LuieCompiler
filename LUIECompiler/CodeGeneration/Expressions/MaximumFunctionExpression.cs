@@ -24,7 +24,7 @@ namespace LUIECompiler.CodeGeneration.Expressions
         /// <exception cref="NotImplementedException"></exception>
         public MaximumFunctionExpression(LuieParser.FunctionParameterContext context, SymbolTable symbolTable)
         { 
-            if(TryIdentifierToIdentifierExpression(context, out List<Expression<T>> expressions))
+            if(TryIdentifierToIdentifierExpression(context, symbolTable, out List<Expression<T>> expressions))
             {
                 Arguments = expressions;
                 return;

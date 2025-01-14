@@ -15,22 +15,23 @@ namespace LUIECompiler.CodeGeneration.Expressions
         /// <summary>
         /// Identifier of the constant.
         /// </summary>
-        public required string Identifier { get; init; }
+        private string Identifier { get; }
 
+        /// <summary>
+        /// Symbol corresponding to the identifier expression.
+        /// </summary>
         public Symbol? Symbol { get; set; }
+
+        public IdentifierExpression(string identifier, SymbolTable table)
+        {
+            // Ignore cases for undefined, will be checked by semantic analysis and get undefined identifiers
+            Symbol = table.GetSymbolInfo(identifier);
+            Identifier = identifier;
+        }
 
         public override List<string> PropagateSymbolInformation(SymbolTable table)
         {
-            List<string> undefined = new();
-
-            Symbol = table.GetSymbolInfo(Identifier);
-
-            if (Symbol is null)
-            {
-                undefined.Add(Identifier);
-            }
-
-            return undefined;
+            return Symbol == null ? [Identifier] : [];
         }
 
         public override T Evaluate(CodeGenerationContext context)
@@ -39,10 +40,6 @@ namespace LUIECompiler.CodeGeneration.Expressions
             {
                 Reason = $"Symbol with identifier {Identifier} not found.",
             };
-            // Symbol symbol = context.SymbolTable.GetSymbolInfo(Identifier) ?? throw new InternalException()
-            // {
-            //     Reason = $"Symbol with identifier {Identifier} not found.",
-            // };
             
             if (symbol is Constant<T> constant)
             {
