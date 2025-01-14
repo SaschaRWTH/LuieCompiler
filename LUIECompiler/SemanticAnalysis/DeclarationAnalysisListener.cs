@@ -24,6 +24,16 @@ namespace LUIECompiler.SemanticAnalysis
         public readonly Dictionary<Symbol, int> SymbolUsage = [];
 
         /// <summary>
+        /// Indicates whether a register declaration is allowed in the current context.
+        /// </summary>
+        private bool RegisterDeclarationAllowed => !_gateDeclarationContext;
+
+        /// <summary>
+        /// Indicates whether the current context is a gate declaration.
+        /// </summary>
+        private bool _gateDeclarationContext = false; 
+
+        /// <summary>
         /// Error handler of the listener.
         /// </summary>
         public ErrorHandler Error { get; init; } = new();
@@ -66,6 +76,13 @@ namespace LUIECompiler.SemanticAnalysis
         {
             ITerminalNode id = context.IDENTIFIER();
             string identifier = id.GetText();
+
+            if (!RegisterDeclarationAllowed)
+            {
+                Error.Report(new InvalidDeclarationContext(new ErrorContext(context), identifier));
+                return;
+            }
+
             if (Table.IsDefined(identifier))
             {
                 Error.Report(new RedefineError(new ErrorContext(context.Start), identifier));
@@ -80,15 +97,18 @@ namespace LUIECompiler.SemanticAnalysis
         public override void EnterGateDeclaration([NotNull] LuieParser.GateDeclarationContext context)
         {
             Table.PushEmptyScope();
+            _gateDeclarationContext = true;
             foreach (GateArgument param in context.GetArguments())
             {
                 AddSymbolToTable(param);
             }
+
         }
 
         public override void ExitGateDeclaration([NotNull] LuieParser.GateDeclarationContext context)
         {
             Table.PopScope();
+            _gateDeclarationContext = false;
 
             // Create empty block for declaration analysis
             CodeBlock block = new()
@@ -197,7 +217,7 @@ namespace LUIECompiler.SemanticAnalysis
         {
             FunctionExpression<double> expression = context.GetFunctionExpression<double>();
 
-            expression.UndefinedIdentifiers(Table).ForEach(identifier =>
+            expression.PropagateSymbolInformation(Table).ForEach(identifier =>
             {
                 Compiler.LogError($"The identifier '{identifier}' was not defined in the current context.");
                 Error.Report(new UndefinedError(new ErrorContext(context), identifier));
