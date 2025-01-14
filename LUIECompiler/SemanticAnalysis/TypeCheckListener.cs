@@ -268,8 +268,7 @@ namespace LUIECompiler.SemanticAnalysis
             {
                 return;
             }
-            string identifier = sizeOfFunctionExpression.Argument;
-            Symbol? symbol = Table.GetSymbolInfo(sizeOfFunctionExpression.Argument);
+            Symbol? symbol = sizeOfFunctionExpression.Register;
             if (symbol is null)
             {
                 // Undefined errors are reported in the declaration analysis
@@ -286,8 +285,8 @@ namespace LUIECompiler.SemanticAnalysis
 
             if (symbol is not Register)
             {
-                Compiler.LogError($"Could not get the symbol of identifier '{identifier}' from the symbol table.");
-                Error.Report(new TypeError(new ErrorContext(context), identifier, typeof(Register), symbol.GetType()));
+                Compiler.LogError($"Could not get the symbol of identifier '{symbol.Identifier}' from the symbol table.");
+                Error.Report(new TypeError(new ErrorContext(context), symbol.Identifier, typeof(Register), symbol.GetType()));
             }
         }
 

@@ -2,7 +2,6 @@ using System.Numerics;
 using LUIECompiler.CodeGeneration.Exceptions;
 using LUIECompiler.Common;
 using LUIECompiler.Common.Errors;
-using LUIECompiler.Common.Extensions;
 using LUIECompiler.Common.Symbols;
 
 namespace LUIECompiler.CodeGeneration.Expressions
@@ -16,7 +15,7 @@ namespace LUIECompiler.CodeGeneration.Expressions
         /// <summary>
         /// List of parameters of the function.
         /// </summary>
-        public string Argument { get; }
+        private string Identifier { get; }
 
         public Symbol? Register { get; set; }
 
@@ -35,15 +34,17 @@ namespace LUIECompiler.CodeGeneration.Expressions
                     Error = new InvalidFunctionArguments(new ErrorContext(context), "SizeOf", 1, argList.Count),
                 };
             }
-            Argument = argList[0];
+            Identifier = argList[0];
             ArgumentErrorContext = new ErrorContext(context);
+
+
+            // Ignore cases for undefined, will be checked by semantic analysis and get undefined identifiers
+            Register = symbolTable.GetSymbolInfo(Identifier);
         }
 
         public override List<string> PropagateSymbolInformation(SymbolTable table)
         {
-            Register = table.GetSymbolInfo(Argument);
-
-            return Register is null ? [Argument] : [];
+            return Register is null ? [Identifier] : [];
         }
 
         public override T Evaluate(CodeGenerationContext context)
@@ -52,10 +53,9 @@ namespace LUIECompiler.CodeGeneration.Expressions
             {
                 throw new InternalException()
                 {
-                    Reason = $"Symbol with identifier {Argument} not found.",
+                    Reason = $"Symbol with identifier {Identifier} not found.",
                 };
             }
-            
 
             Symbol symbol = Register;
             if (Register is GateArgument argument)
@@ -65,7 +65,7 @@ namespace LUIECompiler.CodeGeneration.Expressions
 
             if (symbol is not Register register)
             {
-                Compiler.LogError($"SizeOf parameter '{Argument}' is not a register.");
+                Compiler.LogError($"SizeOf parameter '{Identifier}' is not a register.");
                 throw new CodeGenerationException()
                 {
                     Error = new TypeError(new ErrorContext(), Register.Identifier, typeof(Register), Register.GetType()),
@@ -77,7 +77,7 @@ namespace LUIECompiler.CodeGeneration.Expressions
 
         public override string ToString()
         {
-            return $"sizeof({Argument[0]})";
+            return $"sizeof({Identifier[0]})";
         }
     }
 }
