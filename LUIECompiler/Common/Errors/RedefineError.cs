@@ -14,7 +14,7 @@ namespace LUIECompiler.Common.Errors
         public RedefineError(ErrorContext context, string identifier) : base(context, identifier)
         {
             Type = ErrorType.Critical;
-            Description = $"The register {identifier} is already defined in the context.";
+            Description = $"The identifier {identifier} is already declared in the context.";
         }
     }
 
