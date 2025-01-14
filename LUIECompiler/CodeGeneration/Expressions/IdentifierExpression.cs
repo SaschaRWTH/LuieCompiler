@@ -29,7 +29,7 @@ namespace LUIECompiler.CodeGeneration.Expressions
             Identifier = identifier;
         }
 
-        public override List<string> PropagateSymbolInformation(SymbolTable table)
+        public override List<string> UndeclaredIdentifiers()
         {
             return Symbol == null ? [Identifier] : [];
         }

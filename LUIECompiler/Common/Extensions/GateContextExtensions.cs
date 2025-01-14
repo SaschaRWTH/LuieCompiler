@@ -65,7 +65,6 @@ namespace LUIECompiler.Common.Extensions
         {
             GateType type = GateTypeExtensions.FromString(gate);
             Expression<double> parameter = expression.GetExpression<double>(symbolTable);
-            parameter.PropagateSymbolInformation(symbolTable);
 
             return new()
             {

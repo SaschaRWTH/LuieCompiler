@@ -40,8 +40,6 @@ namespace LUIECompiler.Common.Extensions
         {
             string identifier = context.identifier.Text;
             Expression<T> value = context.GetConstantExpression<T>(table);
-            // List of undeclared identifiers should be empty as declaration check took care of them.
-            value.PropagateSymbolInformation(table);
             return new Constant<T>(identifier, value, new ErrorContext(context));
         }
 

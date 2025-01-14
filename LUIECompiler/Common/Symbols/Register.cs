@@ -67,16 +67,6 @@ namespace LUIECompiler.Common.Symbols
                 Value = size,
             };
         }
-                
-        /// <summary>
-        /// Propagates the symbol information through an expression and return a list of undeclared identifiers.
-        /// </summary>
-        /// <param name="table"></param>
-        /// <returns></returns>
-        public virtual List<string> PropagateSymbolInformation(SymbolTable table)
-        {
-            return Size.PropagateSymbolInformation(table);
-        }
     }
 
 }

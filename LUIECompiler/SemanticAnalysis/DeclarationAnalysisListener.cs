@@ -194,11 +194,17 @@ namespace LUIECompiler.SemanticAnalysis
 
             LuieParser.RangeContext range = context.range();
             LoopIterator loop = range.GetRange(identifier, Table);
-            loop.PropagateSymbolInformation(Table).ForEach(identifier =>
-            {
-                Compiler.LogError($"The identifier '{identifier}' was not defined in the current context.");
-                Error.Report(new UndefinedError(new ErrorContext(context), identifier));
-            });
+            // Dont think these are necessary
+            // loop.Start.PropagateSymbolInformation().ForEach(identifier =>
+            // {
+            //     Compiler.LogError($"The identifier '{identifier}' was not defined in the current context.");
+            //     Error.Report(new UndefinedError(new ErrorContext(context), identifier));
+            // });
+            // loop.End.PropagateSymbolInformation().ForEach(identifier =>
+            // {
+            //     Compiler.LogError($"The identifier '{identifier}' was not defined in the current context.");
+            //     Error.Report(new UndefinedError(new ErrorContext(context), identifier));
+            // });
             
 
             AddSymbolToTable(loop);
@@ -223,7 +229,7 @@ namespace LUIECompiler.SemanticAnalysis
         {
             FunctionExpression<double> expression = context.GetFunctionExpression<double>(Table);
 
-            expression.PropagateSymbolInformation(Table).ForEach(identifier =>
+            expression.UndeclaredIdentifiers().ForEach(identifier =>
             {
                 Compiler.LogError($"The identifier '{identifier}' was not defined in the current context.");
                 Error.Report(new UndefinedError(new ErrorContext(context), identifier));

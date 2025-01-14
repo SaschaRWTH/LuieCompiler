@@ -45,7 +45,6 @@ namespace LUIECompiler.Common.Symbols
                 };
             }
 
-            IndexExpression.PropagateSymbolInformation(context.SymbolTable);
 
             return new RegisterAccess(register, IndexExpression, ErrorContext);
         }
@@ -61,7 +60,6 @@ namespace LUIECompiler.Common.Symbols
                     Error = new TypeError(ErrorContext, Identifier, typeof(Register), Argument.GetSymbol(context).GetType()),
                 };
             }
-            IndexExpression.PropagateSymbolInformation(context.SymbolTable);
             return register.ToRegisterAccess(IndexExpression, ErrorContext);
              
         }

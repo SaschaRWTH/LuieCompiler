@@ -22,6 +22,6 @@ namespace LUIECompiler.CodeGeneration.Expressions
         /// </summary>
         /// <param name="table"></param>
         /// <returns></returns>
-        public abstract List<string> PropagateSymbolInformation(SymbolTable table);
+        public abstract List<string> UndeclaredIdentifiers();
     }
 }

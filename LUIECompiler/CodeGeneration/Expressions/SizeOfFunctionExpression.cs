@@ -42,7 +42,7 @@ namespace LUIECompiler.CodeGeneration.Expressions
             Register = symbolTable.GetSymbolInfo(Identifier);
         }
 
-        public override List<string> PropagateSymbolInformation(SymbolTable table)
+        public override List<string> UndeclaredIdentifiers()
         {
             return Register is null ? [Identifier] : [];
         }

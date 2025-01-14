@@ -24,7 +24,6 @@ namespace LUIECompiler.CodeGeneration
         public override void ExitRegisterDeclaration([NotNull] LuieParser.RegisterDeclarationContext context)
         {
             Register register = context.GetRegister(CodeGen.Table);
-            register.PropagateSymbolInformation(CodeGen.Table);
             CodeGen.AddRegister(register, new ErrorContext(context));
         }
 
@@ -164,7 +163,6 @@ namespace LUIECompiler.CodeGeneration
             CodeGen.Table.PushEmptyScope();
 
             LoopIterator iterator = context.GetIterator(CodeGen.Table);
-            iterator.PropagateSymbolInformation(CodeGen.Table);
             CodeGen.AddIterator(iterator, new ErrorContext(context.Start));
         }
 

@@ -61,11 +61,6 @@ namespace LUIECompiler.Common.Symbols
         {
             return $"RegisterAccess: {{ Register = {Register}, Index = {IndexExpression} }}";
         }
-
-        public override List<string> PropagateSymbolInformation(SymbolTable table)
-        {
-            return [.. base.PropagateSymbolInformation(table), .. IndexExpression.PropagateSymbolInformation(table)];
-        }
     }
 
 }

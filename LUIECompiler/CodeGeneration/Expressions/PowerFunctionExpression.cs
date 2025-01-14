@@ -53,12 +53,12 @@ namespace LUIECompiler.CodeGeneration.Expressions
             return T.CreateChecked(Math.Pow(baseValue, exponent));
         }
 
-        public override List<string> PropagateSymbolInformation(SymbolTable table)
+        public override List<string> UndeclaredIdentifiers()
         {
             List<string> result = new List<string>();
             foreach (var parameter in Arguments)
             {
-                result.AddRange(parameter.PropagateSymbolInformation(table));
+                result.AddRange(parameter.UndeclaredIdentifiers());
             }
             return result;
         }

@@ -40,22 +40,5 @@ namespace LUIECompiler.Common.Symbols
         {
             return $"LoopIterator: {{ id={Identifier}, start={Start}, end={End} }}";
         }
-
-        
-        /// <summary>
-        /// Propagates the symbol information through an expression and return a list of undeclared identifiers.
-        /// </summary>
-        /// <param name="table"></param>
-        /// <returns></returns>
-        public List<string> PropagateSymbolInformation(SymbolTable table)
-        {
-            List<string> undefined = new();
-
-            undefined.AddRange(Start.PropagateSymbolInformation(table));
-            undefined.AddRange(End.PropagateSymbolInformation(table));
-
-            return undefined;
-
-        }
     }
 }
