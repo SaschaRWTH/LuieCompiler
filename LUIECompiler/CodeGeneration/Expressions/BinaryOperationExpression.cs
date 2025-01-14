@@ -27,9 +27,9 @@ namespace LUIECompiler.CodeGeneration.Expressions
             return Operator.Apply(Left.Evaluate(context), Right.Evaluate(context));
         }
 
-        public override List<string> UndefinedIdentifiers(SymbolTable table)
+        public override List<string> PropagateSymbolInformation(SymbolTable table)
         {
-            return [..Left.UndefinedIdentifiers(table), ..Right.UndefinedIdentifiers(table)];
+            return [..Left.PropagateSymbolInformation(table), ..Right.PropagateSymbolInformation(table)];
         }
 
         public override string ToString()

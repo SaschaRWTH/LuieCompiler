@@ -49,7 +49,8 @@ namespace LUIECompiler.Common.Extensions
                     Error = new TypeError(new ErrorContext(context.Start), identifier, typeof(Qubit), symbol.GetType()),
                 };
             }
-            
+            index.PropagateSymbolInformation(table);
+
             return new RegisterAccess(register, index, new ErrorContext(context));
         }
 

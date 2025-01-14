@@ -28,7 +28,7 @@ namespace LUIECompiler.Common.Symbols
         /// <param name="register">Register being accessed.</param>
         /// <param name="indexExpression">Expression that evaluates to the index of the qubit in the <see cref="Register"/>.</param>
         /// <param name="errorContext">Context of the register access.</param>
-        public RegisterAccess(Register register, Expression<int> indexExpression, ErrorContext errorContext) 
+        public RegisterAccess(Register register, Expression<int> indexExpression, ErrorContext errorContext)
                        : base(identifier: register.Identifier, errorContext)
         {
             IndexExpression = indexExpression;
@@ -60,6 +60,11 @@ namespace LUIECompiler.Common.Symbols
         public override string ToString()
         {
             return $"RegisterAccess: {{ Register = {Register}, Index = {IndexExpression} }}";
+        }
+
+        public override List<string> PropagateSymbolInformation(SymbolTable table)
+        {
+            return [.. base.PropagateSymbolInformation(table), .. IndexExpression.PropagateSymbolInformation(table)];
         }
     }
 

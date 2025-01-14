@@ -1,4 +1,5 @@
 using System.Numerics;
+using System.Runtime.CompilerServices;
 using LUIECompiler.CodeGeneration.Exceptions;
 using LUIECompiler.Common;
 using LUIECompiler.Common.Symbols;
@@ -16,10 +17,15 @@ namespace LUIECompiler.CodeGeneration.Expressions
         /// </summary>
         public required string Identifier { get; init; }
 
-        public override List<string> UndefinedIdentifiers(SymbolTable table)
+        public Symbol? Symbol { get; set; }
+
+        public override List<string> PropagateSymbolInformation(SymbolTable table)
         {
             List<string> undefined = new();
-            if (!table.IsDefined(Identifier))
+
+            Symbol = table.GetSymbolInfo(Identifier);
+
+            if (Symbol is null)
             {
                 undefined.Add(Identifier);
             }
@@ -29,10 +35,14 @@ namespace LUIECompiler.CodeGeneration.Expressions
 
         public override T Evaluate(CodeGenerationContext context)
         {
-            Symbol symbol = context.SymbolTable.GetSymbolInfo(Identifier) ?? throw new InternalException()
+            Symbol symbol = Symbol ?? throw new InternalException()
             {
                 Reason = $"Symbol with identifier {Identifier} not found.",
             };
+            // Symbol symbol = context.SymbolTable.GetSymbolInfo(Identifier) ?? throw new InternalException()
+            // {
+            //     Reason = $"Symbol with identifier {Identifier} not found.",
+            // };
             
             if (symbol is Constant<T> constant)
             {

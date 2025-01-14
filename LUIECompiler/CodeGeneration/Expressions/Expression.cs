@@ -18,10 +18,10 @@ namespace LUIECompiler.CodeGeneration.Expressions
         public abstract T Evaluate(CodeGenerationContext context);
 
         /// <summary>
-        /// Gets the list of undefined identifiers in the expression.
+        /// Propagates the symbol information through an expression and return a list of undeclared identifiers.
         /// </summary>
         /// <param name="table"></param>
         /// <returns></returns>
-        public abstract List<string> UndefinedIdentifiers(SymbolTable table);
+        public abstract List<string> PropagateSymbolInformation(SymbolTable table);
     }
 }

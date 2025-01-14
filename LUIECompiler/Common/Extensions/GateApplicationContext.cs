@@ -82,7 +82,7 @@ namespace LUIECompiler.Common.Extensions
                 };
             }
 
-            List<string> undefined = index.UndefinedIdentifiers(table);
+            List<string> undefined = index.PropagateSymbolInformation(table);
             if (undefined.Count > 0)
             {
                 throw new CodeGenerationException()
@@ -91,7 +91,10 @@ namespace LUIECompiler.Common.Extensions
                 };
             }
 
-            return new RegisterAccess(register, index, new ErrorContext(context));
+            RegisterAccess access = new RegisterAccess(register, index, new ErrorContext(context));
+            access.PropagateSymbolInformation(table);
+
+            return access;
         }
 
         /// <summary>
@@ -107,6 +110,7 @@ namespace LUIECompiler.Common.Extensions
             {
                 return arg;
             }
+            index.PropagateSymbolInformation(table);
             
             return new GateArgumentAccess(arg, index, new ErrorContext(context));
         }

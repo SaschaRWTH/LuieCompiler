@@ -16,8 +16,9 @@ namespace LUIECompiler.CodeGeneration.Expressions
         /// <summary>
         /// List of parameters of the function.
         /// </summary>
-        public List<string> Argument { get; }
+        public string Argument { get; }
 
+        public Symbol? Register { get; set; }
 
         /// <summary>
         /// Creates a sizeof function expression from the given <paramref name="context"/>.
@@ -26,37 +27,48 @@ namespace LUIECompiler.CodeGeneration.Expressions
         /// <exception cref="NotImplementedException"></exception>
         public SizeOfFunctionExpression(LuieParser.FunctionParameterContext context)
         {
-            Argument = context.IDENTIFIER()?.Select(obj => obj.GetText())?.ToList() ?? throw new NotImplementedException();
+            var argList = context.IDENTIFIER()?.Select(obj => obj.GetText())?.ToList() ?? throw new NotImplementedException();
+            if (argList.Count != 1)
+            {
+                throw new CodeGenerationException()
+                {
+                    Error = new InvalidFunctionArguments(new ErrorContext(context), "SizeOf", 1, argList.Count),
+                };
+            }
+            Argument = argList[0];
             ArgumentErrorContext = new ErrorContext(context);
         }
 
-        public override List<string> UndefinedIdentifiers(SymbolTable table)
+        public override List<string> PropagateSymbolInformation(SymbolTable table)
         {
-            return Argument.Where(obj => obj is string).Select(obj => (string)obj).Where(p => !table.IsDefined(p)).ToList();
+            Register = table.GetSymbolInfo(Argument);
+
+            return Register is null ? [Argument] : [];
         }
 
         public override T Evaluate(CodeGenerationContext context)
         {
-            if (Argument.Count != 1)
+            if (Register is null)
             {
-                throw new CodeGenerationException()
+                throw new InternalException()
                 {
-                    Error = new InvalidFunctionArguments(ArgumentErrorContext, "SizeOf", 1, Argument.Count),
+                    Reason = $"Symbol with identifier {Argument} not found.",
                 };
             }
+            
 
-            string identifier = Argument[0] as string ?? throw new InternalException()
+            Symbol symbol = Register;
+            if (Register is GateArgument argument)
             {
-                Reason = "The parameter is not a string.",
-            };
+                symbol = argument.ToRegister(context);
+            }
 
-            Symbol parameter = context.CurrentBlock.GetSymbol(identifier, context, ArgumentErrorContext);
-            if (parameter is not Register register)
+            if (symbol is not Register register)
             {
-                Compiler.LogError($"SizeOf parameter '{identifier}' is not a register.");
+                Compiler.LogError($"SizeOf parameter '{Argument}' is not a register.");
                 throw new CodeGenerationException()
                 {
-                    Error = new TypeError(new ErrorContext(), parameter.Identifier, typeof(Register), parameter.GetType()),
+                    Error = new TypeError(new ErrorContext(), Register.Identifier, typeof(Register), Register.GetType()),
                 };
             }
 

@@ -209,6 +209,7 @@ namespace LUIECompiler.SemanticAnalysis
 
             string identifier = context.IDENTIFIER().GetText();
             LoopIterator loopIterator = context.range().GetRange(identifier);
+            // loopIterator.PropagateSymbolInformation(Table);
 
             Table.AddSymbol(loopIterator);
         }
@@ -263,40 +264,30 @@ namespace LUIECompiler.SemanticAnalysis
         public override void ExitFunction([NotNull] LuieParser.FunctionContext context)
         {
             FunctionExpression<double> expression = context.GetFunctionExpression<double>();
-
-            // Undefined errors are reported in the declaration analysis
-            // expression.UndefinedIdentifiers(Table).ForEach(identifier =>
-            // {
-            //     Error.Report(new UndefinedError(new ErrorContext(context), identifier));
-            // });
-
             if (expression is not SizeOfFunctionExpression<double> sizeOfFunctionExpression)
             {
                 return;
             }
-
-            foreach (string identifier in sizeOfFunctionExpression.Argument)
+            string identifier = sizeOfFunctionExpression.Argument;
+            Symbol? symbol = Table.GetSymbolInfo(sizeOfFunctionExpression.Argument);
+            if (symbol is null)
             {
-                Symbol? symbol = Table.GetSymbolInfo(identifier);
-                if (symbol is null)
-                {
-                    // Undefined errors are reported in the declaration analysis
-                    // Compiler.LogError($"Could not get the symbol of identifier '{identifier}' from the symbol table.");
-                    // Error.Report(new UndefinedError(new ErrorContext(context), identifier));
-                    continue;
-                }
+                // Undefined errors are reported in the declaration analysis
+                // Compiler.LogError($"Could not get the symbol of identifier '{identifier}' from the symbol table.");
+                // Error.Report(new UndefinedError(new ErrorContext(context), identifier));
+                return;
+            }
 
-                // Check type of argument at generation time
-                if (symbol is GateArgument)
-                {
-                    continue;
-                }
+            // Check type of argument at generation time
+            if (symbol is GateArgument)
+            {
+                return;
+            }
 
-                if (symbol is not Register)
-                {
-                    Compiler.LogError($"Could not get the symbol of identifier '{identifier}' from the symbol table.");
-                    Error.Report(new TypeError(new ErrorContext(context), identifier, typeof(Register), symbol.GetType()));
-                }
+            if (symbol is not Register)
+            {
+                Compiler.LogError($"Could not get the symbol of identifier '{identifier}' from the symbol table.");
+                Error.Report(new TypeError(new ErrorContext(context), identifier, typeof(Register), symbol.GetType()));
             }
         }
 
@@ -314,7 +305,7 @@ namespace LUIECompiler.SemanticAnalysis
         {
             Table.PopScope();
 
-            // Create emtpy block for declaration analysis
+            // Create empty block for declaration analysis
             CodeBlock block = new()
             {
                 Parent = null

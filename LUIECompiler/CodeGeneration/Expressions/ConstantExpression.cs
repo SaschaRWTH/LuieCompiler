@@ -20,7 +20,7 @@ namespace LUIECompiler.CodeGeneration.Expressions
             return Value;
         }
 
-        public override List<string> UndefinedIdentifiers(SymbolTable table)
+        public override List<string> PropagateSymbolInformation(SymbolTable table)
         {
             return new();
         }

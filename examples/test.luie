@@ -1,0 +1,17 @@
+qubit a;
+qubit b;
+qubit c;
+
+qif c do 
+    const n : int = 2;
+    for _ in range(n) do
+        x a;
+    end
+end
+
+qif c do 
+    const n : int = 3;
+    for _ in range(n) do
+        x b;
+    end
+end

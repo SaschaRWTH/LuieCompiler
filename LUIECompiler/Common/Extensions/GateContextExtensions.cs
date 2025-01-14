@@ -1,4 +1,5 @@
 using LUIECompiler.CodeGeneration.Exceptions;
+using LUIECompiler.CodeGeneration.Expressions;
 using LUIECompiler.Common.Errors;
 using LUIECompiler.Common.Symbols;
 
@@ -22,7 +23,7 @@ namespace LUIECompiler.Common.Extensions
 
             if(context.parameterizedGate?.Text is string parameterizedGate)
             {
-                return ParameterizedGateFromString(parameterizedGate, context.param);
+                return ParameterizedGateFromString(parameterizedGate, context.param, symbolTable);
             }
 
             string identifier = context.identifier.Text;
@@ -60,14 +61,16 @@ namespace LUIECompiler.Common.Extensions
         /// <param name="gate"></param>
         /// <param name="expression"></param>
         /// <returns></returns>
-        private static ParameterizedGate ParameterizedGateFromString(string gate, LuieParser.ExpressionContext expression)
+        private static ParameterizedGate ParameterizedGateFromString(string gate, LuieParser.ExpressionContext expression, SymbolTable symbolTable)
         {
             GateType type = GateTypeExtensions.FromString(gate);
-
+            Expression<double> parameter = expression.GetExpression<double>();
+            parameter.PropagateSymbolInformation(symbolTable);
+            
             return new()
             {
                 Type = type,
-                Parameter = expression.GetExpression<double>(),
+                Parameter = parameter,
             };
         }
     }

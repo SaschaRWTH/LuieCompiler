@@ -32,7 +32,7 @@ namespace LUIECompiler.Common.Errors
 
         public override string ToString()
         {
-            return $"A {(Type == ErrorType.Warning ? "Warning" : "critical Error")} occured at ({ErrorContext.Line}, {ErrorContext.Column}): {Description}";
+            return $"A {(Type == ErrorType.Warning ? "Warning" : "critical Error")} occurred at ({ErrorContext.Line}, {ErrorContext.Column}): {Description}";
         }
     }
 

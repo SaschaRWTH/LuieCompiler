@@ -14,14 +14,14 @@ namespace LUIECompiler.Common.Extensions
         /// <typeparam name="T"></typeparam>
         /// <param name="context"></param>
         /// <returns></returns>
-        public static Symbol GetConstantSymbol(this LuieParser.ConstDeclarationContext context)
+        public static Symbol GetConstantSymbol(this LuieParser.ConstDeclarationContext context, SymbolTable table)
         {
             string typeString = context.type.Text;
             return typeString switch
             {
-                "int" => GetConstant<int>(context),
-                "double" => GetConstant<double>(context),
-                "uint" => GetConstant<uint>(context),
+                "int" => GetConstant<int>(context, table),
+                "double" => GetConstant<double>(context, table),
+                "uint" => GetConstant<uint>(context, table),
                 _ => throw new InternalException()
                 {
                     Reason = $"Unknown constant type {typeString}. Grammar should only allow valid types.",
@@ -35,10 +35,13 @@ namespace LUIECompiler.Common.Extensions
         /// <typeparam name="T"></typeparam>
         /// <param name="context"></param>
         /// <returns></returns>
-        public static Constant<T> GetConstant<T>(this LuieParser.ConstDeclarationContext context) where T : INumber<T>
+        public static Constant<T> GetConstant<T>(this LuieParser.ConstDeclarationContext context, SymbolTable table) 
+            where T : INumber<T>
         {
             string identifier = context.identifier.Text;
             Expression<T> value = context.GetConstantExpression<T>();
+            // List of undeclared identifiers should be empty as declaration check took care of them.
+            value.PropagateSymbolInformation(table);
             return new Constant<T>(identifier, value, new ErrorContext(context));
         }
 

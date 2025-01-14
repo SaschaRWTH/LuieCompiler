@@ -134,7 +134,7 @@ namespace LUIECompiler.SemanticAnalysis
             }
             else
             {
-                Symbol info = context.GetConstantSymbol();
+                Symbol info = context.GetConstantSymbol(Table);
                 AddSymbolToTable(info);
             }
         }
@@ -194,6 +194,12 @@ namespace LUIECompiler.SemanticAnalysis
 
             LuieParser.RangeContext range = context.range();
             LoopIterator loop = range.GetRange(identifier);
+            loop.PropagateSymbolInformation(Table).ForEach(identifier =>
+            {
+                Compiler.LogError($"The identifier '{identifier}' was not defined in the current context.");
+                Error.Report(new UndefinedError(new ErrorContext(context), identifier));
+            });
+            
 
             AddSymbolToTable(loop);
         }

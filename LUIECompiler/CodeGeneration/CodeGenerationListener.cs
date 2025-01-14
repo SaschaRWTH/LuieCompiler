@@ -24,6 +24,7 @@ namespace LUIECompiler.CodeGeneration
         public override void ExitRegisterDeclaration([NotNull] LuieParser.RegisterDeclarationContext context)
         {
             Register register = context.GetRegister();
+            register.PropagateSymbolInformation(CodeGen.Table);
             CodeGen.AddRegister(register, new ErrorContext(context));
         }
 
@@ -163,6 +164,7 @@ namespace LUIECompiler.CodeGeneration
             CodeGen.Table.PushEmptyScope();
 
             LoopIterator iterator = context.GetIterator();
+            iterator.PropagateSymbolInformation(CodeGen.Table);
             CodeGen.AddIterator(iterator, new ErrorContext(context.Start));
         }
 
@@ -214,7 +216,7 @@ namespace LUIECompiler.CodeGeneration
 
             Scope scope = _lastPopped ?? throw new InternalException()
             {
-                Reason = "There was no last poped scope, although block should just have been exited."
+                Reason = "There was no last popped scope, although block should just have been exited."
             };
             CodeBlock block = scope.CodeBlock ?? throw new InternalException()
             {
@@ -226,7 +228,7 @@ namespace LUIECompiler.CodeGeneration
 
         public override void ExitConstDeclaration([NotNull] LuieParser.ConstDeclarationContext context)
         {
-            Symbol symbol = context.GetConstantSymbol();
+            Symbol symbol = context.GetConstantSymbol(CodeGen.Table);
             CodeGen.AddConstant(symbol, new ErrorContext(context));
         }
 
