@@ -200,6 +200,19 @@ public class DeclarationTest
         swap a[0], a[1];
     ";
 
+    public const string InvalidDeclarationContext =
+    @"  gate test(a, b) do
+            qubit c;
+            x a;
+            x b;
+            x c;
+        end
+
+        qubit a;
+        qubit b;
+        test a, b;
+    ";
+
     /// <summary>
     /// Test that already defined identifiers are correctly reported.
     /// </summary>
@@ -483,5 +496,21 @@ public class DeclarationTest
         Assert.AreEqual(1, error.Errors.Count);
 
         Assert.IsTrue(error.Errors.Any(e => e is RedefineError && e.ErrorContext.Line == 7));
+    }
+
+    [TestMethod]
+    public void InvalidDeclarationContextTest()
+    {
+        var walker = Utils.GetWalker();
+        var parser = Utils.GetParser(InvalidDeclarationContext);
+        var analysis = new DeclarationAnalysisListener();
+        walker.Walk(analysis, parser.parse());
+        var error = analysis.Error;
+
+        Assert.IsTrue(error.ContainsCriticalError);
+        Assert.AreEqual(2, error.Errors.Count);
+
+        Assert.IsTrue(error.Errors.Any(e => e is InvalidDeclarationContext && e.ErrorContext.Line == 2));
+        Assert.IsTrue(error.Errors.Any(e => e is UndefinedError && e.ErrorContext.Line == 5));
     }
 }
