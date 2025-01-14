@@ -229,11 +229,14 @@ namespace LUIECompiler.SemanticAnalysis
         {
             FunctionExpression<double> expression = context.GetFunctionExpression<double>(Table);
 
-            expression.UndeclaredIdentifiers().ForEach(identifier =>
+            var undeclared = expression.UndeclaredIdentifiers();
+            if (undeclared.Count == 0)
             {
-                Compiler.LogError($"The identifier '{identifier}' was not defined in the current context.");
-                Error.Report(new UndefinedError(new ErrorContext(context), identifier));
-            });
+                return;
+            }
+            
+            Compiler.LogError($"The identifiers '{string.Join(',', undeclared)}' were not declared in the current context.");
+            Error.Report(new UndefinedError(new ErrorContext(context), undeclared));
         }
 
         public override void ExitGate([NotNull] LuieParser.GateContext context)
