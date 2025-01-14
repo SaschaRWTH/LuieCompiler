@@ -18,7 +18,7 @@ public class ConstantsTest
     public const string SimpleIntConstantTranslation =
         "qubit[6] id0;\n" +
         "x id0[5];\n";
-        
+
     public const string IntConstantInExpression =
     @"
         const n : int = 5;
@@ -47,7 +47,7 @@ public class ConstantsTest
     public const string SimpleUIntConstantTranslation =
         "qubit[6] id0;\n" +
         "x id0[5];\n";
-        
+
     public const string UIntConstantInExpression =
     @"
         const n : uint = 5;
@@ -86,7 +86,7 @@ public class ConstantsTest
     public const string SimpleDoubleConstantTranslation =
         "qubit[6] id0;\n" +
         "x id0[5];\n";
-        
+
     public const string DoubleConstantInExpression =
     @"
         const n : double = 5;
@@ -144,7 +144,7 @@ public class ConstantsTest
             end
         end
     ";
-        
+
     public const string ConstantsDeclarationNotOnTopLevelTranslation =
         "qubit id0;\n" +
         "qubit id1;\n" +
@@ -154,7 +154,26 @@ public class ConstantsTest
         "ctrl(1) @ x id2, id1;\n" +
         "ctrl(1) @ x id2, id1;\n" +
         "ctrl(1) @ x id2, id1;\n";
-        
+
+    public const string ConstantsDeclarationInCompGate =
+    @"  gate test(a) do
+            const n : int = 10 / 2;
+            for _ in range(n) do
+                x a;
+            end
+        end
+
+        qubit a;
+        test a;
+    ";
+    public const string ConstantsDeclarationInCompGateTranslation =
+        "qubit id0;\n" +
+        "x id0;\n" +
+        "x id0;\n" +
+        "x id0;\n" +
+        "x id0;\n" +
+        "x id0;\n";
+
     [TestMethod]
     public void SimpleIntConstantTest()
     {
@@ -168,7 +187,7 @@ public class ConstantsTest
         Assert.IsNotNull(code);
 
         Assert.AreEqual(SimpleIntConstantTranslation, code);
-    }        
+    }
     [TestMethod]
     public void ConstantIntExpressionTest()
     {
@@ -182,7 +201,7 @@ public class ConstantsTest
         Assert.IsNotNull(code);
 
         Assert.AreEqual(IntConstantInExpressionTranslation, code);
-    }        
+    }
     [TestMethod]
     public void SimpleUIntConstantTest()
     {
@@ -196,8 +215,8 @@ public class ConstantsTest
         Assert.IsNotNull(code);
 
         Assert.AreEqual(SimpleUIntConstantTranslation, code);
-    }   
-         
+    }
+
     [TestMethod]
     public void ConstantUIntExpressionTest()
     {
@@ -211,7 +230,7 @@ public class ConstantsTest
         Assert.IsNotNull(code);
 
         Assert.AreEqual(UIntConstantInExpressionTranslation, code);
-    }    
+    }
 
     [TestMethod]
     public void UIntConstantInExpressionWithFuncTest()
@@ -226,7 +245,7 @@ public class ConstantsTest
         Assert.IsNotNull(code);
 
         Assert.AreEqual(UIntConstantInExpressionTranslation, code);
-    }        
+    }
     [TestMethod]
     public void SimpleDoubleConstantTest()
     {
@@ -240,7 +259,7 @@ public class ConstantsTest
         Assert.IsNotNull(code);
 
         Assert.AreEqual(SimpleDoubleConstantTranslation, code);
-    }        
+    }
     [TestMethod]
     public void ConstantDoubleExpressionTest()
     {
@@ -254,7 +273,7 @@ public class ConstantsTest
         Assert.IsNotNull(code);
 
         Assert.AreEqual(DoubleConstantInExpressionTranslation, code);
-    }   
+    }
     [TestMethod]
     public void ConstAsSizeInCompGateTest()
     {
@@ -282,5 +301,19 @@ public class ConstantsTest
         Assert.IsNotNull(code);
 
         Assert.AreEqual(ConstantsDeclarationNotOnTopLevelTranslation, code);
+    }
+    [TestMethod]
+    public void ConstantsDeclarationInCompGateTest()
+    {
+        var walker = Utils.GetWalker();
+        var parser = Utils.GetParser(ConstantsDeclarationInCompGate);
+
+        var codegen = new CodeGenerationListener();
+        walker.Walk(codegen, parser.parse());
+
+        string? code = codegen.CodeGen.GenerateCode()?.ToString();
+        Assert.IsNotNull(code);
+
+        Assert.AreEqual(ConstantsDeclarationInCompGateTranslation, code);
     }
 }

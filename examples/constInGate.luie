@@ -1,0 +1,9 @@
+gate test(a) do
+    const n : int = 10 / 2;
+    for _ in range(n) do
+        x a;
+    end
+end
+
+qubit a;
+test a;
