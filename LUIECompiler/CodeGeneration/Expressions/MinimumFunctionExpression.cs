@@ -22,7 +22,7 @@ namespace LUIECompiler.CodeGeneration.Expressions
         /// </summary>
         /// <param name="context">Context of the function</param>
         /// <exception cref="NotImplementedException"></exception>
-        public MinimumFunctionExpression(LuieParser.FunctionParameterContext context)
+        public MinimumFunctionExpression(LuieParser.FunctionParameterContext context, SymbolTable symbolTable)
         {
             if(TryIdentifierToIdentifierExpression(context, out List<Expression<T>> expressions))
             {
@@ -30,7 +30,7 @@ namespace LUIECompiler.CodeGeneration.Expressions
                 return;
             }
             
-            Arguments = context.expression()?.Select(expression => expression.GetExpression<T>()).ToList() ?? throw new NotImplementedException();
+            Arguments = context.expression()?.Select(expression => expression.GetExpression<T>(symbolTable)).ToList() ?? throw new NotImplementedException();
             ArgumentErrorContext = new ErrorContext(context);
         }
 

@@ -64,9 +64,9 @@ namespace LUIECompiler.Common.Extensions
         private static ParameterizedGate ParameterizedGateFromString(string gate, LuieParser.ExpressionContext expression, SymbolTable symbolTable)
         {
             GateType type = GateTypeExtensions.FromString(gate);
-            Expression<double> parameter = expression.GetExpression<double>();
+            Expression<double> parameter = expression.GetExpression<double>(symbolTable);
             parameter.PropagateSymbolInformation(symbolTable);
-            
+
             return new()
             {
                 Type = type,

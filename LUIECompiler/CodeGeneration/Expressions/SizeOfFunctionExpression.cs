@@ -25,7 +25,7 @@ namespace LUIECompiler.CodeGeneration.Expressions
         /// </summary>
         /// <param name="context"></param>
         /// <exception cref="NotImplementedException"></exception>
-        public SizeOfFunctionExpression(LuieParser.FunctionParameterContext context)
+        public SizeOfFunctionExpression(LuieParser.FunctionParameterContext context, SymbolTable symbolTable)
         {
             var argList = context.IDENTIFIER()?.Select(obj => obj.GetText())?.ToList() ?? throw new NotImplementedException();
             if (argList.Count != 1)

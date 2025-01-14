@@ -22,9 +22,9 @@ namespace LUIECompiler.Common.Extensions
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public static Expression<int> GetSize(this LuieParser.RegisterDeclarationContext context)
+        public static Expression<int> GetSize(this LuieParser.RegisterDeclarationContext context, SymbolTable symbolTable)
         {
-            return context.size.GetExpression<int>();
+            return context.size.GetExpression<int>(symbolTable);
         }
 
         /// <summary>
@@ -33,11 +33,11 @@ namespace LUIECompiler.Common.Extensions
         /// <param name="context"></param>
         /// <param name="size"> Size of the register. </param>
         /// <returns> True, if a valid <paramref name="size"/> was given, overwise false. </returns>
-        public static bool TryGetSize(this LuieParser.RegisterDeclarationContext context, out Expression<int> size)
+        public static bool TryGetSize(this LuieParser.RegisterDeclarationContext context, SymbolTable symbolTable, out Expression<int> size)
         {
             if (context.HasSize())
             {
-                size = context.GetSize();
+                size = context.GetSize(symbolTable);
                 return true;
             }
             else
@@ -55,12 +55,12 @@ namespace LUIECompiler.Common.Extensions
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public static Register GetRegister(this LuieParser.RegisterDeclarationContext context)
+        public static Register GetRegister(this LuieParser.RegisterDeclarationContext context, SymbolTable symbolTable)
         {
             string identifier = context.IDENTIFIER().GetText();
             Register register;
 
-            if (context.TryGetSize(out Expression<int> size))
+            if (context.TryGetSize(symbolTable, out Expression<int> size))
             {
                 register = new Register(identifier, size, new ErrorContext(context));
             }

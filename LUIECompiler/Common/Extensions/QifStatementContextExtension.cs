@@ -24,7 +24,7 @@ namespace LUIECompiler.Common.Extensions
 
             if(symbol is GateArgument arg)
             {
-                return GetGuardArgument(context.register(), arg);
+                return GetGuardArgument(context.register(), arg, table);
             }
 
             if (symbol is not Register register)
@@ -41,7 +41,7 @@ namespace LUIECompiler.Common.Extensions
                 return qubit;
             }
 
-            if (!context.register().TryGetIndexExpression(out Expression<int> index))
+            if (!context.register().TryGetIndexExpression(table, out Expression<int> index))
             {
                 Compiler.LogError($"Could not get the index expression of register '{identifier}'. Symbol is not a qubit.");
                 throw new CodeGenerationException()
@@ -60,9 +60,9 @@ namespace LUIECompiler.Common.Extensions
         /// <param name="context"></param>
         /// <param name="arg"></param>
         /// <returns></returns>
-        public static GateArgument GetGuardArgument(LuieParser.RegisterContext context, GateArgument arg)
+        public static GateArgument GetGuardArgument(LuieParser.RegisterContext context, GateArgument arg, SymbolTable table)
         {
-            if (!context.TryGetIndexExpression(out Expression<int> index))
+            if (!context.TryGetIndexExpression(table, out Expression<int> index))
             {
                 return arg;
             }

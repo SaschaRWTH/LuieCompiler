@@ -39,7 +39,7 @@ namespace LUIECompiler.Common.Extensions
             where T : INumber<T>
         {
             string identifier = context.identifier.Text;
-            Expression<T> value = context.GetConstantExpression<T>();
+            Expression<T> value = context.GetConstantExpression<T>(table);
             // List of undeclared identifiers should be empty as declaration check took care of them.
             value.PropagateSymbolInformation(table);
             return new Constant<T>(identifier, value, new ErrorContext(context));
@@ -51,9 +51,9 @@ namespace LUIECompiler.Common.Extensions
         /// <typeparam name="T"></typeparam>
         /// <param name="context"></param>
         /// <returns></returns>
-        public static Expression<T> GetConstantExpression<T>(this LuieParser.ConstDeclarationContext context) where T : INumber<T>
+        public static Expression<T> GetConstantExpression<T>(this LuieParser.ConstDeclarationContext context, SymbolTable symbolTable) where T : INumber<T>
         {
-            return context.exp.GetExpression<T>();
+            return context.exp.GetExpression<T>(symbolTable);
         }
     }
 }

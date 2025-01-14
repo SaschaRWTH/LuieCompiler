@@ -15,7 +15,8 @@ namespace LUIECompiler.Common.Extensions
         /// <param name="context"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public static Expression<T> GetExpression<T>(this LuieParser.FactorContext context) where T : INumber<T>
+        public static Expression<T> GetExpression<T>(this LuieParser.FactorContext context, SymbolTable symbolTable) 
+            where T : INumber<T>
         {
             if(context.value is not null)
             {
@@ -32,12 +33,12 @@ namespace LUIECompiler.Common.Extensions
 
             if(context.exp is not null)
             {
-                return context.exp.GetExpression<T>();
+                return context.exp.GetExpression<T>(symbolTable);
             }
 
             if(context.func is LuieParser.FunctionContext functionContext)
             {
-                return functionContext.GetFunctionExpression<T>();
+                return functionContext.GetFunctionExpression<T>(symbolTable);
             }
 
             LuieParser.FactorContext? factor = context.factor();
@@ -46,7 +47,7 @@ namespace LUIECompiler.Common.Extensions
                 UnaryOperator<T> op = UnaryOperator<T>.FromString(context.op.Text);
                 return new UnaryOperationExpression<T>()
                 {
-                    Operand = factor.GetExpression<T>(),
+                    Operand = factor.GetExpression<T>(symbolTable),
                     Operator = op,
                 };
             }

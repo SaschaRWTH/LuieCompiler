@@ -12,7 +12,7 @@ namespace LUIECompiler.Common.Extensions
         /// <param name="context"></param>
         /// <returns></returns>
         /// <exception cref="InternalException"></exception>
-        public static LoopIterator GetRange(this LuieParser.RangeContext context, string identifier)
+        public static LoopIterator GetRange(this LuieParser.RangeContext context, string identifier, SymbolTable symbolTable)
         {
             if (int.TryParse(context.start?.Text, out int start) && int.TryParse(context.end?.Text, out int end))
             {
@@ -41,7 +41,7 @@ namespace LUIECompiler.Common.Extensions
                 };
                 BinaryOperationExpression<int> endExpression = new()
                 {
-                    Left = length.GetExpression<int>(),
+                    Left = length.GetExpression<int>(symbolTable),
                     Right = oneExpression,
                     Operator = BinaryOperator<int>.FromString("-"),
                 };
@@ -52,8 +52,8 @@ namespace LUIECompiler.Common.Extensions
             var endIndex = context.endIndex;
             if(startIndex != null && endIndex != null)
             {
-                Expression<int> startExpression = startIndex.GetExpression<int>();
-                Expression<int> endExpression = endIndex.GetExpression<int>();
+                Expression<int> startExpression = startIndex.GetExpression<int>(symbolTable);
+                Expression<int> endExpression = endIndex.GetExpression<int>(symbolTable);
                 return new(identifier, startExpression, endExpression, new(context));
             }
 

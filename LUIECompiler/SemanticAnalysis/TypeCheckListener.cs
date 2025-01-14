@@ -71,7 +71,7 @@ namespace LUIECompiler.SemanticAnalysis
             }
 
             // Cannot access qubit with []
-            if (symbol is Qubit && context.TryGetIndexExpression(out Expression<int> _))
+            if (symbol is Qubit && context.TryGetIndexExpression(Table, out Expression<int> _))
             {
                 Compiler.LogError($"TypeCheckListener.ExitRegister: The symbol '{identifier}' was neither a qubit nor a accessed register.");
                 Error.Report(new TypeError(new ErrorContext(context), identifier, typeof(Register), symbol.GetType()));
@@ -80,7 +80,7 @@ namespace LUIECompiler.SemanticAnalysis
 
         public override void ExitRegisterDeclaration([NotNull] LuieParser.RegisterDeclarationContext context)
         {
-            Register reg = context.GetRegister();
+            Register reg = context.GetRegister(Table);
             if (!Table.IsDefined(reg.Identifier))
             {
                 Table.AddSymbol(reg);
@@ -194,7 +194,7 @@ namespace LUIECompiler.SemanticAnalysis
                 return;
             }
 
-            if (symbol is Register && registerContext.TryGetIndexExpression(out Expression<int> _))
+            if (symbol is Register && registerContext.TryGetIndexExpression(Table, out Expression<int> _))
             {
                 return;
             }
@@ -208,7 +208,7 @@ namespace LUIECompiler.SemanticAnalysis
             Table.PushEmptyScope();
 
             string identifier = context.IDENTIFIER().GetText();
-            LoopIterator loopIterator = context.range().GetRange(identifier);
+            LoopIterator loopIterator = context.range().GetRange(identifier, Table);
             // loopIterator.PropagateSymbolInformation(Table);
 
             Table.AddSymbol(loopIterator);
@@ -263,7 +263,7 @@ namespace LUIECompiler.SemanticAnalysis
 
         public override void ExitFunction([NotNull] LuieParser.FunctionContext context)
         {
-            FunctionExpression<double> expression = context.GetFunctionExpression<double>();
+            FunctionExpression<double> expression = context.GetFunctionExpression<double>(Table);
             if (expression is not SizeOfFunctionExpression<double> sizeOfFunctionExpression)
             {
                 return;

@@ -9,11 +9,11 @@ namespace LUIECompiler.Common.Extensions
         /// </summary>
         /// <param name="context"></param>
         /// <returns></returns>
-        public static LoopIterator GetIterator(this LuieParser.ForstatementContext context)
+        public static LoopIterator GetIterator(this LuieParser.ForstatementContext context, SymbolTable symbolTable)
         {
             string identifier = context.IDENTIFIER().GetText();
 
-            return context.range().GetRange(identifier);
+            return context.range().GetRange(identifier, symbolTable);
         }
     }
 }

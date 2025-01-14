@@ -193,7 +193,7 @@ namespace LUIECompiler.SemanticAnalysis
             }
 
             LuieParser.RangeContext range = context.range();
-            LoopIterator loop = range.GetRange(identifier);
+            LoopIterator loop = range.GetRange(identifier, Table);
             loop.PropagateSymbolInformation(Table).ForEach(identifier =>
             {
                 Compiler.LogError($"The identifier '{identifier}' was not defined in the current context.");
@@ -221,7 +221,7 @@ namespace LUIECompiler.SemanticAnalysis
 
         public override void ExitFunction([NotNull] LuieParser.FunctionContext context)
         {
-            FunctionExpression<double> expression = context.GetFunctionExpression<double>();
+            FunctionExpression<double> expression = context.GetFunctionExpression<double>(Table);
 
             expression.PropagateSymbolInformation(Table).ForEach(identifier =>
             {

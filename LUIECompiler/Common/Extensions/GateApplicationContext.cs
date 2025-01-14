@@ -74,7 +74,7 @@ namespace LUIECompiler.Common.Extensions
                 return register;
             }
 
-            if (!context.TryGetIndexExpression(out Expression<int> index))
+            if (!context.TryGetIndexExpression(table, out Expression<int> index))
             {
                 throw new InternalException()
                 {
@@ -106,7 +106,7 @@ namespace LUIECompiler.Common.Extensions
         /// <returns></returns>
         private static GateArgument SingleArgument(LuieParser.RegisterContext context, GateArgument arg, SymbolTable table)
         {
-            if (!context.TryGetIndexExpression(out Expression<int> index))
+            if (!context.TryGetIndexExpression(table, out Expression<int> index))
             {
                 return arg;
             }

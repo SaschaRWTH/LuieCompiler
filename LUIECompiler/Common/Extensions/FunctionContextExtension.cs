@@ -12,9 +12,9 @@ namespace LUIECompiler.Common.Extensions
         /// <typeparam name="T"></typeparam>
         /// <param name="context"></param>
         /// <returns></returns>
-        public static FunctionExpression<T> GetFunctionExpression<T>(this LuieParser.FunctionContext context) where T : INumber<T>
+        public static FunctionExpression<T> GetFunctionExpression<T>(this LuieParser.FunctionContext context, SymbolTable symbolTable) where T : INumber<T>
         {
-            return FunctionExpression<T>.FromContext(context);
+            return FunctionExpression<T>.FromContext(context, symbolTable);
         }
         
     }

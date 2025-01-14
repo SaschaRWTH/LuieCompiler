@@ -30,7 +30,7 @@ namespace LUIECompiler.Common.Extensions
         /// <param name="context"></param>
         /// <param name="index"> Index that is accessed. </param>
         /// <returns>True, if a valid <paramref name="index"/> was given, overwise false.</returns>
-        public static bool TryGetIndexExpression(this LuieParser.RegisterContext context, out Expression<int> index)
+        public static bool TryGetIndexExpression(this LuieParser.RegisterContext context, SymbolTable symbolTable, out Expression<int> index)
         {
             index = new ConstantExpression<int>()
             {
@@ -43,7 +43,7 @@ namespace LUIECompiler.Common.Extensions
                 return false;
             }
 
-            index = expression.GetExpression<int>();
+            index = expression.GetExpression<int>(symbolTable);
             
             return true;
         }

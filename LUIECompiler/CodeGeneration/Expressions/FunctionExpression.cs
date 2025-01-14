@@ -1,5 +1,7 @@
 using System.Numerics;
+using LUIECompiler.Common;
 using LUIECompiler.Common.Errors;
+using LUIECompiler.Common.Symbols;
 
 namespace LUIECompiler.CodeGeneration.Expressions
 {
@@ -17,15 +19,15 @@ namespace LUIECompiler.CodeGeneration.Expressions
         /// <param name="context"></param>
         /// <returns></returns>
         /// <exception cref="NotImplementedException"></exception>
-        public static FunctionExpression<T> FromContext(LuieParser.FunctionContext context)
+        public static FunctionExpression<T> FromContext(LuieParser.FunctionContext context, SymbolTable symbolTable)
         {
             string function = context.func.Text;
             return function switch
             {
-                "sizeof" => new SizeOfFunctionExpression<T>(context.param),
-                "power" => new PowerFunctionExpression<T>(context.param),
-                "min" => new MinimumFunctionExpression<T>(context.param),
-                "max" => new MaximumFunctionExpression<T>(context.param),
+                "sizeof" => new SizeOfFunctionExpression<T>(context.param, symbolTable),
+                "power" => new PowerFunctionExpression<T>(context.param, symbolTable),
+                "min" => new MinimumFunctionExpression<T>(context.param, symbolTable),
+                "max" => new MaximumFunctionExpression<T>(context.param, symbolTable),
                 _ => throw new NotImplementedException(),
             };
         }

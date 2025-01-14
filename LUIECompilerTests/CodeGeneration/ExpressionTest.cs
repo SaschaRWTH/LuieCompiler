@@ -1,5 +1,7 @@
 using LUIECompiler.CodeGeneration;
+using LUIECompiler.Common;
 using LUIECompiler.Common.Extensions;
+using LUIECompiler.Common.Symbols;
 
 namespace LUIECompilerTests.CodeGeneration;
 
@@ -70,6 +72,8 @@ public class ExpressionTest
     {
         public int? Result { get; private set; } = null;
 
+        private SymbolTable SymbolTable { get; } = new();
+
         /// <summary>
         /// The function is called any time an expression is exited, this can be multiple times.
         /// However, because we set result when the expression is exited, we should get the result of the top most expression.
@@ -77,13 +81,13 @@ public class ExpressionTest
         /// <param name="context"></param>
         public override void ExitExpression(LuieParser.ExpressionContext context)
         {
-            Result = context.GetExpression<int>().Evaluate(new()
+            Result = context.GetExpression<int>(SymbolTable).Evaluate(new()
             {
                 CurrentBlock = new()
                 {
                     Parent = null,
                 },
-                SymbolTable = new(),
+                SymbolTable = SymbolTable,
             });
         }
     }
@@ -285,7 +289,7 @@ public class ExpressionTest
         Assert.AreEqual(SizeOfAccessTranslation, result);
     }
 
-    
+
     /// <summary>
     /// Tests the min function.
     /// </summary>
@@ -303,7 +307,7 @@ public class ExpressionTest
 
         Assert.AreEqual(MinResult, result);
     }
-    
+
     /// <summary>
     /// Tests the min function.
     /// </summary>
@@ -321,7 +325,7 @@ public class ExpressionTest
 
         Assert.AreEqual(MaxResult, result);
     }
-    
+
     /// <summary>
     /// Tests the min function.
     /// </summary>

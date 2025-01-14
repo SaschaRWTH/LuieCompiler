@@ -13,11 +13,11 @@ namespace LUIECompiler.Common.Extensions
         /// <param name="context"></param>
         /// <returns></returns>
         /// <exception cref="InternalException"></exception>
-        public static Expression<T> GetExpression<T>(this LuieParser.TermContext context) where T : INumber<T>
+        public static Expression<T> GetExpression<T>(this LuieParser.TermContext context, SymbolTable symbolTable) where T : INumber<T>
         {
             if(context.op is null)
             {
-                return context.factor().GetExpression<T>();
+                return context.factor().GetExpression<T>(symbolTable);
             }
 
             if(context.left is null || context.right is null)
@@ -31,8 +31,8 @@ namespace LUIECompiler.Common.Extensions
             BinaryOperator<T> op = BinaryOperator<T>.FromString(context.op.Text); 
             return new BinaryOperationExpression<T>()
             {
-                Left = context.left.GetExpression<T>(),
-                Right = context.right.GetExpression<T>(),
+                Left = context.left.GetExpression<T>(symbolTable),
+                Right = context.right.GetExpression<T>(symbolTable),
                 Operator = op,
             };
 
