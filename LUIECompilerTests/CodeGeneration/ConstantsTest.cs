@@ -124,6 +124,36 @@ public class ConstantsTest
         "x id0[2];\n" +
         "x id0[3];\n" +
         "x id0[4];\n";
+
+    public const string ConstantsDeclarationNotOnTopLevel =
+    @"  qubit a;
+        qubit b;
+        qubit c;
+
+        qif c do 
+            const n : int = 2;
+            for _ in range(n) do
+                x a;
+            end
+        end
+
+        qif c do 
+            const n : int = 3;
+            for _ in range(n) do
+                x b;
+            end
+        end
+    ";
+        
+    public const string ConstantsDeclarationNotOnTopLevelTranslation =
+        "qubit id0;\n" +
+        "qubit id1;\n" +
+        "qubit id2;\n" +
+        "ctrl(1) @ x id2, id0;\n" +
+        "ctrl(1) @ x id2, id0;\n" +
+        "ctrl(1) @ x id2, id1;\n" +
+        "ctrl(1) @ x id2, id1;\n" +
+        "ctrl(1) @ x id2, id1;\n";
         
     [TestMethod]
     public void SimpleIntConstantTest()
@@ -238,5 +268,19 @@ public class ConstantsTest
         Assert.IsNotNull(code);
 
         Assert.AreEqual(ConstAsSizeInCompGateTranslation, code);
+    }
+    [TestMethod]
+    public void ConstantsDeclarationNotOnTopLevelTest()
+    {
+        var walker = Utils.GetWalker();
+        var parser = Utils.GetParser(ConstantsDeclarationNotOnTopLevel);
+
+        var codegen = new CodeGenerationListener();
+        walker.Walk(codegen, parser.parse());
+
+        string? code = codegen.CodeGen.GenerateCode()?.ToString();
+        Assert.IsNotNull(code);
+
+        Assert.AreEqual(ConstantsDeclarationNotOnTopLevelTranslation, code);
     }
 }
