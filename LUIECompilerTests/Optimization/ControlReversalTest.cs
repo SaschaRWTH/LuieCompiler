@@ -4,7 +4,7 @@ using LUIECompiler.Optimization;
 
 namespace LUIECompilerTests.Optimization;
 
-[TestClass]
+[TestClass, TestCategory("Optimization")]
 public class ControlReversalTest
 {
 

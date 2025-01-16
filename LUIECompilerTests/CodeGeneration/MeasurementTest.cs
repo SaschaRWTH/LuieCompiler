@@ -2,7 +2,7 @@ using LUIECompiler.CodeGeneration;
 
 namespace LUIECompilerTests.CodeGeneration;
 
-[TestClass]
+[TestClass, TestCategory("CodeGeneration")]
 public class MeasurementTest
 {
         public const string SimpleQubitInput =

@@ -4,7 +4,7 @@ using LUIECompiler.CodeGeneration;
 using LUIECompiler.CodeGeneration.Codes;
 using LUIECompiler.Optimization;
 
-[TestClass]
+[TestClass, TestCategory("Optimization")]
 public class HSandwichTest
 {
     public static readonly string SimpleHZHSandwich = @"
