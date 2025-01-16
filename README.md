@@ -36,6 +36,16 @@ Alternatively, the compiler can be run using the following command:
 dotnet run --project .\LUIECompiler --input .\examples\test.luie
 ```
 
+Additionally, the dotnet dependencies may need to be restored using the following command:
+```bash
+dotnet restore
+```
+An exemplary workflow for building and testing the application can be found in the [GitHub Actions](./.github/workflows) folder. Here, four different stages or parts of the compiler are automatically tested using GitHub Actions. The stages are:
+- [Semantic Analysis](./.github/workflows/semanticanalysis.yml)
+- [Code Generation](./.github/workflows/codegen.yml)
+- [Code Optimization](./.github/workflows/optimization.yml)
+- [Command Line Interface](./.github/workflows/cli.yml)
+
 The general usage of the compiler is as follows:
 ```bash
 Usage: LUIECompiler [options]
@@ -46,3 +56,6 @@ Options:
   -O, --optimization       The type of optimization to apply.
   -v, --verbose            Path to the input file.
 ```
+
+## Versions
+The compiler was tested on both Windows and Linux with ANTLR 4.13.2 and .NET 8.0.300 and 8.0.112. The compiler was not tested on macOS, but it should work on macOS as well, provided the ANTLR and .NET versions are comparable.
