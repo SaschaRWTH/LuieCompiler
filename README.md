@@ -58,4 +58,4 @@ Options:
 ```
 
 ## Versions
-The compiler was tested on both Windows and Linux with ANTLR 4.13.2 and .NET 8.0.300 and 8.0.112. The compiler was not tested on macOS, but it should work on macOS as well, provided the ANTLR and .NET versions are comparable.
+The compiler was tested on both Windows and Linux with ANTLR 4.13.2 and 4.13.1, and .NET 8.0.300 and 8.0.112. The compiler was not tested on macOS, but it should work on macOS as well, provided the ANTLR and .NET versions are comparable.
